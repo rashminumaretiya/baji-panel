@@ -1,113 +1,118 @@
-// :root {
-//   /* Shared dark-gray used in gradients & checked input */
-//   --color-gradient-dark-gray: #4b4b4b;
+.sub-header-wrapper {
+  --md-black: #434343;
+  --sm-yellow: #f0db55;
+  --sm-primary: #387a6a;
+  --md-primary: #469986;
 
-//   /* Raw black shadows (use instead of inline rgba(0,0,0,...)) */
-//   --color-shadow-dark: rgba(0, 0, 0, 0.5);
-//   --color-shadow-darker: rgba(0, 0, 0, 0.8);
-// }
-
-.sub-header {
-  background: var(--sub-header-bg);
-  box-shadow: inset 0 1px 3px 0 rgba(var(--dark-black-lg), 0.4);
-  padding: 0 20px;
+  background: var(--md-black);
+  box-shadow: inset 0 1px 3px 0 rgba(var(--black-rgb), 0.4);
   margin-bottom: 1px;
-  color: var(--sub-header-color);
 
-  @media screen and (min-width: 768px) {
-    width: 100%;
+  &.dark-row {
+    background: var(--dark);
   }
 
-  .tabs-header {
-    flex-wrap: wrap;
-    justify-content: space-between;
+  &.mcw-casino-theme {
+    background: linear-gradient(180deg, #e8d877 0%, #c9a43e 100%);
 
-    @media screen and (max-width: 767px) {
-      justify-content: center;
+    .full-wrap {
+      .tabs-header {
+        &.yellow-theme {
+          ul {
+            margin-left: -10px;
+          }
+        }
+
+        li {
+          color: #000000;
+          border-left-color: rgba(0, 0, 0, 0.2);
+
+          &.active {
+            background: #c9a33d;
+          }
+        }
+      }
     }
+  }
+
+  &.babu-theme {
+    .full-wrap {
+      .tabs-header {
+        ul {
+          li {
+            &.active {
+              background: linear-gradient(0deg, #fd1111, #0e0e0e);
+            }
+
+            &:hover {
+              background: linear-gradient(0deg, #fd1111, #0e0e0e);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .full-wrap {
+    position: relative;
+    max-width: calc(100% - 40px);
+    height: calc(100% - 105px);
+    margin: 0 auto;
+    min-width: auto;
   }
 
   ul {
     display: flex;
     align-items: center;
-    padding-left: 0;
-    margin-bottom: 0;
-    flex-wrap: wrap;
-
-    * {
-      white-space: nowrap;
-    }
 
     li {
-      list-style: none;
-      position: relative;
-      cursor: pointer;
-      line-height: 30px;
       padding: 0 10px;
-      font-size: 12px;
-      font-weight: 600;
-      font-family: Tahoma;
-      border-right: 1px solid var(--sub-header-border);
+      color: var(--white);
+      font-weight: 700;
+      position: relative;
+      line-height: 30px;
+      cursor: pointer;
+      list-style: none;
+
+      & + li {
+        border-left: 1px solid rgba(var(--white-rgb), 0.15);
+      }
+
+      &:last-child {
+        border-right: 1px solid rgba(var(--white-rgb), 0.15);
+      }
 
       &.active {
-        background: var(--sub-header-active-menu-bg);
-        box-shadow: inset 0 1px 3px 0 rgba(var(--dark-black-lg), 0.1);
+        background: rgba(var(--white-rgb), 0.2);
+        box-shadow: inset 0 1px 3px 0 rgba(var(--black-rgb), 0.1);
+
+        &:hover {
+          background: rgba(var(--white-rgb), 0.2);
+        }
       }
 
       &:hover {
-        text-decoration: underline;
-      }
-
-      &.casino {
-        color: var(--white);
-        background: linear-gradient(var(--color-gradient-dark-gray), #1e1e1e);
-        display: flex;
-        flex-direction: row-reverse;
-        padding: 0 8px 0 20px;
-        overflow: hidden;
-
-        &::after {
-          content: 'New';
-          position: absolute;
-          top: 3px;
-          left: -34px;
-          transform: rotate(-45deg);
-          background-color: #e83623;
-          width: 100%;
-          text-align: center;
-          line-height: 1;
-          font-size: 9px;
-          font-weight: 600;
-          padding: 2px 0;
-        }
-
-        svg {
-          height: 18px;
-          width: 18px;
-          margin-top: -3px;
-          margin-left: 2px;
-        }
+        background: rgba(var(--white-rgb), 0.1);
       }
 
       .live-chip {
         position: absolute;
-        top: 0px;
+        top: 0;
         right: 3px;
         transform: translateY(-50%);
         height: 12px;
         border-radius: 3px;
-        box-shadow: 0 1px 3px 0 var(--color-shadow-dark);
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
         display: inline-flex;
         overflow: hidden;
         z-index: 9;
 
         .number {
           font-size: 10px;
-          padding: 0 2px;
           line-height: 0.8;
           margin-bottom: 0;
           padding: 2px 5px;
-          background-color: var(--red);
+          background-color: var(--red, #e83623);
           color: var(--white);
           letter-spacing: 0.4px;
           font-weight: 700;
@@ -122,21 +127,12 @@
           align-items: center;
           justify-content: center;
 
-          @media screen and (max-width: 767px) {
-            height: 4.26667vw;
-          }
-
           &::before {
             content: '';
             background: url('../../public/img/svg/live-icon.svg') no-repeat;
             background-size: contain;
             height: 8px;
             width: 14px;
-
-            @media screen and (max-width: 767px) {
-              width: 4.26667vw;
-              height: 2.66667vw;
-            }
           }
         }
       }
@@ -144,30 +140,11 @@
   }
 
   .right-inner-header {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    flex-wrap: wrap;
-    font-size: 12px;
-    font-family: Tahoma;
-
-    * {
-      white-space: nowrap;
-      font-size: 12px;
-      font-family: Tahoma;
-    }
-
-    .time-zone {
-      display: flex;
-      align-items: center;
-      padding: 0 12px;
-
-      p {
-        font-weight: 900;
-      }
-    }
 
     .bet-check {
-      border-top: 3px solid var(--color-bet-check-accent);
+      border-top: 3px solid var(--sm-yellow);
       padding: 0 12px 0 7px;
       background-image: linear-gradient(
         180deg,
@@ -175,22 +152,18 @@
         var(--black) 100%
       );
       margin-top: -3px;
-      border-right: 1px solid rgba(var(--dark-alpha), 0.15);
+      border-right: 1px solid rgba(var(--white-rgb), 0.15);
       height: 33px;
       padding-top: 2px;
 
       &:hover {
-        background-image: linear-gradient(
-          180deg,
-          var(--black) 0%,
-          var(--color-gradient-dark-gray) 100%
-        );
+        background-image: linear-gradient(180deg, var(--black) 0%, var(--sm-black) 100%);
       }
 
       input {
         height: 18px;
         width: 18px;
-        border-color: var(--color-bet-check-accent);
+        border-color: var(--sm-yellow);
         background-color: transparent;
 
         &:focus {
@@ -198,7 +171,7 @@
         }
 
         &:checked {
-          background-color: var(--color-gradient-dark-gray);
+          background-color: var(--md-black);
         }
       }
 
@@ -210,186 +183,122 @@
       }
 
       &.bet-check-active {
-        background-image: linear-gradient(
-          0deg,
-          var(--color-bet-check-active-start) 0%,
-          var(--color-bet-check-active-end) 100%
-        );
+        background-image: linear-gradient(0deg, var(--sm-primary) 0%, var(--md-primary) 100%);
 
         &:hover {
-          background-image: linear-gradient(
-            0deg,
-            var(--color-bet-check-active-end) 0%,
-            var(--color-bet-check-active-start) 100%
-          );
+          background-image: linear-gradient(0deg, var(--md-primary) 0%, var(--sm-primary) 100%);
         }
       }
     }
 
     .setting {
-      cursor: pointer;
+      color: var(--white);
+      gap: 5px;
+      font-weight: 700;
       padding: 0 10px;
-      font-weight: 600;
-
-      &:hover {
-        text-decoration: underline;
-      }
+      line-height: 30px;
+      cursor: pointer;
 
       svg {
         height: 14px;
         width: 14px;
-        margin-left: 6px;
-        vertical-align: top;
+      }
+
+      &:hover {
+        background: rgba(var(--white-rgb), 0.1);
       }
     }
   }
 }
 
 .stake-popup-container {
-  background-color: transparent;
-  border-radius: 0;
   min-width: 282px;
 
   .popover-body {
-    padding: 0;
-    box-shadow: 0 4px 5px var(--color-shadow-dark);
-    background-color: var(--platinum-grey);
-    border-radius: 0 0 4px 4px;
-  }
-
-  @media screen and (max-width: 767px) {
-    box-shadow: 0 300px 0px var(--color-shadow-darker);
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    transform: translate(0, 0) !important;
-    min-width: 100%;
-    border: 0;
-    border-radius: 1.6vw 0 0 1.6vw;
-  }
-
-  @media screen and (max-width: 767px) {
-    overflow-y: auto;
-    max-height: 90vh;
-    height: fit-content;
-  }
-
-  @media screen and (max-width: 425px) {
-    position: fixed !important;
-    top: 0 !important;
-    right: 0 !important;
-    left: 0 !important;
-    bottom: 0 !important;
-    z-index: 999 !important;
-    transform: none !important;
-    width: 100%;
-    max-width: 100%;
-    border: none;
-    background-color: var(--opacity-dark);
-
-    .popover-body {
-      width: 100%;
-      border-radius: 0;
-
-      .form-control {
-        color: var(--lg-white);
-      }
-    }
+    min-height: 100px;
+    background-color: var(--light-bg);
+    font-size: 11px;
+    color: var(--text-color);
+    padding: 10px;
+    font-family: Tahoma, Helvetica, sans-serif;
   }
 }
 
-:host-context(.mcv-yellow-theme) {
-  .sub-header {
-    .right-inner-header {
-      .bet-check {
-        .form-check-label {
-          color: #ecca3d;
-        }
-        input {
-          border-color: transparent;
-          background-color: rgba(var(--white-rgb), 0.15);
-          height: 16px;
-          width: 16px;
-          &:checked {
-            background-color: rgba(var(--black-rgb), 0.15);
-            --bs-form-check-bg-image: url(https://panel.mcv88.com/img/yellow-check.svg);
-          }
-        }
-      }
-    }
+.yellow-theme {
+  ul {
+    margin-left: -4px;
   }
-}
 
-:host-context(.yellow-theme) {
-  .sub-header {
-    background: var(
-      --menu-bg,
-      linear-gradient(
-        180deg,
-        var(--menu-bg-to, #1e1e1e) 0,
-        var(--menu-bg-from, #1e1e1e) 100%
-      )
-    );
-    box-shadow: 0 0.0625rem 0.25rem 0 var(--menu-bg--shadow, transparent) inset;
-    padding: 0 16px;
-    .right-inner-header {
-      margin-right: 15px;
+  .right-inner-header {
+    margin-right: 20px;
 
-      .bet-check {
-        border-top: 3px solid var(--light-green);
-        background: var(
-          --menu-oneclick-btn-bg,
-          linear-gradient(180deg, #4d4d4d 0, #1e1e1e 100%)
-        );
+    .bet-check {
+      border-top-color: var(--light-green);
+
+      &.bet-check-active {
+        background-image: linear-gradient(180deg, #4e9600 0%, #386a02 100%);
 
         &:hover {
-          background: var(
-            --menu-oneclick-btn-bg--hover,
-            linear-gradient(180deg, #1e1e1e 0, #4d4d4d 100%)
-          );
-        }
-
-        input {
-          height: 18px;
-          width: 18px;
-          border: 1px solid
-            var(--menu-oneclick-btn-click-border, hsla(0, 0%, 100%, 0));
-          background-color: var(
-            --menu-oneclick-btn-click-box,
-            hsla(0, 0%, 100%, 0.15)
-          );
-
-          &:focus {
-            box-shadow: none;
-          }
-
-          &:checked {
-            background-color: var(
-              --menu-oneclick-btn-click-box--select,
-              hsla(0, 0%, 100%, 0.15)
-            );
-            border: 1px solid
-              var(
-                --menu-oneclick-btn-click-border--select,
-                hsla(0, 0%, 100%, 0.4)
-              );
-          }
-        }
-
-        &.bet-check-active {
-          background: var(
-            --menu-oneclick-btn-bg--select,
-            linear-gradient(180deg, #4e9600 100%, #386a02 100%)
-          );
-
-          &:hover {
-            background: var(
-              --menu-oneclick-btn-bg--select--hover,
-              linear-gradient(180deg, #4e9600 100%, #386a02 100%)
-            );
-          }
+          background-image: linear-gradient(180deg, #386a02 0%, #4e9600 100%);
         }
       }
+
+      input {
+        border: 0;
+        background-color: #ffffff26;
+        height: 16px;
+        width: 16px;
+
+        &:checked {
+          background-color: rgba(255, 255, 255, 0.15);
+          border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+      }
+    }
+  }
+}
+
+.mcw-casino-theme {
+  .right-inner-header {
+    .bet-check {
+      border-top-color: #d56525;
+      background-image: linear-gradient(0deg, #4b4b4b 0%, #1e1e1e 100%);
+
+      .form-check-label {
+        color: #ecca3d;
+      }
+
+      &.bet-check-active {
+        background-image: linear-gradient(180deg, #b43807 0%, #912b06 100%);
+
+        &:hover {
+          background-image: linear-gradient(0deg, #b43807 0%, #912b06 100%);
+        }
+
+        .form-check-input {
+          border-color: rgba(255, 211, 84, 0.4);
+
+          &:checked {
+            background-color: rgba(0, 0, 0, 0.15);
+            --bs-form-check-bg-image: url('/img/yellow-check.svg');
+          }
+        }
+
+        label {
+          color: #ecca3d;
+        }
+      }
+
+      input {
+        border: 0;
+        background-color: #ffffff26;
+        height: 16px;
+        width: 16px;
+      }
+    }
+
+    .setting {
+      color: #000000;
     }
   }
 }

@@ -10,8 +10,16 @@ import {
   selectSidebarSports,
   setActiveSportId,
 } from '../../../store/slices/sportSlice.js'
+import {
+  selectIsMcvYellowTheme,
+  selectIsYellowTheme,
+} from '../../../store/slices/commonSlice.js'
 import { RACING_SPORTS } from '../../../core/constant/constants.js'
 import './sports-sidebar.scss'
+
+function cx(...cs) {
+  return cs.filter(Boolean).join(' ')
+}
 
 function parseGameDetails(pathname) {
   const m = pathname.match(/^\/game-details\/([^/]+)\/([^/]+)(?:\/([^/?]+))?/)
@@ -26,6 +34,8 @@ export default function SportsSidebar() {
   const { pathname } = useLocation()
   const allSports = useSelector(selectSidebarSports)
   const activeSportId = useSelector(selectActiveSportId)
+  const isYellowTheme = useSelector(selectIsYellowTheme)
+  const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
 
   const [displayedSportId, setDisplayedSportId] = useState(null)
   const [selectedCompIndex, setSelectedCompIndex] = useState(null)
@@ -147,14 +157,23 @@ export default function SportsSidebar() {
     navigate(path.join('/'))
   }
 
+  const wrapperClass = cx(
+    'sports-sidebar',
+    isOnGameDetailsRoute && 'is-game-details',
+    isYellowTheme && 'yellow-theme',
+    isMcwCasinoTheme && 'mcw-theme',
+  )
+  const eventsClass = cx(
+    'events ps-0',
+    isYellowTheme && 'light-sidebar',
+    isMcwCasinoTheme && 'mcw-sidebar',
+  )
+
   return (
     <div className="app-sports-sidebar">
-      <div className={['sports-sidebar', isOnGameDetailsRoute && 'is-game-details']
-        .filter(Boolean)
-        .join(' ')}
-      >
+      <div className={wrapperClass}>
         <div className="body">
-          <ul className="events ps-0">
+          <ul className={eventsClass}>
             {isGameDetailsView ? (
               <>
                 <li className="section-header"><span>{t('common.sports')}</span></li>

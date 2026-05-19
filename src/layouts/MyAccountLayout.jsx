@@ -1,8 +1,17 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import Header from '../components/Header.jsx'
 import NewsLine from '../components/NewsLine.jsx'
 import { useIsMobile } from '../hooks/useMediaQuery.js'
+import {
+  selectIsMcvYellowTheme,
+  selectIsYellowTheme,
+} from '../store/slices/commonSlice.js'
 import './myAccountLayout.scss'
+
+function cx(...cs) {
+  return cs.filter(Boolean).join(' ')
+}
 
 const tabs = [
   { path: '/my-account/my-profile', label: 'My Profile' },
@@ -21,9 +30,22 @@ export default function MyAccountLayout() {
   const location = useLocation()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
+  const isYellowTheme = useSelector(selectIsYellowTheme)
+  const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
 
   const activeTab = tabs.find((tab) => tab.path === location.pathname)
   const showSidebar = !isMobile
+
+  const sideLeftClass = cx(
+    'side-left',
+    isYellowTheme && 'yellow-theme',
+    isMcwCasinoTheme && 'mcw-theme',
+  )
+  const sidebarUlClass = cx(
+    'mb-0 ps-0 sidebar',
+    isYellowTheme && 'light-sidebar',
+    isMcwCasinoTheme && 'mcw-sidebar',
+  )
 
   const handleSelect = (path) => {
     if (location.pathname !== path) navigate(path)
@@ -38,8 +60,8 @@ export default function MyAccountLayout() {
         <NewsLine />
         <div className="position-relative outlet-wrap">
           {showSidebar && (
-            <div className="side-left">
-              <ul className="mb-0 ps-0 sidebar">
+            <div className={sideLeftClass}>
+              <ul className={sidebarUlClass}>
                 <li>My Account</li>
                 {tabs.map((tab) => {
                   const isActive = location.pathname === tab.path

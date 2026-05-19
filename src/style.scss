@@ -15,6 +15,11 @@ body {
   color: var(--dark);
   font-size: 12px;
   line-height: 15px;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
+  line-height: normal;
+  box-sizing: border-box;
+  font-family: 'Tahoma';
   background-color: var(--xs-gray);
 
   @media screen and (max-width: 767px) {

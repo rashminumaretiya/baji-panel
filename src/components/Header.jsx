@@ -17,6 +17,7 @@ import {
   selectIsPlayLiveStream,
   selectIsYellowTheme,
   setIsPlayLiveStream,
+  selectLogo,
 } from '../store/slices/commonSlice.js'
 import { SITE_LOGO } from './MyAccountPopup.jsx'
 import EventSearch from './EventSearch.jsx'
@@ -52,11 +53,7 @@ function getDisplayAmount(wallet) {
   const raw = wallet?.amount ?? wallet?.balance ?? 0
   return raw > 0 ? Math.floor(raw * 10) / 10 : 0
 }
-
-export default function Header({
-  logo = SITE_LOGO,
-  isStreamAvailable = false,
-}) {
+export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
@@ -72,6 +69,8 @@ export default function Header({
 
   const wallet = walletFromStore ?? user?.wallet ?? DEFAULT_WALLET
   const currency = currencyFromStore ?? user?.currency ?? DEFAULT_CURRENCY
+  const logoFromStore = useSelector(selectLogo)
+  const logo = logoProp ?? logoFromStore ?? SITE_LOGO
 
   const [isBalanceRefresh, setIsBalanceRefresh] = useState(false)
   const [showBets, setShowBets] = useState(false)
@@ -128,7 +127,7 @@ export default function Header({
   }
 
   if (!isAuth) {
-    return !isMob ? <SubHeader isAuthenticated={false} /> : null
+    return !isMob ? <SubHeader /> : null
   }
 
   return (
@@ -291,7 +290,7 @@ export default function Header({
         </Popover>
       </Overlay>
 
-      {!isMob && <SubHeader isAuthenticated={isAuth} />}
+      {!isMob && <SubHeader />}
     </>
   )
 }

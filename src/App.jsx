@@ -1,5 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { useDomainConfiguration } from './hooks/useDomainConfiguration.js'
+import { useTheme } from './hooks/useTheme.js'
 import Layout from './layouts/Layout.jsx'
 import MyAccountLayout from './layouts/MyAccountLayout.jsx'
 import ResultLayout from './layouts/ResultLayout.jsx'
@@ -24,6 +26,9 @@ import Tennis from './pages/Tennis.jsx'
 const Home = lazy(() => import('./pages/Home.jsx'))
 
 function App() {
+  useDomainConfiguration()
+  useTheme()
+
   return (
     <Routes>
       <Route element={<Layout />}>

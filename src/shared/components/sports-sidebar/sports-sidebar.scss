@@ -174,4 +174,54 @@
   .nav-active-event {
     background: var(--menu-list-group-bg);
   }
+
+  .match-odds.active {
+    background-color: #f2dca7 !important;
+    color: var(--dark);
+  }
+}
+
+.events.light-sidebar {
+  li {
+    color: var(--blue);
+    border-bottom: 1px solid var(--light-bg);
+
+    &.active {
+      background: linear-gradient(180deg, #546d7d 0%, var(--text-color) 100%);
+    }
+  }
+}
+
+.events.mcw-sidebar {
+  li {
+    color: #222222;
+    border-bottom: 1px solid #eee1c0;
+
+    &:hover {
+      background-color: #ece4b9;
+    }
+
+    &.active {
+      color: #222222;
+      background: #e5ca3a;
+    }
+  }
+}
+
+.mcw-theme {
+  .events {
+    .active-sport {
+      color: #ffd45f !important;
+      background-image: linear-gradient(180deg, #393939 0%, #000000 100%);
+
+      &:hover {
+        background-image: linear-gradient(180deg, #474747 0%, #070707 100%);
+      }
+    }
+  }
+
+  .match-odds.active {
+    background-color: rgba(229, 202, 58, 0.6) !important;
+    color: var(--dark);
+  }
 }
