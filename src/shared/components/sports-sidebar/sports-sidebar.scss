@@ -1,0 +1,177 @@
+.app-sports-sidebar {
+  overflow-x: hidden;
+}
+
+// .header {
+//   overflow-x: auto;
+//   background-color: var(--black-to-black);
+//   padding: 0 0 0 40px;
+//   justify-content: flex-end;
+
+//   &:before {
+//     content: '';
+//     background-image: url('/img/inplay-left-side.png');
+//     background-position: 0 -1550px;
+//     height: 25px;
+//     width: 36px;
+//     margin-right: auto;
+//     position: absolute;
+//     left: 0;
+//     top: 0;
+//   }
+
+//   li {
+//     color: var(--primary-yellow);
+//     text-align: center;
+//     padding: 5px 13px 6px 6px;
+//     font-size: 12px;
+//     background-image: url('/img/inplay-left-side.png');
+//     background-position: 100% -675px;
+//     background-repeat: no-repeat;
+
+//     &:hover {
+//       text-decoration: underline;
+//     }
+//   }
+// }
+
+.events {
+  margin-bottom: 0;
+  padding-left: 0;
+  overflow-y: auto;
+  height: calc(100svh - 165px);
+
+  .section-header {
+    background: var(--sport-section-bg);
+    color: var(--sport-section-color);
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  .active-sport {
+    background: var(--sub-header-active-sport-bg);
+
+    span {
+      color: var(--sub-header-active-sport-color);
+    }
+  }
+
+  li {
+    border-bottom: 1px solid var(--sport-events-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    font-size: 12px;
+
+    span:not(.go) {
+      padding: 5px 8px;
+      flex: 1;
+
+      &:hover {
+        background: rgba(var(--white-rgb), 0.1);
+        color: var(--light-white);
+      }
+    }
+
+    .go {
+      background-image: url('/img/inplay-left-side.png');
+      background-position: 101px -501px;
+      height: 16px;
+      width: 17px;
+      padding: 12px 14px;
+
+      &:hover {
+        background-position: 101px -526px;
+        background-color: #f2dca7;
+      }
+    }
+
+    span {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+}
+
+// Game-details flat view styles
+.nav-active-event {
+  background: color-mix(in srgb, var(--nav-tab-primary-bg), transparent 40%);
+  pointer-events: none;
+}
+
+.match-odds.active {
+  background: var(--account-menu-hover-bg);
+
+  span {
+    color: #000 !important;
+
+    &::before {
+      background: #000 !important;
+      border-color: rgba(0, 0, 0, 0.3) !important;
+    }
+
+    &:hover {
+      background-color: transparent !important;
+    }
+  }
+}
+
+.match-odds {
+  span {
+    &::before {
+      content: '';
+      background: var(--kelly-green);
+      border: 1px solid rgba(51, 51, 51, 0.4);
+      border-radius: 100%;
+      width: 8px;
+      height: 8px;
+      display: inline-block;
+      margin-right: 7px;
+    }
+  }
+
+  &.not-in-play {
+    span {
+      &::before {
+        background: var(--dark-gray);
+      }
+    }
+  }
+}
+.is-game-details {
+  .not-in-play,
+  .not-in-play span {
+    cursor: not-allowed;
+  }
+}
+
+.mcv-yellow-theme {
+  .nav-active-event {
+    background: var(--account-menu-hover-bg);
+  }
+}
+
+.yellow-theme {
+  .events {
+    li {
+      border-bottom: 0.0625rem solid var(--menu-list-border);
+    }
+
+    .active-sport {
+      background: var(--menu-list-head-bg);
+    }
+
+    .section-header {
+      background: var(--menu-path-bg);
+      color: var(--sport-section-color);
+      font-weight: normal;
+      pointer-events: none;
+    }
+  }
+
+  .nav-active-event {
+    background: var(--menu-list-group-bg);
+  }
+}
