@@ -110,6 +110,21 @@ export const login = createAsyncThunk(
   },
 )
 
+// Ports authService.logOut() — POST /auth/logout, then clear state regardless
+// of the API response (mirrors Angular's behavior: always reset auth on logout).
+export const logout = createAsyncThunk(
+  'auth/logout',
+  async (_, { dispatch }) => {
+    try {
+      await http.post('auth/logout', {})
+    } catch {
+      // Ignore — proceed to clear local state anyway.
+    }
+    dispatch(setUser(null))
+    return null
+  },
+)
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,

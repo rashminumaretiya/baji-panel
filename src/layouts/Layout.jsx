@@ -5,6 +5,7 @@ import { fetchSidebarSports } from "../store/slices/sportSlice"
 import { selectIsAuthenticated } from "../store/slices/authSlice"
 import { selectIsMobile } from "../store/slices/commonSlice"
 import { selectLayoutedRoutes } from "../store/slices/layoutSlice"
+import DevAuthToggle from "../components/DevAuthToggle"
 import Header from "../components/Header"
 import SportsSidebar from "../shared/components/sports-sidebar/SportsSidebar"
 import "./layout.scss"
@@ -37,6 +38,7 @@ export default function Layout() {
 
   return (
     <div className="app-layout">
+      <DevAuthToggle />
       <Header />
 
       <div className={cx('main-wrapper', isAuthenticated && 'auth')}>

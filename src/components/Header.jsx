@@ -1,9 +1,16 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { Overlay, Popover } from 'react-bootstrap'
 import './header.scss'
 import { useIsMobile } from '../hooks/useMediaQuery.js'
+import {
+  selectCurrency,
+  selectIsAuthenticated,
+  selectUser,
+  selectWallet,
+} from '../store/slices/authSlice.js'
 import { SITE_LOGO } from './MyAccountPopup.jsx'
 import EventSearch from './EventSearch.jsx'
 import MyAccountPopup from './MyAccountPopup.jsx'
@@ -14,7 +21,6 @@ import SvgIcon from './SvgIcon.jsx'
 
 const DEFAULT_WALLET = { balance: 1000.1, exposure: 0 }
 const DEFAULT_CURRENCY = 'BDT'
-const DEFAULT_CAPTCHA = { code: '1234' }
 
 function formatBalance(value) {
   return new Intl.NumberFormat('en-US', {
@@ -31,36 +37,30 @@ function formatExposure(value) {
   return value === 0 ? ex : `(${ex})`
 }
 
-export default function Header({
-  isShowHeader = true,
-  isAuthenticated: isAuthProp = true,
-  wallet = DEFAULT_WALLET,
-  currency = DEFAULT_CURRENCY,
-  logo = SITE_LOGO,
-  validationCode = DEFAULT_CAPTCHA,
-  isStreamAvailable = false,
-}) {
+export default function Header({ logo = SITE_LOGO, isStreamAvailable = false }) {
   const navigate = useNavigate()
   const location = useLocation()
   const isMob = useIsMobile()
 
-  const [isAuth, setIsAuth] = useState(isAuthProp)
+  // Auth-aware state, sourced from Redux (mirrors Angular signal services).
+  const isAuth = useSelector(selectIsAuthenticated)
+  const user = useSelector(selectUser)
+  const walletFromStore = useSelector(selectWallet)
+  const currencyFromStore = useSelector(selectCurrency)
+  const wallet = walletFromStore ?? DEFAULT_WALLET
+  const currency = currencyFromStore ?? user?.currency ?? DEFAULT_CURRENCY
+
   const [isBalanceRefresh, setIsBalanceRefresh] = useState(false)
   const [showBets, setShowBets] = useState(false)
   const [isPlayLiveStream, setIsPlayLiveStream] = useState(false)
   const [stakeOpen, setStakeOpen] = useState(false)
   const [stakeTarget, setStakeTarget] = useState(null)
-  const [loginForm, setLoginForm] = useState({
-    userName: '',
-    password: '',
-    code: '',
-  })
 
   const isAccountRoute = location.pathname.includes('my-account')
   const isOddsPage = location.pathname.includes('game-details')
 
   const showMobileBetsBtn = isAuth && isMob && !isAccountRoute
-  const showLogo = !isAuth || !isMob || isAccountRoute
+  const showLogo = !isMob || isAccountRoute
   const showSearch = !isMob && !isAccountRoute
   const balanceColumnLayout = !isMob || isAccountRoute
   const exposure = wallet?.exposure ?? 0
@@ -73,34 +73,17 @@ export default function Header({
   }
 
   const navigateToHome = () => navigate('/highlight')
-
   const openBetsClick = () => setShowBets(true)
-
   const toggleLiveStream = () => setIsPlayLiveStream((v) => !v)
-
-  const login = () => {
-    if (isMob) {
-      navigate('/auth/login')
-      return
-    }
-    if (validationCode?.code !== loginForm.code) return
-    setIsAuth(true)
-  }
-
-  const signUp = () => {
-    if (isMob) {
-      navigate('/auth/sign-up')
-      return
-    }
-  }
-
   const openMobileStake = (e) => {
     setStakeTarget(e.currentTarget)
     setStakeOpen(true)
   }
 
-  if (!isShowHeader) {
-    return !isMob ? <SubHeader isAuthenticated={isAuth} /> : null
+  // Hide the main header bar when not logged in (use DevAuthToggle to authenticate).
+  // The SubHeader stays visible on desktop in both states (mirrors Angular's layout).
+  if (!isAuth) {
+    return !isMob ? <SubHeader isAuthenticated={false} /> : null
   }
 
   return (
@@ -119,7 +102,7 @@ export default function Header({
         <div
           className={[
             'd-inline-flex align-items-center flex-sm-fill gap-2',
-            isAuth ? 'bet-btn-wrapper' : '',
+            'bet-btn-wrapper',
             showLiveTV ? 'open-live-TV' : '',
           ]
             .filter(Boolean)
@@ -176,131 +159,65 @@ export default function Header({
         </div>
 
         <div className="d-flex align-items-center justify-content-end balance-wrapper ms-auto me-0 gap-2 w-100">
-          {isAuth ? (
-            <>
-              <div className="balance-outer">
-                <div
-                  className={`balance d-flex ${!balanceColumnLayout ? ' flex-column' : ''}`}
-                >
-                  <div className="d-flex align-items-center justify-content-between counter">
-                    {isBalanceRefresh ? (
-                      <img
-                        src="/img/money-refresh.gif"
-                        alt="Refreshing balance"
-                      />
-                    ) : (
-                      <>
-                        <a
-                          className="d-md-flex align-items-center balance-main"
-                          href="#"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <p
-                            className={
-                              isMob ? 'd-flex justify-content-end' : ''
-                            }
-                          >
-                            <span className="label">
-                              {isMob ? 'Main' : 'Main Balance'}
-                            </span>
-                            <span className="value pe-1">
-                              {currency} {formatBalance(wallet?.balance ?? 0)}
-                            </span>
-                          </p>
-                          <p
-                            className={`exposure${isMob ? ' d-flex justify-content-end' : ''}`}
-                          >
-                            <span className="label">Exposure</span>
-                            <span className="value">
-                              {formatExposure(exposure)}
-                            </span>
-                          </p>
-                        </a>
-                        <span className="pluse-value">+1</span>
-                      </>
-                    )}
-                  </div>
-                  <span
-                    className="cursor-pointer dark-btn"
-                    onClick={refreshBalance}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => e.key === 'Enter' && refreshBalance()}
-                  >
-                    <SvgIcon name="refreshIcon" />
-                  </span>
-                  {isMob && isAuth && !isAccountRoute && (
-                    <div
-                      className="btn-dull setting-icon dark-btn"
-                      onClick={openMobileStake}
-                      role="button"
-                      tabIndex={0}
+          <div className="balance-outer">
+            <div
+              className={`balance d-flex ${!balanceColumnLayout ? ' flex-column' : ''}`}
+            >
+              <div className="d-flex align-items-center justify-content-between counter">
+                {isBalanceRefresh ? (
+                  <img
+                    src="/img/money-refresh.gif"
+                    alt="Refreshing balance"
+                  />
+                ) : (
+                  <>
+                    <a
+                      className="d-md-flex align-items-center balance-main"
+                      href="#"
+                      onClick={(e) => e.preventDefault()}
                     >
-                      <SvgIcon name="settingIcon" />
-                    </div>
-                  )}
-                </div>
+                      <p className={isMob ? 'd-flex justify-content-end' : ''}>
+                        <span className="label">
+                          {isMob ? 'Main' : 'Main Balance'}
+                        </span>
+                        <span className="value pe-1">
+                          {currency} {formatBalance(wallet?.balance ?? 0)}
+                        </span>
+                      </p>
+                      <p
+                        className={`exposure${isMob ? ' d-flex justify-content-end' : ''}`}
+                      >
+                        <span className="label">Exposure</span>
+                        <span className="value">{formatExposure(exposure)}</span>
+                      </p>
+                    </a>
+                    <span className="pluse-value">+1</span>
+                  </>
+                )}
               </div>
-
-              {showAccountPopup && !isMob && (
-                <MyAccountPopup isMobile={isMob} />
-              )}
-            </>
-          ) : (
-            <div className="d-inline-flex align-items-center gap-2 auth-btns">
-              {!isMob && (
-                <form
-                  className="header-inputes d-flex align-items-center justify-content-end gap-2"
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    login()
-                  }}
+              <span
+                className="cursor-pointer dark-btn"
+                onClick={refreshBalance}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && refreshBalance()}
+              >
+                <SvgIcon name="refreshIcon" />
+              </span>
+              {isMob && !isAccountRoute && (
+                <div
+                  className="btn-dull setting-icon dark-btn"
+                  onClick={openMobileStake}
+                  role="button"
+                  tabIndex={0}
                 >
-                  <SvgIcon name="userIcon" className="user-icon" />
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Username"
-                    value={loginForm.userName}
-                    onChange={(e) =>
-                      setLoginForm((f) => ({ ...f, userName: e.target.value }))
-                    }
-                  />
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="Password"
-                    value={loginForm.password}
-                    onChange={(e) =>
-                      setLoginForm((f) => ({ ...f, password: e.target.value }))
-                    }
-                  />
-                  <div className="position-relative validation-input">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Validation"
-                      maxLength={4}
-                      value={loginForm.code}
-                      onChange={(e) =>
-                        setLoginForm((f) => ({ ...f, code: e.target.value }))
-                      }
-                    />
-                    <span className="code">{validationCode?.code}</span>
-                  </div>
-                </form>
+                  <SvgIcon name="settingIcon" />
+                </div>
               )}
-              <button type="button" className="btn btn-red" onClick={login}>
-                {isMob && <SvgIcon name="login_user" className="me-1" />}
-                <span>Login</span>
-                {!isMob && <SvgIcon name="logInIcon" className="ms-1" />}
-              </button>
-              <button type="button" className="btn btn-yellow" onClick={signUp}>
-                <span>Sign Up</span>
-                <SvgIcon name="shareIcon" className="ms-1" />
-              </button>
             </div>
-          )}
+          </div>
+
+          {showAccountPopup && !isMob && <MyAccountPopup isMobile={isMob} />}
         </div>
       </header>
 
