@@ -76,6 +76,7 @@ const initialState = {
   registrationBonus: null,
   userLoginAllowDomains: [],
   isDomainConfigLoaded: false,
+  isDomainConfigLoading: false,
 }
 
 export const fetchDomainConfiguration = createAsyncThunk(
@@ -87,6 +88,14 @@ export const fetchDomainConfiguration = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message)
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const s = getState().common
+      if (s.isDomainConfigLoading) return false
+      if (s.isDomainConfigLoaded) return false
+      return true
+    },
   },
 )
 
@@ -156,6 +165,12 @@ const commonSlice = createSlice({
     },
   },
   extraReducers: (b) => {
+    b.addCase(fetchDomainConfiguration.pending, (s) => {
+      s.isDomainConfigLoading = true
+    })
+    b.addCase(fetchDomainConfiguration.rejected, (s) => {
+      s.isDomainConfigLoading = false
+    })
     b.addCase(fetchDomainConfiguration.fulfilled, (s, { payload }) => {
       const d = payload || {}
 
@@ -182,6 +197,7 @@ const commonSlice = createSlice({
         : []
 
       s.isDomainConfigLoaded = true
+      s.isDomainConfigLoading = false
     })
   },
 })

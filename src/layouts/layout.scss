@@ -1,92 +1,165 @@
-// .main-wrapper {
-//   .content {
-//     @media screen and (max-width: 767px) {
-//       margin-bottom: 23vw;
-//       margin-top: 14.66667vw;
-//     }
-//   }
-// }
+.header-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
 .main-wrapper {
-  // min-height: calc(100svh - 89px);
+  width: calc(100% - 40px);
+  position: relative;
+  margin: 0 auto;
+  margin-top: 105px;
   background-color: var(--xs-gray);
 
-  @media screen and (min-width: 768px) {
-    width: calc(100% - 40px);
-    position: relative;
-    max-width: 100%;
-    // min-width: 1349px;
-    margin: 0 auto;
+  @media screen and (min-width: 768px) and (max-width: 1440px) {
+    width: calc(100% - 25px);
   }
 
-  .sport-events {
-    background-color: var(--sport-events-bg);
-    color: var(--sport-events-color);
-    width: 17.36111%;
+  @media screen and (max-width: 767px) {
+    margin-top: 14.6666666667vw;
+    width: 100%;
+  }
+
+  .plateform-content {
+    padding-bottom: 70px;
+  }
+
+  &.no-header-wrapper {
+    margin-top: 31px;
+
+    @media screen and (max-width: 767px) {
+      margin-top: 0;
+    }
+
+    .middle-content {
+      overflow-y: auto;
+      height: calc(100svh - 31px);
+
+      .scroll-wrap {
+        max-height: calc(100svh - 31px);
+        overflow-y: auto;
+      }
+    }
+  }
+
+  .left-content {
     position: absolute;
     left: 0;
     top: 0;
-    bottom: 0;
-  }
+    width: 17.3611111111%;
+    height: calc(100vh - 105px);
+    background-color: var(--xl-black);
 
-  .mobile-router-outlet {
-    padding-bottom: 18vw;
+    &.light-sidebar {
+      background-color: var(--white);
 
-    @media screen and (max-height: 767px) {
-      padding-bottom: 14vw;
+      @media screen and (min-width: 768px) {
+        width: 16.329787234%;
+      }
     }
 
-    &.outlet-header {
-      padding-top: 14.7vw;
+    &.mcw-casino-sidebar {
+      background-color: var(--white);
     }
 
-    &.deposite-btn {
-      padding-top: 24.3vw;
+    @media screen and (max-width: 767px) {
+      height: calc(100vh - 14.6666666667vw);
     }
   }
 
   .middle-content {
-    background-color: var(--xs-gray);
     position: relative;
-    margin-left: 17.36111%;
-    margin-right: 26.04167%;
+    margin-left: 17.3611111111%;
+    margin-right: 26.0416666667%;
     padding: 0 15px;
-    // max-height: calc(100svh - 108px);
-    max-height: calc(100svh - 116px);
+    height: calc(100svh - 105px);
     overflow-y: auto;
+
+    &.yellow-theme {
+      @media screen and (min-width: 768px) {
+        margin-left: 16.361111%;
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      margin-left: 0;
+      margin-right: 0;
+      padding: 0;
+    }
+
+    &.mobile-router-outlet {
+      padding-bottom: 18vw;
+
+      @media screen and (max-height: 767px) {
+        padding-bottom: 14vw;
+      }
+
+      &.outlet-header {
+        padding-top: 14.7vw;
+      }
+
+      &.deposite-btn {
+        padding-top: 24.3vw;
+      }
+    }
+
+    .scroll-wrap {
+      min-height: calc(100vh - 148px);
+      overflow-y: auto;
+
+      @media screen and (max-width: 767px) {
+        min-height: unset;
+        max-height: unset;
+        overflow-y: visible;
+
+        &.yellow-theme {
+          max-height: unset;
+        }
+      }
+
+      &.show-one-click {
+        height: calc(100vh - 161px);
+      }
+
+      &.yellow-theme {
+        height: auto;
+      }
+    }
   }
 
-  .middle-content-right {
-    position: relative;
-    margin-right: 26.04167%;
-    // padding: 0 5px;
-    // max-height: calc(100svh - 108px);
-    max-height: calc(100svh - 105px);
-    overflow-y: auto;
-  }
-
-  .right-data {
+  .right-content {
     position: absolute;
-    background-color: var(--white);
     width: 26.04167%;
-    z-index: 9;
+    z-index: 8;
     right: 0;
     top: 0;
-    bottom: 0px;
+    bottom: 0;
+    background-color: var(--white);
+  }
+
+  .full-content {
+    width: 1350px !important;
+    margin: 0 auto !important;
+    padding: 0;
   }
 }
 
-:host-context(.mcv-yellow-theme) {
+.mcv-yellow-theme {
   .main-wrapper.auth {
     min-height: calc(100svh - 105px);
   }
 }
-:host-context(.yellow-theme) {
+
+.yellow-theme {
   .main-wrapper {
     &.auth {
       min-height: calc(100svh - 105px);
       width: 97.916666666%;
     }
-    .sport-events {
+
+    .left-content {
       background-color: var(--white);
       color: var(--menu-text-color);
     }

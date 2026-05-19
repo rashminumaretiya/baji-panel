@@ -11,6 +11,8 @@ const initialState = {
   sportTabsLoadedAt: 0,
 }
 
+const SPORT_LIVE_COUNT_TTL_MS = 60_000
+
 export const fetchSportLiveCount = createAsyncThunk(
   'header/fetchSportLiveCount',
   async (_, { rejectWithValue }) => {
@@ -20,6 +22,16 @@ export const fetchSportLiveCount = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message)
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const s = getState().header
+      if (s.isLoadingSportTabs) return false
+      if (s.sportTabsLoadedAt && Date.now() - s.sportTabsLoadedAt < SPORT_LIVE_COUNT_TTL_MS) {
+        return false
+      }
+      return true
+    },
   },
 )
 

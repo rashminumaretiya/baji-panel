@@ -2,13 +2,16 @@ import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { http } from '../../core/http/client.js'
 import { RACING_SPORTS, SPORT_TAB_EXCLUDE } from '../../core/constant/constants.js'
 
+const SIDEBAR_SPORTS_TTL_MS = 60_000
+
 const initialState = {
   sportTabs: [],
   tabsStatus: 'idle',
   tabsError: null,
   activeSportId: null,
-  sidebarSports: [], // List<SportItem> from layoutService.getSidebarData()
+  sidebarSports: [],
   sidebarLoading: false,
+  sidebarLoadedAt: 0,
   gamesById: {},
   pinned: [],
   pinnedStatus: 'idle',
@@ -23,6 +26,16 @@ export const fetchSidebarSports = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message)
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const s = getState().sport
+      if (s.sidebarLoading) return false
+      if (s.sidebarLoadedAt && Date.now() - s.sidebarLoadedAt < SIDEBAR_SPORTS_TTL_MS) {
+        return false
+      }
+      return true
+    },
   },
 )
 
@@ -111,6 +124,7 @@ const sportSlice = createSlice({
     b.addCase(fetchSidebarSports.fulfilled, (s, { payload }) => {
       s.sidebarSports = payload
       s.sidebarLoading = false
+      s.sidebarLoadedAt = Date.now()
     })
     b.addCase(fetchSidebarSports.rejected, (s) => {
       s.sidebarLoading = false

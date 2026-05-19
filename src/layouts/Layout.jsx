@@ -1,9 +1,12 @@
-import { useEffect, useMemo } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useMemo } from "react"
+import { useSelector } from "react-redux"
 import { Outlet, useLocation } from "react-router-dom"
-import { fetchSidebarSports } from "../store/slices/sportSlice"
-import { selectIsAuthenticated } from "../store/slices/authSlice"
-import { selectIsMobile } from "../store/slices/commonSlice"
+import { selectIsAuthenticated, selectIsOneClickBet } from "../store/slices/authSlice"
+import {
+  selectIsMcvYellowTheme,
+  selectIsMobile,
+  selectIsYellowTheme,
+} from "../store/slices/commonSlice"
 import { selectLayoutedRoutes } from "../store/slices/layoutSlice"
 import BetSlip from "../components/BetSlip"
 import DevAuthToggle from "../components/DevAuthToggle"
@@ -15,49 +18,70 @@ const cx = (...classes) => classes.filter(Boolean).join(' ')
 
 export default function Layout() {
   const { pathname } = useLocation()
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(fetchSidebarSports())
-  }, [dispatch])
 
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const isMobile = useSelector(selectIsMobile)
+  const isYellowTheme = useSelector(selectIsYellowTheme)
+  const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
+  const isOneClickBet = useSelector(selectIsOneClickBet)
   const layoutedRoutes = useSelector(selectLayoutedRoutes)
 
   const firstSegment = useMemo(() => pathname.split('/')[1] ?? '', [pathname])
+  const isAccountRoute = useMemo(
+    () => pathname.includes('/my-account'),
+    [pathname],
+  )
 
   const showSportSidebar = useMemo(() => {
     if (isMobile) return false
     return layoutedRoutes.includes(firstSegment) && firstSegment !== 'inplay'
   }, [isMobile, layoutedRoutes, firstSegment])
 
-  const showRightSidebar = useMemo(() => {
+  const showRightContent = !isMobile && !isAccountRoute
+
+    const showRightSidebar = useMemo(() => {
     if (isMobile) return false
     return layoutedRoutes.includes(firstSegment)
   }, [isMobile, layoutedRoutes, firstSegment])
+  
+  const mainWrapperClass = cx(
+    'main-wrapper',
+    isAuthenticated && 'auth',
+    !isAuthenticated && 'no-header-wrapper',
+  )
+  const leftContentClass = cx(
+    'left-content',
+    isYellowTheme && 'light-sidebar',
+    isMcwCasinoTheme && 'mcw-casino-sidebar',
+  )
+  const middleContentClass = cx(
+    'middle-content',
+    isYellowTheme && 'yellow-theme',
+    isMobile && 'mobile-router-outlet',
+  )
+  const scrollWrapClass = cx(
+    'scroll-wrap',
+    isOneClickBet && 'show-one-click',
+    isYellowTheme && 'yellow-theme',
+  )
 
   return (
     <div className="app-layout">
       <DevAuthToggle />
-      <Header />
 
-      <div className={cx('main-wrapper', isAuthenticated && 'auth')}>
-        <div className="content h-100">
-          {showSportSidebar && (
-            <div className="sport-events">
-              <SportsSidebar />
-            </div>
-          )}
+      <div className="header-wrapper">
+        <Header />
+      </div>
 
-          <div
-            className={cx(
-              'position-relative h-100',
-              showSportSidebar && 'middle-content',
-              showRightSidebar && !showSportSidebar && 'middle-content-right',
-              isMobile && 'mobile-router-outlet',
-            )}
-          >
+      <div className={mainWrapperClass}>
+        {showSportSidebar && (
+          <div className={leftContentClass}>
+            <SportsSidebar />
+          </div>
+        )}
+
+        <div className={middleContentClass}>
+          <div className={scrollWrapClass}>
             <Outlet />
           </div>
 
@@ -67,6 +91,8 @@ export default function Layout() {
             </div>
           )}
         </div>
+
+        {showRightContent && <div className="right-content" />}
       </div>
     </div>
   )

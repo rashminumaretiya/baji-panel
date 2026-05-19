@@ -1,299 +1,264 @@
-// Ported from sbex-user-fe/src/app/shared/components/sports-sidebar/sports-sidebar.html
-// Phase 2 TODO: full RACING_SPORTS list from core/constants.
-/* eslint-disable react-hooks/set-state-in-effect */
-import { useEffect, useMemo, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Fragment, useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import {
-  selectActiveSportId,
+  fetchSidebarSports,
   selectSidebarSports,
-  setActiveSportId,
 } from '../../../store/slices/sportSlice.js'
 import {
   selectIsMcvYellowTheme,
   selectIsYellowTheme,
 } from '../../../store/slices/commonSlice.js'
-import { RACING_SPORTS } from '../../../core/constant/constants.js'
+import { selectRacingListShow } from '../../../store/slices/headerSlice.js'
 import './sports-sidebar.scss'
+
+// Map sport names (as returned in event.sport) to i18n keys.
+const SPORT_LABEL_KEYS = {
+  Soccer: 'titles.games.soccer',
+  Cricket: 'titles.games.cricket',
+  Tennis: 'titles.games.tennis',
+  'E-Soccer': 'titles.games.esoccer',
+  ESoccer: 'titles.games.esoccer',
+  Kabaddi: 'titles.games.kabaddi',
+  Election: 'titles.games.election',
+  'Horse Racing': 'titles.games.horseRacing',
+  'Greyhound Racing': 'titles.games.greyhoundRacing',
+  Fancybet: 'titles.games.fancybet',
+}
 
 function cx(...cs) {
   return cs.filter(Boolean).join(' ')
 }
 
-function parseGameDetails(pathname) {
-  const m = pathname.match(/^\/game-details\/([^/]+)\/([^/]+)(?:\/([^/?]+))?/)
-  if (!m) return { sportId: null, eventId: null, marketId: null }
-  return { sportId: m[1] ?? null, eventId: m[2] ?? null, marketId: m[3] ?? null }
+// The /sport/all payload has no sport name at the top level — derive it from
+// the first event inside the bucket (every event in a bucket shares one sport).
+function readBucketSport(bucket) {
+  if (!bucket || typeof bucket !== 'object') return ''
+  if (typeof bucket.sport === 'string' && bucket.sport) return bucket.sport
+  if (typeof bucket.name === 'string' && bucket.name) return bucket.name
+  if (typeof bucket.label === 'string' && bucket.label) return bucket.label
+  const competitions = Array.isArray(bucket.competitions)
+    ? bucket.competitions
+    : []
+  for (const comp of competitions) {
+    const events = Array.isArray(comp?.events) ? comp.events : []
+    for (const evt of events) {
+      if (typeof evt?.sport === 'string' && evt.sport) return evt.sport
+    }
+  }
+  return ''
+}
+
+function readSportLabelKey(sportName) {
+  return SPORT_LABEL_KEYS[sportName] || ''
 }
 
 export default function SportsSidebar() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { pathname } = useLocation()
+
   const allSports = useSelector(selectSidebarSports)
-  const activeSportId = useSelector(selectActiveSportId)
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
+  const racingListShow = useSelector(selectRacingListShow)
 
-  const [displayedSportId, setDisplayedSportId] = useState(null)
-  const [selectedCompIndex, setSelectedCompIndex] = useState(null)
-  const [selectedEventIndex, setSelectedEventIndex] = useState(null)
-  const [activeMarketId, setActiveMarketId] = useState(null)
-  const [activeEventId, setActiveEventId] = useState(null)
-
-  const routeParams = useMemo(() => parseGameDetails(pathname), [pathname])
-  const isOnGameDetailsRoute = !!routeParams.sportId && !!routeParams.eventId
-
-  const activeSport = useMemo(
-    () => allSports.find((s) => s.value === displayedSportId) ?? null,
-    [allSports, displayedSportId],
-  )
-  const competitions = activeSport?.competitions ?? []
-  const events = selectedCompIndex !== null ? competitions[selectedCompIndex]?.events ?? [] : []
-  const markets =
-    selectedCompIndex !== null && selectedEventIndex !== null
-      ? competitions[selectedCompIndex]?.events[selectedEventIndex]?.markets ?? []
-      : []
-  const activeCompetition =
-    selectedCompIndex !== null ? competitions[selectedCompIndex] ?? null : null
-  const activeEvent =
-    selectedCompIndex !== null && selectedEventIndex !== null
-      ? competitions[selectedCompIndex]?.events[selectedEventIndex] ?? null
-      : null
-
-  const level = !displayedSportId
-    ? 'sports'
-    : selectedCompIndex === null
-      ? 'competitions'
-      : selectedEventIndex === null
-        ? 'events'
-        : 'markets'
-
-  const isGameDetailsView =
-    !!(routeParams.sportId && routeParams.eventId) &&
-    selectedCompIndex !== null &&
-    selectedEventIndex !== null
-
-  const isEventInPlay = (event) => event.markets?.some((m) => m.isInPlay)
+  const [sportsCompetition, setSportsCompetition] = useState([])
 
   useEffect(() => {
-    if (allSports.length === 0) return
-    const { sportId, eventId, marketId } = routeParams
-    if (!sportId || !eventId) {
-      setActiveEventId(null)
-      setActiveMarketId(null)
-      return
-    }
-    const sport = allSports.find((s) => s.value === sportId)
-    if (!sport) return
-    setActiveEventId(eventId)
-    setActiveMarketId(marketId ?? null)
-    let compIndex = null
-    let eventIndex = null
-    for (let ci = 0; ci < sport.competitions.length; ci++) {
-      const ei = sport.competitions[ci].events.findIndex((e) => e.id === eventId)
-      if (ei !== -1) {
-        compIndex = ci
-        eventIndex = ei
-        break
+    if (!allSports?.length) dispatch(fetchSidebarSports())
+  }, [dispatch, allSports?.length])
+
+  // Decorate each API bucket with its derived sport name + a stable index.
+  const buckets = useMemo(() => {
+    if (!Array.isArray(allSports)) return []
+    return allSports.map((bucket, index) => ({
+      ...bucket,
+      _index: index,
+      _sport: readBucketSport(bucket),
+    }))
+  }, [allSports])
+
+  // Filtered root list — hides racing buckets when the racing flags are off.
+  const sports = useMemo(() => {
+    return buckets.filter((b) => {
+      const sport = b._sport
+      if (sport === 'Horse Racing' && !racingListShow?.isHorseRacingAllowed) {
+        return false
       }
-    }
-    setDisplayedSportId(sportId)
-    setSelectedCompIndex(compIndex)
-    setSelectedEventIndex(eventIndex)
-  }, [routeParams, allSports])
+      if (
+        sport === 'Greyhound Racing' &&
+        !racingListShow?.isGreyhoundRacingAllowed
+      ) {
+        return false
+      }
+      return true
+    })
+  }, [buckets, racingListShow])
 
-  useEffect(() => {
-    if (routeParams.sportId) return
-    if (!activeSportId) {
-      setDisplayedSportId(null)
-      setSelectedCompIndex(null)
-      setSelectedEventIndex(null)
-      setActiveEventId(null)
-      setActiveMarketId(null)
-      return
-    }
-    const sport = allSports.find((s) => s.value === activeSportId)
-    if (!sport) return
-    setDisplayedSportId(activeSportId)
-    setSelectedCompIndex(null)
-    setSelectedEventIndex(null)
-    setActiveEventId(null)
-    setActiveMarketId(null)
-  }, [activeSportId, allSports, routeParams.sportId])
+  const showRoot = sportsCompetition.length === 0
 
-  const selectSport = (sport) => {
-    setDisplayedSportId(sport.value)
-    setSelectedCompIndex(null)
-    setSelectedEventIndex(null)
-    setActiveEventId(null)
-    setActiveMarketId(null)
-    dispatch(setActiveSportId(sport.value))
+  function setDefaultSports() {
+    setSportsCompetition([])
   }
-  const goToAllSports = () => dispatch(setActiveSportId(null))
-  const goBackToCompetitions = () => {
-    setSelectedCompIndex(null)
-    setSelectedEventIndex(null)
-  }
-  const goBackToEvents = () => setSelectedEventIndex(null)
-  const selectCompetition = (_c, i) => {
-    setSelectedCompIndex(i)
-    setSelectedEventIndex(null)
-  }
-  const selectEvent = (_e, i) => setSelectedEventIndex(i)
 
-  const navigateToMarket = (market) => {
-    if (!displayedSportId || selectedCompIndex === null || selectedEventIndex === null) return
-    const sport = activeSport
-    const event = competitions[selectedCompIndex]?.events[selectedEventIndex]
-    if (!sport || !event) return
-    const path = ['/game-details', sport.value, event.id]
-    if (RACING_SPORTS.has(sport.value)) {
-      if (!market.marketId) return
-      path.push(market.marketId)
-    }
-    navigate(path.join('/'))
+  function getEventsBySport(bucketIndex) {
+    const bucket = buckets[bucketIndex]
+    if (!bucket) return
+    const sportName = bucket._sport
+    const labelKey = readSportLabelKey(sportName)
+    setSportsCompetition([
+      { label: 'All Sports', click: setDefaultSports },
+      {
+        label: labelKey || sportName || 'Sport',
+        fallback: sportName || 'Sport',
+        classList: 'title active',
+        click: () => getEventsBySport(bucketIndex),
+      },
+      {
+        label: 'Common',
+        classList: 'sub-title',
+        competitions: bucket.competitions ?? [],
+      },
+    ])
+  }
+
+  function getEventsByCompetition(c) {
+    setSportsCompetition((prev) => {
+      const next = [...prev]
+      if (next[1]) next[1] = { ...next[1], classList: 'title' }
+      next[2] = {
+        label: c?.name || c?.competition?.name || '',
+        classList: 'active',
+        events: c?.events ?? [],
+        isEvent: true,
+      }
+      return next
+    })
+  }
+
+  function getMatchOdds(event) {
+    setSportsCompetition((prev) => {
+      const next = [...prev]
+      next[2] = {
+        label: event?.name || '',
+        classList: 'active',
+        event,
+        events: [{ name: 'Match Odds', classList: 'match-odds' }],
+      }
+      return next
+    })
+  }
+
+  function navigateToOddsPage(event) {
+    setSportsCompetition((prev) => {
+      const next = [...prev]
+      if (next[2]?.events?.[0]) {
+        next[2] = {
+          ...next[2],
+          events: [{ ...next[2].events[0], classList: 'match-odds active' }],
+        }
+      }
+      return next
+    })
+    if (!event?.id) return
+    const sportSlug = (event.sport ?? '').toLowerCase()
+    navigate(`/odds/${event.id}/${sportSlug}`)
   }
 
   const wrapperClass = cx(
-    'sports-sidebar',
-    isOnGameDetailsRoute && 'is-game-details',
+    'sidebar-wrapper',
     isYellowTheme && 'yellow-theme',
-    isMcwCasinoTheme && 'mcw-theme',
+    isMcwCasinoTheme && 'mcw-theme'
   )
   const eventsClass = cx(
-    'events ps-0',
+    'events mb-0 ps-0',
     isYellowTheme && 'light-sidebar',
-    isMcwCasinoTheme && 'mcw-sidebar',
+    isMcwCasinoTheme && 'mcw-sidebar'
   )
 
   return (
     <div className="app-sports-sidebar">
       <div className={wrapperClass}>
-        <div className="body">
-          <ul className={eventsClass}>
-            {isGameDetailsView ? (
-              <>
-                <li className="section-header"><span>{t('common.sports')}</span></li>
-                <li className="cursor-pointer" onClick={goToAllSports}>
-                  <span>{t('common.allSports')}</span>
+        <ul className={eventsClass}>
+          <li className="active-sport">{t('common.sports')}</li>
+
+          {showRoot &&
+            sports.map((bucket) => {
+              const sportName = bucket._sport
+              const labelKey = readSportLabelKey(sportName)
+              return (
+                <li
+                  key={`sport-${bucket._index}`}
+                  className="cursor-pointer"
+                  onClick={() => getEventsBySport(bucket._index)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) =>
+                    e.key === 'Enter' && getEventsBySport(bucket._index)
+                  }
+                >
+                  {t(labelKey, sportName || 'Sport')}
                 </li>
-                <li className="active-sport"><span>{activeSport?.label}</span></li>
-                <li><span>{activeCompetition?.name}</span></li>
-                <li className="nav-active-event"><span>{activeEvent?.name}</span></li>
-                {markets.length === 0 ? (
-                  <li className="d-flex justify-content-center">
-                    <span>{t('common.noMarketFound')}</span>
-                  </li>
-                ) : (
-                  markets.map((market) => (
-                    <li
-                      key={market.marketId}
-                      className={[
-                        'cursor-pointer match-odds d-flex align-items-center position-relative',
-                        !market.isInPlay && 'not-in-play',
-                        market.marketId === activeMarketId && 'active',
-                      ].filter(Boolean).join(' ')}
-                      onClick={() => navigateToMarket(market)}
-                    >
-                      <span>{market.marketName}</span>
-                    </li>
-                  ))
-                )}
-              </>
-            ) : level === 'sports' ? (
-              <>
-                <li className="section-header"><span>{t('common.sports')}</span></li>
-                {allSports.map((sport) => (
+              )
+            })}
+
+          {sportsCompetition.map((sc, idx) => {
+            const isInPlay = !!sc?.event?.isInPlay
+            return (
+              <Fragment key={`sc-${idx}`}>
+                <li
+                  className={cx('cursor-pointer', sc.classList)}
+                  onClick={() => sc.click?.()}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && sc.click?.()}
+                >
+                  {t(sc.label, sc.fallback ?? sc.label)}
+                </li>
+
+                {sc.competitions?.map((c, cidx) => (
                   <li
-                    key={sport.value}
-                    className="cursor-pointer"
-                    onClick={() => selectSport(sport)}
+                    key={`c-${idx}-${cidx}`}
+                    className={cx('cursor-pointer', c.classList)}
+                    onClick={() => getEventsByCompetition(c)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) =>
+                      e.key === 'Enter' && getEventsByCompetition(c)
+                    }
                   >
-                    <span>{sport.label}</span>
+                    {c?.name || c?.competition?.name}
                   </li>
                 ))}
-              </>
-            ) : level === 'competitions' ? (
-              <>
-                <li className="section-header"><span>{t('common.sports')}</span></li>
-                <li className="cursor-pointer" onClick={goToAllSports}>
-                  <span>{t('common.allSports')}</span>
-                </li>
-                <li className="active-sport"><span>{activeSport?.label}</span></li>
-                {competitions.map((comp, i) => (
-                  <li
-                    key={i}
-                    className="cursor-pointer"
-                    onClick={() => selectCompetition(comp, i)}
-                  >
-                    <span>{comp.name}</span>
-                  </li>
-                ))}
-              </>
-            ) : level === 'events' ? (
-              <>
-                <li className="section-header"><span>{t('common.sports')}</span></li>
-                <li className="cursor-pointer" onClick={goToAllSports}>
-                  <span>{t('common.allSports')}</span>
-                </li>
-                <li className="cursor-pointer" onClick={goBackToCompetitions}>
-                  <span>{activeSport?.label}</span>
-                </li>
-                {events.length === 0 ? (
-                  <li className="d-flex justify-content-center">
-                    <span>{t('common.noEventsFound')}</span>
-                  </li>
-                ) : (
-                  events.map((event, i) => (
+
+                {sc.events?.map((event, eidx) => {
+                  const onActivate = () =>
+                    sc.isEvent
+                      ? getMatchOdds(event)
+                      : navigateToOddsPage(sc.event)
+                  return (
                     <li
-                      key={event.id}
-                      className={[
+                      key={`e-${idx}-${eidx}`}
+                      className={cx(
                         'cursor-pointer',
-                        event.id === activeEventId && 'active',
-                        !isEventInPlay(event) && 'not-in-play',
-                      ].filter(Boolean).join(' ')}
-                      onClick={() => selectEvent(event, i)}
+                        event.classList,
+                        isInPlay && 'in-play'
+                      )}
+                      onClick={onActivate}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => e.key === 'Enter' && onActivate()}
                     >
-                      <span>{event.name}</span>
+                      {event.name}
                     </li>
-                  ))
-                )}
-              </>
-            ) : (
-              <>
-                <li className="section-header"><span>{t('common.sports')}</span></li>
-                <li className="cursor-pointer" onClick={goToAllSports}>
-                  <span>{t('common.allSports')}</span>
-                </li>
-                <li className="cursor-pointer" onClick={goBackToEvents}>
-                  <span>{activeSport?.label}</span>
-                </li>
-                {markets.length === 0 ? (
-                  <li className="d-flex justify-content-center">
-                    <span>{t('common.noMarketFound')}</span>
-                  </li>
-                ) : (
-                  markets.map((market) => (
-                    <li
-                      key={market.marketName}
-                      className={[
-                        'cursor-pointer match-odds d-flex align-items-center position-relative',
-                        !market.isInPlay && 'not-in-play',
-                        market.marketId === activeMarketId && 'active',
-                      ].filter(Boolean).join(' ')}
-                      onClick={() => navigateToMarket(market)}
-                    >
-                      <span>{market.marketName}</span>
-                    </li>
-                  ))
-                )}
-              </>
-            )}
-          </ul>
-        </div>
+                  )
+                })}
+              </Fragment>
+            )
+          })}
+        </ul>
       </div>
     </div>
   )
