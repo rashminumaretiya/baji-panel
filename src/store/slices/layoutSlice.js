@@ -33,7 +33,16 @@ function normalizeBanners(d) {
 }
 
 const initialState = {
-  layoutedRoutes: ['', 'inplay', 'game-details', 'sports', 'cricket', 'soccer', 'tennis'],
+  layoutedRoutes: [
+    '',
+    'inplay',
+    'odds',
+    'racing-odds',
+    'sports',
+    'cricket',
+    'soccer',
+    'tennis',
+  ],
   domainConfig: null,
   banners: emptyBanners(),
   footerData: null,

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -126,8 +125,10 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
     setStakeOpen(true)
   }
 
+  const showSubHeader = !isMob
+
   if (!isAuth) {
-    return !isMob ? <SubHeader /> : null
+    return showSubHeader ? <SubHeader /> : null
   }
 
   return (
@@ -290,7 +291,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
         </Popover>
       </Overlay>
 
-      {!isMob && <SubHeader />}
+      {showSubHeader && <SubHeader />}
     </div>
   )
 }

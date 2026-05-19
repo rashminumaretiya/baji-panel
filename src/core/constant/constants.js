@@ -42,6 +42,22 @@ export function getSportName(sportId) {
   return SPORTS.find((s) => s.id === String(sportId))?.name || 'Sport'
 }
 
+// URL-friendly slug for a sport (e.g. 'cricket', 'horse-racing').
+export function getSportSlug(sportId) {
+  const name = SPORTS.find((s) => s.id === String(sportId))?.name
+  if (!name) return ''
+  return name.toLowerCase().replace(/\s+/g, '-')
+}
+
+// Reverse lookup: 'cricket' → '4', 'horse-racing' → '7'.
+export function getSportIdFromSlug(slug) {
+  if (!slug) return null
+  const normalized = String(slug).toLowerCase().replace(/-/g, ' ')
+  return (
+    SPORTS.find((s) => s.name.toLowerCase() === normalized)?.id || null
+  )
+}
+
 export function isRacingSport(sportId) {
   return sportId ? RACING_SPORTS.has(String(sportId)) : false
 }

@@ -204,7 +204,6 @@ const SubHeaderTab = function SubHeaderTab({
       role="button"
       tabIndex={0}
     >
-      {page.icon ? <SvgIcon name={page.icon} /> : null}
       {label}
       {showLiveChip && (
         <div className="live-chip">

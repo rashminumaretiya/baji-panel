@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import LiveStream from '../components/GameDetails/LiveStream.jsx'
 import PinRefresh from '../components/GameDetails/PinRefresh.jsx'
@@ -13,14 +13,24 @@ import {
   mergeOddsData,
   normalizeMatchOdds,
 } from '../core/utility/market.util.js'
+import {
+  clearSparkFlags,
+  diffMatchOddsForSpark,
+} from '../core/utility/odds.util.js'
 import { emitSocket, listenSocket, onReconnect } from '../core/socket/client.js'
 import { SOCKET_EVENTS } from '../core/socket/events.js'
-import { getSportName } from '../core/constant/constants.js'
+import {
+  getSportIdFromSlug,
+  getSportName,
+} from '../core/constant/constants.js'
+import './game-details.scss'
 
 const EMPTY_EXPOSURE_MAP = new Map()
+const SPARK_TTL_MS = 750
 
 export default function GameDetails() {
-  const { sportId, eventId } = useParams()
+  const { eventId, sport: sportSlug } = useParams()
+  const sportId = getSportIdFromSlug(sportSlug)
   const isMobile = useIsMobile()
 
   const [rawMarketsData, setRawMarketsData] = useState(DEFAULT_MARKET_ODDS)
@@ -29,6 +39,41 @@ export default function GameDetails() {
   const [scoreIframeUrl, setScoreIframeUrl] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+
+  // Keyed by marketId so spark detection survives across socket pushes for
+  // each match-odds market independently.
+  const previousMatchOddsRef = useRef(new Map())
+  const sparkClearTimerRef = useRef(null)
+
+  const processMatchOddsList = useCallback((incoming) => {
+    if (!Array.isArray(incoming)) return []
+    const prevMap = previousMatchOddsRef.current
+    const out = incoming.map((market) => {
+      const prev = prevMap.get(market?.marketId)
+      const sparked = diffMatchOddsForSpark(market, prev)
+      prevMap.set(market?.marketId, sparked)
+      return sparked
+    })
+    if (sparkClearTimerRef.current) {
+      clearTimeout(sparkClearTimerRef.current)
+    }
+    sparkClearTimerRef.current = setTimeout(() => {
+      setRawMarketsData((prev) => ({
+        ...prev,
+        match_odds: (prev.match_odds || []).map((m) => clearSparkFlags(m)),
+      }))
+    }, SPARK_TTL_MS)
+    return out
+  }, [])
+
+  useEffect(() => {
+    const sparkTimerRef = sparkClearTimerRef
+    const prevOddsRef = previousMatchOddsRef
+    return () => {
+      if (sparkTimerRef.current) clearTimeout(sparkTimerRef.current)
+      prevOddsRef.current.clear()
+    }
+  }, [])
 
   const loadDefaultOdds = useCallback(
     async (signal) => {
@@ -42,8 +87,9 @@ export default function GameDetails() {
           { signal }
         )
         const payload = response?.data?.data ?? response?.data ?? {}
+        previousMatchOddsRef.current.clear()
         setRawMarketsData({
-          match_odds: payload.match_odds ?? [],
+          match_odds: processMatchOddsList(payload.match_odds ?? []),
           bookmaker: payload.bookmaker ?? [],
           fancy: payload.fancy ?? [],
           sportBook: payload.sportBook ?? [],
@@ -59,7 +105,7 @@ export default function GameDetails() {
         setLoading(false)
       }
     },
-    [sportId, eventId]
+    [sportId, eventId, processMatchOddsList]
   )
 
   useEffect(() => {
@@ -82,12 +128,17 @@ export default function GameDetails() {
 
     const offMatchOdds = listenSocket(SOCKET_EVENTS.MARKET_ODDS, (odds) => {
       if (!odds) return
-      setRawMarketsData((prev) => mergeOddsData(prev, { match_odds: odds }))
+      const processed = processMatchOddsList(
+        Array.isArray(odds) ? odds : [odds],
+      )
+      setRawMarketsData((prev) =>
+        mergeOddsData(prev, { match_odds: processed }),
+      )
     })
     const offFancyBm = listenSocket(SOCKET_EVENTS.FANCY_BM_ODDS, (odds) => {
       if (!odds) return
       setRawMarketsData((prev) =>
-        mergeOddsData(prev, { bookmaker: odds.bookmaker, fancy: odds.fancy })
+        mergeOddsData(prev, { bookmaker: odds.bookmaker, fancy: odds.fancy }),
       )
     })
     const offPremium = listenSocket(
@@ -149,7 +200,7 @@ export default function GameDetails() {
       offAdmin?.()
       offReconnect?.()
     }
-  }, [sportId, eventId])
+  }, [sportId, eventId, processMatchOddsList])
 
   const matchOddsArray = useMemo(
     () => normalizeMatchOdds(rawMarketsData.match_odds),
@@ -245,33 +296,58 @@ export default function GameDetails() {
     )
   }
 
+  const hasLiveStream = !!liveStreamUrl
+  const hasScoreboard = !!scoreIframeUrl
+  const mobileOddsWrapperOn = isMobile && hasLiveStream
+  const scoreSectionClass =
+    mobileOddsWrapperOn ? 'mobile-odds-wrapper' : undefined
+
   return (
     <div className="live-odds-wrapper mt-md-1">
-      <LiveStream
-        liveStreamUrl={liveStreamUrl}
-        scoreIframeUrl={scoreIframeUrl}
-      />
-
-      {isMobile && (
-        <div className="d-flex justify-content-between align-items-center p-1 inplay-live-box">
-          <h6 className="mb-0 p-1 fs-14 text-capitalize">
-            {getSportName(sportId)}
-          </h6>
-          {isInplay && (
-            <span className="inplay">
-              <i className="time" />
-              <span className="d-inline-block align-middle fs-14">
-                {' '}
-                In-Play
-              </span>
-            </span>
-          )}
+      {/* Top-of-page live streaming (mobile) */}
+      {isMobile && hasLiveStream && (
+        <div className="mobile-live-streaming">
+          <LiveStream
+            liveStreamUrl={liveStreamUrl}
+            scoreIframeUrl={null}
+          />
         </div>
       )}
 
-      <PinRefresh onRefresh={refreshMarkets} />
+      {/* Score iframe + pin/refresh — mirrors Angular's mobile-odds-wrapper section */}
+      <div className={scoreSectionClass}>
+        {isMobile && (
+          <div className="blue-header score-game-header d-flex justify-content-between">
+            <span className="text-capitalize">{getSportName(sportId)}</span>
+            {isInplay && (
+              <div className="d-inline-flex align-items-center">
+                <i className="time-icon time" aria-hidden="true" />
+                <small>In-Play</small>
+              </div>
+            )}
+          </div>
+        )}
+
+        {hasScoreboard && (
+          <LiveStream
+            liveStreamUrl={null}
+            scoreIframeUrl={scoreIframeUrl}
+          />
+        )}
+
+        <PinRefresh onRefresh={refreshMarkets} />
+      </div>
 
       <div className="odds-wrapper d-flex flex-column gap-3">
+        {/* Desktop live stream lives inside the match-odds section (parity with
+            Angular's `@if (!isMobile() && isAuthenticatedUser())` block). */}
+        {!isMobile && hasLiveStream && (
+          <LiveStream
+            liveStreamUrl={liveStreamUrl}
+            scoreIframeUrl={null}
+          />
+        )}
+
         {visibleMarkets.match_odds &&
           matchOddsArray.map((odds) => (
             <MatchOddMarket

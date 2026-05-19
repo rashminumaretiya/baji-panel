@@ -7,9 +7,10 @@ import NoData from '../../shared/NoData.jsx'
 import SvgIcon from '../SvgIcon.jsx'
 import { useIsMobile } from '../../hooks/useMediaQuery.js'
 import {
-  RACING_SPORTS,
-  PINNABLE_SPORT_IDS,
   GAME_LIST_FILTERS,
+  PINNABLE_SPORT_IDS,
+  RACING_SPORTS,
+  getSportSlug,
 } from '../../core/constant/constants.js'
 import { selectIsAuthenticated } from '../../store/slices/authSlice.js'
 import './game-list.scss'
@@ -207,12 +208,13 @@ export default function GameList({
     const sportId = game?.sportId
     const id = game?.id
     if (!sportId || !id) return
-    const path = ['/game-details', sportId, id]
+    const slug = getSportSlug(sportId)
     if (isRacingSport) {
       if (!market?.marketId) return
-      path.push(market.marketId)
+      navigate(`/racing-odds/${id}/${market.marketId}/${slug}`)
+      return
     }
-    navigate(path.join('/'))
+    navigate(`/odds/${id}/${slug}`)
   }
 
   function handlePinClick(e, game) {

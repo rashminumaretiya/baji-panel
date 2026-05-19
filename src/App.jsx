@@ -47,7 +47,7 @@ function App() {
           }
         />
         <Route
-          path="game-details/:sportId/:eventId"
+          path="odds/:eventId/:sport"
           element={<GameDetails />}
         />
         <Route path="soccer" element={<Soccer />} />

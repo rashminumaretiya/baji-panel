@@ -63,7 +63,7 @@ export default function MatchOddMarket({
     isPriceGreaterThanOdd(odd?.price)
 
   return (
-    <div style={{ marginBottom: '30px' }}>
+    <div className="match-odds-wrapper">
       <div className="market-type d-flex justify-content-between position-relative">
         <div className="d-flex align-items-center">
           <span className="match-odds-tab">
@@ -109,47 +109,35 @@ export default function MatchOddMarket({
             </span>
           )}
         </div>
+        {/* CENTER: min/max odds chip */}
         <div className="d-md-flex d-none text-black min-max-odds">
-          <p className="mb-0">
-            Min
-            <small className="me-1">{marketSetting.min}</small>
-          </p>
-          <p className="mb-0">
-            Max
-            <small>{marketSetting.max}</small>
+          <p className="mb-0">Min/ Max</p>
+          <p className="mb-0 ms-1">
+            <small>
+              {formatNumber(marketSetting.min || 1)} /{' '}
+              {formatNumber(marketSetting.max || 100)}
+            </small>
           </p>
         </div>
+
+        {/* RIGHT: matched volume + Live TV toggle */}
         <div className="d-md-flex d-none align-items-center">
-          {isAuthenticated && isStreamAvailable && matchOdds.inplay && (
-            <button
-              type="button"
-              className={`live-btn me-2${isPlaying ? ' playing' : ''}`}
-              onClick={() => setIsPlaying((v) => !v)}
-            >
-              <i>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 21 19"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M4 0h13a4 4 0 0 1 4 4v9a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4zm3 17h7v2H7v-2zM4 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H4zm11 6.024L8 12V4l7 4.024z"
-                  />
-                </svg>
-              </i>
-              Live
-            </button>
-          )}
           <div className="matched d-flex">
             <p className="m-0">Matched</p>
-            <span className="ms-1 fw-bolder"> PBU </span>
-            <span className="ms-1 me-2 fw-bolder">
+            <span className="ms-1"> PBU </span>
+            <span className="ms-1 me-2">
               {formatNumber(matchOdds.totalMatched || 0)}
             </span>
           </div>
+          {isAuthenticated && isStreamAvailable && matchOdds.inplay && (
+            <button
+              type="button"
+              className={`btn btn-live${isPlaying ? ' btn-live-close' : ''}`}
+              onClick={() => setIsPlaying((v) => !v)}
+            >
+              Live
+            </button>
+          )}
         </div>
       </div>
 
@@ -277,10 +265,14 @@ export default function MatchOddMarket({
                   {backIndexes.map((i) => {
                     const odd = runner.ex?.availableToBack?.[i] || defaultOdd
                     const bgLine = isOddBgLine(odd)
-                    const cls =
-                      'cursor-pointer price ' +
-                      (i === 0 ? 'back' : `back${i}`) +
-                      (bgLine ? ' bg-line' : '')
+                    const cls = [
+                      'cursor-pointer price',
+                      i === 0 ? 'back' : `back${i}`,
+                      bgLine && 'bg-line',
+                      odd.isChanged && 'back-spark',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')
                     return (
                       <td key={`back-${i}`} className={cls}>
                         <p className="m-0">{odd.price}</p>
@@ -292,10 +284,14 @@ export default function MatchOddMarket({
                   {layIndexes.map((i) => {
                     const odd = runner.ex?.availableToLay?.[i] || defaultOdd
                     const bgLine = isOddBgLine(odd)
-                    const cls =
-                      'cursor-pointer suspend-hover price ' +
-                      (i === 0 ? 'lay' : `lay${i}`) +
-                      (bgLine ? ' bg-line' : '')
+                    const cls = [
+                      'cursor-pointer suspend-hover price',
+                      i === 0 ? 'lay' : `lay${i}`,
+                      bgLine && 'bg-line',
+                      odd.isChanged && 'lay-spark',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')
                     return (
                       <td key={`lay-${i}`} className={cls}>
                         <p className="m-0">{odd.price}</p>

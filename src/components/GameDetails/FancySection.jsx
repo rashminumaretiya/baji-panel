@@ -32,7 +32,7 @@ export default function FancySection({
   if (!v.fancy && !v.sportBook) return null
 
   return (
-    <div>
+    <div className="fancy-bet-wrapper">
       <FancyTabHeader tabs={tabs} selectedTab={selectedTab} onSelectedTabChange={setRequestedTab} />
 
       {selectedTab === 'fancyBet' && (

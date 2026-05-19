@@ -45,7 +45,7 @@ export default function BookmakerMarket({
   }
 
   return (
-    <div className="bookmaker-market">
+    <div className="bookmaker-wrapper bookmaker-market">
       <div className="match-header">
         <div className="d-flex align-items-center justify-content-center">
           <span className="icon-wrapper">

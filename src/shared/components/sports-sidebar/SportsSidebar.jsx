@@ -179,7 +179,7 @@ export default function SportsSidebar() {
   )
 
   return (
-    <div className="app-sports-sidebar">
+
       <div className={wrapperClass}>
         <ul className={eventsClass}>
           <li className="active-sport">{t('common.sports')}</li>
@@ -260,6 +260,6 @@ export default function SportsSidebar() {
           })}
         </ul>
       </div>
-    </div>
+
   )
 }
