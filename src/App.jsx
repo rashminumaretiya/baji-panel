@@ -1,48 +1,36 @@
-import { NavLink, Route, Routes } from 'react-router-dom'
-import About from './pages/About.jsx'
-import Home from './pages/Home.jsx'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import MainLayout from './layouts/MainLayout.jsx'
+import ResultLayout from './layouts/ResultLayout.jsx'
+import Cricket from './pages/Cricket.jsx'
+import Highlights from './pages/Highlights.jsx'
+import InPlay from './pages/InPlay.jsx'
+import IplWinner from './pages/IplWinner.jsx'
+import MultiMarkets from './pages/MultiMarkets.jsx'
+import Result from './pages/Result.jsx'
+import Soccer from './pages/Soccer.jsx'
+import Tennis from './pages/Tennis.jsx'
 
 function App() {
   return (
-    <div className="min-h-dvh bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-      <header className="border-b border-slate-200 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
-        <nav className="mx-auto flex max-w-2xl gap-4 px-6 py-3">
-          <NavLink
-            to="/"
-            end
-            className={({ isActive }) =>
-              [
-                'text-sm font-medium',
-                isActive
-                  ? 'text-violet-600 dark:text-violet-400'
-                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100',
-              ].join(' ')
-            }
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/about"
-            className={({ isActive }) =>
-              [
-                'text-sm font-medium',
-                isActive
-                  ? 'text-violet-600 dark:text-violet-400'
-                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100',
-              ].join(' ')
-            }
-          >
-            About
-          </NavLink>
-        </nav>
-      </header>
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-        </Routes>
-      </main>
-    </div>
+    <Routes>
+      <Route path="/" element={<Navigate to="/highlight" replace />} />
+
+      <Route element={<MainLayout />}>
+        <Route path="/highlight" element={<Highlights />} />
+        <Route path="/cricket" element={<Cricket />} />
+        <Route path="/soccer" element={<Soccer />} />
+        <Route path="/tennis" element={<Tennis />} />
+      </Route>
+
+      <Route element={<ResultLayout />}>
+        <Route path="/in-play" element={<InPlay />} />
+        <Route path="/multi-markets" element={<MultiMarkets />} />
+        <Route path="/ipl-winner" element={<IplWinner />} />
+        <Route path="/result" element={<Result />} />
+      </Route>
+
+      <Route path="*" element={<Navigate to="/highlight" replace />} />
+    </Routes>
   )
 }
 
