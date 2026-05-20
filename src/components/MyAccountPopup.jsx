@@ -9,9 +9,19 @@ const SITE_LOGO =
 
 const MENU_ITEMS = [
   { label: 'My Profile', path: '/my-account/profile' },
+  { label: ' Balance Overview ', path: '/my-account/statement' },
   { label: 'Account Statement', path: '/my-account/statement' },
-  { label: 'Bet History', path: '/my-account/bets' },
-  { label: 'Profit & Loss', path: '/my-account/pnl' },
+  { label: 'My Bet', path: '/my-account/bets' },
+  { label: ' Bets History ', path: '/my-account/pnl' },
+  { label: ' Profit & Loss ', path: '/my-account/pnl' },
+  { label: 'Activity Log', path: '/my-account/pnl' },
+  { label: 'Bets Complaints ', path: '/my-account/pnl' },
+  { label: 'Deposit', path: '/my-account/pnl' },
+  { label: 'Deposit History ', path: '/my-account/pnl' },
+  { label: 'Withdraw ', path: '/my-account/pnl' },
+  { label: 'Withdraw History ', path: '/my-account/pnl' },
+  { label: 'Transaction Logs ', path: '/my-account/pnl' },
+  { label: 'My Referral', path: '/my-account/pnl' },
 ]
 
 export default function MyAccountPopup({
@@ -33,14 +43,12 @@ export default function MyAccountPopup({
         <p className="timezone mb-0">GMT +5:30</p>
       </div>
       <ul className="list-unstyled mb-0">
-        <li className="d-flex flex-row align-items-center social-icons py-2">
+        <li className="d-flex flex-row align-items-center social-icons">
           <span className="w-nowrap">Upline Contact:</span>
           <div className="d-flex ms-2 overflow-x-auto" />
         </li>
         {MENU_ITEMS.map((item) => (
-          <li key={item.path} className="py-1 cursor-pointer">
-            {item.label}
-          </li>
+          <li key={item.path}>{item.label}</li>
         ))}
       </ul>
     </div>
@@ -66,7 +74,11 @@ export default function MyAccountPopup({
         rootClose
         onHide={() => setShow(false)}
       >
-        <Popover id="my-account-popover" className="my-account-popup">
+        <Popover
+          id="my-account-popover"
+          className="my-account-popup"
+          arrowProps={{ style: { display: 'none' } }}
+        >
           <Popover.Body>{popoverContent}</Popover.Body>
         </Popover>
       </Overlay>

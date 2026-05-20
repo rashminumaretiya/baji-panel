@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Overlay, Popover } from 'react-bootstrap'
 import SvgIcon from './SvgIcon.jsx'
 import Stake from './Stake.jsx'
@@ -17,7 +17,16 @@ const PAGES = [
   { label: 'Result', url: '/result' },
 ]
 
+function isTabActive(pathname, url) {
+  if (url === '/highlight') {
+    return pathname === '/highlight' || pathname === '/'
+  }
+  return pathname === url
+}
+
 export default function SubHeader({ isAuthenticated = true, isYellowTheme = false }) {
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
   const [oneClickBet, setOneClickBet] = useState(false)
   const [stakeOpen, setStakeOpen] = useState(false)
   const [stakeTarget, setStakeTarget] = useState(null)
@@ -33,20 +42,21 @@ export default function SubHeader({ isAuthenticated = true, isYellowTheme = fals
       <div className="d-flex align-items-center tabs-header">
         <ul>
           {PAGES.filter((p) => !p.isHidden).map((page) => (
-            <li key={page.url}>
-              <NavLink
-                to={page.url}
-                end={page.url === '/highlight'}
-                className={({ isActive }) => (isActive ? 'active' : '')}
-              >
-                {page.label}
-                {page.isCount && isAuthenticated && (
-                  <div className="live-chip">
-                    <div className="icon-out" />
-                    <p className="number">{page.count}</p>
-                  </div>
-                )}
-              </NavLink>
+            <li
+              key={page.url}
+              className={isTabActive(pathname, page.url) ? 'active' : ''}
+              onClick={() => navigate(page.url)}
+              onKeyDown={(e) => e.key === 'Enter' && navigate(page.url)}
+              role="button"
+              tabIndex={0}
+            >
+              {page.label}
+              {page.isCount && isAuthenticated && (
+                <div className="live-chip">
+                  <div className="icon-out" />
+                  <p className="number">{page.count}</p>
+                </div>
+              )}
             </li>
           ))}
         </ul>

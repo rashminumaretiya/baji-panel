@@ -1,3 +1,12 @@
+// :root {
+//   /* Shared dark-gray used in gradients & checked input */
+//   --color-gradient-dark-gray: #4b4b4b;
+
+//   /* Raw black shadows (use instead of inline rgba(0,0,0,...)) */
+//   --color-shadow-dark: rgba(0, 0, 0, 0.5);
+//   --color-shadow-darker: rgba(0, 0, 0, 0.8);
+// }
+
 .sub-header {
   background: var(--sub-header-bg);
   box-shadow: inset 0 1px 3px 0 rgba(var(--dark-black-lg), 0.4);
@@ -34,46 +43,70 @@
       position: relative;
       cursor: pointer;
       line-height: 30px;
-      padding: 0;
+      padding: 0 10px;
       font-size: 12px;
       font-weight: 600;
-      font-family: Tahoma, sans-serif;
+      font-family: Tahoma;
       border-right: 1px solid var(--sub-header-border);
 
-      a {
-        display: block;
-        padding: 0 10px;
-        color: inherit;
-        text-decoration: none;
-      }
-
-      a.active,
       &.active {
         background: var(--sub-header-active-menu-bg);
         box-shadow: inset 0 1px 3px 0 rgba(var(--dark-black-lg), 0.1);
       }
 
-      &:hover a {
+      &:hover {
         text-decoration: underline;
+      }
+
+      &.casino {
+        color: var(--white);
+        background: linear-gradient(var(--color-gradient-dark-gray), #1e1e1e);
+        display: flex;
+        flex-direction: row-reverse;
+        padding: 0 8px 0 20px;
+        overflow: hidden;
+
+        &::after {
+          content: 'New';
+          position: absolute;
+          top: 3px;
+          left: -34px;
+          transform: rotate(-45deg);
+          background-color: #e83623;
+          width: 100%;
+          text-align: center;
+          line-height: 1;
+          font-size: 9px;
+          font-weight: 600;
+          padding: 2px 0;
+        }
+
+        svg {
+          height: 18px;
+          width: 18px;
+          margin-top: -3px;
+          margin-left: 2px;
+        }
       }
 
       .live-chip {
         position: absolute;
-        top: 0;
+        top: 0px;
         right: 3px;
         transform: translateY(-50%);
         height: 12px;
         border-radius: 3px;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+        box-shadow: 0 1px 3px 0 var(--color-shadow-dark);
         display: inline-flex;
         overflow: hidden;
         z-index: 9;
 
         .number {
           font-size: 10px;
-          padding: 2px 5px;
+          padding: 0 2px;
           line-height: 0.8;
           margin-bottom: 0;
+          padding: 2px 5px;
           background-color: var(--red);
           color: var(--white);
           letter-spacing: 0.4px;
@@ -89,12 +122,21 @@
           align-items: center;
           justify-content: center;
 
+          @media screen and (max-width: 767px) {
+            height: 4.26667vw;
+          }
+
           &::before {
             content: '';
-            background: var(--red);
+            background: url('../../public/img/svg/live-icon.svg') no-repeat;
+            background-size: contain;
             height: 8px;
             width: 14px;
-            border-radius: 1px;
+
+            @media screen and (max-width: 767px) {
+              width: 4.26667vw;
+              height: 2.66667vw;
+            }
           }
         }
       }
@@ -106,7 +148,13 @@
     align-items: center;
     flex-wrap: wrap;
     font-size: 12px;
-    font-family: Tahoma, sans-serif;
+    font-family: Tahoma;
+
+    * {
+      white-space: nowrap;
+      font-size: 12px;
+      font-family: Tahoma;
+    }
 
     .time-zone {
       display: flex;
@@ -119,21 +167,43 @@
     }
 
     .bet-check {
-      border-top: 3px solid var(--primary-yellow, #ffb427);
+      border-top: 3px solid var(--color-bet-check-accent);
       padding: 0 12px 0 7px;
-      background-image: linear-gradient(180deg, #4b4b4b 0%, #000 100%);
+      background-image: linear-gradient(
+        180deg,
+        var(--color-gradient-dark-gray) 0%,
+        var(--black) 100%
+      );
       margin-top: -3px;
-      border-right: 1px solid rgba(0, 0, 0, 0.15);
+      border-right: 1px solid rgba(var(--dark-alpha), 0.15);
       height: 33px;
       padding-top: 2px;
+
+      &:hover {
+        background-image: linear-gradient(
+          180deg,
+          var(--black) 0%,
+          var(--color-gradient-dark-gray) 100%
+        );
+      }
 
       input {
         height: 18px;
         width: 18px;
+        border-color: var(--color-bet-check-accent);
+        background-color: transparent;
+
+        &:focus {
+          box-shadow: none;
+        }
+
+        &:checked {
+          background-color: var(--color-gradient-dark-gray);
+        }
       }
 
       .form-check-label {
-        vertical-align: middle;
+        vertical-align: -webkit-baseline-middle;
         color: var(--white);
         font-weight: 700;
         margin-left: 10px;
@@ -142,9 +212,17 @@
       &.bet-check-active {
         background-image: linear-gradient(
           0deg,
-          var(--lg-primary, #00682b) 0%,
-          var(--primary, #15805e) 100%
+          var(--color-bet-check-active-start) 0%,
+          var(--color-bet-check-active-end) 100%
         );
+
+        &:hover {
+          background-image: linear-gradient(
+            0deg,
+            var(--color-bet-check-active-end) 0%,
+            var(--color-bet-check-active-start) 100%
+          );
+        }
       }
     }
 
@@ -167,19 +245,151 @@
   }
 }
 
-.stake-popup-container.popover {
+.stake-popup-container {
   background-color: transparent;
   border-radius: 0;
   min-width: 282px;
 
   .popover-body {
     padding: 0;
-    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.5);
-    background-color: var(--platinum-grey, #e4e4e4);
+    box-shadow: 0 4px 5px var(--color-shadow-dark);
+    background-color: var(--platinum-grey);
     border-radius: 0 0 4px 4px;
+  }
+
+  @media screen and (max-width: 767px) {
+    box-shadow: 0 300px 0px var(--color-shadow-darker);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    transform: translate(0, 0) !important;
+    min-width: 100%;
+    border: 0;
+    border-radius: 1.6vw 0 0 1.6vw;
+  }
+
+  @media screen and (max-width: 767px) {
+    overflow-y: auto;
+    max-height: 90vh;
+    height: fit-content;
+  }
+
+  @media screen and (max-width: 425px) {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    z-index: 999 !important;
+    transform: none !important;
+    width: 100%;
+    max-width: 100%;
+    border: none;
+    background-color: var(--opacity-dark);
+
+    .popover-body {
+      width: 100%;
+      border-radius: 0;
+
+      .form-control {
+        color: var(--lg-white);
+      }
+    }
   }
 }
 
-.my-account-popup.popover .popover-body {
-  padding: 0;
+:host-context(.mcv-yellow-theme) {
+  .sub-header {
+    .right-inner-header {
+      .bet-check {
+        .form-check-label {
+          color: #ecca3d;
+        }
+        input {
+          border-color: transparent;
+          background-color: rgba(var(--white-rgb), 0.15);
+          height: 16px;
+          width: 16px;
+          &:checked {
+            background-color: rgba(var(--black-rgb), 0.15);
+            --bs-form-check-bg-image: url(https://panel.mcv88.com/img/yellow-check.svg);
+          }
+        }
+      }
+    }
+  }
+}
+
+:host-context(.yellow-theme) {
+  .sub-header {
+    background: var(
+      --menu-bg,
+      linear-gradient(
+        180deg,
+        var(--menu-bg-to, #1e1e1e) 0,
+        var(--menu-bg-from, #1e1e1e) 100%
+      )
+    );
+    box-shadow: 0 0.0625rem 0.25rem 0 var(--menu-bg--shadow, transparent) inset;
+    padding: 0 16px;
+    .right-inner-header {
+      margin-right: 15px;
+
+      .bet-check {
+        border-top: 3px solid var(--light-green);
+        background: var(
+          --menu-oneclick-btn-bg,
+          linear-gradient(180deg, #4d4d4d 0, #1e1e1e 100%)
+        );
+
+        &:hover {
+          background: var(
+            --menu-oneclick-btn-bg--hover,
+            linear-gradient(180deg, #1e1e1e 0, #4d4d4d 100%)
+          );
+        }
+
+        input {
+          height: 18px;
+          width: 18px;
+          border: 1px solid
+            var(--menu-oneclick-btn-click-border, hsla(0, 0%, 100%, 0));
+          background-color: var(
+            --menu-oneclick-btn-click-box,
+            hsla(0, 0%, 100%, 0.15)
+          );
+
+          &:focus {
+            box-shadow: none;
+          }
+
+          &:checked {
+            background-color: var(
+              --menu-oneclick-btn-click-box--select,
+              hsla(0, 0%, 100%, 0.15)
+            );
+            border: 1px solid
+              var(
+                --menu-oneclick-btn-click-border--select,
+                hsla(0, 0%, 100%, 0.4)
+              );
+          }
+        }
+
+        &.bet-check-active {
+          background: var(
+            --menu-oneclick-btn-bg--select,
+            linear-gradient(180deg, #4e9600 100%, #386a02 100%)
+          );
+
+          &:hover {
+            background: var(
+              --menu-oneclick-btn-bg--select--hover,
+              linear-gradient(180deg, #4e9600 100%, #386a02 100%)
+            );
+          }
+        }
+      }
+    }
+  }
 }

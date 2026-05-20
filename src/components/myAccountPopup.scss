@@ -39,8 +39,8 @@
   }
 }
 
-.popover-arrow {
-  display: none;
+.my-account-popup.popover > .popover-arrow {
+  display: none !important;
 }
 
 .my-account-popup {
