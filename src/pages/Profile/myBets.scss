@@ -1,0 +1,120 @@
+.my-bets-container {
+  margin-bottom: 1rem;
+
+  .inplay-tabs {
+    padding-left: 0;
+
+    .nav-link {
+      padding: 3px 8px;
+    }
+  }
+}
+
+.mkt-tbs {
+  .user-table {
+    margin-top: 20px;
+  }
+}
+
+.pl-card {
+  background-color: transparent;
+  position: relative;
+  margin-top: 8px;
+  background-color: var(--white);
+
+  &::before {
+    position: absolute;
+    content: '';
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 192px;
+    background-color: var(--white);
+    z-index: -1;
+    border-bottom: 1px solid #7e97a7;
+  }
+
+  .user-table {
+    margin-top: 0;
+  }
+
+  &.no-data-pnl {
+    &::before {
+      height: 270px;
+    }
+  }
+}
+
+.total-pnl-wrap {
+  select {
+    height: 25px;
+    font-size: 13px;
+    width: 140px;
+    margin-right: 4px;
+  }
+}
+
+.total-pnl {
+  font-size: 14px;
+  font-weight: 700;
+
+  .bet-loss {
+    color: var(--red);
+  }
+}
+
+.bets-filter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: var(--platinum-grey);
+  padding: 6px 10px;
+  border-bottom: 1px solid #d0d0d0;
+  font-size: 12px;
+  color: #1e1e1e;
+  min-height: 32px;
+  gap: 8px;
+
+  @media screen and (max-width: 767px) {
+    padding: 8px;
+  }
+
+  .filter-label {
+    color: #1e1e1e;
+    white-space: nowrap;
+  }
+
+  .bet-status-select {
+    height: 24px;
+    padding: 0 22px 0 6px;
+    font-size: 12px;
+    line-height: 22px;
+    border-radius: 3px;
+    border: 1px solid #aaa;
+    background-color: var(--white);
+    min-width: 110px;
+    width: auto;
+  }
+
+  .form-check {
+    padding: 0;
+    cursor: pointer;
+
+    input.form-check-input {
+      width: 14px;
+      height: 14px;
+      margin-top: 0;
+      cursor: pointer;
+      flex-shrink: 0;
+
+      &:checked {
+        background-color: var(--cyanBlue);
+        border-color: var(--cyanBlue);
+      }
+    }
+
+    span {
+      user-select: none;
+    }
+  }
+}

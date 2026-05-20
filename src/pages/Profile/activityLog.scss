@@ -1,0 +1,31 @@
+.inner-outer-wrapper {
+  max-height: calc(100svh - 240px);
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  .activityLogTable {
+    thead {
+      th {
+        height: 32px;
+        vertical-align: middle;
+
+        &:nth-child(2) {
+          text-align: start !important;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          height: 32px;
+          border-bottom: 1px solid #eee !important;
+
+          &:nth-child(2) {
+            text-align: start !important;
+          }
+        }
+      }
+    }
+  }
+}

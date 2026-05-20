@@ -1,0 +1,47 @@
+.card-body {
+  display: flex;
+  padding: 7px 10px;
+  background-color: var(--white);
+  border-bottom: 1px solid var(--dark-gray);
+
+  .welcome-section {
+    padding: 0 10px 3px;
+    position: relative;
+    border-left: 1px solid var(--xs-lightGray);
+
+    p {
+      color: #3b5160;
+      font-size: 13px;
+      line-height: 18px;
+      max-width: 570px;
+    }
+  }
+
+  .balance-header {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 7px;
+    color: #3b5160;
+  }
+
+  .balance {
+    span {
+      font-size: 30px;
+      line-height: 36px;
+      font-weight: 700;
+      color: #2789ce;
+    }
+
+    color: #7e97a7;
+    font-size: 12px;
+  }
+
+  .account-balance-wrapper {
+    padding-right: 16px;
+    flex: 0 0 31.37255%;
+  }
+}
+
+.card {
+  margin-bottom: 15px;
+}

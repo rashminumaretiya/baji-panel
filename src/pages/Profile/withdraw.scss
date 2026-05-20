@@ -1,0 +1,140 @@
+.form-group {
+  label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #1e1e1e;
+    display: block;
+  }
+
+  .form-control,
+  .form-select {
+    border: 1px solid var(--input-group-border);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 14px;
+    background-color: var(--white);
+
+    &:focus {
+      border-color: var(--dark-gray);
+      box-shadow: none;
+    }
+  }
+
+  .error {
+    display: block;
+    margin-top: 4px;
+    color: var(--red);
+    font-size: 12px;
+  }
+}
+
+.withdraw-submit {
+  background-color: var(--primary);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  width: 100%;
+
+  &:hover,
+  &:focus {
+    background-color: var(--xxs-primary);
+    color: var(--white);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.form-select {
+  font-size: 14px;
+
+  @media screen and (max-width: 767px) {
+    padding: 2.66667vw 1.86667vw;
+    border: 1px solid var(--dark-md-gray);
+  }
+}
+
+.payment-methods-cards {
+  gap: 10px;
+
+  @media screen and (max-width: 767px) {
+    gap: 4px;
+  }
+
+  .form-check {
+    position: relative;
+    margin-bottom: 0;
+    width: 100px;
+    padding-left: 0;
+
+    @media screen and (max-width: 767px) {
+      width: calc(33.33% - 2.666px);
+    }
+
+    input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      margin-left: 0;
+      margin-top: 0;
+      cursor: pointer;
+      background: transparent;
+      border-radius: 5px;
+      border: 1px solid #262626;
+      box-shadow: none;
+
+      &:checked {
+        border: 1px solid #00bb80;
+      }
+    }
+
+    .form-check-label {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-bottom: 0;
+      padding: 8px;
+      border-radius: 5px;
+      white-space: nowrap;
+
+      img {
+        height: 40px;
+        width: 40px;
+        margin: 0 auto;
+
+        @media screen and (max-width: 767px) {
+          width: 9.302vw;
+          height: 9.302vw;
+        }
+      }
+
+      span {
+        font-size: 14px;
+        margin-top: 5px;
+        display: block;
+
+        @media screen and (max-width: 767px) {
+          font-size: 3.256vw;
+          margin-top: 1.163vw;
+        }
+      }
+    }
+  }
+}
+
+.mcv-yellow-theme {
+  .form-check {
+    input {
+      &:checked {
+        border: 1px solid var(--primary-yellow);
+      }
+    }
+  }
+}
