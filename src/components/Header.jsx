@@ -33,7 +33,7 @@ function formatExposure(value) {
 
 export default function Header({
   isShowHeader = true,
-  isAuthenticated: isAuthProp = false,
+  isAuthenticated: isAuthProp = true,
   wallet = DEFAULT_WALLET,
   currency = DEFAULT_CURRENCY,
   logo = SITE_LOGO,
@@ -180,7 +180,7 @@ export default function Header({
             <>
               <div className="balance-outer">
                 <div
-                  className={`balance${balanceColumnLayout ? ' d-flex flex-column' : ''}`}
+                  className={`balance d-flex ${!balanceColumnLayout ? ' flex-column' : ''}`}
                 >
                   <div className="d-flex align-items-center justify-content-between counter">
                     {isBalanceRefresh ? (

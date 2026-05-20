@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Overlay, Popover } from 'react-bootstrap'
 import SvgIcon from './SvgIcon.jsx'
+import './myAccountPopup.scss'
 
 const SITE_LOGO =
   'https://backend-1ten365.s3.ap-south-2.amazonaws.com/admins/6800f38aa57265d98c2a5110/logo/Baji36%202%20copy-1745137890392.png'
@@ -13,7 +14,10 @@ const MENU_ITEMS = [
   { label: 'Profit & Loss', path: '/my-account/pnl' },
 ]
 
-export default function MyAccountPopup({ isMobile = false, userName = 'User' }) {
+export default function MyAccountPopup({
+  isMobile = false,
+  userName = 'User',
+}) {
   const [show, setShow] = useState(false)
   const [target, setTarget] = useState(null)
 
@@ -51,11 +55,9 @@ export default function MyAccountPopup({ isMobile = false, userName = 'User' }) 
         tabIndex={0}
         onKeyDown={(e) => e.key === 'Enter' && handleToggle(e)}
       >
-        <p className="mb-0 d-flex align-items-center">
-          <SvgIcon name="userIcon" className="user-icon" />
-          <span className="d-inline-block mx-1">My Account</span>
-          {!isMobile && <SvgIcon name="dropdown" className="dropdown-icon" />}
-        </p>
+        <SvgIcon name="userIcon" className="user-icon" />
+        <span className="d-inline-block mx-1">My Account</span>
+        {!isMobile && <SvgIcon name="dropdown" className="dropdown-icon" />}
       </div>
       <Overlay
         show={show}

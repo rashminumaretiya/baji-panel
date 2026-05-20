@@ -6,22 +6,16 @@ export default function EventSearch() {
   return (
     <div className="search-wrapper me-2">
       <SvgIcon name="searchIcon" />
-      <div className="search-events ng-select-typeahead ng-select-searchable ng-select-clearable ng-select ng-select-single">
-        <div className="ng-select-container">
-          <div className="ng-value-container">
-            <div className="ng-input">
-              <input
-                type="text"
-                role="combobox"
-                aria-autocomplete="list"
-                placeholder="Search Events"
-              />
-            </div>
-          </div>
-          <span className="ng-arrow-wrapper">
-            <span className="ng-arrow" />
-          </span>
+      <div className="search-events">
+        <div className="ng-input">
+          <input
+            type="text"
+            role="combobox"
+            aria-autocomplete="list"
+            placeholder="Search Events"
+          />
         </div>
+        <span className="ng-arrow" />
       </div>
     </div>
   )
