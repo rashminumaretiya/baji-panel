@@ -1,3 +1,5 @@
+import { Button, Card, Form, Table } from 'react-bootstrap'
+
 const results = [
   {
     date: '2026-05-19',
@@ -32,52 +34,41 @@ const results = [
 export default function Result() {
   return (
     <div className="p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-emerald-700">Result</h1>
-        <div className="flex items-center gap-2 text-sm">
-          <label className="text-slate-600">From</label>
-          <input
-            type="date"
-            className="rounded border border-slate-300 px-2 py-1"
-          />
-          <label className="text-slate-600">To</label>
-          <input
-            type="date"
-            className="rounded border border-slate-300 px-2 py-1"
-          />
-          <button
-            type="button"
-            className="rounded bg-emerald-700 px-3 py-1 text-white hover:bg-emerald-800"
-          >
+      <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+        <h1 className="h5 mb-0 fw-semibold text-success">Result</h1>
+        <div className="d-flex flex-wrap align-items-center gap-2 small">
+          <Form.Label className="mb-0 text-secondary">From</Form.Label>
+          <Form.Control type="date" size="sm" className="w-auto" />
+          <Form.Label className="mb-0 text-secondary">To</Form.Label>
+          <Form.Control type="date" size="sm" className="w-auto" />
+          <Button type="button" variant="success" size="sm">
             Search
-          </button>
+          </Button>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded border border-slate-200 bg-white">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-100 text-slate-700">
+      <Card className="border-secondary-subtle overflow-hidden">
+        <Table responsive hover size="sm" className="mb-0">
+          <thead className="table-light text-secondary">
             <tr>
-              <th className="px-3 py-2 text-left">Date</th>
-              <th className="px-3 py-2 text-left">Event</th>
-              <th className="px-3 py-2 text-left">Market</th>
-              <th className="px-3 py-2 text-left">Winner</th>
-              <th className="px-3 py-2 text-right">P&L</th>
+              <th className="px-3 py-2">Date</th>
+              <th className="px-3 py-2">Event</th>
+              <th className="px-3 py-2">Market</th>
+              <th className="px-3 py-2">Winner</th>
+              <th className="px-3 py-2 text-end">P&L</th>
             </tr>
           </thead>
           <tbody>
             {results.map((r) => (
-              <tr key={r.event + r.date} className="border-t border-slate-100">
-                <td className="px-3 py-2 text-slate-600">{r.date}</td>
-                <td className="px-3 py-2 font-medium text-blue-700">
-                  {r.event}
-                </td>
-                <td className="px-3 py-2 text-slate-700">{r.market}</td>
-                <td className="px-3 py-2 text-slate-700">{r.winner}</td>
+              <tr key={r.event + r.date}>
+                <td className="px-3 py-2 text-secondary">{r.date}</td>
+                <td className="px-3 py-2 fw-medium text-primary">{r.event}</td>
+                <td className="px-3 py-2">{r.market}</td>
+                <td className="px-3 py-2">{r.winner}</td>
                 <td
                   className={[
-                    'px-3 py-2 text-right font-semibold',
-                    r.pl.startsWith('-') ? 'text-red-600' : 'text-emerald-700',
+                    'px-3 py-2 text-end fw-semibold',
+                    r.pl.startsWith('-') ? 'text-danger' : 'text-success',
                   ].join(' ')}
                 >
                   {r.pl}
@@ -85,8 +76,8 @@ export default function Result() {
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
+        </Table>
+      </Card>
     </div>
   )
 }

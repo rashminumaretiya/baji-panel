@@ -1,0 +1,244 @@
+:root {
+  --primary: #15805e;
+  --primary-rgb: 21, 128, 94;
+  --xts-primary: #4ea075;
+  --mdx-primary: #3d7b5a;
+  --lg-primary: #00682b;
+  --xs-primary: #0c9275;
+  --xs-secondary: #97e6d5;
+  --xxs-primary: #087f67;
+  --dark-black: #232526;
+  --secondary-black: #333;
+  --primary-yellow: #ffb427;
+  --back-primary: #ffb427;
+  --header-primary: #222222;
+  --xs-gray: #eeeeee;
+  --dark-gray: #999999;
+  --md-gray: #d0d0d0;
+  --dark-md-gray: #666666;
+  --xl-gray: #d8d8d8;
+  --xxl-gray: #bbbbbb;
+  --dark-grey: #172832;
+  --dark-xl-gray: #414345;
+  --md-primary-black: #444;
+  --sm-md-black: #1b1b1b;
+
+  --sm-black: #4b4b4b;
+  --white: #ffffff;
+  --white-rgb: 255, 255, 255;
+  --black-rgb: 0, 0, 0;
+  --black: #000000;
+  --xl-black: #333333;
+  --black-to-black: #222;
+  --body-color: #f0ece1;
+  --xs-lightGray: #d8d8d8;
+  --light-gray: #e4e4e4;
+  --input-group-border: #dee2e6;
+  --border-light-color: #eeeeee;
+  --red: #ff0000;
+  --suspend-status: #f00;
+  --failed-status: #f00;
+  --failed-status-bg: #ff000033;
+  --light-red: 250, 169, 186;
+  --text-color: #ccc;
+  --nav-tab-bg: #3b5160;
+  --orange-dark: #ffa600;
+  --spanish-yellow: #ffb80c;
+  --light-yellow: #ffe1a9;
+  --cyanBlue: #2789ce;
+  --blue-dark: #286baa;
+  --orange-darkest: #e4550f;
+  --mds-orange: #df4000;
+  --lg-orange: #cd3a00;
+  --lightest-neavy: #0086ae;
+  --sm-gray-blue: #7e97a7;
+  --dark-blue-neavy: #2e4b5e;
+  --md-cloud: #1e5f89;
+  --lg-cloud: #194f72;
+  --black-dark: #000000;
+  --popover: #455274;
+  --xsm-gray: #656464;
+  --platinum-grey: #e0e6e6;
+  --dark-nav-neavy: #172732;
+  --light-nav-neavy: #243a48;
+  --light-neavy: #243a48;
+  --kelly-green: #6bbd11;
+  --md-parrot: #2e730d;
+  --avocado-green: #508d0e;
+  --success-status-bg: #2ad61533;
+  --lg-black: #0e0e0e;
+  --charcoal-1: #3f3f3f;
+  --border-secondary: rgba(69, 82, 116, 0.4);
+  --header-bg: #15805e;
+  --sub-header-bg: #434343;
+  --sub-header-color: #ffffff;
+  --sub-header-border: #ffffff26;
+  --sub-header-active-sport-bg: #15805e;
+  --sub-header-active-sport-color: #ffffff;
+  --sub-header-active-menu-bg: rgba(255, 255, 255, 0.2);
+  --one-click-btn-check: linear-gradient(
+    180deg,
+    var(--md-primary-black) 13%,
+    var(--sm-md-black) 81%
+  );
+  --yellow-rgb: 255, 180, 39;
+  --dark-alpha: 255, 255, 255;
+  --dark-black-lg: 0, 0, 0;
+  --sm-dark: #151515;
+
+  /* BACK COLORS */
+  --back-2: #d7e8f4;
+  --back-2-hover: #e3eff7;
+
+  --back-1: #b7d5eb;
+  --back-1-hover: #c3dcee;
+
+  --back-0: #72bbef;
+  --back-0-hover: #8dc5ec;
+
+  /* LAY COLORS */
+  --lay-0: rgba(var(--light-red));
+  --lay-0-hover: rgba(var(--light-red), 0.8);
+
+  --lay-1: #efd3d9;
+  --lay-1-hover: #f3dee3;
+
+  --lay-2: #f6e6ea;
+  --lay-2-hover: #faf1f3;
+
+  --light-back: 190, 221, 244;
+  --light-lay: #f3dce2;
+  --tbl-border-color: #8b999f;
+
+  --liability-color: #d0021b;
+  --profit-color: #508d0e;
+
+  --coffie: #663333;
+  --coffie-xs: #9a734b;
+  --coffie-md: #64401d;
+  --coffie-lg: #b16c28;
+  --gray-text-2: #9e9e9e;
+
+  --xl-blue: #2e4b5e;
+  --xxl-blue: #243a48;
+  --blue: #2789ce;
+  --blue-dark: #226bc3;
+  --nav-tab-primary-bg: #14805e;
+  --header-balance-color: #ffffff;
+  --sport-events-bg: #333333;
+  --sport-events-color: #ffffff;
+  --sport-events-border: #ffffff26;
+  --sport-section-bg: #333333;
+  --sport-section-color: #ffffff;
+  --color-bet-check-accent: #f0db55;
+  --color-bet-check-active-start: #387a6a;
+  --color-bet-check-active-end: #469986;
+  --oneclick-bet-bg: linear-gradient(
+    180deg,
+    var(--xts-primary) 0%,
+    var(--mdx-primary) 100%
+  );
+  --oneclick-bet-color: #1e1e1e;
+  --oneclick-bet-bg-position: 0 -3590px;
+  --account-menu-active-bg: #ffe1a9;
+  --account-menu-hover-bg: #ffe1a9;
+  --mobile-sport-bg: #434343;
+  --mobile-sport-active-menu-bg: #f8e71c;
+  --mobile-sport-menu-color: #ffffff;
+  --mobile-sport-active-menu-color: #000000;
+  --mobile-sport-search-bg: linear-gradient(
+    -180deg,
+    rgba(var(--white-rgb), 0.15),
+    rgba(var(--black-rgb), 0.15)
+  );
+  --sm-text-color: #7e97a7;
+  --light-bg: #e0e6e6;
+}
+
+$primary: #222;
+
+.mcv-yellow-theme {
+  --body-color: #eeeeee;
+  --header-bg: linear-gradient(180deg, #2f2f2f, #010101);
+  --sub-header-bg: linear-gradient(180deg, #e8d877, #c9a43e);
+  --sub-header-color: #000000;
+  --sub-header-border: #0003;
+  --dark-black: #232526;
+  --primary-yellow: #ffb427;
+  --sub-header-active-menu-bg: #c9a33d;
+  --sub-header-active-sport-bg: #e5ca3a;
+  --sub-header-active-sport-color: #222222;
+  --nav-tab-primary-bg: linear-gradient(180deg, #e5ca3a 15%, #cea30f);
+  --header-balance-color: #ffd45f;
+  --sport-events-bg: #ffffff;
+  --sport-events-color: #222222;
+  --sport-events-border: #eee1c0;
+  --sport-section-bg: linear-gradient(180deg, #393939, #000);
+  --sport-section-color: #ffd45f;
+  --color-bet-check-accent: #d56525;
+  --color-bet-check-active-start: #b43807;
+  --color-bet-check-active-end: #912b06;
+  --oneclick-bet-bg: linear-gradient(180deg, #b43807, #912b06);
+  // --oneclick-bet-color: #ffffff;
+  --oneclick-bet-color: #1e1e1e;
+  --oneclick-bet-bg-position: 0 -3498px;
+  --account-menu-active-bg: #e5ca3a;
+  --account-menu-hover-bg: #ece4b9;
+  --xs-gray: #eeeeee;
+  --xxs-text-color: #ced5da;
+  --mobile-sport-bg: linear-gradient(180deg, #e8d877, #c9a43e);
+  --mobile-sport-active-menu-bg: linear-gradient(180deg, #474747, #070707);
+  --mobile-sport-menu-color: #1e1e1e;
+  --mobile-sport-active-menu-color: #f2d65e;
+  --mobile-sport-search-bg: linear-gradient(
+    -180deg,
+    rgba(var(--white-rgb), 0.15),
+    rgba(var(--black-rgb), 0.15)
+  );
+  --sm-text-color: #7e97a7;
+  --light-bg: #e0e6e6;
+}
+
+.yellow-theme {
+  --primary: linear-gradient(180deg, #ffcb2e, #ffb80c);
+  --dark: #1e1e1e;
+  --light-green: #6bbd11;
+  --menu-oneclick-btn-bg--select--hover: linear-gradient(
+    180deg,
+    rgb(56, 106, 2) 0%,
+    rgb(78, 150, 0) 100%
+  );
+  --menu-oneclick-btn-bg--select: linear-gradient(
+    180deg,
+    rgb(78, 150, 0) 0%,
+    rgb(56, 106, 2) 100%
+  );
+  --menu-oneclick-btn-bg: linear-gradient(
+    180deg,
+    rgb(77, 77, 77) 0%,
+    rgb(30, 30, 30) 100%
+  );
+  --menu-oneclick-btn-bg--hover: linear-gradient(
+    180deg,
+    rgb(30, 30, 30) 0%,
+    rgb(77, 77, 77) 100%
+  );
+  --menu-oneclick-btn-click-border--select: rgba(255, 255, 255, 0.4);
+  --menu-oneclick-btn-click-box--select: rgba(255, 255, 255, 0.15);
+  --menu-oneclick-btn-click-border: rgba(255, 255, 255, 0);
+  --menu-oneclick-btn-click-box: rgba(255, 255, 255, 0.15);
+  --menu-oneclick-setting-bg: linear-gradient(
+    180deg,
+    rgb(78, 150, 0) 0%,
+    rgb(56, 106, 2) 100%
+  );
+  --menu-oneclick-setting-border: rgb(57, 111, 0);
+  --menu-oneclick-stake-select-bg: rgb(255, 210, 0);
+  --menu-oneclick-stake-select-border: rgb(106, 61, 12);
+  --menu-oneclick-edit-border: rgb(22, 79, 0);
+  --menu-text-color: #2789ce;
+  --menu-list-border: #ced5da;
+  --menu-path-bg: #3b5160;
+  --menu-list-group-bg: #ced5da;
+  --menu-list-head-bg: #3b5160;
+}

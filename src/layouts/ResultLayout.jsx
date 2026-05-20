@@ -3,9 +3,9 @@ import Header from '../components/Header.jsx'
 
 export default function ResultLayout() {
   return (
-    <div className="flex h-dvh flex-col bg-slate-100 text-slate-900">
+    <div className="d-flex flex-column vh-100 bg-light text-dark">
       <Header />
-      <main className="flex-1 overflow-y-auto bg-white">
+      <main className="flex-grow-1 overflow-auto bg-white">
         <Outlet />
       </main>
     </div>

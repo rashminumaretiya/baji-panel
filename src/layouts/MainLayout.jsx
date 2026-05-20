@@ -2,22 +2,32 @@ import { Outlet } from 'react-router-dom'
 import BetSlip from '../components/BetSlip.jsx'
 import Header from '../components/Header.jsx'
 import Sidebar from '../components/Sidebar.jsx'
+import './layout.scss'
 
 export default function MainLayout() {
   return (
-    <div className="flex h-dvh flex-col bg-slate-100 text-slate-900">
+    <>
       <Header />
-      <div className="grid flex-1 grid-cols-[240px_minmax(0,1fr)_320px] overflow-hidden">
-        <div className="border-r border-slate-200 overflow-y-auto">
+      <div
+        className="d-flex flex-grow-1 overflow-hidden"
+        style={{ minHeight: 0 }}
+      >
+        <aside
+          className="border-end overflow-auto flex-shrink-0 bg-light"
+          style={{ width: 240 }}
+        >
           <Sidebar />
-        </div>
-        <main className="overflow-y-auto bg-white">
+        </aside>
+        <main className="flex-grow-1 overflow-auto bg-white">
           <Outlet />
         </main>
-        <div className="border-l border-slate-200 overflow-y-auto">
+        <aside
+          className="border-start overflow-auto flex-shrink-0 bg-white"
+          style={{ width: 320 }}
+        >
           <BetSlip />
-        </div>
+        </aside>
       </div>
-    </div>
+    </>
   )
 }

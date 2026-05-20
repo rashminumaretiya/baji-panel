@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Button, Card, Form, Image, Table } from 'react-bootstrap'
 
 const sports = [
   { id: 'cricket', label: 'Cricket' },
@@ -95,64 +96,67 @@ export default function Highlights() {
   const rows = matches[active]
 
   return (
-    <div className="flex flex-col gap-3 p-3">
+    <div className="d-flex flex-column gap-3 p-3">
       <div className="overflow-hidden rounded">
-        <img
+        <Image
           src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=1600&q=60"
           alt="Stadium"
-          className="h-56 w-full object-cover"
+          fluid
+          className="w-100 object-fit-cover"
+          style={{ height: 224, objectFit: 'cover' }}
         />
       </div>
 
-      <section className="rounded border border-slate-200 bg-white">
-        <header className="flex items-center justify-between bg-emerald-700 px-4 py-2 text-white">
-          <h2 className="font-semibold">Sports Highlights</h2>
-          <div className="flex items-center gap-2 text-sm">
+      <Card className="border-secondary-subtle">
+        <Card.Header className="d-flex align-items-center justify-content-between bg-success text-white py-2">
+          <Card.Title as="h2" className="h6 mb-0 fw-semibold">
+            Sports Highlights
+          </Card.Title>
+          <div className="d-flex align-items-center gap-2 small">
             <span>View by</span>
-            <select className="rounded bg-emerald-800 px-2 py-1 text-white">
+            <Form.Select size="sm" className="w-auto bg-success text-white border-success">
               <option>Time</option>
-            </select>
+            </Form.Select>
           </div>
-        </header>
+        </Card.Header>
 
-        <div className="flex bg-slate-100">
+        <div className="d-flex bg-light border-bottom">
           {sports.map((s) => (
-            <button
+            <Button
               key={s.id}
               type="button"
+              variant="link"
               onClick={() => setActive(s.id)}
               className={[
-                'flex-1 border-b-2 px-4 py-2 text-sm font-medium',
+                'flex-fill rounded-0 text-decoration-none py-2 small fw-medium border-0 border-bottom border-3',
                 active === s.id
-                  ? 'border-emerald-700 bg-white text-emerald-700'
-                  : 'border-transparent text-slate-600 hover:bg-slate-200',
+                  ? 'border-success text-success bg-white'
+                  : 'border-transparent text-secondary',
               ].join(' ')}
             >
               {s.label}
-            </button>
+            </Button>
           ))}
         </div>
 
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-slate-600">
+        <Table responsive hover size="sm" className="mb-0">
+          <thead className="table-light text-secondary">
             <tr>
-              <th className="px-3 py-2 text-left">Event</th>
-              <th className="px-3 py-2 text-right">Matched</th>
-              <th className="px-3 py-2 text-center" colSpan={3}>
+              <th className="px-3 py-2">Event</th>
+              <th className="px-3 py-2 text-end">Matched</th>
+              <th className="px-1 py-2 text-center" colSpan={3}>
                 1 &nbsp; X &nbsp; 2
               </th>
             </tr>
           </thead>
           <tbody>
             {rows.map((m) => (
-              <tr key={m.name} className="border-t border-slate-100">
+              <tr key={m.name}>
                 <td className="px-3 py-2">
-                  <div className="font-medium text-blue-700">{m.name}</div>
-                  <div className="text-xs text-emerald-600">{m.status}</div>
+                  <div className="fw-medium text-primary">{m.name}</div>
+                  <div className="small text-success">{m.status}</div>
                 </td>
-                <td className="px-3 py-2 text-right text-slate-600">
-                  {m.matched}
-                </td>
+                <td className="px-3 py-2 text-end text-secondary">{m.matched}</td>
                 <td className="px-1 py-2">
                   <OddsCell />
                 </td>
@@ -165,17 +169,17 @@ export default function Highlights() {
               </tr>
             ))}
           </tbody>
-        </table>
-      </section>
+        </Table>
+      </Card>
     </div>
   )
 }
 
 function OddsCell() {
   return (
-    <div className="flex gap-px">
-      <div className="h-7 flex-1 bg-sky-300" />
-      <div className="h-7 flex-1 bg-pink-300" />
+    <div className="d-flex" style={{ gap: 1 }}>
+      <div className="flex-fill bg-info" style={{ height: '1.75rem' }} />
+      <div className="flex-fill bg-danger bg-opacity-50" style={{ height: '1.75rem' }} />
     </div>
   )
 }
