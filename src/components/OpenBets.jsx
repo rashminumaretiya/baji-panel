@@ -292,58 +292,66 @@ function OpenBetsDesktop({ openBetsList, isOpen, isMobile, isYellowTheme }) {
   const hasList = openBetsList.length > 0
 
   return (
-    <div className="accordion">
-      <div className="mb-0 accordion-item">
-        <div className="d-flex align-items-center open-bets">
-          <SvgIcon
-            name="refreshIcon"
-            className="cursor-pointer"
-            role="button"
-            tabIndex={0}
-          />
-          <h2
-            className={cx('accordion-header w-100', isCollapsed && 'collapsed')}
-          >
-            <button
-              type="button"
-              className="accordion-button"
-              onClick={() => setIsCollapsed((prev) => !prev)}
+    <div className="open-bets-accordion">
+      <div className="accordion ">
+        <div className="mb-0 accordion-item">
+          <div className="d-flex align-items-center open-bets">
+            <SvgIcon
+              name="refreshIcon"
+              className="cursor-pointer"
+              role="button"
+              tabIndex={0}
+            />
+            <h2
+              className={cx(
+                'accordion-header w-100',
+                isCollapsed && 'collapsed'
+              )}
             >
-              Open Bets
-            </button>
-          </h2>
-        </div>
-        <div
-          className={cx('accordion-collapse collapse', !isCollapsed && 'show')}
-        >
-          <div className="accordion-body p-0">
-            {hasList ? (
-              <div className="open-bets-wrapper">
-                <div className="py-2 px-1">
-                  <select
-                    value={selectedIndex}
-                    onChange={(e) => setSelectedIndex(Number(e.target.value))}
-                  >
-                    {openBetsList.map((openBet, index) => (
-                      <option key={index} value={index}>
-                        {openBet.displayTitle}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <OpenBetsListBackLay
-                  openBetsValue={openBetsValue}
-                  betInfo={betInfo}
-                  timeOrder={timeOrder}
-                  isOpen={isOpen}
-                  isMobile={isMobile}
-                  onBetInfoChange={setBetInfo}
-                  onTimeOrderChange={setTimeOrder}
-                />
-              </div>
-            ) : (
-              <NoOpenBets isYellowTheme={isYellowTheme} />
+              <button
+                type="button"
+                className="accordion-button"
+                onClick={() => setIsCollapsed((prev) => !prev)}
+              >
+                Open Bets
+              </button>
+            </h2>
+          </div>
+          <div
+            className={cx(
+              'accordion-collapse collapse',
+              !isCollapsed && 'show'
             )}
+          >
+            <div className="accordion-body p-0">
+              {hasList ? (
+                <div className="open-bets-wrapper">
+                  <div className="py-2 px-1">
+                    <select
+                      value={selectedIndex}
+                      onChange={(e) => setSelectedIndex(Number(e.target.value))}
+                    >
+                      {openBetsList.map((openBet, index) => (
+                        <option key={index} value={index}>
+                          {openBet.displayTitle}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <OpenBetsListBackLay
+                    openBetsValue={openBetsValue}
+                    betInfo={betInfo}
+                    timeOrder={timeOrder}
+                    isOpen={isOpen}
+                    isMobile={isMobile}
+                    onBetInfoChange={setBetInfo}
+                    onTimeOrderChange={setTimeOrder}
+                  />
+                </div>
+              ) : (
+                <NoOpenBets isYellowTheme={isYellowTheme} />
+              )}
+            </div>
           </div>
         </div>
       </div>

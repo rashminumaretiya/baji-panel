@@ -16,7 +16,7 @@ import {
   selectSportTabs,
 } from '../store/slices/sportSlice.js'
 import { setFullScreenLoader } from '../store/slices/commonSlice.js'
-import './inplay.scss'
+import './inPlay.scss'
 
 const EventTime = {
   IN_PLAY: 'IN_PLAY',
@@ -234,30 +234,32 @@ export default function InPlay() {
   }
 
   return (
-    <div className="inplay-wrapper">
-      <div className="overflow-x-auto pb-2 inplay-tabs-wrapper">
-        <ul className="nav nav-tabs inplay-tabs" role="tablist">
-          {NAV_TABS.map((tab) => {
-            const isActive = tab.id === activeTab
-            return (
-              <li key={tab.id} className="nav-item" role="presentation">
-                <button
-                  type="button"
-                  className={`nav-link ${isActive ? ' active' : ''}`}
-                  role="tab"
-                  aria-selected={isActive}
-                  onClick={() => setActiveTab(tab.id)}
-                >
-                  <span>{t(tab.label)}</span>
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-        {isMobile && <MobileSearchEvent />}
-      </div>
-      <div className="second-part-wrapper mt-md-1">
-        {renderTabContent(activeTab)}
+    <div className="inplay-wrapper-container">
+      <div className="inplay-wrapper">
+        <div className="overflow-x-auto pb-2 inplay-tabs-wrapper">
+          <ul className="nav nav-tabs inplay-tabs" role="tablist">
+            {NAV_TABS.map((tab) => {
+              const isActive = tab.id === activeTab
+              return (
+                <li key={tab.id} className="nav-item" role="presentation">
+                  <button
+                    type="button"
+                    className={`nav-link ${isActive ? ' active' : ''}`}
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => setActiveTab(tab.id)}
+                  >
+                    <span>{t(tab.label)}</span>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+          {isMobile && <MobileSearchEvent />}
+        </div>
+        <div className="second-part-wrapper mt-md-1">
+          {renderTabContent(activeTab)}
+        </div>
       </div>
     </div>
   )

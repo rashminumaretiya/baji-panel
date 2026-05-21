@@ -5,9 +5,9 @@
   background: var(--md-black);
 
   &.yellow-theme {
-    @media screen and (max-width:767px) {
+    @media screen and (max-width: 767px) {
       border-color: #ffa10c;
-      border-bottom-width: .1875rem;
+      border-bottom-width: 0.1875rem;
       border-color: rgb(255, 161, 12);
 
       .sport-header-tabs {
@@ -17,7 +17,11 @@
         li {
           button {
             &.active {
-              background: linear-gradient(180deg, var(--md-primary-yellow) 0%, #ffa10c 100%);
+              background: linear-gradient(
+                180deg,
+                var(--md-primary-yellow) 0%,
+                #ffa10c 100%
+              );
             }
           }
         }
@@ -26,9 +30,9 @@
   }
 
   &.babu-theme {
-    @media screen and (max-width:767px) {
+    @media screen and (max-width: 767px) {
       border-color: #550b0b;
-      border-bottom-width: .1875rem;
+      border-bottom-width: 0.1875rem;
       border-color: #550b0b;
 
       .sport-header-tabs {
@@ -52,7 +56,7 @@
   }
 
   &.mcw-side-header {
-    @media screen and (max-width:767px) {
+    @media screen and (max-width: 767px) {
       border-color: #0d0d0d;
       background: linear-gradient(180deg, #e8d877 0%, #c9a43e 100%);
 
@@ -63,7 +67,7 @@
           button {
             color: #1e1e1e;
 
-            ::ng-deep svg {
+            svg {
               color: #1e1e1e;
             }
 
@@ -71,7 +75,7 @@
               background: linear-gradient(180deg, #474747 0%, #070707 100%);
               color: #f2d65e;
 
-              ::ng-deep svg {
+              svg {
                 color: #f2d65e;
               }
             }
@@ -113,7 +117,7 @@
           color: var(--white);
           margin: 2.1333333333vw 1.6vw 0 0;
 
-          ::ng-deep svg {
+          svg {
             width: 5.3333333333vw;
             height: 5.3333333333vw;
           }
@@ -144,7 +148,7 @@
               margin: 0;
             }
 
-            ::ng-deep svg {
+            svg {
               width: 3.533333vw;
               height: 3.1333333333vw;
             }
@@ -160,7 +164,7 @@
     }
   }
 
-  ::ng-deep .search-collapse {
+  .search-collapse {
     position: relative;
     border-left: 1px solid rgba(var(--white-rgb), 0.1);
 
@@ -170,7 +174,11 @@
       right: 12.8vw;
       width: 8.2666666667vw;
       height: 12.2666666667vw;
-      background-image: linear-gradient(90deg, rgba(var(--black-rgb), 0) 0%, var(--black) 110%);
+      background-image: linear-gradient(
+        90deg,
+        rgba(var(--black-rgb), 0) 0%,
+        var(--black) 110%
+      );
     }
   }
 }
