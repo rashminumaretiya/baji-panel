@@ -1,14 +1,17 @@
-import { memo, useMemo } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import { Accordion } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import {
   GAME_LIST_FILTERS,
   RACING_SPORTS,
+  SPORT_IDS,
   getSportSlug,
 } from '../../core/constant/constants.js'
 import { useIsMobile } from '../../hooks/useMediaQuery.js'
 import NoData from '../../shared/NoData.jsx'
+import { selectIsAuthenticated } from '../../store/slices/authSlice.js'
 import SvgIcon from '../SvgIcon.jsx'
 import './game-list.scss'
 
@@ -47,8 +50,9 @@ function activateOnKey(handler) {
   }
 }
 
-function MarketChips({ game }) {
+function MarketChips({ game, isAuthenticated }) {
   const { t } = useTranslation()
+  const isCricket = game.sportId === SPORT_IDS.CRICKET
   return (
     <>
       {game.isInPlay && (
@@ -58,7 +62,7 @@ function MarketChips({ game }) {
           </div>
         </span>
       )}
-      {game.isFancy && (
+      {isCricket && game.isFancy && (
         <span className="current-chip lightest-neavy ps-0">
           <span className="alarm-icon">
             <SvgIcon name="alarmIcon" />
@@ -78,14 +82,14 @@ function MarketChips({ game }) {
           </div>
         </div>
       )}
-      {game.isSportbook && (
+      {game.isSportbook && isAuthenticated && (
         <span className="wrapper orange-darkest">
           <div className="text-chip">
             <SvgIcon name="pIcon" />
           </div>
         </span>
       )}
-      {game.sportId === '4' && game.name?.toLowerCase()?.includes('srl') && (
+      {isCricket && game.name?.toLowerCase()?.includes('srl') && (
         <div className="event-related-electronic-book">
           <div className="event-related-electronic-book-icon">E</div>
           <div className="event-related-electronic-book-content">
@@ -137,12 +141,13 @@ function LoadingState() {
 export default function GameList({
   games,
   sport,
-  filterType = GAME_LIST_FILTERS.HIGHLIGHTS,
+  filterType = GAME_LIST_FILTERS.TIME,
   loading = false,
 }) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
+  const isAuthenticated = useSelector(selectIsAuthenticated)
 
   const isRacingSport = RACING_SPORTS.has(sport ?? '')
   const renderEmpty = () =>
@@ -192,19 +197,22 @@ export default function GameList({
     return Array.from(map.values())
   }, [gameListVM])
 
-  function navigateToOddsPage(game, market) {
-    if (game?.isMarketBlocked) return
-    const sportId = game?.sportId
-    const id = game?.id
-    if (!sportId || !id) return
-    const slug = getSportSlug(sportId)
-    if (isRacingSport) {
-      if (!market?.marketId) return
-      navigate(`/racing-odds/${id}/${market.marketId}/${slug}`)
-      return
-    }
-    navigate(`/odds/${id}/${slug}`)
-  }
+  const navigateToOddsPage = useCallback(
+    (game, market) => {
+      if (game?.isMarketBlocked) return
+      const sportId = game?.sportId
+      const id = game?.id
+      if (!sportId || !id) return
+      const slug = getSportSlug(sportId)
+      if (isRacingSport) {
+        if (!market?.marketId) return
+        navigate(`/racing-odds/${id}/${market.marketId}/${slug}`)
+        return
+      }
+      navigate(`/odds/${id}/${slug}`)
+    },
+    [isRacingSport, navigate],
+  )
 
   function renderDesktopGameRow(game) {
     const goToEvent = () => navigateToOddsPage(game)
@@ -231,7 +239,7 @@ export default function GameList({
                   {formatDate(game.openDate)}
                 </span>
               )}
-              <MarketChips game={game} />
+              <MarketChips game={game} isAuthenticated={isAuthenticated} />
             </div>
           </div>
           {!!game.totalMatched && (
@@ -274,7 +282,7 @@ export default function GameList({
         >
           <div>
             <div className="icon-row">
-              <MarketChips game={game} />
+              <MarketChips game={game} isAuthenticated={isAuthenticated} />
               {game.isInPlay ? (
                 <span className="text-inplay inplay">{t('common.inPlay')}</span>
               ) : (

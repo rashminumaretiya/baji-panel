@@ -121,6 +121,7 @@
     "loader": {
       "placeBet": "Placing bet please wait...",
       "pleaseWait": "Please wait...",
+      "loading": "Loading...",
       "secRemaining": "{{seconds}} sec remaining",
       "betMatched": "Bet Matched {{currency}} at odds: {{odd}}"
     },

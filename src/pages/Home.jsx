@@ -14,21 +14,15 @@ import {
 } from '../store/slices/sportSlice.js'
 import { useEventSubscription } from '../hooks/useSocket.js'
 import GameList from '../components/home/GameList.jsx'
+import {
+  DesktopGameFilter,
+  MobileGameFilter,
+} from '../components/home/GameFilter.jsx'
 import MobileSports from '../components/home/MobileSports.jsx'
 import Footer from '../components/Footer.jsx'
+import Loader from '../shared/components/Loader.jsx'
 import { GAME_LIST_FILTERS, RACING_SPORTS, SPORT_IDS } from '../core/constant/constants.js'
 import '../components/home/home.scss'
-
-const FILTER_OPTIONS = [
-  { labelKey: 'common.gameFilters.competition', value: GAME_LIST_FILTERS.COMPETITION },
-  { labelKey: 'common.gameFilters.time', value: GAME_LIST_FILTERS.TIME },
-  { labelKey: 'common.gameFilters.matched', value: GAME_LIST_FILTERS.MATCHED },
-]
-
-const MOBILE_FILTER_OPTIONS = [
-  { labelKey: 'common.gameFilters.time', value: GAME_LIST_FILTERS.TIME },
-  { labelKey: 'common.gameFilters.competition', value: GAME_LIST_FILTERS.COMPETITION },
-]
 
 const SPORT_BANNER = {
   [SPORT_IDS.SOCCER]: '/img/soccer-img.jpg',
@@ -76,9 +70,11 @@ export default function Home() {
 
   const isRacing = RACING_SPORTS.has(activeSportId ?? '')
   const sportBanner = SPORT_BANNER[activeSportId]
+  const loading = gamesStatus === 'loading'
 
   return (
     <div className="sports-landing">
+      <Loader show={loading} variant="wrapper" />
       {!isMobile ? (
         <>
           <img
@@ -87,29 +83,7 @@ export default function Home() {
             alt="Cricket Landing Image"
           />
 
-          <div className="row mx-0">
-            <div className="col-12 game-title">
-              <div>{t('titles.sportHighLights')}</div>
-              <div className="highlight-sorting">
-                <label htmlFor="viewType">{t('common.viewBy')}</label>
-                <div className="select">
-                  <select
-                    id="viewType"
-                    name="View"
-                    value={filterType}
-                    onChange={(e) => setFilterType(e.target.value)}
-                    aria-label={t('titles.highLights')}
-                  >
-                    {FILTER_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {t(opt.labelKey)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
+          <DesktopGameFilter value={filterType} onChange={setFilterType} />
 
           <div className="game-list">
             <ul className="nav nav-tabs" role="tablist">
@@ -158,7 +132,7 @@ export default function Home() {
                 games={games}
                 sport={activeSport?.id}
                 filterType={filterType}
-                loading={gamesStatus === 'loading'}
+                loading={loading}
               />
             ) : (
               <div className="game-list">
@@ -166,7 +140,7 @@ export default function Home() {
                   games={games}
                   sport={activeSport?.id}
                   filterType={filterType}
-                  loading={gamesStatus === 'loading'}
+                  loading={loading}
                 />
               </div>
             )}
@@ -175,30 +149,13 @@ export default function Home() {
       ) : (
         <>
           <MobileSports />
-          <div>
-            <h3 className="highlight text-center mb-0">{t('titles.highLights')}</h3>
-            <div className="highlight-wrapper">
-              <ul className="nav-tabs p-0 highlight-tab">
-                {MOBILE_FILTER_OPTIONS.map((opt) => (
-                  <li key={opt.value} className="nav-item">
-                    <button
-                      type="button"
-                      className={`nav-link${filterType === opt.value ? ' active' : ''}`}
-                      onClick={() => setFilterType(opt.value)}
-                    >
-                      <span>{t('sportLanding.bySport', { sport: t(opt.labelKey) })}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <MobileGameFilter value={filterType} onChange={setFilterType} />
           <div className="game-list">
             <GameList
               games={games}
               sport={activeSport?.id}
               filterType={filterType}
-              loading={gamesStatus === 'loading'}
+              loading={loading}
             />
           </div>
         </>

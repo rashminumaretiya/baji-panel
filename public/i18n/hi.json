@@ -116,6 +116,7 @@
     "loader": {
       "placeBet": "दांव लगाया जा रहा है, कृपया प्रतीक्षा करें...",
       "pleaseWait": "कृपया प्रतीक्षा करें...",
+      "loading": "लोड हो रहा है...",
       "secRemaining": "{{seconds}} सेकंड शेष",
       "betMatched": "दांव मैच्ड {{currency}} ऑड्स पर: {{odd}}"
     },

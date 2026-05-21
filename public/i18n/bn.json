@@ -116,6 +116,7 @@
     "loader": {
       "placeBet": "বেট লাগানো হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...",
       "pleaseWait": "অনুগ্রহ করে অপেক্ষা করুন...",
+      "loading": "লোড হচ্ছে...",
       "secRemaining": "{{seconds}} সেকেন্ড বাকি",
       "betMatched": "বেট ম্যাচড {{currency}} অডসে: {{odd}}"
     },

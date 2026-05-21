@@ -116,6 +116,7 @@
     "loader": {
       "placeBet": "شرط لگا رہا ہے براہ کرم انتظار کریں...",
       "pleaseWait": "برائے مہربانی انتظار کریں...",
+      "loading": "لوڈ ہو رہا ہے...",
       "secRemaining": "{{seconds}} سیکنڈ باقی",
       "betMatched": "شرط مماثل {{currency}} اختلاف میں: {{odd}}"
     },

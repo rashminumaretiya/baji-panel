@@ -1,0 +1,110 @@
+.user-loader {
+  position: relative;
+  width: 40px;
+  margin: 0 auto;
+
+  span {
+    display: block;
+    bottom: 0px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    position: absolute;
+
+    &:first-child {
+      background: var(--primary-yellow);
+      z-index: 5;
+      -webkit-animation: yellow-circle 0.6s infinite ease-in-out;
+      animation: yellow-circle 0.6s infinite ease-in-out;
+    }
+
+    &:last-child {
+      background: var(--xxl-blue);
+      left: 50%;
+      -webkit-animation: blue-circle 0.6s infinite ease-in-out;
+      animation: blue-circle 0.6s infinite ease-in-out;
+    }
+  }
+}
+
+@-webkit-keyframes yellow-circle {
+  0% { left: 0; }
+  50% { left: 50%; }
+  100% { left: 0; }
+}
+@keyframes yellow-circle {
+  0% { left: 0; }
+  50% { left: 50%; }
+  100% { left: 0; }
+}
+
+@-webkit-keyframes blue-circle {
+  0% { left: 50%; z-index: 1; }
+  49% { z-index: 1; }
+  50% { left: 0; z-index: 10; }
+  100% { left: 50%; z-index: 10; }
+}
+@keyframes blue-circle {
+  0% { left: 50%; z-index: 1; }
+  49% { z-index: 1; }
+  50% { left: 0; z-index: 10; }
+  100% { left: 50%; z-index: 10; }
+}
+
+.loader-wrapper,
+.fullscreen-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+
+  .loader-inner {
+    background-color: var(--white);
+    box-shadow: 0 5px 10px rgba(var(--black-rgb), 0.5);
+    border-radius: 10px;
+    padding: 40px 20px 20px;
+    height: 115px;
+    width: 190px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .user-loader {
+    padding-left: 6px;
+    margin-top: 15px;
+  }
+
+  .bet-place {
+    color: var(--xxl-blue);
+    margin-top: 5px;
+    font-size: 11px;
+  }
+}
+
+.fullscreen-loader {
+  position: fixed;
+  z-index: 9999;
+}
+
+.inline-loader {
+  .loader-inner {
+    align-items: center;
+    margin-top: 20px;
+  }
+  .user-loader {
+    margin-right: 72px;
+  }
+}
+
+.side-loader {
+  .loader-inner {
+    margin-top: 40px;
+  }
+  .bet-place {
+    text-align: center;
+    color: var(--white);
+    margin-top: 12px;
+  }
+}
