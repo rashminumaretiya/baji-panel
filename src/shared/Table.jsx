@@ -71,7 +71,7 @@ export default function Table({
           )}
         </tbody>
       </table>
-      {pagination && <Pagination {...pagination} />}
+      {pagination && hasData && <Pagination {...pagination} />}
     </>
   )
 }

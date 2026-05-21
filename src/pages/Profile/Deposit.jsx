@@ -361,12 +361,12 @@ export default function Deposit({ showTitle = true }) {
               </div>
             </div>
 
-            {(visiblePaymentList.length > 1 ||
-              visiblePaymentList.length === 0) && (
+            {(allowedMethods.size > 1 || allowedMethods.size === 0) && (
               <div className="form-group">
                 {showTitle && (
                   <label htmlFor="paymentType" className="asterisk">
-                    Payment Method
+                    {' '}
+                    Payment Method{' '}
                   </label>
                 )}
                 <div
