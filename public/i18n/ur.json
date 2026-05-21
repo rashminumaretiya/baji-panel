@@ -1126,5 +1126,10 @@
   },
   "myAccount": {
     "backToAccount": "Back to account"
+  },
+  "multiMarkets": {
+    "heading": "ملٹی مارکیٹس",
+    "noFollowed": "فی الحال کوئی فالو شدہ ملٹی مارکیٹس نہیں ہیں۔",
+    "addMarkets": "براہ کرم ایونٹس سے کچھ مارکیٹس شامل کریں۔"
   }
 }

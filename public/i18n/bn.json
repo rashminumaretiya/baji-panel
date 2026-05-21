@@ -1126,5 +1126,10 @@
   },
   "myAccount": {
     "backToAccount": "Back to account"
+  },
+  "multiMarkets": {
+    "heading": "মাল্টি মার্কেট",
+    "noFollowed": "বর্তমানে কোনো অনুসৃত মাল্টি মার্কেট নেই।",
+    "addMarkets": "অনুগ্রহ করে ইভেন্ট থেকে কিছু মার্কেট যোগ করুন।"
   }
 }

@@ -1126,5 +1126,10 @@
   },
   "myAccount": {
     "backToAccount": "Back to account"
+  },
+  "multiMarkets": {
+    "heading": "मल्टी मार्केट्स",
+    "noFollowed": "अभी कोई फॉलो किए गए मल्टी मार्केट्स नहीं हैं।",
+    "addMarkets": "कृपया इवेंट्स से कुछ मार्केट्स जोड़ें।"
   }
 }

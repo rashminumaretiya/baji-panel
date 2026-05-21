@@ -1132,5 +1132,10 @@
   },
   "myAccount": {
     "backToAccount": "Back to account"
+  },
+  "multiMarkets": {
+    "heading": "Multi Markets",
+    "noFollowed": "There are currently no followed multi markets.",
+    "addMarkets": "Please add some markets from events."
   }
 }
