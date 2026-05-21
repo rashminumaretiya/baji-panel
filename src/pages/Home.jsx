@@ -28,9 +28,23 @@ import { GAME_LIST_FILTERS, RACING_SPORTS } from '../core/constant/constants.js'
 import '../components/home/home.scss'
 
 const FILTER_OPTIONS = [
-  { labelKey: 'titles.highLights', value: GAME_LIST_FILTERS.HIGHLIGHTS },
-  { labelKey: 'sportLanding.competition', value: GAME_LIST_FILTERS.COMPETITION },
+  { labelKey: 'common.gameFilters.competition', value: GAME_LIST_FILTERS.COMPETITION },
+  { labelKey: 'common.gameFilters.time', value: GAME_LIST_FILTERS.TIME },
+  { labelKey: 'common.gameFilters.matched', value: GAME_LIST_FILTERS.MATCHED },
 ]
+
+const MOBILE_FILTER_OPTIONS = [
+  { labelKey: 'common.gameFilters.time', value: GAME_LIST_FILTERS.TIME },
+  { labelKey: 'common.gameFilters.competition', value: GAME_LIST_FILTERS.COMPETITION },
+]
+
+const SPORT_BANNER = {
+  1: '/img/soccer-img.jpg',
+  2: '/img/tennis-img.jpg',
+  4: '/img/cricket-img.jpg',
+  7: '/img/horse_racing_landing.webp',
+  4339: '/img/greyhound_landing.webp',
+}
 
 export default function Home() {
   const { t } = useTranslation()
@@ -50,7 +64,7 @@ export default function Home() {
   )
   useEventSubscription(visibleEventIds)
 
-  const [filterType, setFilterType] = useState(GAME_LIST_FILTERS.HIGHLIGHTS)
+  const [filterType, setFilterType] = useState(GAME_LIST_FILTERS.TIME)
   const [pinModal, setPinModal] = useState({ open: false, game: null })
 
   useEffect(() => {
@@ -112,90 +126,97 @@ export default function Home() {
     return () => clearTimeout(timerId)
   }, [activeSportId, dispatch])
 
-  const landingImage = activeSport?.id
-    ? `/img/sports/${activeSport.id}.webp`
-    : '/img/4.webp'
   const isRacing = RACING_SPORTS.has(activeSportId ?? '')
-  const showGameListTabs = !isMobile
+  const bannerSrc = SPORT_BANNER[activeSportId] ?? '/img/home_banner.jpg'
+  const titleText = isRacing
+    ? t('titles.highLights')
+    : t('titles.sportHighLights')
 
   return (
     <div className="sports-landing">
       {!isMobile ? (
-        <img
-          key={landingImage}
-          className="landing-img"
-          src={landingImage}
-          alt=""
-          onError={(e) => {
-            if (e.currentTarget.src.endsWith('/img/4.webp')) return
-            e.currentTarget.src = '/img/4.webp'
-          }}
-        />
-      ) : (
-        <MobileSports />
-      )}
+        <>
+          <img
+            className="landing-img"
+            src={bannerSrc}
+            alt="Cricket Landing Image"
+          />
 
-      {isMobile ? (
-        <div>
-          <h3 className="highlight text-center mb-0">{t('titles.highLights')}</h3>
-          <div className="highlight-wrapper">
-            <ul className="nav-tabs p-0 highlight-tab">
-              {FILTER_OPTIONS.map((opt) => (
-                <li key={opt.value} className="nav-item">
-                  <button
-                    type="button"
-                    className={`nav-link${filterType === opt.value ? ' active' : ''}`}
-                    onClick={() => setFilterType(opt.value)}
-                  >
-                    <span>{t('sportLanding.bySport', { sport: t(opt.labelKey) })}</span>
-                  </button>
-                </li>
-              ))}
+          <div className="row mx-0">
+            <div className="col-12 game-title">
+              <div>{titleText}</div>
+              {!isRacing && (
+                <div className="highlight-sorting">
+                  <label htmlFor="viewType">{t('common.viewBy')}</label>
+                  <div className="select">
+                    <select
+                      id="viewType"
+                      name="View"
+                      value={filterType}
+                      onChange={(e) => setFilterType(e.target.value)}
+                      aria-label={t('titles.highLights')}
+                    >
+                      {FILTER_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {t(opt.labelKey)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="game-list">
+            <ul className="nav nav-tabs" role="tablist">
+              {tabs.map((tab, idx) => {
+                const isActive = String(tab.id) === activeSportId
+                const navId = `ngb-nav-${idx}`
+                return (
+                  <li key={tab.id} className="nav-item" role="presentation">
+                    <button
+                      type="button"
+                      className={`nav-link${isActive ? ' active' : ''}`}
+                      id={navId}
+                      role="tab"
+                      aria-selected={isActive}
+                      aria-disabled="false"
+                      {...(isActive
+                        ? { 'aria-controls': `${navId}-panel` }
+                        : { tabIndex: -1 })}
+                      onClick={() => dispatch(setActiveSportId(tab.id))}
+                    >
+                      <span>{tab.label ? t(tab.label) : tab.name}</span>
+                    </button>
+                  </li>
+                )
+              })}
             </ul>
           </div>
-        </div>
+        </>
       ) : (
-        <div className="row mx-0">
-          <div className="col-12 game-title">
-            <span>{t('titles.sportHighLights')}</span>
-            {!isRacing && (
-              <div className="highlight-sorting">
-                <label>{t('common.viewBy')}</label>
-                <div className="select-wrap">
-                  <select
-                    value={filterType}
-                    onChange={(e) => setFilterType(e.target.value)}
-                    aria-label={t('titles.highLights')}
-                  >
-                    {FILTER_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {t(opt.labelKey)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            )}
+        <>
+          <MobileSports />
+          <div>
+            <h3 className="highlight text-center mb-0">{t('titles.highLights')}</h3>
+            <div className="highlight-wrapper">
+              <ul className="nav-tabs p-0 highlight-tab">
+                {MOBILE_FILTER_OPTIONS.map((opt) => (
+                  <li key={opt.value} className="nav-item">
+                    <button
+                      type="button"
+                      className={`nav-link${filterType === opt.value ? ' active' : ''}`}
+                      onClick={() => setFilterType(opt.value)}
+                    >
+                      <span>{t('sportLanding.bySport', { sport: t(opt.labelKey) })}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-        </div>
-      )}
-
-      {showGameListTabs && (
-        <div className="game-list">
-          <ul className="nav-tabs">
-            {tabs.map((tab) => (
-              <li key={tab.id} className="nav-item">
-                <button
-                  type="button"
-                  className={`nav-link${String(tab.id) === activeSportId ? ' active' : ''}`}
-                  onClick={() => dispatch(setActiveSportId(tab.id))}
-                >
-                  <span>{tab.label ? t(tab.label) : tab.name}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+        </>
       )}
 
       <div className="game-list">

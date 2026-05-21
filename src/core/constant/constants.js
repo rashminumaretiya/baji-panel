@@ -5,6 +5,8 @@ export const PINNABLE_SPORT_IDS = new Set(['1', '4'])
 export const GAME_LIST_FILTERS = {
   HIGHLIGHTS: 'highlights',
   COMPETITION: 'competition',
+  TIME: 'time',
+  MATCHED: 'matched',
 }
 
 export const SPORT_TAB_EXCLUDE = new Set(['parlay-market'])

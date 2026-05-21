@@ -1,5 +1,10 @@
 {
   "common": {
+    "gameFilters": {
+      "competition": "Competition",
+      "time": "Time",
+      "matched": "Matched"
+    },
     "viewBy": "View By",
     "submit": "Submit",
     "cancel": "Cancel",
@@ -283,6 +288,7 @@
       "tennis": "Tennis",
       "horseRacing": "Horse Racing",
       "greyhoundRacing": "Greyhound Racing",
+      "esoccer": "E-Soccer",
       "multiMarket": "Multi Market"
     }
   },

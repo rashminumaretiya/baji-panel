@@ -21,9 +21,8 @@
 .game-detail-header {
   display: flex;
   align-items: center;
-  background-color: var(--xxs-text-color, #ced5da);
+  background-color: var(--xl-th-bg, #dddcd6);
   justify-content: end;
-  box-shadow: inset 0 2px 0 rgba(var(--black-rgb, 0, 0, 0), 0.1);
 
   @media screen and (max-width: 991px) {
     box-shadow: none;
@@ -262,13 +261,6 @@
   }
 }
 
-// ─── Header "Matched" label ───────────────────────────────────────────────────
-.heading-matched {
-  font-size: 12px;
-  color: var(--dark);
-  white-space: nowrap;
-}
-
 // ─── Total matched per row ────────────────────────────────────────────────────
 .total-matched {
   font-size: 11px;
@@ -466,11 +458,12 @@
   }
 }
 
-.game-wrap {
+.game-wrap,
+.mobile-detail {
   background-color: var(--white);
 
   .accordion-header {
-    background: #ced5da;
+    background: var(--xxs-text-color);
     padding-left: 7px;
 
     .accordion-button,
@@ -582,22 +575,6 @@
 .game-wrap {
   .accordion {
     border-bottom: 1px solid var(--light-bg);
-  }
-
-  .ngb-accordion-header {
-    background: var(--xxs-text-color);
-    padding-left: 7px;
-
-    button {
-      color: var(--dark);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 6px 14px;
-      width: 100%;
-      text-align: left;
-      background: none;
-      border: none;
-    }
   }
 
   .accordion-body {

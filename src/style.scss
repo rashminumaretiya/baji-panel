@@ -644,7 +644,7 @@ ngb-datepicker.dropdown-menu {
   }
 }
 
-.accordion {
+:where(.accordion) {
   .accordion-item {
     border: none;
     margin-bottom: 15px;

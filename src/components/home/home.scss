@@ -1,3 +1,11 @@
+.landing-img {
+  height: 194px;
+  width: 100%;
+  object-fit: cover;
+  margin-top: 1px;
+  margin-bottom: 16px;
+}
+
 .sports-landing {
   .nav-tabs {
     border-radius: 0 !important;
@@ -6,28 +14,28 @@
     border-bottom: none;
     margin: 0;
     padding: 0 10px 1px;
-    background: var(--nav-tab-primary-bg);
+    background-color: var(--xl-dark-green, #14805e);
 
     .nav-item {
       flex: none;
       margin-left: 0;
 
       .nav-link {
-        background-color: #3a4f5f;
-        border: 1px solid #243a48;
+        background-color: var(--xts-light-bg, #3a4f5f);
+        border: 1px solid var(--xxl-blue, #243a48);
         border-radius: 4px 4px 0 0;
         width: 130px;
         font-size: 12px;
         color: var(--white);
         line-height: 21px;
         font-weight: 400;
-        padding: 4px 12px;
-        box-shadow: inset 0px 7px 2px -7px #cccccc;
+        padding: 0;
+        box-shadow: inset 0px 7px 2px -7px var(--xts-gray, #cccccc);
 
         &.active {
-          background-color: #dddcd6;
+          background-color: var(--xl-th-bg, #dddcd6);
           color: var(--black);
-          border-color: #dddcd6;
+          border-color: var(--xl-th-bg, #dddcd6);
           box-shadow: inset 0px 7px 2px -7px var(--white);
         }
       }
@@ -54,7 +62,7 @@
         cursor: default;
       }
 
-      .select-wrap {
+      .select {
         position: relative;
 
         select {
@@ -106,7 +114,7 @@
   .sports-landing {
     .highlight {
       padding: 0 1.8666666667vw;
-      background-image: linear-gradient(-180deg, #2e4b5e 0%, #243a48 82%);
+      background-image: linear-gradient(-180deg, var(--xl-blue, #2e4b5e) 0%, var(--xxl-blue, #243a48) 82%);
       color: var(--white);
       font-size: 3.7333333333vw;
       line-height: 2.2;
@@ -121,8 +129,8 @@
     }
 
     .highlight-tab {
-      background: #e3e3e3;
-      box-shadow: inset 0 1px 3px 0 rgba(var(--dark-black-lg), 0.15);
+      background: var(--light-xl-bg, #e3e3e3);
+      box-shadow: inset 0 1px 3px 0 rgba(var(--black-rgb), 0.15);
       border-radius: 1.6vw !important;
       width: 80%;
       padding: 0.2666666667vw;
@@ -154,8 +162,8 @@
 
           &.active {
             background-color: var(--white);
-            color: #0074c4;
-            box-shadow: 0 0 3px 0 rgba(var(--dark-black-lg), 0.15);
+            color: var(--active-blue, #0074c4);
+            box-shadow: 0 0 3px 0 rgba(var(--black-rgb), 0.15);
           }
         }
       }
@@ -163,29 +171,57 @@
   }
 }
 
-.yellow-theme .sports-landing {
-  .game-title {
-    background: var(--fullmarket-highlight-bg, #ffb80c);
-    color: inherit;
+.yellow-theme {
+  .landing-img {
+    @media screen and (min-width: 1441px) {
+      height: 257.38px;
+    }
 
-    .highlight-sorting label,
-    .highlight-sorting select {
+    @media screen and (max-width: 1440px) {
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  .sports-landing {
+    .nav-tabs {
+      background: linear-gradient(180deg, #ffb80c 15%, #ffa00c 100%);
+    }
+
+    .game-title {
+      background: var(--fullmarket-highlight-bg, #ffb80c);
       color: inherit;
 
-      &:focus-visible {
-        outline: 0;
+      .highlight-sorting {
+        label,
+        select {
+          color: inherit;
+
+          &:focus-visible {
+            outline: 0;
+          }
+        }
       }
     }
   }
 
-  .nav-tabs {
-    background: var(
-      --fullmarket-highlight-tab,
-      linear-gradient(
-        180deg,
-        var(--fullmarket-highlight-tab-to, #ffb80c) 15%,
-        var(--fullmarket-highlight-tab-from, #ffa00c) 100%
-      )
-    );
+  @media screen and (max-width: 787px) {
+    .sports-landing {
+      .highlight-wrapper {
+        margin-bottom: 3px;
+      }
+
+      .highlight-tab {
+        box-shadow: none;
+      }
+    }
+  }
+}
+
+.mcv-yellow-theme {
+  .sports-landing {
+    .nav-tabs {
+      background: linear-gradient(180deg, #e5ca3a 15%, #cea30f 100%);
+    }
   }
 }

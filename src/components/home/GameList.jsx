@@ -20,7 +20,20 @@ function formatDate(iso) {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return ''
   const pad = (x) => String(x).padStart(2, '0')
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+  const now = new Date()
+  const tomorrow = new Date(now)
+  tomorrow.setDate(now.getDate() + 1)
+  const sameDay = (a, b) => a.toDateString() === b.toDateString()
+  const time12 = () => {
+    let h = d.getHours()
+    const m = pad(d.getMinutes())
+    const ampm = h >= 12 ? 'PM' : 'AM'
+    h = h % 12 || 12
+    return `${pad(h)}:${m} ${ampm}`
+  }
+  if (sameDay(d, now)) return time12()
+  if (sameDay(d, tomorrow)) return `Tomorrow ${time12()}`
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
 }
 
 function activateOnKey(handler) {
@@ -122,14 +135,9 @@ export default function GameList({
 
   const gameListVM = useMemo(() => {
     if (!games?.length) return []
-    // eslint-disable-next-line react-hooks/purity
-    const now = Date.now()
     return games
       .map((g) => {
-        const markets = (g.markets ?? []).map((m) => ({
-          ...m,
-          isInPlay: m.isInPlay || new Date(m.marketStartTime).getTime() < now,
-        }))
+        const markets = g.markets ?? []
         return {
           id: g.event?.id ?? '',
           name: g.event?.name ?? '',
@@ -303,7 +311,6 @@ export default function GameList({
           <Accordion.Item eventKey={game.id} key={game.id}>
             <Accordion.Header>
               <span className="racing-event-name">{game.name}</span>
-              <span className="ms-2 time">{formatDate(game.openDate)}</span>
             </Accordion.Header>
             <Accordion.Body>
               {game.markets.length ? (
@@ -369,10 +376,10 @@ export default function GameList({
     <>
       {gameListVM.length > 0 && (
         <div className="game-detail-header">
-          <div className="pe-1 heading-matched">{t('markets.matched')}</div>
+          <div className="pe-1">{t('markets.matched')}</div>
           <div className="game-detail-inner">
             <div className="heading">1</div>
-            <div className="heading">X</div>
+            <div className="heading">x</div>
             <div className="heading">2</div>
             <div className="data-chip" />
           </div>
