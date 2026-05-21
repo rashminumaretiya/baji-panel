@@ -195,13 +195,54 @@ export const createCatopayWithdrawRequest = createAsyncThunk(
 )
 
 // ─── Withdraw History ───────────────────────────────────────────────────
-// GET /user/sw-request
+// Mirrors baji-exchange-frontend withdraw-history.component.ts → getWithdrawHistory:
+// stamps a payment-method `<img>` HTML string, hoists nested transaction id,
+// formats remainingAmount, and prepares the "View Note" link cell.
+const WITHDRAW_PAYMENT_IMAGES = {
+  bkash: '/img/payment/BKash_logo.svg',
+  rocket: '/img/payment/rocket.png',
+  nagad: '/img/payment/Nagad.jpeg',
+  cellfin: '/img/payment/Cellfin.webp',
+  upay: '/img/payment/Upay.png',
+}
+
+function mapWithdrawHistoryRows(rows) {
+  if (!Array.isArray(rows)) return []
+  return rows.map((row) => {
+    const method = String(row?.paymentType || '').toLowerCase()
+    const img = WITHDRAW_PAYMENT_IMAGES[method] || ''
+    return {
+      ...row,
+      paymentType: img
+        ? `<img class="payment-img" src="${img}" alt="payment_image">`
+        : '',
+      remainingAmount:
+        typeof row?.remainingAmount === 'number'
+          ? row.remainingAmount.toFixed(2)
+          : row?.remainingAmount,
+      transactionId: row?.transaction?.transaction_id,
+      reasonTemp: row?.reason
+        ? `<a class="rejected-reason">View Note</a>`
+        : '',
+    }
+  })
+}
+
+// GET /sw-request — api.mcv88.live path (Archive-style).
+// baji-exchange-frontend production uses `user/sw-request` on api.1ten365.live.
+// Token attached explicitly (same pattern used by fetchWithdrawDetails).
 export const fetchWithdrawalHistory = createAsyncThunk(
   'account/fetchWithdrawalHistory',
-  async (params, { rejectWithValue }) => {
+  async (params, { getState, rejectWithValue }) => {
+    const token = getState().auth?.user?.token
+    if (!token) return rejectWithValue({ message: 'Not authenticated' })
     try {
-      const res = await http.get('user/sw-request', { params })
-      return pageFromRes(res)
+      const res = await http.get('sw-request', {
+        params,
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const page = pageFromRes(res)
+      return { ...page, data: mapWithdrawHistoryRows(page.data) }
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
