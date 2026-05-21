@@ -22,16 +22,16 @@ function validate(values, limits) {
   const errors = {}
   const pbuStr = String(values.pbu ?? '').trim()
   if (!pbuStr) errors.pbu = 'Amount is required'
-  else if (!onlyDigitsRegex.test(pbuStr)) errors.pbu = 'Amount is invalid'
+  else if (!onlyDigitsRegex.test(pbuStr)) errors.pbu = 'Enter valid amount'
   else {
     const value = Number(pbuStr)
-    if (value < 1) errors.pbu = 'Amount must be at least 1'
+    if (value < 1) errors.pbu = 'Amount must be greater than 0'
     else if (limits?.withdrawMinLimit && value < limits.withdrawMinLimit)
       errors.pbu = `Amount must be at least ${limits.withdrawMinLimit}`
     else if (limits?.withdrawMaxLimit && value > limits.withdrawMaxLimit)
       errors.pbu = `Amount must not exceed ${limits.withdrawMaxLimit}`
   }
-  if (!values.paymentType) errors.paymentType = 'Payment Method is required'
+  if (!values.paymentType) errors.paymentType = 'Payment method is required'
   if (!values.currency) errors.currency = 'Currency is required'
   if (!values.accountNumber) errors.accountNumber = 'Account No is required'
   return errors
@@ -54,6 +54,8 @@ export default function Withdraw({ showTitle = true }) {
     ? details.data.swRequestGateway.methods
     : WITHDRAW_PAYMENT_METHODS
 
+  // Currency picker: BDT-only wallets see ['BDT'], else all CURRENCY_TYPE values
+  // (mirrors Angular's `CURRENCY_TYPE: this.currency() === 'BDT' ? ['BDT'] : Object.values(CURRENCY_TYPE)`).
   const currencyOptions =
     userCurrency === CURRENCY_TYPE.BDT
       ? [CURRENCY_TYPE.BDT]
@@ -74,24 +76,22 @@ export default function Withdraw({ showTitle = true }) {
     }
   }, [dispatch])
 
-  // Auto-pick the first account number once details land (matches Angular).
-  useEffect(() => {
-    const accounts = details.data?.accountNumbers
-    if (accounts?.length && !values.accountNumber) {
-      setValues((prev) => ({ ...prev, accountNumber: accounts[0] }))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [details.data])
+  // Account-number defaults: derived (not synced via effect) so we don't
+  // violate React's "you might not need an effect" rule. The user's selection
+  // wins; otherwise fall back to the first account from the API.
+  const firstAccount = details.data?.accountNumbers?.[0] || ''
+  const effectiveAccountNumber = values.accountNumber || firstAccount
 
-  // Reset form on a successful withdraw request.
+  // Reset form on a successful withdraw request. Effect is legitimate here —
+  // there's no derivation that can "clear" form state back to defaults.
   useEffect(() => {
     if (submit.status === 'succeeded') {
-      const firstAccount = details.data?.accountNumbers?.[0] || ''
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setValues({
         pbu: '',
         paymentType: '',
         currency: CURRENCY_TYPE.BDT,
-        accountNumber: firstAccount,
+        accountNumber: '',
       })
       setTouched({})
       dispatch(resetWithdrawRequest())
@@ -99,7 +99,10 @@ export default function Withdraw({ showTitle = true }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submit.status])
 
-  const errors = validate(values, limits)
+  const errors = validate(
+    { ...values, accountNumber: effectiveAccountNumber },
+    limits,
+  )
   const submitting = submit.status === 'loading'
 
   const setField = (key, value) =>
@@ -118,14 +121,18 @@ export default function Withdraw({ showTitle = true }) {
     })
     if (Object.keys(errors).length || submitting) return
 
+    // api.mcv88.live's `/sw-request` validator expects the field name
+    // `amount`. baji-exchange-frontend keeps the form-control as `pbu`
+    // and ships it as-is — but their backend accepts that. We rename
+    // here so the body matches what this backend requires.
     const payload = {
-      pbu: Number(values.pbu),
+      amount: Number(values.pbu),
       paymentType: values.paymentType,
       currency: values.currency,
-      accountNumber: values.accountNumber,
+      accountNumber: effectiveAccountNumber,
     }
 
-    // Match Angular: catopay gateway → /catopay/refund, else → /user/sw-request.
+    // Match Angular: catopay gateway → /catopay/refund, else → /sw-request.
     if (paymentGateway === 'catopay') {
       dispatch(createCatopayWithdrawRequest(payload))
     } else {
@@ -147,29 +154,29 @@ export default function Withdraw({ showTitle = true }) {
         <form onSubmit={handleSubmit} noValidate>
           <div className="d-flex flex-column">
             <div className="form-group mb-3">
-              <div className="d-flex align-items-center justify-content-between mb-1">
-                <label htmlFor="pbu" className="asterisk">
-                  {values.currency} amount
-                </label>
-                <span className="fw-bold">
-                  Min: {limits.withdrawMinLimit} | Max: {limits.withdrawMaxLimit}
-                </span>
+              <label htmlFor="pbu" className="asterisk">
+                {values.currency} amount
+              </label>
+              <div>
+                <input
+                  id="pbu"
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter amount"
+                  value={values.pbu}
+                  onChange={(event) => setField('pbu', event.target.value)}
+                  onBlur={() => markTouched('pbu')}
+                />
+                {showError('pbu') && (
+                  <span className="error">{errors.pbu}</span>
+                )}
               </div>
-
-              <input
-                id="pbu"
-                type="text"
-                className="form-control"
-                placeholder="Enter amount"
-                value={values.pbu}
-                onChange={(event) => setField('pbu', event.target.value)}
-                onBlur={() => markTouched('pbu')}
-              />
-              {showError('pbu') && <span className="error">{errors.pbu}</span>}
             </div>
 
             <div className="form-group mb-3">
-              <label className="asterisk">Payment Method</label>
+              <label htmlFor="paymentMethod" className="asterisk">
+                Payment Method
+              </label>
               <div className="d-flex payment-methods-cards">
                 {paymentMethods.map((method) => {
                   const id = method.value ?? method.id
@@ -194,7 +201,7 @@ export default function Withdraw({ showTitle = true }) {
                         className="form-check-label"
                         htmlFor={providerName}
                       >
-                        {icon && <img src={icon} alt={providerName} />}
+                        {icon && <img src={icon} alt="method" />}
                         <span className="text-center">{providerName}</span>
                       </label>
                     </div>
@@ -207,16 +214,18 @@ export default function Withdraw({ showTitle = true }) {
             </div>
 
             <div className="form-group mb-3">
-              <label htmlFor="currency" className="asterisk">
+              <label htmlFor="paymentType" className="asterisk">
                 Currency
               </label>
               <select
-                id="currency"
                 className="form-select"
                 value={values.currency}
                 onChange={(event) => setField('currency', event.target.value)}
                 onBlur={() => markTouched('currency')}
               >
+                <option value="" disabled>
+                  Select currency
+                </option>
                 {currencyOptions.map((c) => (
                   <option key={c} value={c}>
                     {c}
@@ -228,51 +237,48 @@ export default function Withdraw({ showTitle = true }) {
               )}
             </div>
 
-            <div className="form-group my-1">
-              <label htmlFor="accountNumber" className="asterisk">
-                Account No.
+            <div className="form-group mb-3">
+              <label htmlFor="AccountNo" className="asterisk">
+                Account No.{' '}
               </label>
-              {details.data?.accountNumbers?.length ? (
-                <select
-                  id="accountNumber"
-                  className="form-select"
-                  value={values.accountNumber}
-                  onChange={(event) =>
-                    setField('accountNumber', event.target.value)
-                  }
-                  onBlur={() => markTouched('accountNumber')}
-                >
-                  {details.data.accountNumbers.map((a) => (
-                    <option key={a} value={a}>
-                      {a}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  id="accountNumber"
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter account no."
-                  value={values.accountNumber}
-                  onChange={(event) =>
-                    setField('accountNumber', event.target.value)
-                  }
-                  onBlur={() => markTouched('accountNumber')}
-                />
-              )}
-              {showError('accountNumber') && (
-                <span className="error">{errors.accountNumber}</span>
-              )}
+              <div className="">
+                {details.data?.accountNumbers?.length ? (
+                  <select
+                    className="form-select"
+                    value={effectiveAccountNumber}
+                    onChange={(event) =>
+                      setField('accountNumber', event.target.value)
+                    }
+                    onBlur={() => markTouched('accountNumber')}
+                  >
+                    {details.data.accountNumbers.map((a) => (
+                      <option key={a} value={a}>
+                        {a}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    id="accountNumber"
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter account no."
+                    value={effectiveAccountNumber}
+                    onChange={(event) =>
+                      setField('accountNumber', event.target.value)
+                    }
+                    onBlur={() => markTouched('accountNumber')}
+                  />
+                )}
+                {showError('accountNumber') && (
+                  <span className="error">{errors.accountNumber}</span>
+                )}
+              </div>
             </div>
-
-            {submit.status === 'failed' && submit.error && (
-              <span className="error mt-2">{submit.error}</span>
-            )}
 
             <button
               type="submit"
-              className="btn withdraw-submit mt-3"
+              className="btn btn-primary make-payment"
               disabled={submitting}
             >
               Withdraw

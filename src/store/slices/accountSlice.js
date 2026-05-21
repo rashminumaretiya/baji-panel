@@ -134,12 +134,24 @@ export const sendDepositComplaint = createAsyncThunk(
 )
 
 // ─── Withdraw ───────────────────────────────────────────────────────────
-// GET /user/sw-request-details
+// GET /sw-request/details — api.mcv88.live path (Archive-style).
+// baji-exchange-frontend production points at `user/sw-request-details`
+// on api.1ten365.live; the path differs per backend.
+//
+// Note: the request-header interceptor (core/interceptor/header-interceptor.js)
+// is supposed to attach the Bearer token automatically. In this codebase that
+// path was returning "errors.TOKEN_REQUIRED", so we read the token from state
+// and pass it explicitly here — same pattern other Profile pages use
+// (BetsComplaints, AccountStatement, BalanceOverview, Profile).
 export const fetchWithdrawDetails = createAsyncThunk(
   'account/fetchWithdrawDetails',
-  async (_, { rejectWithValue }) => {
+  async (_, { getState, rejectWithValue }) => {
+    const token = getState().auth?.user?.token
+    if (!token) return rejectWithValue({ message: 'Not authenticated' })
     try {
-      const res = await http.get('user/sw-request-details')
+      const res = await http.get('sw-request/details', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       return res.data?.data ?? null
     } catch (err) {
       return rejectWithValue(rejectErr(err))
@@ -147,13 +159,18 @@ export const fetchWithdrawDetails = createAsyncThunk(
   },
 )
 
-// POST /user/sw-request → default gateway.
+// POST /sw-request → default gateway on api.mcv88.live (Archive-style path).
+// baji-exchange-frontend production uses `user/sw-request` on api.1ten365.live.
+// Token attached explicitly (same pattern used by fetchWithdrawDetails and
+// other Profile thunks in this codebase).
 export const createWithdrawRequest = createAsyncThunk(
   'account/createWithdrawRequest',
-  async (payload, { rejectWithValue }) => {
+  async (payload, { getState, rejectWithValue }) => {
+    const token = getState().auth?.user?.token
+    if (!token) return rejectWithValue({ message: 'Not authenticated' })
     try {
-      const res = await http.post('user/sw-request', payload, {
-        headers: { hideError: 'true' },
+      const res = await http.post('sw-request', payload, {
+        headers: { Authorization: `Bearer ${token}`, hideError: 'true' },
       })
       return res.data?.data ?? null
     } catch (err) {

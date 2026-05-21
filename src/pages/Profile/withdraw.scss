@@ -1,69 +1,30 @@
+// Ported verbatim from
+// baji-exchange-frontend/src/app/features/components/account/payment-wrapper/withdraw/withdraw.component.scss
 .form-group {
   label {
     font-size: 14px;
-    margin-bottom: 6px;
-    color: #1e1e1e;
-    display: block;
+    margin-bottom: 3px;
   }
 
-  .form-control,
-  .form-select {
-    border: 1px solid var(--input-group-border);
-    border-radius: 4px;
-    padding: 8px 12px;
-    font-size: 14px;
-    background-color: var(--white);
-
+  .form-control {
     &:focus {
-      border-color: var(--dark-gray);
-      box-shadow: none;
+      border-color: var(--light-gray);
     }
-  }
-
-  .error {
-    display: block;
-    margin-top: 4px;
-    color: var(--red);
-    font-size: 12px;
-  }
-}
-
-.withdraw-submit {
-  background-color: var(--primary);
-  color: var(--white);
-  font-weight: 700;
-  font-size: 14px;
-  border: none;
-  border-radius: 4px;
-  padding: 10px;
-  width: 100%;
-
-  &:hover,
-  &:focus {
-    background-color: var(--xxs-primary);
-    color: var(--white);
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
   }
 }
 
 .form-select {
+  padding: 4px 12px;
   font-size: 14px;
-
-  @media screen and (max-width: 767px) {
-    padding: 2.66667vw 1.86667vw;
-    border: 1px solid var(--dark-md-gray);
-  }
 }
 
 .payment-methods-cards {
+  // margin-bottom: 14px;
   gap: 10px;
 
   @media screen and (max-width: 767px) {
     gap: 4px;
+    // margin-bottom: 3.256vw;
   }
 
   .form-check {
@@ -91,7 +52,7 @@
       box-shadow: none;
 
       &:checked {
-        border: 1px solid #00bb80;
+        border: 1px solid var(--primary-yellow);
       }
     }
 
@@ -103,6 +64,12 @@
       padding: 8px;
       border-radius: 5px;
       white-space: nowrap;
+
+      @media screen and (max-width: 767px) {
+        background-color: #262626;
+        padding: 1.86vw;
+        border-radius: 1.163vw;
+      }
 
       img {
         height: 40px;
@@ -124,16 +91,6 @@
           font-size: 3.256vw;
           margin-top: 1.163vw;
         }
-      }
-    }
-  }
-}
-
-.mcv-yellow-theme {
-  .form-check {
-    input {
-      &:checked {
-        border: 1px solid var(--primary-yellow);
       }
     }
   }
