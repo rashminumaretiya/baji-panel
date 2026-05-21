@@ -8,8 +8,12 @@ import './i18n/index.js'
 
 import { autoLoginFromUrlToken } from './store/slices/authSlice.js'
 import { setFullScreenLoader } from './store/slices/commonSlice.js'
+import { bootstrapHttp } from './core/http/bootstrap.js'
+import { bootstrapSocket } from './core/socket/bootstrap.js'
 import App from './App.jsx'
 
+bootstrapHttp()
+bootstrapSocket()
 
 
 // SSO: if the URL carries ?token=..., auto-login that user (mirrors app.ts).

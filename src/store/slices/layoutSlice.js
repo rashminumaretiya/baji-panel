@@ -5,8 +5,8 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   // First URL segment whitelist that triggers MainLayout's sport + right sidebars.
   // Mirrors Angular's layoutedRoutes; extended with the React app's existing
-  // page slugs (highlight, cricket, soccer, tennis) so they get the same shell.
-  layoutedRoutes: ['', 'inplay', 'game-details', 'sports', 'highlight', 'cricket', 'soccer', 'tennis'],
+  // page slugs (cricket, soccer, tennis) so they get the same shell.
+  layoutedRoutes: ['', 'inplay', 'game-details', 'sports', 'cricket', 'soccer', 'tennis'],
   domainConfig: null,
   banners: [],
   footerData: null,

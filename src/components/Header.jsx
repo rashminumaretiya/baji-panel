@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -72,7 +71,7 @@ export default function Header({ logo = SITE_LOGO, isStreamAvailable = false }) 
     setTimeout(() => setIsBalanceRefresh(false), 2000)
   }
 
-  const navigateToHome = () => navigate('/highlight')
+  const navigateToHome = () => navigate('/')
   const openBetsClick = () => setShowBets(true)
   const toggleLiveStream = () => setIsPlayLiveStream((v) => !v)
   const openMobileStake = (e) => {

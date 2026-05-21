@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Overlay, Popover } from 'react-bootstrap'
@@ -7,7 +6,7 @@ import Stake from './Stake.jsx'
 import './sub-header.scss'
 
 const PAGES = [
-  { label: 'Home', url: '/highlight' },
+  { label: 'Home', url: '/' },
   { label: 'In-Play', url: '/in-play' },
   { label: 'Multi Markets', url: '/multi-markets', isHidden: true },
   { label: 'Cricket', url: '/cricket', isCount: true, count: 20 },
@@ -18,9 +17,6 @@ const PAGES = [
 ]
 
 function isTabActive(pathname, url) {
-  if (url === '/highlight') {
-    return pathname === '/highlight' || pathname === '/'
-  }
   return pathname === url
 }
 

@@ -1,9 +1,9 @@
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './layouts/Layout.jsx'
 import MyAccountLayout from './layouts/MyAccountLayout.jsx'
 import ResultLayout from './layouts/ResultLayout.jsx'
 import Cricket from './pages/Cricket.jsx'
-import Highlights from './pages/Highlights.jsx'
 import InPlay from './pages/InPlay.jsx'
 import IplWinner from './pages/IplWinner.jsx'
 import MultiMarkets from './pages/MultiMarkets.jsx'
@@ -21,12 +21,26 @@ import Result from './pages/Result.jsx'
 import Soccer from './pages/Soccer.jsx'
 import Tennis from './pages/Tennis.jsx'
 
+const Home = lazy(() => import('./pages/Home.jsx'))
+
 function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route index element={<Highlights />} />
-        <Route path="highlight" element={<Highlights />} />
+        <Route
+          path="/"
+          element={
+            <Suspense
+              fallback={
+                <div className="d-flex align-items-center justify-content-center p-5">
+                  Loading…
+                </div>
+              }
+            >
+              <Home />
+            </Suspense>
+          }
+        />
         <Route path="cricket" element={<Cricket />} />
         <Route path="soccer" element={<Soccer />} />
         <Route path="tennis" element={<Tennis />} />
@@ -53,7 +67,7 @@ function App() {
         <Route path="withdraw-history" element={<WithdrawHistory />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/highlight" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }

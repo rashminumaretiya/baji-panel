@@ -1,5 +1,6 @@
 // Ported from sbex-user-fe/src/app/shared/components/sports-sidebar/sports-sidebar.html
 // Phase 2 TODO: full RACING_SPORTS list from core/constants.
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -9,9 +10,8 @@ import {
   selectSidebarSports,
   setActiveSportId,
 } from '../../../store/slices/sportSlice.js'
+import { RACING_SPORTS } from '../../../core/constant/constants.js'
 import './sports-sidebar.scss'
-
-const RACING_SPORTS = new Set(['7', '4339'])
 
 function parseGameDetails(pathname) {
   const m = pathname.match(/^\/game-details\/([^/]+)\/([^/]+)(?:\/([^/?]+))?/)

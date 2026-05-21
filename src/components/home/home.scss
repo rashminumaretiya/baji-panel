@@ -1,0 +1,191 @@
+.sports-landing {
+  .nav-tabs {
+    border-radius: 0 !important;
+    gap: 5px;
+    justify-content: start;
+    border-bottom: none;
+    margin: 0;
+    padding: 0 10px 1px;
+    background: var(--nav-tab-primary-bg);
+
+    .nav-item {
+      flex: none;
+      margin-left: 0;
+
+      .nav-link {
+        background-color: #3a4f5f;
+        border: 1px solid #243a48;
+        border-radius: 4px 4px 0 0;
+        width: 130px;
+        font-size: 12px;
+        color: var(--white);
+        line-height: 21px;
+        font-weight: 400;
+        padding: 4px 12px;
+        box-shadow: inset 0px 7px 2px -7px #cccccc;
+
+        &.active {
+          background-color: #dddcd6;
+          color: var(--black);
+          border-color: #dddcd6;
+          box-shadow: inset 0px 7px 2px -7px var(--white);
+        }
+      }
+    }
+  }
+
+  .game-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 32px;
+
+    .highlight-sorting {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px;
+
+      label {
+        font-size: 12px;
+        color: var(--white);
+        white-space: nowrap;
+        margin-bottom: 0;
+        cursor: default;
+      }
+
+      .select-wrap {
+        position: relative;
+
+        select {
+          width: 108px;
+          height: 23px;
+          border: 1px solid;
+          border-color: rgba(var(--black-rgb), 0.4);
+          box-shadow: inset 0 1px rgba(var(--white-rgb), 0.5);
+          border-radius: 4px;
+          background: rgba(var(--white-rgb), 0.2);
+          margin-right: 2px;
+          margin-left: 7px;
+          display: inline-block;
+          color: var(--white);
+          appearance: none;
+          line-height: 14px;
+          padding-left: 4px;
+          font-size: 12px;
+
+          option {
+            background-color: var(--dark-black);
+            color: var(--white);
+          }
+        }
+
+        &::after {
+          content: '';
+          position: absolute;
+          right: 7px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 0;
+          height: 0;
+          border-left: 4px solid transparent;
+          border-right: 4px solid transparent;
+          border-top: 5px solid var(--white);
+          pointer-events: none;
+        }
+      }
+    }
+  }
+
+  .game-list {
+    margin-top: 0;
+  }
+}
+
+@media screen and (max-width: 787px) {
+  .sports-landing {
+    .highlight {
+      padding: 0 1.8666666667vw;
+      background-image: linear-gradient(-180deg, #2e4b5e 0%, #243a48 82%);
+      color: var(--white);
+      font-size: 3.7333333333vw;
+      line-height: 2.2;
+      font-weight: 700;
+    }
+
+    .highlight-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 10.6666666667vw;
+    }
+
+    .highlight-tab {
+      background: #e3e3e3;
+      box-shadow: inset 0 1px 3px 0 rgba(var(--dark-black-lg), 0.15);
+      border-radius: 1.6vw !important;
+      width: 80%;
+      padding: 0.2666666667vw;
+      height: -moz-fit-content;
+      height: fit-content;
+      margin: 0 auto;
+
+      .nav-item {
+        flex: 1;
+        font-size: 3.2vw;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .nav-link {
+          height: 8vw;
+          width: calc(100% - 0.5vw);
+          background-color: transparent;
+          color: var(--black);
+          border-radius: 1.3333333333vw;
+          padding: 0;
+          margin-bottom: 0;
+          font-size: 3.2vw;
+          line-height: 3.2vw;
+          border-color: transparent;
+          margin: 0.25vw;
+          font-weight: 600;
+
+          &.active {
+            background-color: var(--white);
+            color: #0074c4;
+            box-shadow: 0 0 3px 0 rgba(var(--dark-black-lg), 0.15);
+          }
+        }
+      }
+    }
+  }
+}
+
+.yellow-theme .sports-landing {
+  .game-title {
+    background: var(--fullmarket-highlight-bg, #ffb80c);
+    color: inherit;
+
+    .highlight-sorting label,
+    .highlight-sorting select {
+      color: inherit;
+
+      &:focus-visible {
+        outline: 0;
+      }
+    }
+  }
+
+  .nav-tabs {
+    background: var(
+      --fullmarket-highlight-tab,
+      linear-gradient(
+        180deg,
+        var(--fullmarket-highlight-tab-to, #ffb80c) 15%,
+        var(--fullmarket-highlight-tab-from, #ffa00c) 100%
+      )
+    );
+  }
+}

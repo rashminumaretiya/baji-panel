@@ -1,0 +1,679 @@
+// Local CSS custom properties (ported from Angular component scope block)
+:root {
+  --dark: var(--header-primary);
+  --light-green: var(--kelly-green);
+  --sm-white: #c5d0d8;
+  --dark-green: var(--avocado-green);
+  --light-bg: var(--platinum-grey);
+  --hover-bg: #eff2f2;
+  --lg-yellow: var(--primary-yellow);
+  --lg-blue-bg: #1a8ee1;
+  --lg-red-bg: #f4496d;
+  --white-rgb: 255, 255, 255;
+  --black-rgb: 0, 0, 0;
+  --dark-grey-md: var(--dark-gray);
+  --xxs-text-color: #ced5da;
+  --sm-text-color: #7e97a7;
+  --hover-color: #eff2f2;
+}
+
+// ─── Header row (1 / X / 2) ──────────────────────────────────────────────────
+.game-detail-header {
+  display: flex;
+  align-items: center;
+  background-color: var(--xxs-text-color, #ced5da);
+  justify-content: end;
+  box-shadow: inset 0 2px 0 rgba(var(--black-rgb, 0, 0, 0), 0.1);
+
+  @media screen and (max-width: 991px) {
+    box-shadow: none;
+    justify-content: start;
+    padding-left: 8px;
+  }
+
+  .game-detail-inner {
+    display: flex;
+    align-items: center;
+    max-width: 40%;
+    width: 100%;
+  }
+
+  .data-chip {
+    min-width: 30px;
+  }
+
+  .heading {
+    color: var(--dark);
+    flex: 1;
+    margin: 0 4px;
+    text-align: center;
+    padding: 4px 0;
+    font-size: 12px;
+    line-height: 17px;
+  }
+}
+
+// ─── Name / title area ───────────────────────────────────────────────────────
+.name-wrap {
+  padding: 2px 0 3px 0;
+  padding-left: 8px;
+  cursor: pointer;
+
+  @media screen and (max-width: 767px) {
+    padding-left: 0;
+  }
+
+  h6 {
+    color: var(--cyanBlue);
+    font-size: 12px;
+    margin-bottom: 0;
+    position: relative;
+    font-weight: 600;
+
+    @media screen and (max-width: 767px) {
+      font-size: 4vw;
+      line-height: 1.6;
+    }
+
+    &::before {
+      content: '';
+      background: var(--light-green);
+      border: 1px solid rgba(51, 51, 51, 0.4);
+      border-radius: 100%;
+      width: 8px;
+      height: 8px;
+      display: inline-block;
+
+      @media screen and (max-width: 767px) {
+        height: 2.8vw;
+        right: 100%;
+        transform: translateX(-5px);
+        top: 1.6vw;
+        position: absolute;
+        width: 2.8vw;
+      }
+    }
+
+    &.not-in-play {
+      &::before {
+        background: var(--sm-white);
+      }
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .inplay {
+    color: var(--dark-green);
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  .time {
+    color: #777;
+    font-size: 12px;
+  }
+
+  .match-title {
+    letter-spacing: 0.01px;
+
+    span {
+      @media screen and (max-width: 767px) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+        -webkit-box-orient: vertical;
+        display: -webkit-box;
+      }
+    }
+  }
+}
+
+// ─── Icon chips (fancy / bookmaker / sportsbook) ──────────────────────────────
+.current-chip {
+  display: inline-flex;
+  border-radius: 4px;
+  overflow: hidden;
+  align-items: center;
+  height: 16px;
+
+  @media screen and (max-width: 767px) {
+    border-radius: 0.8vw;
+    height: 4vw;
+    width: 2rem;
+  }
+
+  &.lightest-neavy {
+    background-color: var(--lightest-neavy);
+  }
+
+  &.blue-dark {
+    background-color: var(--blue-dark);
+  }
+
+  .alarm-icon {
+    width: 16px;
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    background: #60ba1e;
+
+    @media screen and (max-width: 767px) {
+      width: 4vw;
+      height: 4vw;
+    }
+
+    svg {
+      width: 11px;
+      height: 11px;
+      display: block;
+    }
+  }
+
+  .text-chip {
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    padding: 0 2px;
+    color: rgba(var(--white-rgb), 0.85);
+
+    &.alarm-icon {
+      background: #60ba1e;
+    }
+
+    @media screen and (max-width: 767px) {
+      width: 4.1vw;
+      padding: 0;
+    }
+
+    i {
+      display: inline-flex;
+      line-height: 0;
+    }
+
+    svg {
+      width: 11px;
+      height: 11px;
+    }
+  }
+}
+
+.wrapper {
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+
+  @media screen and (max-width: 767px) {
+    height: 4vw;
+  }
+
+  &.orange-darkest {
+    background-color: var(--orange-darkest);
+  }
+
+  &.blue-dark {
+    background-color: var(--blue-dark);
+
+    i {
+      display: inline-flex;
+    }
+  }
+
+  &.alarm-chip {
+    background: #60ba1e;
+    width: 16px;
+    justify-content: center;
+
+    @media screen and (max-width: 767px) {
+      width: 4vw;
+    }
+
+    svg {
+      width: 11px;
+      height: 11px;
+      color: var(--white);
+    }
+  }
+
+  .text-chip {
+    padding: 0 2px;
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    i {
+      display: inline-flex;
+      line-height: 0;
+    }
+
+    svg {
+      width: 11px;
+      height: 11px;
+    }
+  }
+}
+
+// ─── Header "Matched" label ───────────────────────────────────────────────────
+.heading-matched {
+  font-size: 12px;
+  color: var(--dark);
+  white-space: nowrap;
+}
+
+// ─── Total matched per row ────────────────────────────────────────────────────
+.total-matched {
+  font-size: 11px;
+  color: var(--dark-grey-md);
+  white-space: nowrap;
+  padding-right: 4px;
+  flex-shrink: 0;
+}
+
+// ─── Desktop game row ─────────────────────────────────────────────────────────
+.games-detail {
+  display: flex;
+  border-bottom: 1px solid var(--light-bg);
+
+  &:last-child {
+    border-bottom-color: var(--sm-text-color);
+
+    @media screen and (max-width: 767px) {
+      border-bottom: 0.8vw solid var(--light-bg);
+    }
+  }
+
+  &:hover {
+    background-color: var(--hover-bg);
+  }
+
+  .game-name-part {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-right: 1px solid var(--light-bg);
+  }
+
+  .game-score-part {
+    flex: 0 0 40%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    max-width: 41%;
+    width: 100%;
+
+    .data-chip {
+      width: 100%;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+
+      span {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      &:nth-child(3),
+      &:nth-child(4) {
+        border: 1px solid var(--light-bg);
+        border-top: 0;
+        border-bottom: 0;
+      }
+
+      &:nth-child(2) {
+        padding-right: 4px;
+      }
+
+      &:nth-child(3) {
+        border-right: 0;
+        padding-left: 4px;
+      }
+
+      &:nth-child(4) {
+        padding-right: 4px;
+      }
+
+      &:nth-child(5) {
+        padding-left: 4px;
+      }
+
+      &.pin {
+        min-width: 6%;
+        width: auto;
+        text-align: center;
+        justify-content: center;
+
+        .pin-icon {
+          height: 21px;
+          width: 16px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--sm-text-color);
+
+          svg {
+            width: 16px;
+            height: 21px;
+          }
+        }
+      }
+
+      // ─── Back (blue) ──────────────────────────────────────────────────────
+      .blue-xs {
+        background: var(--back-0);
+
+        &:hover {
+          background: var(--back-0-hover);
+        }
+
+        &.active {
+          background: var(--lg-blue-bg) !important;
+          color: var(--white) !important;
+          box-shadow: inset 0 1px 3px rgba(var(--black-rgb), 0.5);
+        }
+      }
+
+      // ─── Lay (pink/red) ───────────────────────────────────────────────────
+      .red-xs {
+        background: var(--lay-0);
+
+        &:hover {
+          background: var(--lay-0-hover);
+        }
+
+        &.active {
+          background: var(--lg-red-bg) !important;
+          color: var(--white) !important;
+          box-shadow: inset 0 1px 3px rgba(var(--black-rgb), 0.5);
+        }
+      }
+
+      // ─── Suspended overlay ────────────────────────────────────────────────
+      .bg-line {
+        background-image: url('/img/bg-line.png');
+        opacity: 0.9;
+        filter: brightness(0.7);
+        background-blend-mode: color-burn;
+        cursor: default !important;
+        pointer-events: none;
+      }
+
+      // ─── Not-inplay overlay ───────────────────────────────────────────────
+      .disable-odds {
+        cursor: not-allowed;
+        position: relative;
+
+        &::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: rgba(51, 51, 51, 0.2) url('/img/bg-line.png');
+        }
+      }
+
+      // ─── Odds-change animations ───────────────────────────────────────────
+      .back-spark {
+        animation: sparkBack 0.8s ease-in-out;
+      }
+
+      .lay-spark {
+        animation: sparkLay 0.8s ease-in-out;
+      }
+    }
+  }
+}
+
+@keyframes sparkBack {
+  0% {
+    background: var(--back-0);
+  }
+
+  50% {
+    background: var(--back-0-hover);
+  }
+
+  100% {
+    background: var(--back-0);
+  }
+}
+
+@keyframes sparkLay {
+  0% {
+    background: var(--lay-0);
+  }
+
+  50% {
+    background: var(--lay-0-hover);
+  }
+
+  100% {
+    background: var(--lay-0);
+  }
+}
+
+.game-wrap {
+  background-color: var(--white);
+
+  .accordion-header {
+    background: #ced5da;
+    padding-left: 7px;
+
+    .accordion-button,
+    button {
+      color: var(--dark);
+      font-weight: 600;
+      padding-left: 14px;
+      background-position: left;
+      background-image: url(/img/collapse_icon.png);
+      box-shadow: 0 2px 0 rgba(var(--white-rgb), 0.1);
+    }
+
+    &.collapsed {
+      box-shadow: inset 0 2px 0 rgba(var(--black-rgb), 0.1);
+
+      .accordion-button {
+        background-image: url(/img/expand_icon.png);
+      }
+    }
+  }
+}
+
+// ─── Mobile game row ──────────────────────────────────────────────────────────
+.mobile-detail {
+  background-color: var(--white);
+  padding: 1.6vw 2.4vw 1.86667vw 6.66667vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--light-bg);
+
+  &:hover {
+    background-color: var(--hover-color);
+  }
+
+  .icon-row {
+    display: flex;
+    align-items: center;
+    gap: 1.33333vw;
+
+    .wrapper {
+      border-radius: 0.8vw;
+      padding: 2px;
+      color: var(--white);
+      height: 4vw;
+      width: 4.53333vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      i {
+        line-height: 0;
+
+        svg {
+          width: 2.93333vw;
+          height: 2.93333vw;
+        }
+      }
+    }
+
+    .inplay {
+      color: var(--md-parrot);
+
+      @media screen and (max-width: 767px) {
+        color: var(--primary);
+        font-size: 13px;
+      }
+    }
+
+    .time {
+      color: var(--dark-grey-md);
+    }
+
+    .text-chip {
+      svg {
+        @media screen and (max-width: 767px) {
+          width: 2.9vw;
+          height: 2.9vw;
+        }
+      }
+    }
+  }
+
+  .icon-wrapper-pin {
+    color: var(--dark-gray);
+    height: 24px;
+    width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+
+    svg {
+      width: 6.66667vw;
+      height: 6.66667vw;
+    }
+  }
+}
+
+.games-border {
+  &:last-child {
+    @media screen and (max-width: 767px) {
+      border-bottom: 0.8vw solid var(--mobile-sport-active-menu-bg);
+    }
+  }
+}
+
+.game-wrap {
+  .accordion {
+    border-bottom: 1px solid var(--light-bg);
+  }
+
+  .ngb-accordion-header {
+    background: var(--xxs-text-color);
+    padding-left: 7px;
+
+    button {
+      color: var(--dark);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+    }
+  }
+
+  .accordion-body {
+    padding: 0;
+    background-color: var(--white);
+  }
+}
+
+.game-row-placeholder {
+  height: 36px;
+  background: var(--white);
+  border-bottom: 1px solid var(--light-bg);
+}
+
+.racing-games-details {
+  padding: 4px 8px;
+
+  @media screen and (max-width: 767px) {
+    padding: 4px 20px;
+  }
+}
+
+.racing-event-name {
+  font-weight: 600;
+}
+
+.pin-disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
+// (ported from deep accordion-body override)
+.accordion-body {
+  background-color: var(--white);
+}
+
+// (ported from yellow-theme context override)
+.mcv-yellow-theme {
+  .games-border {
+    &:last-child {
+      @media screen and (max-width: 767px) {
+        border-bottom: 0.8vw solid var(--black);
+      }
+    }
+  }
+}
+
+.event-related-electronic-book {
+  align-items: center;
+  border-color: #1f5172;
+  border-radius: .1875rem;
+  border-style: solid;
+  border-width: 1px;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  margin-right: .25rem;
+  overflow: hidden;
+  width: auto;
+}
+
+.event-related-electronic-book-icon {
+  align-items: center;
+  background: #1f5172;
+  clip-path: polygon(-100% -100%, 100% 0, 79% 100%, 0 100%);
+  height: 100%;
+  width: 1.25rem;
+  font-size: .7rem;
+  padding-left: 0.3rem;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+.event-related-electronic-book-content {
+  color: #1f5172;
+  font-size: .5625rem;
+  line-height: 120%;
+  padding-right: .125rem;
+}
