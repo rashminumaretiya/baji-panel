@@ -33,6 +33,20 @@ export default function Profile() {
       .finally(() => setLoading(false))
   }, [token])
 
+  const openVerifyPrimaryModal = useCallback(async () => {
+    if (!token) return
+    try {
+      await http.post(
+        'user/send-otp-primary-number',
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+      setIsVerifyPrimaryModalOpen(true)
+    } catch {
+      // send-otp failed (e.g. 400) — keep modal closed; error toast handled by interceptor.
+    }
+  }, [token])
+
   useEffect(() => {
     fetchUser()
   }, [fetchUser])
@@ -155,14 +169,10 @@ export default function Profile() {
                         <td>{primaryNumber}</td>
                         <td>
                           <div
-                            className={`flex-wrapper justify-content-end pe-2 ${contact.isVerified ? '' : 'cursor-pointer'}`}
-                            onClick={() => {
-                              if (!contact.isVerified) setIsVerifyPrimaryModalOpen(true)
-                            }}
+                            className="flex-wrapper justify-content-end pe-2 cursor-pointer"
+                            onClick={openVerifyPrimaryModal}
                           >
-                            <span className="ms-1">
-                              {contact.isVerified ? 'Verified' : 'Verify'}
-                            </span>
+                            <span className="ms-1">Verify</span>
                             <EditIcon />
                           </div>
                         </td>

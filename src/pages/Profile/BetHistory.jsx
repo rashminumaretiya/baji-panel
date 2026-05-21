@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
@@ -87,7 +87,6 @@ export default function BetHistory() {
   const [fromDate, setFromDate] = useState(initial.from)
   const [toDate, setToDate] = useState(initial.to)
   const [bets, setBets] = useState([])
-  const [hasFetched, setHasFetched] = useState(false)
 
   const setJustForToday = () => {
     const r = todayRange()
@@ -101,7 +100,7 @@ export default function BetHistory() {
     setToDate(r.to)
   }
 
-  const fetchHistory = () => {
+  const fetchHistory = useCallback(() => {
     if (!token) return
     const periodStartDate = istStartIso(fromDate)
     const periodEndDate = istEndIso(toDate)
@@ -120,9 +119,12 @@ export default function BetHistory() {
       .then((res) => {
         const payload = res.data?.data
         setBets(payload?.data ?? (Array.isArray(payload) ? payload : []))
-        setHasFetched(true)
       })
-  }
+  }, [token, marketCategory, betStatus, fromDate, toDate])
+
+  useEffect(() => {
+    fetchHistory()
+  }, [fetchHistory])
 
   return (
     <MarketTabs value={marketCategory} onChange={setMarketCategory}>
@@ -194,26 +196,12 @@ export default function BetHistory() {
         </div>
       </div>
 
-      {!hasFetched ? (
-        <div className="bet-history-info">
-          <p>Betting History enables you to review the bets you have placed.</p>
-          <p style={{ paddingBottom: '0.25rem' }}>
-            Specify the time period during which your bets were placed, the type
-            of markets on which the bets were placed, and the sport.
-          </p>
-          <p style={{ paddingBottom: '0.25rem' }}>
-            Betting History is available online for the past 62 days.
-          </p>
-          <p>User can search up to 14 days records per query only .</p>
-        </div>
-      ) : (
-        <Table
-          columns={COLUMNS}
-          data={bets}
-          rowKey="_id"
-          emptyMessage="No bets found for the selected period."
-        />
-      )}
+      <Table
+        columns={COLUMNS}
+        data={bets}
+        rowKey="_id"
+        emptyMessage="No bets found for the selected period."
+      />
     </MarketTabs>
   )
 }

@@ -277,6 +277,40 @@ li {
   }
 }
 
+// Ported from Archive/src/styles.scss — global account/profile page heading styles.
+.page-title {
+  color: #1e1e1e;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 20px;
+  padding-top: 6px;
+  margin-bottom: 6px;
+
+  &.inner {
+    margin-top: -8px;
+    color: #3b5160;
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+}
+
+.card {
+  border: none;
+  border-radius: 0;
+  background-color: var(--white);
+}
+
+.card-header {
+  background: var(--sm-gray-blue);
+  font-family: Tahoma, Helvetica, sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 4px 10px;
+  color: var(--white);
+  border-bottom: 0;
+  border-radius: 0;
+}
+
 .nav-tabs {
   display: flex;
   justify-content: center;

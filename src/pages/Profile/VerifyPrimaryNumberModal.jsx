@@ -55,7 +55,8 @@ export default function VerifyPrimaryNumberModal({ isOpen, onClose, onSuccess })
       setTimer(0)
       return
     }
-    sendOtp()
+    // OTP is sent by the caller before the modal opens; just start the timer here.
+    startTimer()
     return () => clearTimer()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])

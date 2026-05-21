@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
 import { selectToken, selectUser } from '../../store/slices/authSlice.js'
@@ -6,7 +6,7 @@ import Table from '../../shared/Table.jsx'
 import Tabs from '../../shared/Tabs.jsx'
 
 const PL_MARKET_TABS = [
-  { id: 'MATCH_ODDS', label: 'Exchange' },
+  { id: 'EXCHANGE', label: 'Exchange' },
   { id: 'FANCY', label: 'FancyBet' },
   { id: 'CASINO', label: 'Casino' },
   { id: 'SPORTS_BOOK', label: 'Sportsbook' },
@@ -131,12 +131,11 @@ export default function ProfitLoss() {
   const userName = user?.profileDetails?.userName ?? '--'
   const generatedAt = useMemo(() => nowLabel(), [])
 
-  const [marketName, setMarketName] = useState('MATCH_ODDS')
+  const [marketCategory, setMarketCategory] = useState('EXCHANGE')
   const initial = todayRange()
   const [fromDate, setFromDate] = useState(initial.from)
   const [toDate, setToDate] = useState(initial.to)
   const [rows, setRows] = useState([])
-  const [hasFetched, setHasFetched] = useState(false)
 
   const setJustForToday = () => {
     const r = todayRange()
@@ -149,27 +148,30 @@ export default function ProfitLoss() {
     setToDate(r.to)
   }
 
-  const fetchPnl = () => {
+  const fetchPnl = useCallback(() => {
     if (!token) return
     const periodStartDate = istStartIso(fromDate)
     const periodEndDate = istEndIso(toDate)
     const query = new URLSearchParams({
       page: '1',
       perPage: '10',
-      marketName,
       periodStartDate,
       periodEndDate,
+      marketCategory,
     }).toString()
     http
-      .get(`user/bet/my-bet-profit-loss?${query}`, {
+      .get(`bet/profit-loss?${query}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
         const payload = res.data?.data
         setRows(payload?.data ?? (Array.isArray(payload) ? payload : []))
-        setHasFetched(true)
       })
-  }
+  }, [token, marketCategory, fromDate, toDate])
+
+  useEffect(() => {
+    fetchPnl()
+  }, [fetchPnl])
 
   return (
     <div className="pl-card">
@@ -189,8 +191,8 @@ export default function ProfitLoss() {
 
       <Tabs
         tabs={PL_MARKET_TABS}
-        activeId={marketName}
-        onChange={setMarketName}
+        activeId={marketCategory}
+        onChange={setMarketCategory}
       />
 
       <div className="bet-history-filter">
@@ -248,26 +250,12 @@ export default function ProfitLoss() {
         </div>
       </div>
 
-      {!hasFetched ? (
-        <div className="bet-history-info">
-          <p>Betting History enables you to review the bets you have placed.</p>
-          <p style={{ paddingBottom: '0.25rem' }}>
-            Specify the time period during which your bets were placed, the type
-            of markets on which the bets were placed, and the sport.
-          </p>
-          <p style={{ paddingBottom: '0.25rem' }}>
-            Betting History is available online for the past 62 days.
-          </p>
-          <p>User can search up to 14 days records per query only .</p>
-        </div>
-      ) : (
-        <Table
-          columns={COLUMNS}
-          data={rows}
-          rowKey="_id"
-          emptyMessage="No profit/loss records for the selected period."
-        />
-      )}
+      <Table
+        columns={COLUMNS}
+        data={rows}
+        rowKey="_id"
+        emptyMessage="No profit/loss records for the selected period."
+      />
     </div>
   )
 }
