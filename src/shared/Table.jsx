@@ -26,7 +26,7 @@ export default function Table({
   }
 
   return (
-    <>
+    <div className="table-container">
       {title && (
         <div className="d-flex justify-content-between align-items-center">
           <p className="page-title">{title}</p>
@@ -50,13 +50,10 @@ export default function Table({
                   const value = row?.[col.key]
                   const cellClassName = resolveCellClassName(col, value, row)
                   return (
-                    <td
-                      key={col.key}
-                      className={cellClassName || undefined}
-                    >
+                    <td key={col.key} className={cellClassName || undefined}>
                       {col.render
                         ? col.render(value, row, rowIndex)
-                        : value ?? ''}
+                        : (value ?? '')}
                     </td>
                   )
                 })}
@@ -72,6 +69,6 @@ export default function Table({
         </tbody>
       </table>
       {pagination && hasData && <Pagination {...pagination} />}
-    </>
+    </div>
   )
 }

@@ -66,7 +66,7 @@ export default function Profile() {
     : '0'
 
   return (
-    <>
+    <div className="profile-container">
       <h3 className="page-title">Account Details</h3>
 
       <div className="row mx-0">
@@ -256,6 +256,6 @@ export default function Profile() {
         onClose={() => setIsVerifyPrimaryModalOpen(false)}
         onSuccess={fetchUser}
       />
-    </>
+    </div>
   )
 }

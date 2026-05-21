@@ -1,211 +1,212 @@
-// Ported from baji-exchange-frontend/src/app/shared/components/table/table.component.scss
-// (Angular `:host ::ng-deep ngb-pagination` wrapper stripped — in React the
-// pagination renders the same `.pagination > .page-item > a` markup that
-// ng-bootstrap produces, so the selectors apply directly.)
-
-.table-header {
-  background-color: var(--text-color);
-  border-bottom: 1px solid var(--sm-text-color);
-  color: var(--white);
-  line-height: 24px;
-  font-weight: bold;
-  padding: 0 10px;
-  margin-bottom: 0;
-  font-size: 12px;
-}
-
-// Match Bootstrap 5.3's `.table > :not(caption) > * > *` specificity (0,1,3)
-// so our rules win on cascade order. Without this the Bootstrap defaults
-// (white bg, 1px border-bottom on every cell, inset box-shadow) override
-// the simpler `table th` / `table td` selectors.
-.table {
-  width: 100%;
-  margin-bottom: 0;
-  border-collapse: collapse;
-
-  > thead > tr > th {
-    border-top: 1px solid var(--sm-text-color);
+.table-container {
+  .table-header {
+    background-color: var(--text-color);
     border-bottom: 1px solid var(--sm-text-color);
-    background-color: var(--th-bg);
-    color: var(--light-navy);
-    font-size: 12px;
+    color: var(--white);
+    line-height: 24px;
     font-weight: bold;
-    padding: 8px 10px;
-    vertical-align: middle;
-    white-space: nowrap;
-    text-align: left;
-    box-shadow: none;
-
-    &:last-child {
-      text-align: right;
-    }
-  }
-
-  > tbody > tr > td {
-    border-top: 1px solid var(--xs-gray);
-    border-bottom-width: 0;
-    padding: 8px 10px;
-    vertical-align: middle;
-    background-color: var(--white);
+    padding: 0 10px;
+    margin-bottom: 0;
     font-size: 12px;
-    color: var(--dark);
-    text-align: left;
-    box-shadow: none;
+  }
 
-    &:last-child {
-      text-align: right;
-    }
+  .table {
+    width: 100%;
+    margin-bottom: 0;
+    border-collapse: collapse;
 
-    &.text-bold {
+    > thead > tr > th {
+      border-top: 1px solid var(--sm-text-color);
+      border-bottom: 1px solid var(--sm-text-color);
+      background-color: var(--th-bg);
+      color: var(--light-navy);
+      font-size: 12px;
       font-weight: bold;
-    }
-  }
+      padding: 8px 10px;
+      vertical-align: middle;
+      white-space: nowrap;
+      text-align: left;
+      box-shadow: none;
 
-  // Disable Bootstrap's hover background change. The visible "highlight" is
-  // produced by `box-shadow: inset 0 0 0 9999px var(--bs-table-bg-state)` on
-  // every cell — flipping the CSS var alone isn't enough because other
-  // global rules may force the shadow. Use !important to win the cascade.
-  > tbody > tr:hover > *,
-  > tbody > tr:hover > * > *,
-  > tbody > tr > td:hover {
-    background-color: var(--white) !important;
-    background-image: none !important;
-    box-shadow: none !important;
-    --bs-table-bg-state: transparent !important;
-    --bs-table-color-state: var(--dark) !important;
-    --bs-table-accent-bg: transparent !important;
-  }
-
-  &.yellow-theme > tbody > tr > td {
-    padding: 5px 10px;
-  }
-}
-
-// Pagination — ported from baji-exchange-frontend's `::ng-deep ngb-pagination`.
-.pagination {
-  margin-bottom: 0;
-  gap: 5px;
-  display: flex;
-  padding-left: 0;
-  list-style: none;
-
-  .page-item {
-    &.disabled {
-      color: var(--pagination-color);
-      cursor: not-allowed;
-
-      a {
-        box-shadow: none;
-        background: var(--pagination-bg);
-        color: var(--pagination-color);
-        pointer-events: none;
+      &:last-child {
+        text-align: right;
       }
     }
 
-    &.active {
-      a {
-        background: var(--md-yellow);
-        box-shadow: inset 0 2px 0 0 rgba(var(--black-rgb), 0.1);
-        color: var(--black);
-        border-color: var(--lg-black);
+    > tbody > tr > td {
+      border-top: 1px solid var(--xs-gray);
+      border-bottom-width: 0;
+      padding: 8px 10px;
+      vertical-align: middle;
+      background-color: var(--white);
+      font-size: 12px;
+      color: var(--dark);
+      text-align: left;
+      box-shadow: none;
 
-        &:hover {
-          background: var(--md-yellow);
+      &:last-child {
+        text-align: right;
+      }
+
+      &.text-bold {
+        font-weight: bold;
+      }
+    }
+
+    // Disable Bootstrap's hover background change. The visible "highlight" is
+    // produced by `box-shadow: inset 0 0 0 9999px var(--bs-table-bg-state)` on
+    // every cell — flipping the CSS var alone isn't enough because other
+    // global rules may force the shadow. Use !important to win the cascade.
+    > tbody > tr:hover > *,
+    > tbody > tr:hover > * > *,
+    > tbody > tr > td:hover {
+      background-color: var(--white) !important;
+      background-image: none !important;
+      box-shadow: none !important;
+      --bs-table-bg-state: transparent !important;
+      --bs-table-color-state: var(--dark) !important;
+      --bs-table-accent-bg: transparent !important;
+    }
+
+    &.yellow-theme > tbody > tr > td {
+      padding: 5px 10px;
+    }
+  }
+
+  // Pagination — ported from baji-exchange-frontend's `::ng-deep ngb-pagination`.
+  .pagination {
+    margin-bottom: 0;
+    gap: 5px;
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+
+    .page-item {
+      &.disabled {
+        color: var(--pagination-color);
+        cursor: not-allowed;
+
+        a {
+          box-shadow: none;
+          background: var(--pagination-bg);
+          color: var(--pagination-color);
+          pointer-events: none;
         }
       }
-    }
 
-    a {
-      color: var(--dark);
-      font-size: 12px;
-      line-height: 12px;
-      border: 1px solid var(--lg-gray);
-      border-radius: 4px;
-      padding: 4px 10px;
-      background: linear-gradient(180deg, var(--white) 0%, var(--xs-gray) 89%);
-      box-shadow: inset 0 2px 0 0 rgba(var(--white-rgb), 0.5);
-      display: inline-block;
-      text-decoration: none;
-      cursor: pointer;
+      &.active {
+        a {
+          background: var(--md-yellow);
+          box-shadow: inset 0 2px 0 0 rgba(var(--black-rgb), 0.1);
+          color: var(--black);
+          border-color: var(--lg-black);
 
-      &:hover {
-        background: linear-gradient(0deg, var(--white) 0%, var(--xs-gray) 89%);
+          &:hover {
+            background: var(--md-yellow);
+          }
+        }
       }
 
-      &:focus {
-        outline: none;
+      a {
+        color: var(--dark);
+        font-size: 12px;
+        line-height: 12px;
+        border: 1px solid var(--lg-gray);
+        border-radius: 4px;
+        padding: 4px 10px;
+        background: linear-gradient(
+          180deg,
+          var(--white) 0%,
+          var(--xs-gray) 89%
+        );
         box-shadow: inset 0 2px 0 0 rgba(var(--white-rgb), 0.5);
+        display: inline-block;
+        text-decoration: none;
+        cursor: pointer;
+
+        &:hover {
+          background: linear-gradient(
+            0deg,
+            var(--white) 0%,
+            var(--xs-gray) 89%
+          );
+        }
+
+        &:focus {
+          outline: none;
+          box-shadow: inset 0 2px 0 0 rgba(var(--white-rgb), 0.5);
+        }
+      }
+
+      &:first-child a {
+        border-radius: 4px;
+      }
+
+      &:last-child a {
+        border-radius: 4px;
       }
     }
+  }
 
-    &:first-child a {
-      border-radius: 4px;
-    }
+  // Empty-state row — baji-exchange-frontend's `<app-no-data>` has no
+  // dedicated SCSS file. The wrapper div just uses `d-flex align-items-center
+  // p-2` Bootstrap classes; no border, background, or custom typography.
 
-    &:last-child a {
-      border-radius: 4px;
+  .no-data-found {
+    min-height: 100px;
+
+    p {
+      font-weight: 500;
+      font-size: 18px;
+      color: var(--text-color);
     }
   }
-}
 
-// Empty-state row — baji-exchange-frontend's `<app-no-data>` has no
-// dedicated SCSS file. The wrapper div just uses `d-flex align-items-center
-// p-2` Bootstrap classes; no border, background, or custom typography.
+  // ─── Status pill colors ─────────────────────────────────────────────────
+  // Shared between every table that uses the dynamic-class column pattern
+  // (Activity Log → `logInStatus-*`, Deposit/Withdraw History → `status-*`).
+  //
+  // Ported from baji-exchange-frontend/src/styles.scss `.green span`,
+  // `.logInStatus-login-success span`, `.status-initiated span`, etc.
+  //
+  // Selectors target the inner `<span>` rendered by the shared Table's
+  // column render functions — matches baji-exchange-frontend's exact pattern.
 
-.no-data-found {
-  min-height: 100px;
-
-  p {
-    font-weight: 500;
-    font-size: 18px;
-    color: var(--text-color);
+  // Login status — Activity Log
+  [class^='logInStatus-'] span {
+    color: #d92626;
   }
-}
+  .logInStatus-success span,
+  .logInStatus-login-success span,
+  .login-success span {
+    color: #508d0e;
+  }
+  .logInStatus-login-failed span,
+  .login-failed span {
+    color: #d92626;
+  }
 
-// ─── Status pill colors ─────────────────────────────────────────────────
-// Shared between every table that uses the dynamic-class column pattern
-// (Activity Log → `logInStatus-*`, Deposit/Withdraw History → `status-*`).
-//
-// Ported from baji-exchange-frontend/src/styles.scss `.green span`,
-// `.logInStatus-login-success span`, `.status-initiated span`, etc.
-//
-// Selectors target the inner `<span>` rendered by the shared Table's
-// column render functions — matches baji-exchange-frontend's exact pattern.
+  // Transaction status — Deposit / Withdraw History
+  .status-initiated span,
+  .status-pending span {
+    color: var(--primary-yellow);
+    text-transform: capitalize;
+  }
 
-// Login status — Activity Log
-[class^='logInStatus-'] span {
-  color: #d92626;
-}
-.logInStatus-success span,
-.logInStatus-login-success span,
-.login-success span {
-  color: #508d0e;
-}
-.logInStatus-login-failed span,
-.login-failed span {
-  color: #d92626;
-}
+  .status-active span,
+  .status-completed span,
+  .status-transfered span,
+  .status-accept span {
+    color: var(--avocado-green);
+    text-transform: capitalize;
+  }
 
-// Transaction status — Deposit / Withdraw History
-.status-initiated span,
-.status-pending span {
-  color: var(--primary-yellow);
-  text-transform: capitalize;
-}
-
-.status-active span,
-.status-completed span,
-.status-transfered span,
-.status-accept span {
-  color: var(--avocado-green);
-  text-transform: capitalize;
-}
-
-.status-suspend span,
-.status-rejected span,
-.status-declined span,
-.statusreject span,
-.status-failed span {
-  color: var(--failed-status);
-  text-transform: capitalize;
+  .status-suspend span,
+  .status-rejected span,
+  .status-declined span,
+  .statusreject span,
+  .status-failed span {
+    color: var(--failed-status);
+    text-transform: capitalize;
+  }
 }

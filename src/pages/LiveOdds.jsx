@@ -13,10 +13,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
-import {
-  getSportIdFromSlug,
-  getSportName,
-} from '../core/constant/constants.js'
+import { getSportIdFromSlug, getSportName } from '../core/constant/constants.js'
 import { http } from '../core/http/client.js'
 import { emitSocket, listenSocket, onReconnect } from '../core/socket/client.js'
 import { SOCKET_EVENTS } from '../core/socket/events.js'
@@ -140,20 +137,26 @@ const num = (value) => {
 }
 
 const isBookmakerStatusBlocked = (status) =>
-  status === 'SUSPENDED' || status === 'BALL RUNNING' || status === 'BALL_RUNNING_UPPER'
+  status === 'SUSPENDED' ||
+  status === 'BALL RUNNING' ||
+  status === 'BALL_RUNNING_UPPER'
 
 // Diff back/lay arrays against previous snapshot, flagging cells whose price changed.
 const flagChanged = (current, previous) => {
   if (!Array.isArray(current)) return current
   return current.map((cell, i) => ({
     ...cell,
-    isChanged: previous ? num(previous?.[i]?.price) !== num(cell?.price) : false,
+    isChanged: previous
+      ? num(previous?.[i]?.price) !== num(cell?.price)
+      : false,
   }))
 }
 
 const diffMatchOddsSpark = (current, previous) => {
   if (!current?.runners) return current
-  const prevById = new Map((previous?.runners ?? []).map((r) => [r.selectionId, r]))
+  const prevById = new Map(
+    (previous?.runners ?? []).map((r) => [r.selectionId, r])
+  )
   return {
     ...current,
     runners: current.runners.map((runner) => {
@@ -162,8 +165,14 @@ const diffMatchOddsSpark = (current, previous) => {
         ...runner,
         ex: {
           ...runner.ex,
-          availableToBack: flagChanged(runner.ex?.availableToBack, prev?.ex?.availableToBack),
-          availableToLay: flagChanged(runner.ex?.availableToLay, prev?.ex?.availableToLay),
+          availableToBack: flagChanged(
+            runner.ex?.availableToBack,
+            prev?.ex?.availableToBack
+          ),
+          availableToLay: flagChanged(
+            runner.ex?.availableToLay,
+            prev?.ex?.availableToLay
+          ),
         },
       }
     }),
@@ -178,8 +187,14 @@ const clearSpark = (market) => {
       ...r,
       ex: {
         ...r.ex,
-        availableToBack: (r.ex?.availableToBack ?? []).map((c) => ({ ...c, isChanged: false })),
-        availableToLay: (r.ex?.availableToLay ?? []).map((c) => ({ ...c, isChanged: false })),
+        availableToBack: (r.ex?.availableToBack ?? []).map((c) => ({
+          ...c,
+          isChanged: false,
+        })),
+        availableToLay: (r.ex?.availableToLay ?? []).map((c) => ({
+          ...c,
+          isChanged: false,
+        })),
       },
     })),
   }
@@ -226,12 +241,20 @@ const groupSportbookByCategory = (items) => {
   for (const m of items) {
     const name = (m.market || '').toLowerCase()
     buckets.all.push(m)
-    if ((overs.test(name) || nth.test(name)) && !over.test(name) && !name.includes(',')) {
+    if (
+      (overs.test(name) || nth.test(name)) &&
+      !over.test(name) &&
+      !name.includes(',')
+    ) {
       buckets.innings.push(m)
     }
     if (over.test(name)) buckets.over.push(m)
     if (name.includes('-') && name.includes(',')) buckets.players.push(m)
-    if (name.includes('tie') || name.includes('winner') || totalOrTop.test(name)) {
+    if (
+      name.includes('tie') ||
+      name.includes('winner') ||
+      totalOrTop.test(name)
+    ) {
       buckets.match.push(m)
     }
   }
@@ -265,8 +288,12 @@ export default function LiveOdds() {
   const [isLiveStreamOn, setIsLiveStreamOn] = useState(true)
   const [scrolledPastPip, setScrolledPastPip] = useState(false)
   const [selectedFancy, setSelectedFancy] = useState(MAIN_FANCY.FANCY_BET)
-  const [selectedFancyPriority, setSelectedFancyPriority] = useState(FANCY_TYPES.ALL)
-  const [selectedSportsbook, setSelectedSportsbook] = useState(SPORTSBOOK_CATEGORIES.ALL)
+  const [selectedFancyPriority, setSelectedFancyPriority] = useState(
+    FANCY_TYPES.ALL
+  )
+  const [selectedSportsbook, setSelectedSportsbook] = useState(
+    SPORTSBOOK_CATEGORIES.ALL
+  )
   const [betLimitOpen, setBetLimitOpen] = useState(false)
   const [bookmakerInfoOpen, setBookmakerInfoOpen] = useState(false)
   const [fancyInfoIndex, setFancyInfoIndex] = useState(-1)
@@ -320,7 +347,7 @@ export default function LiveOdds() {
         const response = await http.post(
           'sport/default-odds',
           { sportId, eventId },
-          { signal },
+          { signal }
         )
         const payload = response?.data?.data ?? response?.data ?? {}
         previousMatchOddsRef.current.clear()
@@ -336,13 +363,14 @@ export default function LiveOdds() {
         dispatch(setIsPlayLiveStream(!!tvUrl))
         if (tvUrl) setIsLiveStreamOn(true)
       } catch (err) {
-        if (err?.name === 'CanceledError' || err?.code === 'ERR_CANCELED') return
+        if (err?.name === 'CanceledError' || err?.code === 'ERR_CANCELED')
+          return
         setError(err)
       } finally {
         setLoading(false)
       }
     },
-    [sportId, eventId, processMatchOddsList, dispatch],
+    [sportId, eventId, processMatchOddsList, dispatch]
   )
 
   useEffect(() => {
@@ -382,21 +410,29 @@ export default function LiveOdds() {
       if (!odds) return
       // Server may emit as { bookmaker, fancy } or as the wire-level tuple
       // [eventName, { bookmaker, fancy }] — accept either.
-      const data = Array.isArray(odds) ? odds[1] ?? {} : odds
+      const data = Array.isArray(odds) ? (odds[1] ?? {}) : odds
       if (Array.isArray(data?.bookmaker)) setBookmakerOdds(data.bookmaker)
       if (Array.isArray(data?.fancy)) setFancy(data.fancy)
     })
 
-    const offPremium = listenSocket(SOCKET_EVENTS.PREMIUM_FANCY_ODDS, (odds) => {
-      if (!odds) return
-      const list = Array.isArray(odds) ? odds : odds.premium ?? odds.sportBook
-      if (list) setPremium(list)
-    })
+    const offPremium = listenSocket(
+      SOCKET_EVENTS.PREMIUM_FANCY_ODDS,
+      (odds) => {
+        if (!odds) return
+        const list = Array.isArray(odds)
+          ? odds
+          : (odds.premium ?? odds.sportBook)
+        if (list) setPremium(list)
+      }
+    )
 
-    const offAdmin = listenSocket(SOCKET_EVENTS.ADMIN_SETTINGS_CHANGED, (evt) => {
-      if (!evt || evt.eventId !== eventId) return
-      setMarketSettings((current) => applyAdminPatch(current, evt))
-    })
+    const offAdmin = listenSocket(
+      SOCKET_EVENTS.ADMIN_SETTINGS_CHANGED,
+      (evt) => {
+        if (!evt || evt.eventId !== eventId) return
+        setMarketSettings((current) => applyAdminPatch(current, evt))
+      }
+    )
 
     const offReconnect = onReconnect(subscribe)
 
@@ -423,23 +459,33 @@ export default function LiveOdds() {
   }, [isMobile])
 
   // ── Derived data
-  const matchOddsArray = useMemo(() => normalizeMatchOdds(matchOddsList), [matchOddsList])
-  const isInplay = useMemo(() => matchOddsArray.some((m) => m.inplay), [matchOddsArray])
+  const matchOddsArray = useMemo(
+    () => normalizeMatchOdds(matchOddsList),
+    [matchOddsList]
+  )
+  const isInplay = useMemo(
+    () => matchOddsArray.some((m) => m.inplay),
+    [matchOddsArray]
+  )
   const fancyBuckets = useMemo(() => groupFancyByType(fancy), [fancy])
-  const sportbookBuckets = useMemo(() => groupSportbookByCategory(premium), [premium])
+  const sportbookBuckets = useMemo(
+    () => groupSportbookByCategory(premium),
+    [premium]
+  )
 
   const filteredFancy = useMemo(
     () => fancyBuckets[selectedFancyPriority] ?? [],
-    [fancyBuckets, selectedFancyPriority],
+    [fancyBuckets, selectedFancyPriority]
   )
   const filteredSportbook = useMemo(
     () => sportbookBuckets[selectedSportsbook] ?? [],
-    [sportbookBuckets, selectedSportsbook],
+    [sportbookBuckets, selectedSportsbook]
   )
 
   const fancyMainTabs = useMemo(() => {
     const tabs = []
-    if (fancy.length) tabs.push({ type: MAIN_FANCY.FANCY_BET, title: 'Fancy Bet' })
+    if (fancy.length)
+      tabs.push({ type: MAIN_FANCY.FANCY_BET, title: 'Fancy Bet' })
     if (premium.length && isAuthenticated) {
       tabs.push({ type: MAIN_FANCY.SPORTS_BOOK, title: 'Premium Cricket' })
     }
@@ -447,7 +493,10 @@ export default function LiveOdds() {
   }, [fancy.length, premium.length, isAuthenticated])
 
   useEffect(() => {
-    if (fancyMainTabs.length && !fancyMainTabs.some((t) => t.type === selectedFancy)) {
+    if (
+      fancyMainTabs.length &&
+      !fancyMainTabs.some((t) => t.type === selectedFancy)
+    ) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedFancy(fancyMainTabs[0].type)
     }
@@ -475,7 +524,7 @@ export default function LiveOdds() {
         pbuLimit: s?.pbuLimit ?? 0,
       }
     },
-    [marketSettings],
+    [marketSettings]
   )
 
   // ── Handlers
@@ -509,7 +558,7 @@ export default function LiveOdds() {
         odd: odd.price,
         size: odd.size,
         stake: '',
-      }),
+      })
     )
   }
   const onBookmakerClick = (bookmaker, odd, betType) => {
@@ -550,7 +599,12 @@ export default function LiveOdds() {
     })
   }
   const onSportbookClick = (market, runner) => {
-    if (!runner?.back?.[0]?.price || market.status !== '1' || runner.status !== '1') return
+    if (
+      !runner?.back?.[0]?.price ||
+      market.status !== '1' ||
+      runner.status !== '1'
+    )
+      return
     setActiveSportBook({
       marketId: market.marketId,
       marketName: 'SPORTS_BOOK',
@@ -594,144 +648,151 @@ export default function LiveOdds() {
   const showPip = isMobile && scrolledPastPip && showStream
 
   return (
-    <div className={cx('live-odds-wrapper mt-md-1', isYellowTheme && 'yellow-theme')}>
-      {isMobile && showStream && (
-        <>
-          {showPip && <div className="mobile-live-streaming pip-spacer" />}
-          <div className={cx('mobile-live-streaming', showPip && 'tv-url')}>
-            <LiveStream
-              url={liveStreamUrl}
-              iframeRef={iframeRef}
-              onClose={closeLiveStream}
-              onFullscreen={toggleFullscreen}
-              hideClose={isMobile}
-            />
-          </div>
-        </>
-      )}
-
-      <div className={cx(isMobile && showStream && 'mobile-odds-wrapper')}>
-        {isMobile && (
-          <div className="blue-header score-game-header d-flex justify-content-between align-items-center px-3">
-            <span className="text-capitalize">{getSportName(sportId)}</span>
-            {isInplay && (
-              <div className="d-inline-flex align-items-center">
-                <i className="time-icon" aria-hidden="true" />
-                <small>In-Play</small>
-              </div>
-            )}
-          </div>
+    <div className="live-odds-wrapper-container">
+      <div
+        className={cx(
+          'live-odds-wrapper mt-md-1',
+          isYellowTheme && 'yellow-theme'
+        )}
+      >
+        {isMobile && showStream && (
+          <>
+            {showPip && <div className="mobile-live-streaming pip-spacer" />}
+            <div className={cx('mobile-live-streaming', showPip && 'tv-url')}>
+              <LiveStream
+                url={liveStreamUrl}
+                iframeRef={iframeRef}
+                onClose={closeLiveStream}
+                onFullscreen={toggleFullscreen}
+                hideClose={isMobile}
+              />
+            </div>
+          </>
         )}
 
-        {hasScoreboard && isAuthenticated && (
-          <div
-            className={cx(
-              'score-iframe-wrapper text-center pb-0',
-              isMobile && 'mobile-score-iframe-wrapper',
-            )}
-          >
-            <iframe
-              className="score-iframe d-block"
-              src={scoreIframeUrl}
-              width="100%"
-              height='100%'
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share;"
-              allowFullScreen
-              title="Scoreboard"
-            />
-          </div>
-        )}
+        <div className={cx(isMobile && showStream && 'mobile-odds-wrapper')}>
+          {isMobile && (
+            <div className="blue-header score-game-header d-flex justify-content-between align-items-center px-3">
+              <span className="text-capitalize">{getSportName(sportId)}</span>
+              {isInplay && (
+                <div className="d-inline-flex align-items-center">
+                  <i className="time-icon" aria-hidden="true" />
+                  <small>In-Play</small>
+                </div>
+              )}
+            </div>
+          )}
 
-        <PinRefresh onRefresh={refreshMarkets} />
-      </div>
+          {hasScoreboard && isAuthenticated && (
+            <div
+              className={cx(
+                'score-iframe-wrapper text-center pb-0',
+                isMobile && 'mobile-score-iframe-wrapper'
+              )}
+            >
+              <iframe
+                className="score-iframe d-block"
+                src={scoreIframeUrl}
+                width="100%"
+                height="100%"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share;"
+                allowFullScreen
+                title="Scoreboard"
+              />
+            </div>
+          )}
 
-      <div className="odds-wrapper">
-        {matchOddsArray.map((matchOdds, idx) => (
-          <MatchOddsSection
-            key={matchOdds.marketId}
-            matchOdds={matchOdds}
-            isMobile={isMobile}
-            isAuthenticated={isAuthenticated}
-            isYellowTheme={isYellowTheme}
-            currency={currency}
-            marketSetting={matchOddsSettingFor(matchOdds.marketId)}
-            isStreamAvailable={hasLiveStream}
-            isLiveStreamOn={isLiveStreamOn}
-            onToggleLive={toggleLiveStream}
-            active={
-              activeRightSideBet?.marketName === 'Match Odds' &&
-              activeRightSideBet?.marketId === matchOdds.marketId
-                ? activeRightSideBet
-                : null
-            }
-            onPick={onMatchOddsClick}
-            onCancelMatchOdds={() => dispatch(setActiveBetSlip(null))}
-            betLimitOpen={betLimitOpen}
-            onToggleBetLimit={() => setBetLimitOpen((v) => !v)}
-            // Live stream slot — mirrors Angular's `<ng-container [ngTemplateOutlet]="liveStream"></ng-container>`
-            // rendered inside the first match-odds-wrapper.
-            liveStreamSlot={
-              idx === 0 && !isMobile && showStream ? (
-                <LiveStream
-                  url={liveStreamUrl}
-                  iframeRef={iframeRef}
-                  onClose={closeLiveStream}
-                  onFullscreen={toggleFullscreen}
-                />
-              ) : null
-            }
-          />
-        ))}
+          <PinRefresh onRefresh={refreshMarkets} />
+        </div>
 
-        {bookmakerOdds.length > 0 && (
-          <BookmakerSection
-            runners={bookmakerOdds}
-            setting={bookmakerSetting}
-            isMobile={isMobile}
-            infoOpen={bookmakerInfoOpen}
-            onToggleInfo={() => setBookmakerInfoOpen((v) => !v)}
-            active={activeBookmaker}
-            onActiveChange={setActiveBookmaker}
-            onPick={onBookmakerClick}
-          />
-        )}
-
-        {fancyMainTabs.length > 0 && (
-          <div className="fancy-bet-wrapper mt-4">
-            <FancyTabHeader
-              tabs={fancyMainTabs}
-              selectedFancy={selectedFancy}
-              onSelect={setSelectedFancy}
+        <div className="odds-wrapper">
+          {matchOddsArray.map((matchOdds, idx) => (
+            <MatchOddsSection
+              key={matchOdds.marketId}
+              matchOdds={matchOdds}
               isMobile={isMobile}
+              isAuthenticated={isAuthenticated}
+              isYellowTheme={isYellowTheme}
+              currency={currency}
+              marketSetting={matchOddsSettingFor(matchOdds.marketId)}
+              isStreamAvailable={hasLiveStream}
+              isLiveStreamOn={isLiveStreamOn}
+              onToggleLive={toggleLiveStream}
+              active={
+                activeRightSideBet?.marketName === 'Match Odds' &&
+                activeRightSideBet?.marketId === matchOdds.marketId
+                  ? activeRightSideBet
+                  : null
+              }
+              onPick={onMatchOddsClick}
+              onCancelMatchOdds={() => dispatch(setActiveBetSlip(null))}
+              betLimitOpen={betLimitOpen}
+              onToggleBetLimit={() => setBetLimitOpen((v) => !v)}
+              // Live stream slot — mirrors Angular's `<ng-container [ngTemplateOutlet]="liveStream"></ng-container>`
+              // rendered inside the first match-odds-wrapper.
+              liveStreamSlot={
+                idx === 0 && !isMobile && showStream ? (
+                  <LiveStream
+                    url={liveStreamUrl}
+                    iframeRef={iframeRef}
+                    onClose={closeLiveStream}
+                    onFullscreen={toggleFullscreen}
+                  />
+                ) : null
+              }
             />
+          ))}
 
-            {selectedFancy === MAIN_FANCY.FANCY_BET && (
-              <FancySection
-                items={filteredFancy}
-                buckets={fancyBuckets}
-                selectedType={selectedFancyPriority}
-                onSelectType={setSelectedFancyPriority}
+          {bookmakerOdds.length > 0 && (
+            <BookmakerSection
+              runners={bookmakerOdds}
+              setting={bookmakerSetting}
+              isMobile={isMobile}
+              infoOpen={bookmakerInfoOpen}
+              onToggleInfo={() => setBookmakerInfoOpen((v) => !v)}
+              active={activeBookmaker}
+              onActiveChange={setActiveBookmaker}
+              onPick={onBookmakerClick}
+            />
+          )}
+
+          {fancyMainTabs.length > 0 && (
+            <div className="fancy-bet-wrapper mt-4">
+              <FancyTabHeader
+                tabs={fancyMainTabs}
+                selectedFancy={selectedFancy}
+                onSelect={setSelectedFancy}
                 isMobile={isMobile}
-                fancyInfoIndex={fancyInfoIndex}
-                setFancyInfoIndex={setFancyInfoIndex}
-                active={activeFancyBet}
-                onActiveChange={setActiveFancyBet}
-                onPick={onFancyClick}
               />
-            )}
 
-            {selectedFancy === MAIN_FANCY.SPORTS_BOOK && (
-              <SportbookSection
-                markets={filteredSportbook}
-                selectedCategory={selectedSportsbook}
-                onSelectCategory={setSelectedSportsbook}
-                active={activeSportBook}
-                onActiveChange={setActiveSportBook}
-                onPick={onSportbookClick}
-              />
-            )}
-          </div>
-        )}
+              {selectedFancy === MAIN_FANCY.FANCY_BET && (
+                <FancySection
+                  items={filteredFancy}
+                  buckets={fancyBuckets}
+                  selectedType={selectedFancyPriority}
+                  onSelectType={setSelectedFancyPriority}
+                  isMobile={isMobile}
+                  fancyInfoIndex={fancyInfoIndex}
+                  setFancyInfoIndex={setFancyInfoIndex}
+                  active={activeFancyBet}
+                  onActiveChange={setActiveFancyBet}
+                  onPick={onFancyClick}
+                />
+              )}
+
+              {selectedFancy === MAIN_FANCY.SPORTS_BOOK && (
+                <SportbookSection
+                  markets={filteredSportbook}
+                  selectedCategory={selectedSportsbook}
+                  onSelectCategory={setSelectedSportsbook}
+                  active={activeSportBook}
+                  onActiveChange={setActiveSportBook}
+                  onPick={onSportbookClick}
+                />
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -773,7 +834,12 @@ function LiveStream({ url, iframeRef, onClose, onFullscreen, hideClose }) {
       />
       {!hideClose && (
         <div className="close-icon-wrapper">
-          <i className="cursor-pointer close" onClick={onClose} role="button" aria-label="Close">
+          <i
+            className="cursor-pointer close"
+            onClick={onClose}
+            role="button"
+            aria-label="Close"
+          >
             <CloseIcon />
           </i>
         </div>
@@ -819,14 +885,21 @@ function MatchOddsSection({
         <div className="col-12">
           <div className="market-type d-flex justify-content-between position-relative">
             <div>
-              <span className={cx('match-odds-tab', isYellowTheme && 'yellow-match-odds-tab')}>
+              <span
+                className={cx(
+                  'match-odds-tab',
+                  isYellowTheme && 'yellow-match-odds-tab'
+                )}
+              >
                 Match Odds
               </span>
               {!isMobile && (
                 <span className={matchOdds.inplay ? 'inplay' : 'not-inplay'}>
                   <i className="time" />
                   <span className="d-inline-block ms-1 align-middle">
-                    {matchOdds.inplay ? 'In-Play' : fmtDate(matchOdds.marketStartTime)}
+                    {matchOdds.inplay
+                      ? 'In-Play'
+                      : fmtDate(matchOdds.marketStartTime)}
                   </span>
                 </span>
               )}
@@ -849,7 +922,10 @@ function MatchOddsSection({
                     <div>
                       <button
                         type="button"
-                        className={cx('btn btn-live', !isLiveStreamOn && 'btn-live-close')}
+                        className={cx(
+                          'btn btn-live',
+                          !isLiveStreamOn && 'btn-live-close'
+                        )}
                         onClick={onToggleLive}
                       >
                         Live
@@ -881,7 +957,11 @@ function MatchOddsSection({
                               <p>Max</p>
                               <span>{fmt(marketSetting.max || 100)}</span>
                             </div>
-                            <i className="close-icon" onClick={onToggleBetLimit} role="button">
+                            <i
+                              className="close-icon"
+                              onClick={onToggleBetLimit}
+                              role="button"
+                            >
                               <CloseIcon />
                             </i>
                           </div>
@@ -901,7 +981,10 @@ function MatchOddsSection({
               ) : (
                 <>
                   <th className="text-start w-nowrap refer_only ps-1">
-                    {(matchOdds.numberOfRunners ?? matchOdds.runners?.length ?? 0)} Selection
+                    {matchOdds.numberOfRunners ??
+                      matchOdds.runners?.length ??
+                      0}{' '}
+                    Selection
                   </th>
                   <th colSpan={3} className="text-start">
                     101%
@@ -935,13 +1018,20 @@ function MatchOddsSection({
               const bgLine = (price) =>
                 isSuspended ||
                 !price ||
-                (marketSetting.pbuLimit && totalMatched < marketSetting.pbuLimit) ||
+                (marketSetting.pbuLimit &&
+                  totalMatched < marketSetting.pbuLimit) ||
                 price > PRICE_LIMIT
 
-              const backCells = isMobile ? [back[0]] : [back[2], back[1], back[0]]
+              const backCells = isMobile
+                ? [back[0]]
+                : [back[2], back[1], back[0]]
               const layCells = isMobile ? [lay[0]] : [lay[0], lay[1], lay[2]]
-              const backClasses = isMobile ? ['blue-xs'] : ['blue-xxs', 'blue-md', 'blue-xs']
-              const layClasses = isMobile ? ['red-xs'] : ['red-xs', 'red-md', 'red-xxs']
+              const backClasses = isMobile
+                ? ['blue-xs']
+                : ['blue-xxs', 'blue-md', 'blue-xs']
+              const layClasses = isMobile
+                ? ['red-xs']
+                : ['red-xs', 'red-md', 'red-xxs']
 
               return (
                 <Fragment key={runner.selectionId}>
@@ -975,7 +1065,7 @@ function MatchOddsSection({
                             klass,
                             cell?.isChanged && 'back-spark',
                             bgLine(price) && 'bg-line',
-                            isActive && 'active',
+                            isActive && 'active'
                           )}
                           onClick={() =>
                             !bgLine(price) && onPick(runnerExt, cell, 'BACK')
@@ -1002,7 +1092,7 @@ function MatchOddsSection({
                             klass,
                             cell?.isChanged && 'lay-spark',
                             bgLine(price) && 'bg-line',
-                            isActive && 'active',
+                            isActive && 'active'
                           )}
                           onClick={() =>
                             !bgLine(price) && onPick(runnerExt, cell, 'LAY')
@@ -1082,7 +1172,7 @@ function BookmakerSection({
         max: bm.max,
         mid: bm.mid,
       })),
-    [runners],
+    [runners]
   )
 
   return (
@@ -1103,9 +1193,13 @@ function BookmakerSection({
         {!isMobile ? (
           <div className="d-flex align-items-center justify-content-center min-max-details">
             <span className="chip">Min</span>
-            <span className="d-inline-block ms-1 text-white">{fmt(setting.min || 1)}</span>
+            <span className="d-inline-block ms-1 text-white">
+              {fmt(setting.min || 1)}
+            </span>
             <span className="chip ms-2 d-inline-block">Max</span>
-            <span className="d-inline-block ms-1 text-white">{fmt(setting.max || 10000)}</span>
+            <span className="d-inline-block ms-1 text-white">
+              {fmt(setting.max || 10000)}
+            </span>
           </div>
         ) : (
           <span className="warning-wrapper position-relative px-md-2">
@@ -1120,7 +1214,12 @@ function BookmakerSection({
                     {fmt(setting.min || 1)} / {fmt(setting.max || 1000)}
                   </span>
                 </div>
-                <i className="close-icon" onClick={onToggleInfo} role="button" aria-label="Close">
+                <i
+                  className="close-icon"
+                  onClick={onToggleInfo}
+                  role="button"
+                  aria-label="Close"
+                >
                   <CloseIcon />
                 </i>
               </div>
@@ -1156,7 +1255,7 @@ function BookmakerSection({
               const isInlineBookmaker =
                 active?.selectionId === bookmaker.selectionId && !isSuspended
               const statusLabel = titleCase(
-                setting.isSuspended ? 'Suspended' : bookmaker.status || '',
+                setting.isSuspended ? 'Suspended' : bookmaker.status || ''
               )
 
               return (
@@ -1164,7 +1263,9 @@ function BookmakerSection({
                   <tr>
                     <td className="runner-name-td">
                       <div className="d-flex flex-column">
-                        <span className="runner-name">{bookmaker.runnerName}</span>
+                        <span className="runner-name">
+                          {bookmaker.runnerName}
+                        </span>
                         <div className="d-flex align-items-center">
                           {/* bet-exposure slot (Angular: <app-bet-exposure />) */}
                         </div>
@@ -1184,7 +1285,9 @@ function BookmakerSection({
                                 i === 2 && 'blue-xs',
                                 i === 1 && 'blue-md',
                                 i === 0 && 'blue-xxs',
-                                isInlineBookmaker && active?.betType === 'BACK' && 'active',
+                                isInlineBookmaker &&
+                                  active?.betType === 'BACK' &&
+                                  'active'
                               )
                               return (
                                 <td
@@ -1207,7 +1310,9 @@ function BookmakerSection({
                                 i === 0 && 'red-xs',
                                 i === 1 && 'red-md',
                                 i === 2 && 'red-xxs',
-                                isInlineBookmaker && active?.betType === 'LAY' && 'active',
+                                isInlineBookmaker &&
+                                  active?.betType === 'LAY' &&
+                                  'active'
                               )
                               return (
                                 <td
@@ -1263,7 +1368,7 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
     <div
       className={cx(
         'fancy-bet-header',
-        selectedFancy === MAIN_FANCY.SPORTS_BOOK && 'orange',
+        selectedFancy === MAIN_FANCY.SPORTS_BOOK && 'orange'
       )}
     >
       {tabs.map((tab) => {
@@ -1276,7 +1381,7 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
               isActive && 'active',
               selectedFancy === MAIN_FANCY.SPORTS_BOOK &&
                 tab.type === MAIN_FANCY.SPORTS_BOOK &&
-                'premium',
+                'premium'
             )}
             onClick={() => onSelect(tab.type)}
             role="button"
@@ -1289,7 +1394,7 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
             <div
               className={cx(
                 'd-flex align-items-center inner-bg',
-                tab.type === MAIN_FANCY.SPORTS_BOOK && 'premium',
+                tab.type === MAIN_FANCY.SPORTS_BOOK && 'premium'
               )}
             >
               {isMobile && tab.type !== MAIN_FANCY.SPORTS_BOOK && (
@@ -1332,12 +1437,16 @@ function FancySection({
 }) {
   if (!items.length) {
     return (
-      <div className="text-center p-3 text-secondary small bg-white">No fancy markets</div>
+      <div className="text-center p-3 text-secondary small bg-white">
+        No fancy markets
+      </div>
     )
   }
 
   const availableTabs = FANCY_TYPE_TABS.filter(
-    (t) => t.type === FANCY_TYPES.ALL || (buckets[t.type] && buckets[t.type].length > 0),
+    (t) =>
+      t.type === FANCY_TYPES.ALL ||
+      (buckets[t.type] && buckets[t.type].length > 0)
   )
 
   return (
@@ -1348,7 +1457,10 @@ function FancySection({
             {availableTabs.map((tab) => (
               <li
                 key={tab.type}
-                className={cx('text-center', selectedType === tab.type && 'active')}
+                className={cx(
+                  'text-center',
+                  selectedType === tab.type && 'active'
+                )}
                 onClick={() => onSelectType(tab.type)}
               >
                 <a>{tab.label}</a>
@@ -1400,7 +1512,9 @@ function FancySection({
                     <tr className="mobile-fancy-runner">
                       <td colSpan={3}>
                         <div className="d-flex justify-content-between align-items-center">
-                          <span className="mobile-runner-name">{item.RunnerName}</span>
+                          <span className="mobile-runner-name">
+                            {item.RunnerName}
+                          </span>
                           <span className="warning-wrapper px-md-2 position-relative">
                             <i
                               onClick={() =>
@@ -1416,7 +1530,8 @@ function FancySection({
                                 <div className="flex-fill d-flex flex-column">
                                   <p>Min / Max</p>
                                   <span>
-                                    {fmt(item.min || 1)} / {fmt(item.max || 1000)}
+                                    {fmt(item.min || 1)} /{' '}
+                                    {fmt(item.max || 1000)}
                                   </span>
                                 </div>
                                 <i
@@ -1448,7 +1563,10 @@ function FancySection({
                     </td>
                     <td
                       colSpan={2}
-                      className={cx('p-0', item.GameStatus && 'game-status-active')}
+                      className={cx(
+                        'p-0',
+                        item.GameStatus && 'game-status-active'
+                      )}
                     >
                       {item.GameStatus && (
                         <div className="game-status">
@@ -1463,22 +1581,36 @@ function FancySection({
                             <td
                               className={cx(
                                 'red-xs price',
-                                isInline && active?.betType === 'NO' && 'active',
+                                isInline && active?.betType === 'NO' && 'active'
                               )}
-                              onClick={() => onFancyClickWrapper(onPick, item, 'NO')}
+                              onClick={() =>
+                                onFancyClickWrapper(onPick, item, 'NO')
+                              }
                             >
                               <p className="m-0">{item.LayPrice1 || ''}</p>
-                              <small>{!isSuspended && item.LaySize1 ? item.LaySize1 : ''}</small>
+                              <small>
+                                {!isSuspended && item.LaySize1
+                                  ? item.LaySize1
+                                  : ''}
+                              </small>
                             </td>
                             <td
                               className={cx(
                                 'blue-xs price',
-                                isInline && active?.betType === 'YES' && 'active',
+                                isInline &&
+                                  active?.betType === 'YES' &&
+                                  'active'
                               )}
-                              onClick={() => onFancyClickWrapper(onPick, item, 'YES')}
+                              onClick={() =>
+                                onFancyClickWrapper(onPick, item, 'YES')
+                              }
                             >
                               <p className="m-0">{item.BackPrice1 || ''}</p>
-                              <small>{!isSuspended && item.BackSize1 ? item.BackSize1 : ''}</small>
+                              <small>
+                                {!isSuspended && item.BackSize1
+                                  ? item.BackSize1
+                                  : ''}
+                              </small>
                             </td>
                           </tr>
                         </tbody>
@@ -1500,7 +1632,10 @@ function FancySection({
                   </tr>
                   {isInline && (
                     <tr>
-                      <td colSpan={isMobile ? 3 : 5} className="p-0 inline-betslip-host">
+                      <td
+                        colSpan={isMobile ? 3 : 5}
+                        className="p-0 inline-betslip-host"
+                      >
                         <InlineBetSlip
                           betSlipDetails={active}
                           onChange={onActiveChange}
@@ -1533,11 +1668,14 @@ function SportbookSection({
   onPick,
 }) {
   const [collapsed, setCollapsed] = useState({})
-  const toggle = (id) =>
-    setCollapsed((prev) => ({ ...prev, [id]: !prev[id] }))
+  const toggle = (id) => setCollapsed((prev) => ({ ...prev, [id]: !prev[id] }))
 
   if (!markets.length) {
-    return <div className="text-center p-3 text-secondary small bg-white">No sportsbook markets</div>
+    return (
+      <div className="text-center p-3 text-secondary small bg-white">
+        No sportsbook markets
+      </div>
+    )
   }
 
   return (
@@ -1562,7 +1700,8 @@ function SportbookSection({
         {markets.map((market, i) => {
           if (!market.runners?.length) return null
           const id = market.marketId || `mkt-${i}`
-          const isCollapsed = collapsed[id] === undefined ? i > 5 : collapsed[id]
+          const isCollapsed =
+            collapsed[id] === undefined ? i > 5 : collapsed[id]
           return (
             <div key={id} className="accordion-item mb-md-1 mb-0">
               <h2 className="accordion-header">
@@ -1580,25 +1719,32 @@ function SportbookSection({
               {!isCollapsed && (
                 <div className="sport-book-row d-flex flex-wrap">
                   {market.runners.map((runner) => {
-                    const isSuspended = market.status === '1' && runner.status !== '1'
+                    const isSuspended =
+                      market.status === '1' && runner.status !== '1'
                     const isActive =
-                      active?.selectionId === runner.selectionId && runner.status === '1'
+                      active?.selectionId === runner.selectionId &&
+                      runner.status === '1'
                     return (
                       <Fragment key={runner.selectionId}>
                         <div
-                          className={cx('sport-book-list', isSuspended && 'suspended')}
+                          className={cx(
+                            'sport-book-list',
+                            isSuspended && 'suspended'
+                          )}
                           onClick={() => !isSuspended && onPick(market, runner)}
                           role="button"
                         >
                           <p className="m-0 runner-name">
-                            <span className="fw-bold">{titleCase(runner.runnerName)}</span>
+                            <span className="fw-bold">
+                              {titleCase(runner.runnerName)}
+                            </span>
                             {/* bet-exposure slot */}
                           </p>
                           <div className="d-flex align-items-center runner-data">
                             <span
                               className={cx(
                                 'green-xs ball-running position-relative cursor-pointer',
-                                isActive && 'active',
+                                isActive && 'active'
                               )}
                             >
                               {isSuspended && (
@@ -1639,7 +1785,13 @@ function SportbookSection({
 function PinIcon() {
   return (
     <i>
-      <svg xmlns="http://www.w3.org/2000/svg" width="8" height="12" viewBox="0 0 8 12" aria-hidden="true">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="8"
+        height="12"
+        viewBox="0 0 8 12"
+        aria-hidden="true"
+      >
         <path
           d="M6.714 5.25c.857.321 1.286.812 1.286 1.473 0 .232-.036.384-.107.455-.071.071-.214.107-.429.107h-2.893l-.429 4.714h-.286l-.429-4.714h-2.893c-.214 0-.357-.04-.429-.121-.071-.08-.107-.228-.107-.442 0-.661.429-1.152 1.286-1.473l.143-.054c.262-.107.429-.277.5-.509l.643-3.161v-.134c0-.143-.119-.259-.357-.348l-.036-.027h-.036c-.286-.089-.429-.241-.429-.455 0-.25.048-.406.143-.469.095-.063.262-.094.5-.094h3.286c.238 0 .405.031.5.094.095.063.143.219.143.469 0 .214-.143.366-.429.455h-.036l-.036.027c-.238.089-.357.205-.357.348v.134l.643 3.161c.071.232.238.402.5.509l.143.054z"
           fill="currentColor"
@@ -1670,7 +1822,13 @@ function RefreshIcon() {
 
 function CloseIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
       <path
         fill="currentColor"
         d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
@@ -1681,7 +1839,13 @@ function CloseIcon() {
 
 function FullscreenIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
       <path
         fill="currentColor"
         d="M7 14H5v5h5v-2H7zm-2-4h2V7h3V5H5zm12 7h-3v2h5v-5h-2zM14 5v2h3v3h2V5z"
@@ -1727,7 +1891,13 @@ function WarningSvg() {
 
 function PinSvg() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
       <path
         fill="currentColor"
         d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"

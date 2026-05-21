@@ -1,73 +1,75 @@
-.card-body {
-  background-color: var(--white);
-  padding: 0;
-
-  select {
-    height: 25px;
-    font-size: 14px;
-    min-width: 150px;
-  }
-}
-
-table {
-  width: 100%;
-
-  th,
-  td {
-    padding: 5px 0px 5px 10px;
-    font-size: 11px;
-    color: var(--lg-white);
-    vertical-align: top;
-    line-height: 16px;
-  }
-
-  td {
-    .ng-select {
-      max-width: 140px;
-      border: 1px solid var(--xs-lightGray);
-      border-radius: 4px;
-
-      .ng-select-container {
-        min-height: 0;
-        height: 28px;
-        background-color: var(--secondary-black);
-      }
-    }
-
-    &:first-child {
-      width: 22%;
-      min-width: 115px;
-
-      @media screen and (max-width: 767px) {
-        min-width: 80px;
-      }
-    }
-
-    .link-view {
-      text-decoration: underline;
-      color: var(--lightest-neavy);
-    }
-  }
-
-  tr {
-    border-bottom: 1px solid var(--xs-lightGray);
+.profile-container {
+  .card-body {
     background-color: var(--white);
+    padding: 0;
 
-    &:last-child {
-      border-bottom-color: #7e97a7;
+    select {
+      height: 25px;
+      font-size: 14px;
+      min-width: 150px;
     }
   }
-}
 
-.inner-row {
-  padding-left: 12px;
-}
+  table {
+    width: 100%;
 
-.mcv-yellow-theme {
-  td {
-    span,
-    i {
-      color: var(--oneclick-bet-color);
+    th,
+    td {
+      padding: 5px 0px 5px 10px;
+      font-size: 11px;
+      color: var(--lg-white);
+      vertical-align: top;
+      line-height: 16px;
+    }
+
+    td {
+      .ng-select {
+        max-width: 140px;
+        border: 1px solid var(--xs-lightGray);
+        border-radius: 4px;
+
+        .ng-select-container {
+          min-height: 0;
+          height: 28px;
+          background-color: var(--secondary-black);
+        }
+      }
+
+      &:first-child {
+        width: 22%;
+        min-width: 115px;
+
+        @media screen and (max-width: 767px) {
+          min-width: 80px;
+        }
+      }
+
+      .link-view {
+        text-decoration: underline;
+        color: var(--lightest-neavy);
+      }
+    }
+
+    tr {
+      border-bottom: 1px solid var(--xs-lightGray);
+      background-color: var(--white);
+
+      &:last-child {
+        border-bottom-color: #7e97a7;
+      }
+    }
+  }
+
+  .inner-row {
+    padding-left: 12px;
+  }
+
+  .mcv-yellow-theme {
+    td {
+      span,
+      i {
+        color: var(--oneclick-bet-color);
+      }
     }
   }
 }
