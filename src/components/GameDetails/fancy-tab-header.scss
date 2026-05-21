@@ -1,0 +1,334 @@
+.fancy-bet-header {
+  display: flex;
+  align-items: flex-end;
+  align-items: center;
+  border-bottom: 2px solid #2aa8a8;
+
+  @media screen and (max-width: 767px) {
+    border-bottom-width: 1.06667vw;
+  }
+
+  &.orange {
+    border-bottom-color: #e4550f;
+  }
+}
+
+.fancy-bet-chip {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 20px;
+  margin-right: -5px;
+
+  @media screen and (max-width: 767px) {
+    margin-left: 4.786vw;
+    margin-bottom: -1px;
+  }
+
+  .live-chip {
+    position: absolute;
+    overflow: visible;
+    top: -5px;
+    right: -15px;
+    height: 14px;
+    z-index: 98;
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.6));
+    margin: 0;
+
+    @media screen and (max-width: 767px) {
+      top: -3.5667vw;
+      right: -5vw;
+    }
+
+    .number {
+      background: #ff4532;
+      border-radius: 15px;
+      padding: 1px 8px;
+      color: var(--white);
+      font-size: 10px;
+
+      @media screen and (max-width: 767px) {
+        padding: 0.4vw 1.7vw 0.2vw 1.7vw;
+        border-radius: 0.8vw;
+      }
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 15px;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 8px 7px 0 0;
+      border-color: #ff4532 transparent transparent transparent;
+      z-index: 999;
+
+      @media screen and (max-width: 767px) {
+        border-width: 1.8vw 1.8vw 0 0;
+        left: 3.5vw;
+        bottom: -1.3vw;
+      }
+    }
+  }
+
+  .innerbg {
+    padding: 7px 10px;
+    height: 30px;
+    background-color: #243a48;
+    color: var(--white);
+    position: relative;
+    font-weight: bold;
+
+    .icon-clock {
+      svg {
+        fill: var(--white);
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      padding: 1.3vw 2.66667vw;
+      height: 6.45vw;
+    }
+
+    &::before {
+      position: absolute;
+      content: '';
+      top: 0;
+      bottom: 0;
+      left: -6px;
+      width: 10px;
+      border-radius: 4px 0 0 0;
+      transform: skew(-14deg, 0deg);
+      background: #243a48;
+
+      @media screen and (max-width: 767px) {
+        left: -1.582vw;
+        width: 2.304vw;
+        border-radius: 0.522vw 0 0 0;
+      }
+    }
+
+    &::after {
+      position: absolute;
+      content: '';
+      top: 0;
+      bottom: 0;
+      right: -6px;
+      width: 10px;
+      border-radius: 0 4px 0 0;
+      transform: skew(14deg, 0deg);
+      background: #243a48;
+
+      @media screen and (max-width: 767px) {
+        right: -1.782vw;
+        width: 3.304vw;
+        border-radius: 0 0.522vw 0 0;
+        height: 6.46vw;
+      }
+    }
+
+    i {
+      background: linear-gradient(-180deg, #91d527 0%, #60ba1e 79%);
+      border-radius: 3px;
+
+      @media screen and (max-width: 767px) {
+        width: 4vw;
+        height: 4vw;
+        text-align: center;
+
+        svg {
+          width: 3.8vw;
+          height: 3.8vw;
+          line-height: 3.8vw;
+        }
+      }
+    }
+  }
+
+  span {
+    font-size: 12px;
+    margin-left: 0;
+    color: #ccc;
+
+    @media screen and (max-width: 767px) {
+      font-size: 3.73333vw;
+    }
+  }
+
+  i {
+    display: none;
+    line-height: 0;
+
+    svg rect {
+      fill: var(--md-green);
+    }
+  }
+
+  &.active {
+    margin-left: 0;
+
+    .live-chip {
+      display: none;
+    }
+
+    .innerbg {
+      background: linear-gradient(-180deg, #0a92a5 0%, #087989 82%);
+
+      &::before,
+      &::after {
+        display: none;
+      }
+    }
+
+    span {
+      margin-left: 8px;
+      color: var(--white);
+    }
+
+    i {
+      display: inline-block;
+    }
+
+    .fancy-bet-pin {
+      background-color: #182833;
+      padding: 0.261vw 0.522vw 0.391vw 0.782vw;
+      position: relative;
+
+      @media screen and (min-width: 768px) {
+        display: none;
+      }
+
+      &::before {
+        position: absolute;
+        right: -4px;
+        content: '';
+        width: 7px;
+        top: 0;
+        bottom: 0;
+        background-color: #182833;
+        z-index: 9;
+        transform: skewX(12deg);
+
+        @media screen and (max-width: 767px) {
+          width: 1.6vw;
+          right: -1vw;
+        }
+      }
+
+      svg {
+        width: 22px;
+
+        @media screen and (max-width: 767px) {
+          width: 3.86667vw;
+          height: 5.86667vw;
+        }
+      }
+    }
+
+    .que-icon {
+      text-align: center;
+      position: relative;
+      color: var(--white);
+      z-index: 2;
+      padding: 0 4px;
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+
+      @media screen and (max-width: 767px) {
+        pointer-events: all;
+        width: 4vw;
+        height: 4.45vw;
+      }
+
+      &::after {
+        content: '';
+        background-repeat: no-repeat;
+        position: absolute;
+        z-index: 1;
+        background-position: center;
+        left: 0;
+        top: 0;
+        background-size: contain;
+        width: 16px;
+        height: 16px;
+        background-image: url('/img/svg/info.svg');
+
+        @media screen and (max-width: 767px) {
+          width: 5vw;
+          background-image: url('/img/svg/questionMarkRounded.svg');
+          height: 4vw;
+        }
+      }
+
+      &::before {
+        position: absolute;
+        content: '';
+        border-radius: 0 4px 0 0;
+        transform: skew(14deg, 0deg);
+        background: linear-gradient(0deg, #2a8a98 0%, #3ab6b8 100%);
+        z-index: -1;
+        left: -5px;
+        width: 28px;
+        top: -7px;
+        bottom: -7px;
+
+        @media screen and (max-width: 767px) {
+          top: -1.1vw;
+          bottom: 0;
+          width: 7vw;
+          height: 6.6vw;
+          left: -1vw;
+        }
+      }
+
+      svg {
+        height: 16px;
+        width: 16px;
+        margin-left: 1px;
+
+        @media screen and (max-width: 767px) {
+          width: 4vw;
+          height: 4vw;
+        }
+
+        g path {
+          fill: var(--white) !important;
+        }
+      }
+    }
+  }
+
+  &.premium {
+    .innerbg {
+      background: linear-gradient(180deg, #ef6c2c 0%, #e4550f 82%);
+    }
+
+    .que-icon::before {
+      background: linear-gradient(180deg, #f69b41 0%, #e4550f 100%);
+    }
+  }
+}
+
+.min-chips {
+  height: 6.4vw;
+  padding: 0 1.6vw;
+  margin-right: 1.86667vw;
+  background-color: #bed5d8;
+  color: #243a48;
+  font-size: 3.46667vw;
+  line-height: 6.4vw;
+  border-radius: 1.06667vw;
+  display: none;
+  margin-left: auto;
+  margin-top: -1.9vw;
+
+  svg path {
+    fill: var(--black);
+  }
+
+  @media screen and (max-width: 767px) {
+    display: inline-block;
+  }
+}

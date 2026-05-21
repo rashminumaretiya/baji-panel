@@ -25,11 +25,32 @@ export function getSocket() {
 }
 
 export function subscribeEvents(eventIds) {
-  if (!socket || !eventIds?.length) return
-  socket.emit('subscribe', { eventIds })
+  const s = ensureSocket()
+  if (!eventIds?.length) return
+  s.emit('subscribe', { eventIds })
 }
 
 export function unsubscribeEvents(eventIds) {
   if (!socket || !eventIds?.length) return
   socket.emit('unsubscribe', { eventIds })
+}
+
+export function emitSocket(eventName, payload) {
+  if (!eventName) return
+  const s = ensureSocket()
+  s.emit(eventName, payload)
+}
+
+export function listenSocket(eventName, handler) {
+  if (!eventName || typeof handler !== 'function') return () => {}
+  const s = ensureSocket()
+  s.on(eventName, handler)
+  return () => s.off(eventName, handler)
+}
+
+export function onReconnect(handler) {
+  if (typeof handler !== 'function') return () => {}
+  const s = ensureSocket()
+  s.on('reconnect', handler)
+  return () => s.off('reconnect', handler)
 }

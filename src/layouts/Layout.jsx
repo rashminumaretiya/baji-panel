@@ -5,6 +5,7 @@ import { fetchSidebarSports } from "../store/slices/sportSlice"
 import { selectIsAuthenticated } from "../store/slices/authSlice"
 import { selectIsMobile } from "../store/slices/commonSlice"
 import { selectLayoutedRoutes } from "../store/slices/layoutSlice"
+import BetSlip from "../components/BetSlip"
 import DevAuthToggle from "../components/DevAuthToggle"
 import Header from "../components/Header"
 import SportsSidebar from "../shared/components/sports-sidebar/SportsSidebar"
@@ -59,6 +60,12 @@ export default function Layout() {
           >
             <Outlet />
           </div>
+
+          {showRightSidebar && (
+            <div className="right-data">
+              <BetSlip />
+            </div>
+          )}
         </div>
       </div>
     </div>
