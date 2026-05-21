@@ -1,0 +1,204 @@
+.one-click-wrapper {
+  z-index: 1010;
+  background-image: linear-gradient(
+    180deg,
+    var(--xts-primary) 0%,
+    var(--mdx-primary) 100%
+  );
+  box-shadow: inset 0 1px 0 0 var(--shadow-primary);
+  padding: 0 10px;
+  h6 {
+    line-height: 31px;
+    color: var(--dark);
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .one-click-stake {
+    .form-control {
+      padding: 0;
+      font-size: 11px;
+      line-height: 18px;
+      height: 20px;
+      width: 65px;
+      border: 1px solid var(--sm-black);
+      border-radius: 4px;
+      background-image: linear-gradient(
+        180deg,
+        var(--white) 0%,
+        var(--xs-gray) 89%
+      );
+      box-shadow: inset 0 2px 0 0 rgb(var(--white-rgb), 0.5);
+      color: var(--black);
+      &:hover {
+        background-image: linear-gradient(
+          180deg,
+          var(--xs-gray) 0%,
+          var(--white) 89%
+        );
+      }
+      &:focus {
+        background-image: var(--md-yellow);
+        background-color: var(--md-yellow);
+      }
+      &::-webkit-inner-spin-button,
+      &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+      }
+      &.btn-yellow {
+        min-width: 65px;
+        background: var(--md-yellow);
+        &:focus {
+          background-image: var(--md-yellow);
+        }
+      }
+    }
+  }
+
+  .btn {
+    min-width: 70px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--black);
+    font-weight: normal;
+    &.edit-btn {
+      margin-top: 0;
+      background-color: transparent;
+      box-shadow: inset 0 1px 0 0 rgba(var(--white-rgb), 0.5);
+      border: 1px solid rgba(var(--black-rgb), 0.5);
+      color: var(--white);
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    &.btn-secondary {
+      color: var(--white);
+    }
+  }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(var(--black-rgb), 0.3);
+  z-index: 9;
+}
+
+.attention-popover {
+  background-color: rgba(var(--black-rgb), 0.85);
+  inset: auto auto 18px 0px !important;
+  box-shadow: 0 0 8px 8px rgba(var(--white-rgb), 0.7);
+  border-radius: 10px;
+  overflow: visible !important;
+  * {
+    font-family: Tahoma, Helvetica, sans-serif;
+  }
+  .popover-arrow {
+    display: block;
+  }
+  .popover-body {
+    padding: 0;
+    color: var(--white);
+    border-top: 1px solid rgba(var(--white-rgb), 0.31);
+    font-size: 13px;
+    font-family: Tahoma;
+    line-height: 18px;
+    .one-click-attention {
+      background-color: transparent;
+      span {
+        color: var(--md-yellow);
+      }
+    }
+    .content {
+      padding: 5px 20px 7px;
+    }
+    .btn-wrapper {
+      padding: 7px 10px 10px;
+      border-top: 1px solid rgba(var(--white-rgb), 0.2);
+      width: 100%;
+      .btn {
+        width: 46.42857%;
+        background-color: var(--xts-black);
+        border: 1px solid var(--black);
+        color: var(--white);
+        margin: 0 auto;
+        display: block;
+        font-size: 12px;
+        font-weight: bold;
+        border-radius: 4px;
+        padding: 6px;
+        &:hover {
+          background-color: var(--xmd-black);
+        }
+      }
+    }
+  }
+  .popover-arrow {
+    &::after {
+      border-top-color: var(--black);
+    }
+  }
+  .popover-header {
+    text-align: center;
+    color: var(--white);
+    background-color: transparent;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 7px 0;
+  }
+}
+
+.attention-popover {
+  min-width: 320px;
+  width: 100%;
+}
+
+.one-click-stake {
+  width: 414px;
+  height: 31px;
+  background: url('/img/main-bg-shape.png');
+  gap: 3px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  &.yellow-label {
+    background: url('/img/stake-1click.png');
+    .btn-yellow {
+      background: #ffd200 !important;
+    }
+  }
+}
+
+.yellow-theme {
+  background: linear-gradient(180deg, #4e9600 0%, #386a02 100%);
+}
+.yellow-btn {
+  &.btn {
+    background-image: linear-gradient(
+      180deg,
+      var(--md-primary-yellow) 0%,
+      #ffa10c 100%
+    ) !important;
+    color: var(--dark) !important;
+  }
+}
+.mcw-btn {
+  &.btn {
+    background-image: linear-gradient(
+      180deg,
+      #474747 0%,
+      #070707 100%
+    ) !important;
+    color: #ffd354 !important;
+  }
+}
+
+.mcw-casino-theme {
+  background: linear-gradient(180deg, #b43807 0%, #912b06 100%);
+  .one-click-stake {
+    background: url('/img/red-stake-banner.png');
+  }
+}
