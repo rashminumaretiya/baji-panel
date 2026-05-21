@@ -35,7 +35,7 @@ export default function AddBackupNumberModal({ isOpen, onClose, onSuccess }) {
       await http.post(
         'user/backup-account-number',
         { countryCode, phoneNumber },
-        { headers: { Authorization: `Bearer ${token}` } },
+        { headers: { Authorization: `Bearer ${token}` } }
       )
       onSuccess?.()
       onClose?.()
@@ -45,7 +45,12 @@ export default function AddBackupNumberModal({ isOpen, onClose, onSuccess }) {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Add Backup Number" size="md">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Add Backup Number"
+      size="md"
+    >
       <form onSubmit={handleAdd} className="whatsapp-form">
         <div className="form-group mb-3">
           <label className="form-label">Backup Number :</label>
@@ -66,7 +71,9 @@ export default function AddBackupNumberModal({ isOpen, onClose, onSuccess }) {
               className="form-control phone-input"
               placeholder="Enter Contact number"
               value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
+              onChange={(e) =>
+                setPhoneNumber(e.target.value.replace(/\D/g, ''))
+              }
             />
           </div>
         </div>
@@ -74,7 +81,7 @@ export default function AddBackupNumberModal({ isOpen, onClose, onSuccess }) {
           <button
             type="submit"
             className="btn btn-add-number"
-            disabled={!phoneNumber || submitting}
+            disabled={submitting}
           >
             Add Number
           </button>

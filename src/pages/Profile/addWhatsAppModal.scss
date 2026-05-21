@@ -27,9 +27,12 @@
   }
 
   .btn-add-number {
-    background-image: linear-gradient(180deg, var(--xs-primary) 0%, var(--xxs-primary) 100%);
-    background-color: transparent;
-    border-color: transparent;
+    background-image: linear-gradient(
+        180deg,
+        var(--xs-primary) 0%,
+        var(--xxs-primary) 100%
+      );
+    border-color: var(--lg-primary);
     color: #fff;
     padding: 6px 18px;
     font-weight: 600;
@@ -37,15 +40,15 @@
 
     &:hover,
     &:focus {
-      background-image: linear-gradient(180deg, var(--xs-primary) 0%, var(--xxs-primary) 100%);
+      background-image: linear-gradient(
+        180deg,
+        var(--xxs-primary) 0%,
+        var(--xs-primary) 100%
+      );
       background-color: transparent;
       border-color: transparent;
       color: #fff;
       filter: brightness(0.95);
-    }
-
-    &:disabled {
-      opacity: 0.6;
     }
   }
 

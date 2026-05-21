@@ -142,7 +142,7 @@ export default function AddWhatsAppModal({ isOpen, onClose, onSuccess }) {
             <button
               type="submit"
               className="btn btn-add-number"
-              disabled={!phoneNumber || submitting}
+              disabled={submitting}
             >
               Add Number
             </button>
@@ -174,7 +174,7 @@ export default function AddWhatsAppModal({ isOpen, onClose, onSuccess }) {
             <button
               type="submit"
               className="btn btn-add-number"
-              disabled={!otp || submitting}
+              disabled={submitting}
             >
               Verify
             </button>
