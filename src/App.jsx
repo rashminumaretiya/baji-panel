@@ -4,7 +4,6 @@ import { useTheme } from './hooks/useTheme.js'
 import Layout from './layouts/Layout.jsx'
 import MyAccountLayout from './layouts/MyAccountLayout.jsx'
 import ResultLayout from './layouts/ResultLayout.jsx'
-import GameDetails from './pages/GameDetails.jsx'
 import InPlay from './pages/InPlay.jsx'
 import IplWinner from './pages/IplWinner.jsx'
 import MultiMarkets from './pages/MultiMarkets.jsx'
@@ -26,6 +25,7 @@ import Soccer from './pages/Soccer.jsx'
 import Tennis from './pages/Tennis.jsx'
 import Home from './pages/Home.jsx'
 import InPlayLayout from './layouts/InPlayLayout.jsx'
+import LiveOdds from './pages/LiveOdds.jsx'
 
 function App() {
   useDomainConfiguration()
@@ -35,7 +35,11 @@ function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
-        <Route path="odds/:eventId/:sport" element={<GameDetails />} />
+        <Route path="/"element={<Home />} />
+        <Route
+          path="odds/:eventId/:sport"
+          element={<LiveOdds />}
+        />
         <Route path="cricket" element={<Cricket />} />
         <Route path="soccer" element={<Soccer />} />
         <Route path="tennis" element={<Tennis />} />

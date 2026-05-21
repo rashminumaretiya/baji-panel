@@ -14,12 +14,10 @@ body {
   font-family: Tahoma, Helvetica, sans-serif;
   color: var(--dark);
   font-size: 12px;
-  line-height: 15px;
   overflow-x: hidden;
   overflow-wrap: break-word;
-  line-height: normal;
+  line-height: 15px;
   box-sizing: border-box;
-  font-family: 'Tahoma';
   background-color: var(--xs-gray);
 
   @media screen and (max-width: 767px) {

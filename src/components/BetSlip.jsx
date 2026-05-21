@@ -7,7 +7,7 @@ import { selectActiveBetSlip } from '../store/slices/betSlipSlice.js'
 import SvgIcon from './SvgIcon.jsx'
 import './betSlip.scss'
 
-const DEFAULT_AVAILABLE_STAKE = [10, 20, 50, 100]
+const DEFAULT_AVAILABLE_STAKE = [100, 200, 500, 1000, 2000, 5000]
 
 function cx(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -193,7 +193,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
             className="confirm-bets ms-1 d-inline-block cursor-pointer"
             htmlFor="confirmBets"
           >
-            Confirm bets before placing
+            Please confirm your bets.
           </label>
         </div>
       </form>
@@ -231,6 +231,9 @@ export default function BetSlip() {
             <div className="accordion-body">
               {isOpen ? (
                 <BetSlipForm
+                  // Key remounts the form whenever the active selection / betType
+                  // changes so the controlled `odds` and `stake` inputs reset.
+                  key={`${activeMatchOdd?.marketId ?? ''}-${activeMatchOdd?.selectionId ?? ''}-${activeMatchOdd?.betType ?? ''}`}
                   activeMatchOdd={activeMatchOdd}
                   availableStake={availableStake}
                   isYellowTheme={isYellowTheme}
