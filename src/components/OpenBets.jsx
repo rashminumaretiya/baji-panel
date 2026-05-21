@@ -1,14 +1,23 @@
-import { Fragment, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { Fragment, useCallback, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 import {
   selectIsMobile,
   selectIsYellowTheme,
 } from '../store/slices/commonSlice.js'
-import { selectActiveBetSlip } from '../store/slices/betSlipSlice.js'
-import { selectOpenBets } from '../store/slices/betSlipSlice.js'
+import {
+  fetchOpenBets,
+  selectActiveBetSlip,
+  selectOpenBetRefreshTick,
+  selectOpenBets,
+  setOpenBets,
+} from '../store/slices/betSlipSlice.js'
+import { selectIsAuthenticated } from '../store/slices/authSlice.js'
 import SvgIcon from './SvgIcon.jsx'
 import './betSlip.scss'
 import './openBets.scss'
+
+const OPEN_BETS_POLL_MS = 15000
 
 function cx(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -282,7 +291,13 @@ function OpenBetsListBackLay({
   )
 }
 
-function OpenBetsDesktop({ openBetsList, isOpen, isMobile, isYellowTheme }) {
+function OpenBetsDesktop({
+  openBetsList,
+  isOpen,
+  isMobile,
+  isYellowTheme,
+  onRefresh,
+}) {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [betInfo, setBetInfo] = useState(false)
@@ -302,6 +317,14 @@ function OpenBetsDesktop({ openBetsList, isOpen, isMobile, isYellowTheme }) {
                 className="cursor-pointer"
                 role="button"
                 tabIndex={0}
+                onClick={onRefresh}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    onRefresh?.()
+                  }
+                }}
+                aria-label="Refresh open bets"
               />
               <h2
                 className={cx(
@@ -427,10 +450,36 @@ function OpenBetsMobile({ openBetsList, isOpen, isMobile }) {
 }
 
 export default function OpenBets() {
+  const dispatch = useDispatch()
   const isMobile = useSelector(selectIsMobile)
   const isOpen = useSelector(selectActiveBetSlip)
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const openBetsList = useSelector(selectOpenBets) ?? []
+  const isAuthenticated = useSelector(selectIsAuthenticated)
+  const refreshTick = useSelector(selectOpenBetRefreshTick)
+
+  // Scope by `eventId` only when on the /odds/:eventId/:sport route. Home / list
+  // pages omit the param so the API returns the user's full open-bet list.
+  const { eventId } = useParams()
+
+  const handleRefresh = useCallback(() => {
+    if (!isAuthenticated) return
+    const params = eventId ? { eventId: String(eventId) } : {}
+    dispatch(fetchOpenBets(params))
+  }, [dispatch, isAuthenticated, eventId])
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      dispatch(setOpenBets([]))
+      return undefined
+    }
+    const params = eventId ? { eventId: String(eventId) } : {}
+    dispatch(fetchOpenBets(params))
+    const id = setInterval(() => {
+      dispatch(fetchOpenBets(params))
+    }, OPEN_BETS_POLL_MS)
+    return () => clearInterval(id)
+  }, [dispatch, isAuthenticated, eventId, refreshTick])
 
   if (isMobile) {
     return (
@@ -448,6 +497,7 @@ export default function OpenBets() {
       isOpen={!!isOpen}
       isMobile={isMobile}
       isYellowTheme={isYellowTheme}
+      onRefresh={handleRefresh}
     />
   )
 }

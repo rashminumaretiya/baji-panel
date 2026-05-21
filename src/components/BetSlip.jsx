@@ -1,9 +1,15 @@
 import { useState } from 'react'
 import Collapse from 'react-bootstrap/Collapse'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { selectIsYellowTheme } from '../store/slices/commonSlice.js'
 import { selectStakesData } from '../store/slices/authSlice.js'
-import { selectActiveBetSlip } from '../store/slices/betSlipSlice.js'
+import {
+  placeBet,
+  selectActiveBetSlip,
+  selectIsPlacingBet,
+  setActiveBetSlip,
+} from '../store/slices/betSlipSlice.js'
+import { alertService } from '../shared/services/alert.js'
 import SvgIcon from './SvgIcon.jsx'
 import './betSlip.scss'
 
@@ -37,6 +43,8 @@ function NoBetSlip({ isShowLoader }) {
 }
 
 function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
+  const dispatch = useDispatch()
+  const submitting = useSelector(selectIsPlacingBet)
   const isBack = activeMatchOdd?.betType === 'BACK'
   const [odds, setOdds] = useState(activeMatchOdd?.odd ?? '')
   const [stake, setStake] = useState('')
@@ -48,6 +56,31 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
   const onStakeClick = (value) => {
     setStake(String(value))
   }
+
+  const onPlaceBet = async () => {
+    if (submitting) return
+    const numericOdds = Number(odds)
+    const numericStake = Number(stake)
+    if (!numericOdds || !numericStake) {
+      alertService.error('Please enter odds and stake')
+      return
+    }
+    const slip = {
+      ...activeMatchOdd,
+      odd: numericOdds,
+      odds: numericOdds,
+      stake: numericStake,
+    }
+    try {
+      await dispatch(placeBet({ slip })).unwrap()
+      alertService.success('Bet placed successfully')
+      setPreExposureLiability(0)
+    } catch (msg) {
+      alertService.error(typeof msg === 'string' ? msg : 'Failed to place bet')
+    }
+  }
+
+  const onCancelAll = () => dispatch(setActiveBetSlip(null))
 
   return (
     <div className="bet-slip-wrapper">
@@ -168,7 +201,12 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
           </table>
         </div>
         <div className="d-flex justify-content-between button-wrapper mx-2">
-          <button type="button" className="btn btn-white me-2">
+          <button
+            type="button"
+            className="btn btn-white me-2"
+            onClick={onCancelAll}
+            disabled={submitting}
+          >
             Cancel All
           </button>
           <button
@@ -176,10 +214,12 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
             className={cx(
               'btn btn-primary',
               isYellowTheme && 'yellow-btn',
-              isYellowTheme && !stake && 'disabled'
+              (!stake || submitting) && 'disabled',
             )}
+            onClick={onPlaceBet}
+            disabled={!stake || submitting}
           >
-            Place Bet
+            {submitting ? 'Placing…' : 'Place Bet'}
           </button>
         </div>
         <div className="confirm-bets-checkbox">

@@ -130,12 +130,7 @@ function Keypad({ onValueChanged }) {
   )
 }
 
-export default function InlineBetSlip({
-  betSlipDetails,
-  onChange,
-  onCancel,
-  onPlaceBet,
-}) {
+export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPlaceBet, isPlacing = false }) {
   const isMobile = useIsMobile()
   const [isMatchChecked, setIsMatchChecked] = useState(false)
 
@@ -280,15 +275,28 @@ export default function InlineBetSlip({
                   type="button"
                   className="btn btn-cancel flex-1 py-2"
                   onClick={onCancel}
+                  disabled={isPlacing}
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   className="btn btn-primary btn-place-bet py-2"
-                  onClick={() => onPlaceBet?.(betSlipDetails)}
+                  onClick={() => !isPlacing && onPlaceBet?.(betSlipDetails)}
+                  disabled={isPlacing}
                 >
-                  Place Bet
+                  {isPlacing ? (
+                    <span className="d-inline-flex align-items-center">
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                      Placing…
+                    </span>
+                  ) : (
+                    'Place Bet'
+                  )}
                 </button>
               </div>
             </td>
@@ -342,6 +350,7 @@ export default function InlineBetSlip({
                   type="button"
                   className="btn btn-cancel ms-2"
                   onClick={onCancel}
+                  disabled={isPlacing}
                 >
                   Cancel
                 </button>
@@ -365,15 +374,28 @@ export default function InlineBetSlip({
                     value={betSlipDetails?.stake ?? ''}
                     onChange={(e) => updateStake(e.target.value)}
                     inputMode="none"
+                    disabled={isPlacing}
                   />
                 </div>
 
                 <button
                   type="button"
                   className="btn btn-primary place-order-btn"
-                  onClick={() => onPlaceBet?.(betSlipDetails)}
+                  onClick={() => !isPlacing && onPlaceBet?.(betSlipDetails)}
+                  disabled={isPlacing}
                 >
-                  Place Bet
+                  {isPlacing ? (
+                    <span className="d-inline-flex align-items-center">
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                      Placing…
+                    </span>
+                  ) : (
+                    'Place Bet'
+                  )}
                 </button>
               </div>
             </td>

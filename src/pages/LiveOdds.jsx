@@ -1,7 +1,3 @@
-// Live-odds page — 1:1 port of baji-exchange-frontend live-odds.component.{html,scss,ts}.
-// HTML class names and structure mirror the Angular template so live-odds.scss
-// (ported verbatim from the Angular component) applies directly.
-
 import {
   Fragment,
   useCallback,
@@ -26,13 +22,18 @@ import {
 import {
   selectIsYellowTheme,
   setIsPlayLiveStream,
+  setMainScreenLoader,
   setStreamUrlAvailable,
 } from '../store/slices/commonSlice.js'
 import {
+  placeBet,
   selectActiveBetSlip,
+  selectIsPlacingBet,
+  selectPlacingSelectionId,
   setActiveBetSlip,
 } from '../store/slices/betSlipSlice.js'
 import InlineBetSlip from '../components/GameDetails/InlineBetSlip.jsx'
+import { alertService } from '../shared/services/alert.js'
 
 import './live-odds.scss'
 
@@ -276,6 +277,8 @@ export default function LiveOdds() {
   const currency = useSelector(selectCurrency)
   // Match-odds bet slip lives in the right-side <BetSlip /> driven by Redux.
   const activeRightSideBet = useSelector(selectActiveBetSlip)
+  const isPlacingBet = useSelector(selectIsPlacingBet)
+  const placingSelectionId = useSelector(selectPlacingSelectionId)
 
   // ── State
   const [matchOddsList, setMatchOddsList] = useState([])
@@ -297,7 +300,6 @@ export default function LiveOdds() {
   const [betLimitOpen, setBetLimitOpen] = useState(false)
   const [bookmakerInfoOpen, setBookmakerInfoOpen] = useState(false)
   const [fancyInfoIndex, setFancyInfoIndex] = useState(-1)
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   // Inline bet-slip pointers for bookmaker / fancy / sportbook.
@@ -337,11 +339,13 @@ export default function LiveOdds() {
     }
   }, [])
 
-  // ── Default odds fetch
+  // ── Default odds fetch — drives the global `loader-wrapper` overlay via
+  // `setMainScreenLoader`, exactly like Angular's `commonService.showLoader()`
+  // / `hideLoader()` flow in `live-odds.component.ts`.
   const loadDefaultOdds = useCallback(
     async (signal) => {
       if (!sportId || !eventId) return
-      setLoading(true)
+      dispatch(setMainScreenLoader(true))
       setError(null)
       try {
         const response = await http.post(
@@ -367,7 +371,7 @@ export default function LiveOdds() {
           return
         setError(err)
       } finally {
-        setLoading(false)
+        dispatch(setMainScreenLoader(false))
       }
     },
     [sportId, eventId, processMatchOddsList, dispatch]
@@ -387,6 +391,10 @@ export default function LiveOdds() {
       dispatch(setActiveBetSlip(null))
     }
   }, [dispatch])
+
+  // Open bets are fetched + polled by <OpenBets /> itself (which reads the
+  // current route's `eventId` from useParams), so it works on /odds/:eventId
+  // (event-scoped) and on home / list pages (all events).
 
   // ── Socket subscriptions
   useEffect(() => {
@@ -536,6 +544,31 @@ export default function LiveOdds() {
   const toggleLiveStream = useCallback(() => setIsLiveStreamOn((on) => !on), [])
   const closeLiveStream = useCallback(() => setIsLiveStreamOn(false), [])
 
+  // Inline bookmaker / fancy / sportsbook slips. Dispatches the Redux thunk so
+  // the loading flag (`isPlacingBet` + `placingSelectionId`) propagates to the
+  // <InlineBetSlip /> button disabled state across the page.
+  const handlePlaceBet = useCallback(
+    async (slip, onDone) => {
+      const context = {
+        sport: sportSlug ?? '',
+        eventId: String(eventId ?? ''),
+        eventTitle:
+          matchOddsList?.[0]?.eventName || matchOddsList?.[0]?.eventTitle || '',
+        runners: matchOddsList?.[0]?.runners ?? [],
+      }
+      try {
+        await dispatch(placeBet({ slip, context })).unwrap()
+        alertService.success('Bet placed successfully')
+        onDone?.()
+      } catch (msg) {
+        alertService.error(
+          typeof msg === 'string' ? msg : 'Failed to place bet'
+        )
+      }
+    },
+    [dispatch, sportSlug, eventId, matchOddsList]
+  )
+
   const toggleFullscreen = useCallback(() => {
     const node = iframeRef.current
     if (!node) return
@@ -621,10 +654,6 @@ export default function LiveOdds() {
   }
 
   // ── Render
-  if (loading && !matchOddsArray.length) {
-    return <div className="p-4 small text-secondary">Loading market data…</div>
-  }
-
   if (error) {
     return (
       <div className="p-4">
@@ -704,7 +733,6 @@ export default function LiveOdds() {
 
           <PinRefresh onRefresh={refreshMarkets} />
         </div>
-
         <div className="odds-wrapper">
           {matchOddsArray.map((matchOdds, idx) => (
             <MatchOddsSection
@@ -726,6 +754,12 @@ export default function LiveOdds() {
               }
               onPick={onMatchOddsClick}
               onCancelMatchOdds={() => dispatch(setActiveBetSlip(null))}
+              onPlaceBet={handlePlaceBet}
+              isPlacingActive={
+                isPlacingBet &&
+                String(placingSelectionId) ===
+                  String(activeRightSideBet?.selectionId ?? '')
+              }
               betLimitOpen={betLimitOpen}
               onToggleBetLimit={() => setBetLimitOpen((v) => !v)}
               // Live stream slot — mirrors Angular's `<ng-container [ngTemplateOutlet]="liveStream"></ng-container>`
@@ -753,6 +787,12 @@ export default function LiveOdds() {
               active={activeBookmaker}
               onActiveChange={setActiveBookmaker}
               onPick={onBookmakerClick}
+              onPlaceBet={handlePlaceBet}
+              isPlacingActive={
+                isPlacingBet &&
+                String(placingSelectionId) ===
+                  String(activeBookmaker?.selectionId ?? '')
+              }
             />
           )}
 
@@ -777,6 +817,12 @@ export default function LiveOdds() {
                   active={activeFancyBet}
                   onActiveChange={setActiveFancyBet}
                   onPick={onFancyClick}
+                  onPlaceBet={handlePlaceBet}
+                  isPlacingActive={
+                    isPlacingBet &&
+                    String(placingSelectionId) ===
+                      String(activeFancyBet?.selectionId ?? '')
+                  }
                 />
               )}
 
@@ -788,6 +834,12 @@ export default function LiveOdds() {
                   active={activeSportBook}
                   onActiveChange={setActiveSportBook}
                   onPick={onSportbookClick}
+                  onPlaceBet={handlePlaceBet}
+                  isPlacingActive={
+                    isPlacingBet &&
+                    String(placingSelectionId) ===
+                      String(activeSportBook?.selectionId ?? '')
+                  }
                 />
               )}
             </div>
@@ -871,6 +923,8 @@ function MatchOddsSection({
   active,
   onPick,
   onCancelMatchOdds,
+  onPlaceBet,
+  isPlacingActive,
   betLimitOpen,
   onToggleBetLimit,
   liveStreamSlot,
@@ -1122,7 +1176,10 @@ function MatchOddsSection({
                           }}
                           onChange={() => {}}
                           onCancel={onCancelMatchOdds}
-                          onPlaceBet={onCancelMatchOdds}
+                          onPlaceBet={(slip) =>
+                            onPlaceBet?.(slip, onCancelMatchOdds)
+                          }
+                          isPlacing={isPlacingActive}
                         />
                       </td>
                     </tr>
@@ -1146,6 +1203,8 @@ function BookmakerSection({
   active,
   onActiveChange,
   onPick,
+  onPlaceBet,
+  isPlacingActive,
 }) {
   // Normalise the React API's flat shape ({sid, nat, s, b1..b3, l1..l3, bs1..bs3, ls1..ls3})
   // into the Angular shape ({selectionId, runnerName, status, back:[…], lay:[…]}) so the
@@ -1348,7 +1407,10 @@ function BookmakerSection({
                           betSlipDetails={active}
                           onChange={onActiveChange}
                           onCancel={() => onActiveChange(null)}
-                          onPlaceBet={() => onActiveChange(null)}
+                          onPlaceBet={(slip) =>
+                            onPlaceBet?.(slip, () => onActiveChange(null))
+                          }
+                          isPlacing={isPlacingActive}
                         />
                       </td>
                     </tr>
@@ -1434,6 +1496,8 @@ function FancySection({
   active,
   onActiveChange,
   onPick,
+  onPlaceBet,
+  isPlacingActive,
 }) {
   if (!items.length) {
     return (
@@ -1640,7 +1704,10 @@ function FancySection({
                           betSlipDetails={active}
                           onChange={onActiveChange}
                           onCancel={() => onActiveChange(null)}
-                          onPlaceBet={() => onActiveChange(null)}
+                          onPlaceBet={(slip) =>
+                            onPlaceBet?.(slip, () => onActiveChange(null))
+                          }
+                          isPlacing={isPlacingActive}
                         />
                       </td>
                     </tr>
@@ -1666,6 +1733,8 @@ function SportbookSection({
   active,
   onActiveChange,
   onPick,
+  onPlaceBet,
+  isPlacingActive,
 }) {
   const [collapsed, setCollapsed] = useState({})
   const toggle = (id) => setCollapsed((prev) => ({ ...prev, [id]: !prev[id] }))
@@ -1761,7 +1830,10 @@ function SportbookSection({
                               betSlipDetails={active}
                               onChange={onActiveChange}
                               onCancel={() => onActiveChange(null)}
-                              onPlaceBet={() => onActiveChange(null)}
+                              onPlaceBet={(slip) =>
+                                onPlaceBet?.(slip, () => onActiveChange(null))
+                              }
+                              isPlacing={isPlacingActive}
                             />
                           </div>
                         )}

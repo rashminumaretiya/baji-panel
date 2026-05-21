@@ -6,6 +6,8 @@ import {
   selectIsOneClickBet,
 } from '../store/slices/authSlice'
 import {
+  selectIsFullScreenLoader,
+  selectIsMainScreenLoader,
   selectIsMcvYellowTheme,
   selectIsMobile,
   selectIsYellowTheme,
@@ -18,6 +20,7 @@ import Header from '../components/Header'
 import MobileNavigation from '../components/MobileNavigation.jsx'
 import OneClickBet from '../components/OneClickBet.jsx'
 import NewsLine from '../components/NewsLine'
+import Loader from '../shared/components/Loader.jsx'
 import SportsSidebar from '../shared/components/sports-sidebar/SportsSidebar'
 import './layout.scss'
 
@@ -32,6 +35,10 @@ export default function Layout() {
   const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
   const isOneClickBet = useSelector(selectIsOneClickBet)
   const layoutedRoutes = useSelector(selectLayoutedRoutes)
+  // Loader flags — mirror Angular's `commonService.isMainScreenLoader` /
+  // `isFullShowLoader`. Pages dispatch these to overlay middle-content / viewport.
+  const isMainScreenLoader = useSelector(selectIsMainScreenLoader)
+  const isFullScreenLoader = useSelector(selectIsFullScreenLoader)
 
   const firstSegment = useMemo(() => pathname.split('/')[1] ?? '', [pathname])
   const isAccountRoute = useMemo(
@@ -89,15 +96,28 @@ export default function Layout() {
         )}
 
         <div className={middleContentClass}>
+          {isFullScreenLoader && (
+            <div className="fullscreen-loader">
+              <Loader show message="common.loader.pleaseWait" />
+            </div>
+          )}
+          {isMainScreenLoader && (
+            <div className="loader-wrapper">
+              <Loader show message="common.loader.loading" />
+            </div>
+          )}
+
           {showNewsLine && <NewsLine />}
           <div className={scrollWrapClass}>
             <Outlet />
           </div>
 
-          {showMobileNavigation && <MobileNavigation />}
-
           {isOneClickBet && <OneClickBet />}
         </div>
+
+
+        {showMobileNavigation && <MobileNavigation />}
+
 
         {showRightContent && (
           <div className="right-content">
