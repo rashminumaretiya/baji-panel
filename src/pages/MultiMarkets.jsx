@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '../hooks/useMediaQuery.js'
 import SvgIcon from '../components/SvgIcon.jsx'
 import './multi-markets.scss'
 
 export default function MultiMarkets() {
+  const { t } = useTranslation()
   const isMobile = useIsMobile()
 
   if (isMobile) {
@@ -14,9 +16,9 @@ export default function MultiMarkets() {
               <i className="no-data-icon">
                 <SvgIcon name="iconNoData" />
               </i>
-              <h3>There are currently no followed multi markets.</h3>
+              <h3>{t('multiMarkets.noFollowed')}</h3>
             </div>
-            <p>Please add some markets from events.</p>
+            <p>{t('multiMarkets.addMarkets')}</p>
           </div>
         </div>
       </div>
@@ -26,8 +28,8 @@ export default function MultiMarkets() {
   return (
     <div className="multi-markets-page">
       <div className="multi-markets-wrapper">
-        <h6 className="heading">Multi Markets</h6>
-        <p className="description">There are currently no followed multi markets.</p>
+        <h6 className="heading">{t('multiMarkets.heading')}</h6>
+        <p className="description">{t('multiMarkets.noFollowed')}</p>
       </div>
     </div>
   )
