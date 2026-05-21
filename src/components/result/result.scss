@@ -1,0 +1,125 @@
+.result-page {
+  .nav-tabs {
+    width: 40%;
+    padding-left: 0;
+    margin-bottom: 0;
+
+    @media screen and (max-width: 767px) {
+      width: 100%;
+      border-bottom: 0;
+      padding: 0 0 1.6vw 0;
+    }
+  }
+
+  .matched-select {
+    width: 180px;
+    font-size: 14px;
+    padding: 2px;
+    line-height: 29px;
+    height: 29px;
+  }
+
+  .result-tabs-wrapper {
+    @media screen and (max-width: 767px) {
+      flex-direction: column;
+      padding: 1.6vw 1.8666666667vw;
+      background-color: var(--mts-blue);
+    }
+
+    .outer-select {
+      &.yellow-theme {
+        select {
+          @media screen and (max-width: 767px) {
+            font-size: 4.1vw;
+          }
+        }
+      }
+
+      position: relative;
+
+      @media screen and (max-width: 767px) {
+        &:after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          right: 2.1333333333vw;
+          transform: translate(0, -50%);
+          border-top: 2.1333333333vw solid var(--dark);
+          border-left: 2.1333333333vw solid transparent;
+          border-right: 2.1333333333vw solid transparent;
+          pointer-events: none;
+        }
+      }
+
+      select {
+        @media screen and (max-width: 767px) {
+          appearance: none;
+          width: 100%;
+          font-size: 3.73333vw;
+          height: 10.6666666667vw;
+          padding: 0 1rem;
+          border-radius: 1.6vw;
+          text-transform: uppercase;
+        }
+      }
+    }
+  }
+
+  .mobile-table-stake-wrapper {
+    margin-bottom: 2.5vw;
+
+    .mobile-table-stake {
+      display: flex;
+      align-items: stretch;
+      background: var(--white);
+      border-bottom: solid 1px var(--sm-text-color);
+
+      .match-td {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        color: var(--black);
+        padding: 6.6666666667vw 1.6vw 1.6vw 1.6vw;
+        text-align: center;
+        font-size: 5.3333333333vw;
+        border-left: solid 1px var(--light-bg);
+        position: relative;
+
+        &:first-child {
+          flex: 2;
+
+          p {
+            font-size: 4.2666666667vw;
+            line-height: 5.3333333333vw;
+            color: var(--xs-text-color);
+            text-align: start;
+          }
+
+          label {
+            text-align: start;
+            left: 1.6vw;
+          }
+        }
+
+        label {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 1.7vw;
+          right: 0;
+          text-align: center;
+          font-size: 2.9333333333vw;
+          line-height: 3.7333333333vw;
+          color: var(--xs-text-color);
+        }
+
+        p {
+          margin-bottom: 0;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}

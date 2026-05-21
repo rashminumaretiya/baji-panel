@@ -6,6 +6,9 @@ export default function Table({
   columns = [],
   data = [],
   title,
+  tableTitle,
+  tableTitleAs: TableTitleTag = 'h6',
+  tableTitleClassName,
   emptyMessage = 'No Data Found',
   rowKey,
   pagination,
@@ -31,6 +34,13 @@ export default function Table({
         <div className="d-flex justify-content-between align-items-center">
           <p className="page-title">{title}</p>
         </div>
+      )}
+      {tableTitle && (
+        <TableTitleTag
+          className={`table-header ${tableTitleClassName ? `${tableTitleClassName}` : ''}`}
+        >
+          {tableTitle}
+        </TableTitleTag>
       )}
       <table className="table">
         <thead>

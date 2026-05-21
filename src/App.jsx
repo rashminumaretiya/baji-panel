@@ -50,11 +50,11 @@ function App() {
 
       <Route element={<InPlayLayout />}>
         <Route path="in-play" element={<InPlay />} />
+        <Route path="result" element={<Result />} />
       </Route>
 
       <Route element={<ResultLayout />}>
         <Route path="ipl-winner" element={<IplWinner />} />
-        <Route path="result" element={<Result />} />
       </Route>
 
       <Route path="/my-account" element={<MyAccountLayout />}>
