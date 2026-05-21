@@ -45,6 +45,7 @@ function App() {
         <Route path="tennis" element={<Tennis />} />
         <Route path="horse-racing" element={<HorseRacing />} />
         <Route path="greyhound-racing" element={<GreyhoundRacing />} />
+        <Route path="multi-markets" element={<MultiMarkets />} />
       </Route>
 
       <Route element={<InPlayLayout />}>
@@ -52,7 +53,6 @@ function App() {
       </Route>
 
       <Route element={<ResultLayout />}>
-        <Route path="multi-markets" element={<MultiMarkets />} />
         <Route path="ipl-winner" element={<IplWinner />} />
         <Route path="result" element={<Result />} />
       </Route>

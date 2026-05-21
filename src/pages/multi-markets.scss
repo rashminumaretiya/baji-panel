@@ -1,0 +1,62 @@
+.multi-markets-page {
+  .multi-markets-wrapper {
+    display: block;
+
+    .heading {
+      font-size: 13px;
+      line-height: 20px;
+      padding-top: 6px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    .description {
+      margin-bottom: 7px;
+      line-height: 15px;
+      font-size: 12px;
+    }
+  }
+
+  .odds-wrapper {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+
+    .no-data {
+      background: var(--white);
+      border: 1px solid var(--sm-text-color, #7e97a7);
+      border-radius: 1.6vw;
+      color: var(--sm-text-color, #7e97a7);
+      font-size: 4.26667vw;
+      margin: 5.33333vw 2.66667vw;
+      padding: 2.66667vw 1.86667vw 5.33333vw;
+      text-align: center;
+
+      .no-data-heading {
+        border-bottom: 1px solid var(--light-bg, #e0e6e6);
+        margin-bottom: 1.33333vw;
+        padding: 1.86667vw 0;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+
+        h3 {
+          font-weight: bold;
+          font-size: 5.33333vw;
+          color: var(--sm-text-color, #7e97a7);
+          line-height: 2.2;
+          margin-bottom: 0;
+        }
+
+        .no-data-icon svg {
+          width: 5.8vw;
+          height: 6vw;
+        }
+      }
+
+      p {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

@@ -15,7 +15,6 @@ export const SUB_HEADER_HEAD_PAGES = Object.freeze([
     label: 'titles.games.multiMarket',
     fallback: 'Multi Markets',
     url: '/multi-markets',
-    isHidden: true,
   },
 ])
 

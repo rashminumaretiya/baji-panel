@@ -44,6 +44,7 @@ const initialState = {
     'tennis',
     'horse-racing',
     'greyhound-racing',
+    'multi-markets',
   ],
   domainConfig: null,
   banners: emptyBanners(),

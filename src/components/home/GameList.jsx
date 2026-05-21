@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Accordion } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -101,7 +101,10 @@ function MarketChips({ game, isAuthenticated }) {
   )
 }
 
+const ODDS_SPARK_DURATION_MS = 800
+
 const OddsCell = memo(function OddsCell({ value, isBack, disabled, onClick }) {
+  const sparkClass = useOddsSpark(value, isBack)
   return (
     <div
       className="data-chip cursor-pointer"
@@ -115,6 +118,7 @@ const OddsCell = memo(function OddsCell({ value, isBack, disabled, onClick }) {
           'text-center fw-bold',
           isBack ? 'blue-xs' : 'red-xs',
           disabled ? 'disable-odds' : '',
+          sparkClass,
         ]
           .filter(Boolean)
           .join(' ')}
@@ -124,6 +128,20 @@ const OddsCell = memo(function OddsCell({ value, isBack, disabled, onClick }) {
     </div>
   )
 })
+
+function useOddsSpark(value, isBack) {
+  const previousValueRef = useRef(value)
+  const [sparkClass, setSparkClass] = useState('')
+  useEffect(() => {
+    const previous = previousValueRef.current
+    previousValueRef.current = value
+    if (previous === value) return undefined
+    setSparkClass(isBack ? 'back-spark' : 'lay-spark')
+    const timer = setTimeout(() => setSparkClass(''), ODDS_SPARK_DURATION_MS)
+    return () => clearTimeout(timer)
+  }, [value, isBack])
+  return sparkClass
+}
 
 function LoadingState() {
   const { t } = useTranslation()
