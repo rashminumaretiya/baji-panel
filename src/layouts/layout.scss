@@ -8,12 +8,7 @@
 // }
 .main-wrapper {
   // min-height: calc(100svh - 89px);
-  min-height: calc(100svh - 30px);
   background-color: var(--xs-gray);
-
-  &.auth {
-    min-height: calc(100svh - 105px);
-  }
 
   @media screen and (min-width: 768px) {
     width: calc(100% - 40px);
@@ -56,7 +51,7 @@
     margin-right: 26.04167%;
     padding: 0 15px;
     // max-height: calc(100svh - 108px);
-    max-height: calc(100svh - 35px);
+    max-height: calc(100svh - 116px);
     overflow-y: auto;
   }
 

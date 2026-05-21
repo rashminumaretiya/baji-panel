@@ -67,7 +67,7 @@ export default function MyAccountPopup({
   return (
     <>
       <div
-        className="my-account cursor-pointer d-flex justify-content-center align-items-center"
+        className="d-flex btn btn-primary align-items-center justify-content-center cursor-pointer ms-lg-3 ms-sm-2"
         onClick={handleToggle}
         role="button"
         tabIndex={0}
@@ -80,7 +80,7 @@ export default function MyAccountPopup({
       <Overlay
         show={show}
         target={target}
-        placement="bottom"
+        placement="bottom-end"
         rootClose
         onHide={() => setShow(false)}
       >

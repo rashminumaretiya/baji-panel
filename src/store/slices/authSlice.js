@@ -125,6 +125,19 @@ export const logout = createAsyncThunk(
   },
 )
 
+// Mirrors authService.getBalance() — GET user/balance
+export const fetchBalance = createAsyncThunk(
+  'auth/fetchBalance',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await http.get('user/balance')
+      return res.data?.data ?? null
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message)
+    }
+  },
+)
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -169,6 +182,15 @@ const authSlice = createSlice({
       if (payload) {
         state.user = payload
         if (payload.language) state.selectedLanguage = payload.language
+      }
+    })
+    b.addCase(fetchBalance.fulfilled, (state, { payload }) => {
+      if (!payload) return
+      const wallet = payload.wallet ?? payload
+      state.wallet = wallet
+      if (state.user) {
+        state.user = { ...state.user, wallet }
+        localStorageService.setItem(LOCALSTORAGE.USER, state.user)
       }
     })
   },
