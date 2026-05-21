@@ -214,36 +214,38 @@ export default function BetSlip() {
     stakesData?.length > 0 ? stakesData : DEFAULT_AVAILABLE_STAKE
 
   return (
-    <div className="accordion">
-      <div className="accordion-item mb-0">
-        <h2 className="accordion-header">
-          <button
-            type="button"
-            className={cx('accordion-button', isCollapsed && 'collapsed')}
-            aria-expanded={!isCollapsed}
-            onClick={() => setIsCollapsed((prev) => !prev)}
-          >
-            Bet Slip
-          </button>
-        </h2>
-        <Collapse in={!isCollapsed}>
-          <div className="accordion-collapse">
-            <div className="accordion-body">
-              {isOpen ? (
-                <BetSlipForm
-                  // Key remounts the form whenever the active selection / betType
-                  // changes so the controlled `odds` and `stake` inputs reset.
-                  key={`${activeMatchOdd?.marketId ?? ''}-${activeMatchOdd?.selectionId ?? ''}-${activeMatchOdd?.betType ?? ''}`}
-                  activeMatchOdd={activeMatchOdd}
-                  availableStake={availableStake}
-                  isYellowTheme={isYellowTheme}
-                />
-              ) : (
-                <NoBetSlip isShowLoader={isShowLoader} />
-              )}
+    <div className="bet-slip-accordion-container">
+      <div className="accordion">
+        <div className="accordion-item mb-0">
+          <h2 className="accordion-header">
+            <button
+              type="button"
+              className={cx('accordion-button', isCollapsed && 'collapsed')}
+              aria-expanded={!isCollapsed}
+              onClick={() => setIsCollapsed((prev) => !prev)}
+            >
+              Bet Slip
+            </button>
+          </h2>
+          <Collapse in={!isCollapsed}>
+            <div className="accordion-collapse">
+              <div className="accordion-body">
+                {isOpen ? (
+                  <BetSlipForm
+                    // Key remounts the form whenever the active selection / betType
+                    // changes so the controlled `odds` and `stake` inputs reset.
+                    key={`${activeMatchOdd?.marketId ?? ''}-${activeMatchOdd?.selectionId ?? ''}-${activeMatchOdd?.betType ?? ''}`}
+                    activeMatchOdd={activeMatchOdd}
+                    availableStake={availableStake}
+                    isYellowTheme={isYellowTheme}
+                  />
+                ) : (
+                  <NoBetSlip isShowLoader={isShowLoader} />
+                )}
+              </div>
             </div>
-          </div>
-        </Collapse>
+          </Collapse>
+        </div>
       </div>
     </div>
   )

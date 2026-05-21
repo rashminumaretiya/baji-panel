@@ -1828,7 +1828,7 @@
           border-radius: 4px 0 0 0;
           transform: skew(-14deg, 0deg);
           background: var(--light-navy);
-          z-index: -1;
+          z-index: 1;
 
           @media screen and (max-width: 767px) {
             left: -1.582vw;
@@ -1848,7 +1848,7 @@
           border-radius: 0 4px 0 0;
           transform: skew(14deg, 0deg);
           background: var(--light-navy);
-          z-index: -1;
+          z-index: 1;
 
           @media screen and (max-width: 767px) {
             right: -1.782vw;

@@ -13,19 +13,37 @@ const MarketName = {
 const DEFAULT_STAKES = [10, 20, 50, 100, 200, 500, 1000, 2000]
 
 const MinusIcon = (
-  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
     <path fill="currentColor" d="M5 11h14v2H5z" />
   </svg>
 )
 
 const PlusIcon = (
-  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
     <path fill="currentColor" d="M11 5h2v14h-2zM5 11h14v2H5z" />
   </svg>
 )
 
 const CheckIcon = (
-  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="12"
+    height="12"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
     <path
       fill="currentColor"
       d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"
@@ -48,7 +66,9 @@ function stepOdds(value, direction) {
 function StakeButtons({ isMobile, onStakeClick }) {
   const stakes = isMobile ? DEFAULT_STAKES.slice(0, 5) : DEFAULT_STAKES
   return (
-    <div className={`d-flex justify-content-between ${isMobile ? 'mobile-stake' : 'stake'}`}>
+    <div
+      className={`d-flex justify-content-end ${isMobile ? 'mobile-stake' : 'stake'}`}
+    >
       {stakes.map((stake, idx) => (
         <button
           key={`${stake}-${idx}`}
@@ -64,7 +84,13 @@ function StakeButtons({ isMobile, onStakeClick }) {
 }
 
 const BackspaceIcon = (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="14" viewBox="0 0 24 24" aria-hidden="true">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="14"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
     <path
       fill="currentColor"
       d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12z"
@@ -80,7 +106,11 @@ function Keypad({ onValueChanged }) {
         <div className="row g-0">
           {keys.map((key) => (
             <div key={key} className="col-2 key-out">
-              <button type="button" className="btn" onClick={() => onValueChanged(key)}>
+              <button
+                type="button"
+                className="btn"
+                onClick={() => onValueChanged(key)}
+              >
                 {key}
               </button>
             </div>
@@ -100,7 +130,12 @@ function Keypad({ onValueChanged }) {
   )
 }
 
-export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPlaceBet }) {
+export default function InlineBetSlip({
+  betSlipDetails,
+  onChange,
+  onCancel,
+  onPlaceBet,
+}) {
   const isMobile = useIsMobile()
   const [isMatchChecked, setIsMatchChecked] = useState(false)
 
@@ -110,8 +145,8 @@ export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPl
 
   const betTypeClass =
     betSlipDetails?.type === 'BACK' || betSlipDetails?.type === 'YES'
-      ? 'light-back'
-      : 'light-lay'
+      ? 'bet-blue-md'
+      : 'bet-red-md'
 
   const isMatchOdds = betSlipDetails?.marketName === MarketName.MATCH_ODDS
   const isFancy = betSlipDetails?.marketName === MarketName.FANCY
@@ -121,8 +156,8 @@ export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPl
   const oddDisplay = !betSlipDetails
     ? ''
     : isFancy
-    ? `${betSlipDetails.odds}/${betSlipDetails.size}`
-    : `${betSlipDetails.odds}`
+      ? `${betSlipDetails.odds}/${betSlipDetails.size}`
+      : `${betSlipDetails.odds}`
 
   const updateField = (field, direction) => {
     onChange?.({
@@ -192,7 +227,9 @@ export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPl
                 </div>
 
                 <div className="text-center single-bet-box">
-                  <p className="min-bet">Min Bet : {betSlipDetails?.min || 1}</p>
+                  <p className="min-bet">
+                    Min Bet : {betSlipDetails?.min || 1}
+                  </p>
                   <div className="counter min-bet-counter">
                     <button
                       type="button"
@@ -239,7 +276,11 @@ export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPl
           <tr>
             <td colSpan={2} className="bg-transparent betslip-btn-main">
               <div className="d-flex justify-content-around button-wrapper">
-                <button type="button" className="btn btn-cancel flex-1 py-2" onClick={onCancel}>
+                <button
+                  type="button"
+                  className="btn btn-cancel flex-1 py-2"
+                  onClick={onCancel}
+                >
                   Cancel
                 </button>
                 <button
@@ -257,7 +298,9 @@ export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPl
             <tr className="accept-bet">
               <td colSpan={2}>
                 <div className="d-flex align-items-center h-100">
-                  <div className={`cstm-checkbox${isMatchChecked ? ' checked' : ''}`}>
+                  <div
+                    className={`cstm-checkbox${isMatchChecked ? ' checked' : ''}`}
+                  >
                     <i className="chekIcon">{CheckIcon}</i>
                     <input
                       id={marketData}
@@ -285,12 +328,21 @@ export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPl
           <tr>
             <td className={betTypeClass}>
               <div className="d-flex justify-content-end align-items-center">
-                <input id={marketData} type="checkbox" />
-                <label className="ms-1 text-black w-nowrap" htmlFor={marketData}>
-                  Accept Any Odds
-                </label>
+                <div className="accept-odds me-auto">
+                  <input id={marketData} type="checkbox" />
+                  <label
+                    className="ms-1 text-black w-nowrap"
+                    htmlFor={marketData}
+                  >
+                    Accept Any Odds
+                  </label>
+                </div>
 
-                <button type="button" className="btn btn-cancel ms-2" onClick={onCancel}>
+                <button
+                  type="button"
+                  className="btn btn-cancel ms-2"
+                  onClick={onCancel}
+                >
                   Cancel
                 </button>
 
@@ -300,7 +352,9 @@ export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPl
                   >
                     <p className="m-0 text-end">{betSlipDetails?.odds || 0}</p>
                     {isFancy && (
-                      <small className="text-end">{betSlipDetails?.size || 0}</small>
+                      <small className="text-end">
+                        {betSlipDetails?.size || 0}
+                      </small>
                     )}
                   </div>
 
