@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit'
-import accountReducer from './slices/accountSlice.js'
 import authReducer from './slices/authSlice.js'
 import betSlipReducer from './slices/betSlipSlice.js'
 import commonReducer from './slices/commonSlice.js'
@@ -15,6 +14,5 @@ export const store = configureStore({
     header: headerReducer,
     layout: layoutReducer,
     sport: sportReducer,
-    account: accountReducer,
   },
 })

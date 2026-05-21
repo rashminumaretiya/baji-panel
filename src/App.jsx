@@ -1,4 +1,3 @@
-import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useDomainConfiguration } from './hooks/useDomainConfiguration.js'
 import { useTheme } from './hooks/useTheme.js'
@@ -19,11 +18,13 @@ import MyBets from './pages/Profile/MyBets.jsx'
 import Profile from './pages/Profile/Profile.jsx'
 import Withdraw from './pages/Profile/Withdraw.jsx'
 import WithdrawHistory from './pages/Profile/WithdrawHistory.jsx'
+import Cricket from './pages/Cricket.jsx'
+import GreyhoundRacing from './pages/GreyhoundRacing.jsx'
+import HorseRacing from './pages/HorseRacing.jsx'
 import Result from './pages/Result.jsx'
 import Soccer from './pages/Soccer.jsx'
 import Tennis from './pages/Tennis.jsx'
-
-const Home = lazy(() => import('./pages/Home.jsx'))
+import Home from './pages/Home.jsx'
 
 function App() {
   useDomainConfiguration()
@@ -32,26 +33,16 @@ function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route
-          path="/"
-          element={
-            <Suspense
-              fallback={
-                <div className="d-flex align-items-center justify-content-center p-5">
-                  Loading…
-                </div>
-              }
-            >
-              <Home />
-            </Suspense>
-          }
-        />
+        <Route path="/"element={<Home />} />
         <Route
           path="odds/:eventId/:sport"
           element={<GameDetails />}
         />
+        <Route path="cricket" element={<Cricket />} />
         <Route path="soccer" element={<Soccer />} />
         <Route path="tennis" element={<Tennis />} />
+        <Route path="horse-racing" element={<HorseRacing />} />
+        <Route path="greyhound-racing" element={<GreyhoundRacing />} />
       </Route>
 
       <Route element={<ResultLayout />}>

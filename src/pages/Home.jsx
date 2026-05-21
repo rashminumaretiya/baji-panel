@@ -1,30 +1,22 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import Swal from 'sweetalert2'
 import { useIsMobile } from '../hooks/useMediaQuery.js'
 import {
   loadSportTabs,
   loadGamesForSport,
-  loadPinnedEvents,
-  pinEvent,
-  unpinEvent,
   setActiveSportId,
   selectSportTabs,
   selectActiveSportConfig,
   selectActiveSportId,
   selectGamesForActiveSport,
   selectGamesStatusForActiveSport,
-  selectPinnedEventIds,
 } from '../store/slices/sportSlice.js'
-import { selectIsAuthenticated } from '../store/slices/authSlice.js'
-import { alertService } from '../shared/services/alert.js'
 import { useEventSubscription } from '../hooks/useSocket.js'
 import GameList from '../components/home/GameList.jsx'
 import MobileSports from '../components/home/MobileSports.jsx'
 import Footer from '../components/Footer.jsx'
-import PinEventModal from '../components/home/PinEventModal.jsx'
-import { GAME_LIST_FILTERS, RACING_SPORTS } from '../core/constant/constants.js'
+import { GAME_LIST_FILTERS, RACING_SPORTS, SPORT_IDS } from '../core/constant/constants.js'
 import '../components/home/home.scss'
 
 const FILTER_OPTIONS = [
@@ -39,11 +31,11 @@ const MOBILE_FILTER_OPTIONS = [
 ]
 
 const SPORT_BANNER = {
-  1: '/img/soccer-img.jpg',
-  2: '/img/tennis-img.jpg',
-  4: '/img/cricket-img.jpg',
-  7: '/img/horse_racing_landing.webp',
-  4339: '/img/greyhound_landing.webp',
+  [SPORT_IDS.SOCCER]: '/img/soccer-img.jpg',
+  [SPORT_IDS.TENNIS]: '/img/tennis-img.jpg',
+  [SPORT_IDS.CRICKET]: '/img/cricket-img.jpg',
+  [SPORT_IDS.HORSE_RACING]: '/img/horse_racing_landing.webp',
+  [SPORT_IDS.GREYHOUND_RACING]: '/img/greyhound_landing.webp',
 }
 
 export default function Home() {
@@ -55,8 +47,6 @@ export default function Home() {
   const activeSport = useSelector(selectActiveSportConfig)
   const games = useSelector(selectGamesForActiveSport)
   const gamesStatus = useSelector(selectGamesStatusForActiveSport)
-  const pinnedEventIds = useSelector(selectPinnedEventIds)
-  const isAuthenticated = useSelector(selectIsAuthenticated)
 
   const visibleEventIds = useMemo(
     () => games.map((g) => g.event?.id).filter(Boolean),
@@ -65,52 +55,10 @@ export default function Home() {
   useEventSubscription(visibleEventIds)
 
   const [filterType, setFilterType] = useState(GAME_LIST_FILTERS.TIME)
-  const [pinModal, setPinModal] = useState({ open: false, game: null })
 
   useEffect(() => {
     dispatch(loadSportTabs())
   }, [dispatch])
-
-  useEffect(() => {
-    if (isAuthenticated) dispatch(loadPinnedEvents())
-  }, [isAuthenticated, dispatch])
-
-  const handlePinClick = useCallback(
-    async (game) => {
-      if (!isAuthenticated) return
-      if (pinnedEventIds.has(game.id)) {
-        const result = await Swal.fire({
-          title: t('common.unpinEvent'),
-          text: t('common.unpinEventConfirm'),
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: t('common.confirm'),
-          cancelButtonText: t('common.cancel'),
-        })
-        if (!result.isConfirmed) return
-        dispatch(unpinEvent(game.id))
-          .unwrap()
-          .then(() => alertService.success(t('common.unpinEvent')))
-          .catch(() => {})
-      } else {
-        setPinModal({ open: true, game })
-      }
-    },
-    [dispatch, isAuthenticated, pinnedEventIds, t],
-  )
-
-  const handlePinConfirm = useCallback(
-    (alias) => {
-      const game = pinModal.game
-      setPinModal({ open: false, game: null })
-      if (!game) return
-      dispatch(pinEvent({ eventId: game.id, sportId: game.sportId, alias }))
-        .unwrap()
-        .then(() => alertService.success(t('common.pinEvent')))
-        .catch(() => {})
-    },
-    [dispatch, pinModal.game, t],
-  )
 
   useEffect(() => {
     if (!activeSportId && tabs.length) {
@@ -127,10 +75,7 @@ export default function Home() {
   }, [activeSportId, dispatch])
 
   const isRacing = RACING_SPORTS.has(activeSportId ?? '')
-  const bannerSrc = SPORT_BANNER[activeSportId] ?? '/img/home_banner.jpg'
-  const titleText = isRacing
-    ? t('titles.highLights')
-    : t('titles.sportHighLights')
+  const sportBanner = SPORT_BANNER[activeSportId]
 
   return (
     <div className="sports-landing">
@@ -138,33 +83,31 @@ export default function Home() {
         <>
           <img
             className="landing-img"
-            src={bannerSrc}
+            src="/img/home_banner.jpg"
             alt="Cricket Landing Image"
           />
 
           <div className="row mx-0">
             <div className="col-12 game-title">
-              <div>{titleText}</div>
-              {!isRacing && (
-                <div className="highlight-sorting">
-                  <label htmlFor="viewType">{t('common.viewBy')}</label>
-                  <div className="select">
-                    <select
-                      id="viewType"
-                      name="View"
-                      value={filterType}
-                      onChange={(e) => setFilterType(e.target.value)}
-                      aria-label={t('titles.highLights')}
-                    >
-                      {FILTER_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {t(opt.labelKey)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+              <div>{t('titles.sportHighLights')}</div>
+              <div className="highlight-sorting">
+                <label htmlFor="viewType">{t('common.viewBy')}</label>
+                <div className="select">
+                  <select
+                    id="viewType"
+                    name="View"
+                    value={filterType}
+                    onChange={(e) => setFilterType(e.target.value)}
+                    aria-label={t('titles.highLights')}
+                  >
+                    {FILTER_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {t(opt.labelKey)}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              )}
+              </div>
             </div>
           </div>
 
@@ -194,6 +137,40 @@ export default function Home() {
               })}
             </ul>
           </div>
+
+          <div className="sports-landing">
+            {isRacing && sportBanner && (
+              <>
+                <img
+                  className="landing-img"
+                  src={sportBanner}
+                  alt={`${activeSport?.name ?? 'Sport'} Landing Image`}
+                />
+                <div className="row mx-0 mt-2">
+                  <div className="col-12 game-title mb-2">
+                    {t('titles.highLights')}
+                  </div>
+                </div>
+              </>
+            )}
+            {isRacing ? (
+              <GameList
+                games={games}
+                sport={activeSport?.id}
+                filterType={filterType}
+                loading={gamesStatus === 'loading'}
+              />
+            ) : (
+              <div className="game-list">
+                <GameList
+                  games={games}
+                  sport={activeSport?.id}
+                  filterType={filterType}
+                  loading={gamesStatus === 'loading'}
+                />
+              </div>
+            )}
+          </div>
         </>
       ) : (
         <>
@@ -216,29 +193,18 @@ export default function Home() {
               </ul>
             </div>
           </div>
+          <div className="game-list">
+            <GameList
+              games={games}
+              sport={activeSport?.id}
+              filterType={filterType}
+              loading={gamesStatus === 'loading'}
+            />
+          </div>
         </>
       )}
 
-      <div className="game-list">
-        <GameList
-          games={games}
-          sport={activeSport?.id}
-          filterType={filterType}
-          pinnedEventIds={pinnedEventIds}
-          onPinClick={handlePinClick}
-          loading={gamesStatus === 'loading'}
-        />
-      </div>
-
       {!isMobile && <Footer />}
-
-      <PinEventModal
-        key={pinModal.game?.id ?? 'pin-modal'}
-        show={pinModal.open}
-        eventName={pinModal.game?.name}
-        onConfirm={handlePinConfirm}
-        onCancel={() => setPinModal({ open: false, game: null })}
-      />
     </div>
   )
 }

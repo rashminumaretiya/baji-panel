@@ -42,6 +42,8 @@ const initialState = {
     'cricket',
     'soccer',
     'tennis',
+    'horse-racing',
+    'greyhound-racing',
   ],
   domainConfig: null,
   banners: emptyBanners(),

@@ -1,6 +1,22 @@
-export const RACING_SPORTS = new Set(['7', '4339', '10', '65'])
+export const SPORT_IDS = Object.freeze({
+  SOCCER: '1',
+  TENNIS: '2',
+  CRICKET: '4',
+  HORSE_RACING: '7',
+  GREYHOUND_RACING: '4339',
+})
 
-export const PINNABLE_SPORT_IDS = new Set(['1', '4'])
+export const SPORT_ROUTE_BY_ID = Object.freeze({
+  [SPORT_IDS.SOCCER]: '/soccer',
+  [SPORT_IDS.TENNIS]: '/tennis',
+  [SPORT_IDS.CRICKET]: '/cricket',
+  [SPORT_IDS.HORSE_RACING]: '/horse-racing',
+  [SPORT_IDS.GREYHOUND_RACING]: '/greyhound-racing',
+})
+
+export const RACING_SPORTS = new Set([SPORT_IDS.HORSE_RACING, SPORT_IDS.GREYHOUND_RACING, '10', '65'])
+
+export const PINNABLE_SPORT_IDS = new Set([SPORT_IDS.SOCCER, SPORT_IDS.CRICKET])
 
 export const GAME_LIST_FILTERS = {
   HIGHLIGHTS: 'highlights',

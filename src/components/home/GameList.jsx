@@ -1,18 +1,15 @@
 import { memo, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 import { Accordion } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import NoData from '../../shared/NoData.jsx'
-import SvgIcon from '../SvgIcon.jsx'
-import { useIsMobile } from '../../hooks/useMediaQuery.js'
+import { useNavigate } from 'react-router-dom'
 import {
   GAME_LIST_FILTERS,
-  PINNABLE_SPORT_IDS,
   RACING_SPORTS,
   getSportSlug,
 } from '../../core/constant/constants.js'
-import { selectIsAuthenticated } from '../../store/slices/authSlice.js'
+import { useIsMobile } from '../../hooks/useMediaQuery.js'
+import NoData from '../../shared/NoData.jsx'
+import SvgIcon from '../SvgIcon.jsx'
 import './game-list.scss'
 
 function formatNumber(n) {
@@ -141,14 +138,11 @@ export default function GameList({
   games,
   sport,
   filterType = GAME_LIST_FILTERS.HIGHLIGHTS,
-  pinnedEventIds = new Set(),
-  onPinClick,
   loading = false,
 }) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
-  const isAuthenticated = useSelector(selectIsAuthenticated)
 
   const isRacingSport = RACING_SPORTS.has(sport ?? '')
   const renderEmpty = () =>
@@ -181,12 +175,7 @@ export default function GameList({
       .filter(
         (game) => game.id && (isRacingSport ? game.markets?.length > 0 : true)
       )
-      .sort((a, b) => {
-        const aPinned = pinnedEventIds.has(a.id) ? 0 : 1
-        const bPinned = pinnedEventIds.has(b.id) ? 0 : 1
-        return aPinned - bPinned
-      })
-  }, [games, isRacingSport, pinnedEventIds])
+  }, [games, isRacingSport])
 
   const competitionGroups = useMemo(() => {
     const map = new Map()
@@ -217,17 +206,8 @@ export default function GameList({
     navigate(`/odds/${id}/${slug}`)
   }
 
-  function handlePinClick(e, game) {
-    e.stopPropagation()
-    if (!isAuthenticated) return
-    if (!PINNABLE_SPORT_IDS.has(game.sportId)) return
-    onPinClick?.(game)
-  }
-
   function renderDesktopGameRow(game) {
     const goToEvent = () => navigateToOddsPage(game)
-    const togglePin = (e) => handlePinClick(e, game)
-    const isPinned = pinnedEventIds.has(game.id)
     return (
       <div className="games-detail" key={game.id}>
         <div className="game-name-part">
@@ -274,18 +254,7 @@ export default function GameList({
             )
           })}
           <span className="data-chip pin">
-            <span
-              className={`pin-icon cursor-pointer${isPinned ? ' pin-active' : ''}`}
-              onClick={togglePin}
-              onKeyDown={activateOnKey(togglePin)}
-              role="button"
-              tabIndex={0}
-              aria-label={
-                isPinned ? t('common.unpinEvent') : t('common.pinEvent')
-              }
-            >
-              <SvgIcon name={isPinned ? 'unPinIcon' : 'pinIcon'} />
-            </span>
+            <span className="pin-icon cursor-pointer" />
           </span>
         </div>
       </div>
@@ -294,8 +263,6 @@ export default function GameList({
 
   function renderMobileGameCard(game) {
     const goToEvent = () => navigateToOddsPage(game)
-    const togglePin = (e) => handlePinClick(e, game)
-    const isPinned = pinnedEventIds.has(game.id)
     return (
       <div className="games-border" key={game.id}>
         <div
@@ -324,17 +291,8 @@ export default function GameList({
               </h6>
             </div>
           </div>
-          <span
-            className={`icon-wrapper-pin cursor-pointer${isPinned ? ' pin-active' : ''}`}
-            onClick={togglePin}
-            onKeyDown={activateOnKey(togglePin)}
-            role="button"
-            tabIndex={0}
-            aria-label={
-              isPinned ? t('common.unpinEvent') : t('common.pinEvent')
-            }
-          >
-            <SvgIcon name={isPinned ? 'unPinIcon' : 'pinIcon'} />
+          <span className="icon-wrapper-pin cursor-pointer">
+            <SvgIcon name="pinIcon" />
           </span>
         </div>
       </div>

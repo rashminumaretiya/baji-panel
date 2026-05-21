@@ -63,7 +63,7 @@
   }
 
   h6 {
-    color: var(--cyanBlue);
+    color: var(--blue);
     font-size: 12px;
     margin-bottom: 0;
     position: relative;
@@ -111,7 +111,7 @@
   }
 
   .time {
-    color: #777;
+    color: var(--lg-black);
     font-size: 12px;
   }
 
@@ -353,14 +353,17 @@
         .pin-icon {
           height: 21px;
           width: 16px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--sm-text-color);
+          display: inline-block;
+          background-image: url(/img/pin-icon.png);
+          background-repeat: no-repeat;
+          background-position: center;
 
-          svg {
-            width: 16px;
-            height: 21px;
+          &:hover {
+            background-image: url(/img/pin-icon-hover.png);
+          }
+
+          &.active {
+            background-image: url(/img/pin-icon-active.png);
           }
         }
       }
@@ -549,7 +552,6 @@
   }
 
   .icon-wrapper-pin {
-    color: var(--dark-gray);
     height: 24px;
     width: 24px;
     display: flex;
