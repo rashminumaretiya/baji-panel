@@ -25,6 +25,7 @@ import Result from './pages/Result.jsx'
 import Soccer from './pages/Soccer.jsx'
 import Tennis from './pages/Tennis.jsx'
 import Home from './pages/Home.jsx'
+import InPlayLayout from './layouts/InPlayLayout.jsx'
 
 function App() {
   useDomainConfiguration()
@@ -33,11 +34,8 @@ function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/"element={<Home />} />
-        <Route
-          path="odds/:eventId/:sport"
-          element={<GameDetails />}
-        />
+        <Route path="/" element={<Home />} />
+        <Route path="odds/:eventId/:sport" element={<GameDetails />} />
         <Route path="cricket" element={<Cricket />} />
         <Route path="soccer" element={<Soccer />} />
         <Route path="tennis" element={<Tennis />} />
@@ -45,8 +43,11 @@ function App() {
         <Route path="greyhound-racing" element={<GreyhoundRacing />} />
       </Route>
 
-      <Route element={<ResultLayout />}>
+      <Route element={<InPlayLayout />}>
         <Route path="in-play" element={<InPlay />} />
+      </Route>
+
+      <Route element={<ResultLayout />}>
         <Route path="multi-markets" element={<MultiMarkets />} />
         <Route path="ipl-winner" element={<IplWinner />} />
         <Route path="result" element={<Result />} />

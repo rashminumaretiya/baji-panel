@@ -15,6 +15,8 @@ const initialState = {
   gamesById: {},
   pinned: [],
   pinnedStatus: 'idle',
+  inplayMap: {},
+  inplayStatus: 'idle',
 }
 
 export const fetchSidebarSports = createAsyncThunk(
@@ -61,6 +63,14 @@ export const loadGamesForSport = createAsyncThunk(
       if (entry?.fetchedAt && Date.now() - entry.fetchedAt < 5000) return false
       return true
     },
+  },
+)
+
+export const loadInplayMap = createAsyncThunk(
+  'sport/loadInplayMap',
+  async (params = {}) => {
+    const res = await http.get('sport/list', { params })
+    return res.data?.data ?? {}
   },
 )
 
@@ -169,6 +179,18 @@ const sportSlice = createSlice({
       }
     })
 
+    b.addCase(loadInplayMap.pending, (s) => {
+      s.inplayStatus = 'loading'
+    })
+    b.addCase(loadInplayMap.fulfilled, (s, { payload }) => {
+      s.inplayStatus = 'idle'
+      s.inplayMap = payload && typeof payload === 'object' ? payload : {}
+    })
+    b.addCase(loadInplayMap.rejected, (s) => {
+      s.inplayStatus = 'error'
+      s.inplayMap = {}
+    })
+
     b.addCase(loadPinnedEvents.pending, (s) => {
       s.pinnedStatus = 'loading'
     })
@@ -217,6 +239,9 @@ export const selectGamesStatusForActiveSport = createSelector(
 )
 
 export const selectIsRacingSport = (s) => RACING_SPORTS.has(s.sport.activeSportId ?? '')
+
+export const selectInplayMap = (s) => s.sport.inplayMap
+export const selectInplayStatus = (s) => s.sport.inplayStatus
 
 const selectPinned = (s) => s.sport.pinned
 export const selectPinnedEventIds = createSelector(

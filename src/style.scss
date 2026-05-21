@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import './variable.scss';
+@use './variable';
 @import url('../public/fonts/product-sans/fonts.scss');
 
 * {
@@ -277,7 +277,7 @@ li {
   margin-top: -8px !important;
   overflow: hidden;
 
-.popover-arrow {
+  .popover-arrow {
     display: none;
   }
 }
