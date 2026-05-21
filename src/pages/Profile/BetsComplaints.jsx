@@ -1,4 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { http } from '../../core/http/client.js'
+import { selectToken } from '../../store/slices/authSlice.js'
 import Table from '../../shared/Table.jsx'
 
 const columns = [
@@ -12,11 +15,32 @@ const columns = [
 ]
 
 export default function BetsComplaints() {
-  const [complaints] = useState([])
+  const token = useSelector(selectToken)
+  const [complaints, setComplaints] = useState([])
+
+  useEffect(() => {
+    if (!token) return
+    let cancelled = false
+    http
+      .get('bet/unsettled-bets-complains', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        if (!cancelled) setComplaints(res.data?.data ?? [])
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [token])
 
   return (
     <div className="inner-outer-wrapper">
-      <Table title="Bet Complaints" columns={columns} data={complaints} />
+      <Table
+        title="Bet Complaints"
+        columns={columns}
+        data={complaints}
+        emptyMessage="No data found"
+      />
     </div>
   )
 }

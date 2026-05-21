@@ -1,4 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { http } from '../../core/http/client.js'
+import { selectToken } from '../../store/slices/authSlice.js'
 import Table from '../../shared/Table.jsx'
 import './balanceOverview.scss'
 
@@ -36,12 +39,34 @@ const columns = [
 ]
 
 export default function BalanceOverview() {
-  const [summary] = useState({
+  const token = useSelector(selectToken)
+  const [summary, setSummary] = useState({
     balances: { amount: 0, currency: 'BDT' },
     betHold: { amount: 0, currency: 'BDT' },
     withdrawHold: { amount: 0, currency: 'BDT' },
   })
   const [transactions] = useState([])
+
+  useEffect(() => {
+    if (!token) return
+    let cancelled = false
+    http
+      .get('user/balance', { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => {
+        if (cancelled) return
+        const d = res.data?.data
+        if (!d) return
+        const currency = d.currency || 'BDT'
+        setSummary({
+          balances: { amount: d.balance ?? 0, currency },
+          betHold: { amount: d.holdAmount?.bet ?? 0, currency },
+          withdrawHold: { amount: d.holdAmount?.withdraw ?? 0, currency },
+        })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [token])
 
   return (
     <>

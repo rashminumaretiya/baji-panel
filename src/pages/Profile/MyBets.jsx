@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Tabs from '../../shared/Tabs.jsx'
-import MarketTabs from './MarketTabs.jsx'
+import CurrentBets from './CurrentBets.jsx'
+import BetHistory from './BetHistory.jsx'
+import ProfitLoss from './ProfitLoss.jsx'
 import './myBets.scss'
 
 const MAIN_TABS = [
@@ -9,95 +11,32 @@ const MAIN_TABS = [
   { id: 'pnl', label: 'Profit & Loss' },
 ]
 
-const BET_STATUS_OPTIONS = [
-  { value: 'ALL', label: 'All' },
-  { value: 'MATCHED', label: 'Matched' },
-  { value: 'UNMATCHED', label: 'Unmatched' },
-  { value: 'PENDING', label: 'Pending' },
-]
-
-function BetsFilter({ status, onStatusChange, orderBy, onOrderChange }) {
-  const toggle = (key) => {
-    onOrderChange?.({ ...orderBy, [key]: !orderBy[key] })
-  }
-
-  return (
-    <div className="bets-filter">
-      <div className="d-flex align-items-center gap-2">
-        <label htmlFor="betStatus" className="filter-label mb-0">
-          Bet Status
-        </label>
-        <select
-          id="betStatus"
-          className="form-select form-select-sm bet-status-select"
-          value={status}
-          onChange={(event) => onStatusChange?.(event.target.value)}
-        >
-          {BET_STATUS_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="d-flex align-items-center gap-3 ms-4">
-        <span className="filter-label">Order By</span>
-        <label className="form-check m-0 d-inline-flex align-items-center gap-1">
-          <input
-            type="checkbox"
-            className="form-check-input m-0"
-            checked={!!orderBy?.betPlaced}
-            onChange={() => toggle('betPlaced')}
-          />
-          <span>Bet placed</span>
-        </label>
-        <label className="form-check m-0 d-inline-flex align-items-center gap-1">
-          <input
-            type="checkbox"
-            className="form-check-input m-0"
-            checked={!!orderBy?.market}
-            onChange={() => toggle('market')}
-          />
-          <span>Market</span>
-        </label>
-      </div>
-    </div>
-  )
-}
-
-function BetsBoard() {
-  const [marketTab, setMarketTab] = useState('EXCHANGE')
-  const [betStatus, setBetStatus] = useState('ALL')
-  const [orderBy, setOrderBy] = useState({ betPlaced: true, market: false })
-
-  return (
-    <MarketTabs value={marketTab} onChange={setMarketTab}>
-      <BetsFilter
-        status={betStatus}
-        onStatusChange={setBetStatus}
-        orderBy={orderBy}
-        onOrderChange={setOrderBy}
-      />
-    </MarketTabs>
-  )
-}
-
-const TAB_VIEWS = {
-  'current-bets': BetsBoard,
-  'bet-history': BetsBoard,
-  pnl: BetsBoard,
-}
+const DEFAULT_TAB = 'current-bets'
+const VALID_TABS = new Set(MAIN_TABS.map((t) => t.id))
 
 export default function MyBets() {
-  const [activeTab, setActiveTab] = useState('current-bets')
-  const ActiveView = TAB_VIEWS[activeTab] ?? BetsBoard
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabParam = searchParams.get('tab')
+  const activeTab = VALID_TABS.has(tabParam) ? tabParam : DEFAULT_TAB
+
+  const setTab = (id) => {
+    const next = new URLSearchParams(searchParams)
+    next.set('tab', id)
+    setSearchParams(next, { replace: true })
+  }
 
   return (
     <>
       <h3 className="page-title">My Bets</h3>
-      <Tabs tabs={MAIN_TABS} activeId={activeTab} onChange={setActiveTab} />
-      <ActiveView />
+      <Tabs
+        tabs={MAIN_TABS}
+        activeId={activeTab}
+        onChange={setTab}
+        className="main-bets-tabs"
+      />
+      {activeTab === 'current-bets' && <CurrentBets />}
+      {activeTab === 'bet-history' && <BetHistory />}
+      {activeTab === 'pnl' && <ProfitLoss />}
     </>
   )
 }
