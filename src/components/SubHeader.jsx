@@ -180,7 +180,7 @@ export default function SubHeader() {
 
       <Overlay show={stakeOpen} target={stakeTarget} placement="bottom-end">
         <Popover className="stake-popup-container">
-          <Popover.Body className="p-0">
+          <Popover.Body>
             <Stake onCancel={closeStake} />
           </Popover.Body>
         </Popover>

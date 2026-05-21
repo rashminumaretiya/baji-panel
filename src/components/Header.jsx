@@ -131,7 +131,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   }
 
   return (
-    <>
+    <div className="header-wrapper">
       <header className={headerClass}>
         {!isMob ? (
           <div className="d-inline-flex flex-sm-fill align-items-center">
@@ -291,6 +291,6 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
       </Overlay>
 
       {!isMob && <SubHeader />}
-    </>
+    </div>
   )
 }

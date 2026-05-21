@@ -157,7 +157,11 @@
       padding-top: 2px;
 
       &:hover {
-        background-image: linear-gradient(180deg, var(--black) 0%, var(--sm-black) 100%);
+        background-image: linear-gradient(
+          180deg,
+          var(--black) 0%,
+          var(--sm-black) 100%
+        );
       }
 
       input {
@@ -183,10 +187,18 @@
       }
 
       &.bet-check-active {
-        background-image: linear-gradient(0deg, var(--sm-primary) 0%, var(--md-primary) 100%);
+        background-image: linear-gradient(
+          0deg,
+          var(--sm-primary) 0%,
+          var(--md-primary) 100%
+        );
 
         &:hover {
-          background-image: linear-gradient(0deg, var(--md-primary) 0%, var(--sm-primary) 100%);
+          background-image: linear-gradient(
+            0deg,
+            var(--md-primary) 0%,
+            var(--sm-primary) 100%
+          );
         }
       }
     }

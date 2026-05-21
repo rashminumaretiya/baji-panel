@@ -1,7 +1,3 @@
-.app-sports-sidebar {
-  overflow-x: hidden;
-}
-
 .events {
   max-height: calc(100vh - 104px);
   overflow-y: auto;
@@ -94,7 +90,11 @@
   }
 
   .active-sport {
-    background: linear-gradient(180deg, rgb(84, 109, 125) 0%, rgb(59, 81, 96) 100%);
+    background: linear-gradient(
+      180deg,
+      rgb(84, 109, 125) 0%,
+      rgb(59, 81, 96) 100%
+    );
     color: var(--white) !important;
   }
 }

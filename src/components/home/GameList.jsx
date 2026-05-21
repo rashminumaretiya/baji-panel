@@ -6,7 +6,11 @@ import { useTranslation } from 'react-i18next'
 import NoData from '../../shared/NoData.jsx'
 import SvgIcon from '../SvgIcon.jsx'
 import { useIsMobile } from '../../hooks/useMediaQuery.js'
-import { RACING_SPORTS, PINNABLE_SPORT_IDS, GAME_LIST_FILTERS } from '../../core/constant/constants.js'
+import {
+  RACING_SPORTS,
+  PINNABLE_SPORT_IDS,
+  GAME_LIST_FILTERS,
+} from '../../core/constant/constants.js'
 import { selectIsAuthenticated } from '../../store/slices/authSlice.js'
 import './game-list.scss'
 
@@ -51,30 +55,44 @@ function MarketChips({ game }) {
     <>
       {game.isInPlay && (
         <span className="wrapper blue-dark">
-          <div className="text-chip"><SvgIcon name="playIcon" /></div>
+          <div className="text-chip">
+            <SvgIcon name="playIcon" />
+          </div>
         </span>
       )}
       {game.isFancy && (
         <span className="current-chip lightest-neavy ps-0">
-          <span className="alarm-icon"><SvgIcon name="alarmIcon" /></span>
-          <div className="text-chip"><SvgIcon name="fIcon" /></div>
+          <span className="alarm-icon">
+            <SvgIcon name="alarmIcon" />
+          </span>
+          <div className="text-chip">
+            <SvgIcon name="fIcon" />
+          </div>
         </span>
       )}
       {game.isBookmaker && (
         <div className="current-chip blue-dark ps-0">
-          <span className="alarm-icon"><SvgIcon name="alarmIcon" /></span>
-          <div className="text-chip"><SvgIcon name="boldIcon" /></div>
+          <span className="alarm-icon">
+            <SvgIcon name="alarmIcon" />
+          </span>
+          <div className="text-chip">
+            <SvgIcon name="boldIcon" />
+          </div>
         </div>
       )}
       {game.isSportbook && (
         <span className="wrapper orange-darkest">
-          <div className="text-chip"><SvgIcon name="pIcon" /></div>
+          <div className="text-chip">
+            <SvgIcon name="pIcon" />
+          </div>
         </span>
       )}
       {game.sportId === '4' && game.name?.toLowerCase()?.includes('srl') && (
         <div className="event-related-electronic-book">
           <div className="event-related-electronic-book-icon">E</div>
-          <div className="event-related-electronic-book-content">{t('sports.cricket')}</div>
+          <div className="event-related-electronic-book-content">
+            {t('sports.cricket')}
+          </div>
         </div>
       )}
     </>
@@ -95,7 +113,9 @@ const OddsCell = memo(function OddsCell({ value, isBack, disabled, onClick }) {
           'text-center fw-bold',
           isBack ? 'blue-xs' : 'red-xs',
           disabled ? 'disable-odds' : '',
-        ].filter(Boolean).join(' ')}
+        ]
+          .filter(Boolean)
+          .join(' ')}
       >
         {value || '--'}
       </span>
@@ -157,7 +177,9 @@ export default function GameList({
           markets,
         }
       })
-      .filter((game) => game.id && (isRacingSport ? game.markets?.length > 0 : true))
+      .filter(
+        (game) => game.id && (isRacingSport ? game.markets?.length > 0 : true)
+      )
       .sort((a, b) => {
         const aPinned = pinnedEventIds.has(a.id) ? 0 : 1
         const bPinned = pinnedEventIds.has(b.id) ? 0 : 1
@@ -219,15 +241,21 @@ export default function GameList({
             </h6>
             <div className="d-flex gap-1 mt-1 ms-2">
               {game.isInPlay ? (
-                <span className="d-inline-block ms-1 inplay">{t('common.inPlay')}</span>
+                <span className="d-inline-block ms-1 inplay">
+                  {t('common.inPlay')}
+                </span>
               ) : (
-                <span className="d-inline-block ms-1 time">{formatDate(game.openDate)}</span>
+                <span className="d-inline-block ms-1 time">
+                  {formatDate(game.openDate)}
+                </span>
               )}
               <MarketChips game={game} />
             </div>
           </div>
           {!!game.totalMatched && (
-            <div className="pe-1 total-matched">{formatNumber(game.totalMatched)}</div>
+            <div className="pe-1 total-matched">
+              {formatNumber(game.totalMatched)}
+            </div>
           )}
         </div>
         <div className="game-score-part">
@@ -250,7 +278,9 @@ export default function GameList({
               onKeyDown={activateOnKey(togglePin)}
               role="button"
               tabIndex={0}
-              aria-label={isPinned ? t('common.unpinEvent') : t('common.pinEvent')}
+              aria-label={
+                isPinned ? t('common.unpinEvent') : t('common.pinEvent')
+              }
             >
               <SvgIcon name={isPinned ? 'unPinIcon' : 'pinIcon'} />
             </span>
@@ -279,11 +309,15 @@ export default function GameList({
               {game.isInPlay ? (
                 <span className="text-inplay inplay">{t('common.inPlay')}</span>
               ) : (
-                <span className="text-inplay time">{formatDate(game.openDate)}</span>
+                <span className="text-inplay time">
+                  {formatDate(game.openDate)}
+                </span>
               )}
             </div>
             <div className="name-wrap">
-              <h6 className={`match-title${!game.isInPlay ? ' not-in-play' : ''}`}>
+              <h6
+                className={`match-title${!game.isInPlay ? ' not-in-play' : ''}`}
+              >
                 <span>{game.name}</span>
               </h6>
             </div>
@@ -294,7 +328,9 @@ export default function GameList({
             onKeyDown={activateOnKey(togglePin)}
             role="button"
             tabIndex={0}
-            aria-label={isPinned ? t('common.unpinEvent') : t('common.pinEvent')}
+            aria-label={
+              isPinned ? t('common.unpinEvent') : t('common.pinEvent')
+            }
           >
             <SvgIcon name={isPinned ? 'unPinIcon' : 'pinIcon'} />
           </span>
@@ -306,7 +342,11 @@ export default function GameList({
   if (isRacingSport) {
     if (!gameListVM.length) return renderEmpty()
     return (
-      <Accordion key={`race-${sport}`} defaultActiveKey={gameListVM.map((g) => g.id)} alwaysOpen>
+      <Accordion
+        key={`race-${sport}`}
+        defaultActiveKey={gameListVM.map((g) => g.id)}
+        alwaysOpen
+      >
         {gameListVM.map((game) => (
           <Accordion.Item eventKey={game.id} key={game.id}>
             <Accordion.Header>
@@ -332,9 +372,13 @@ export default function GameList({
                           >
                             {market.marketName}
                             {market.isInPlay ? (
-                              <span className="d-inline-block ms-1 inplay">{t('common.inPlay')}</span>
+                              <span className="d-inline-block ms-1 inplay">
+                                {t('common.inPlay')}
+                              </span>
                             ) : (
-                              <span className="d-inline-block ms-1 time">{formatDate(market.marketStartTime)}</span>
+                              <span className="d-inline-block ms-1 time">
+                                {formatDate(market.marketStartTime)}
+                              </span>
                             )}
                           </h6>
                         </div>
@@ -356,9 +400,16 @@ export default function GameList({
     if (filterType === GAME_LIST_FILTERS.COMPETITION) {
       if (!competitionGroups.length) return renderEmpty()
       return (
-        <Accordion key={`mcomp-${sport}`} defaultActiveKey={competitionGroups.map((g) => g.competitionId)} alwaysOpen>
+        <Accordion
+          key={`mcomp-${sport}`}
+          defaultActiveKey={competitionGroups.map((g) => g.competitionId)}
+          alwaysOpen
+        >
           {competitionGroups.map((group) => (
-            <Accordion.Item eventKey={group.competitionId} key={group.competitionId}>
+            <Accordion.Item
+              eventKey={group.competitionId}
+              key={group.competitionId}
+            >
               <Accordion.Header>{group.competitionName}</Accordion.Header>
               <Accordion.Body>
                 {group.games.map(renderMobileGameCard)}
@@ -373,7 +424,7 @@ export default function GameList({
   }
 
   return (
-    <>
+    <div className="game-details-container">
       {gameListVM.length > 0 && (
         <div className="game-detail-header">
           <div className="pe-1">{t('markets.matched')}</div>
@@ -390,9 +441,16 @@ export default function GameList({
           {competitionGroups.length === 0 ? (
             renderEmpty()
           ) : (
-            <Accordion key={`dcomp-${sport}`} defaultActiveKey={competitionGroups.map((g) => g.competitionId)} alwaysOpen>
+            <Accordion
+              key={`dcomp-${sport}`}
+              defaultActiveKey={competitionGroups.map((g) => g.competitionId)}
+              alwaysOpen
+            >
               {competitionGroups.map((group) => (
-                <Accordion.Item eventKey={group.competitionId} key={group.competitionId}>
+                <Accordion.Item
+                  eventKey={group.competitionId}
+                  key={group.competitionId}
+                >
                   <Accordion.Header>{group.competitionName}</Accordion.Header>
                   <Accordion.Body>
                     {group.games.map(renderDesktopGameRow)}
@@ -404,13 +462,11 @@ export default function GameList({
         </div>
       ) : (
         <div className="game-wrap">
-          {gameListVM.length === 0 ? (
-            renderEmpty()
-          ) : (
-            gameListVM.map(renderDesktopGameRow)
-          )}
+          {gameListVM.length === 0
+            ? renderEmpty()
+            : gameListVM.map(renderDesktopGameRow)}
         </div>
       )}
-    </>
+    </div>
   )
 }
