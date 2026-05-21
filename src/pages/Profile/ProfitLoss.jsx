@@ -136,16 +136,19 @@ export default function ProfitLoss() {
   const [fromDate, setFromDate] = useState(initial.from)
   const [toDate, setToDate] = useState(initial.to)
   const [rows, setRows] = useState([])
+  const [refreshKey, setRefreshKey] = useState(0)
 
   const setJustForToday = () => {
     const r = todayRange()
     setFromDate(r.from)
     setToDate(r.to)
+    setRefreshKey((k) => k + 1)
   }
   const setFromYesterday = () => {
     const r = yesterdayRange()
     setFromDate(r.from)
     setToDate(r.to)
+    setRefreshKey((k) => k + 1)
   }
 
   const fetchPnl = useCallback(() => {
@@ -171,7 +174,7 @@ export default function ProfitLoss() {
 
   useEffect(() => {
     fetchPnl()
-  }, [fetchPnl])
+  }, [fetchPnl, refreshKey])
 
   return (
     <div className="pl-card">

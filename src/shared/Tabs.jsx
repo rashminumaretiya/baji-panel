@@ -2,7 +2,7 @@ export default function Tabs({ tabs = [], activeId, onChange, className = '' }) 
   return (
     <div className="my-bets-container">
       <ul
-        className={`nav-tabs main-bets-tab flex-nowrap inplay-tabs ${className}`.trim()}
+        className={`nav-tabs main-bets-tab flex-nowrap bets-tabs ${className}`.trim()}
         role="tablist"
       >
         {tabs.map((tab) => {

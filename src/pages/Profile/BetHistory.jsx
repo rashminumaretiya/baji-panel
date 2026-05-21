@@ -87,17 +87,20 @@ export default function BetHistory() {
   const [fromDate, setFromDate] = useState(initial.from)
   const [toDate, setToDate] = useState(initial.to)
   const [bets, setBets] = useState([])
+  const [refreshKey, setRefreshKey] = useState(0)
 
   const setJustForToday = () => {
     const r = todayRange()
     setFromDate(r.from)
     setToDate(r.to)
+    setRefreshKey((k) => k + 1)
   }
 
   const setFromYesterday = () => {
     const r = yesterdayRange()
     setFromDate(r.from)
     setToDate(r.to)
+    setRefreshKey((k) => k + 1)
   }
 
   const fetchHistory = useCallback(() => {
@@ -124,7 +127,7 @@ export default function BetHistory() {
 
   useEffect(() => {
     fetchHistory()
-  }, [fetchHistory])
+  }, [fetchHistory, refreshKey])
 
   return (
     <MarketTabs value={marketCategory} onChange={setMarketCategory}>
