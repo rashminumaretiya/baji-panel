@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { MOBILE_MEDIA_QUERY } from '../store/slices/commonSlice.js'
 
 export function useMediaQuery(query) {
   const [matches, setMatches] = useState(() => {
@@ -18,5 +19,5 @@ export function useMediaQuery(query) {
 }
 
 export function useIsMobile() {
-  return useMediaQuery('(max-width: 767px)')
+  return useMediaQuery(MOBILE_MEDIA_QUERY)
 }

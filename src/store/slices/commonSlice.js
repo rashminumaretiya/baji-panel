@@ -37,11 +37,27 @@ function normalizeNews(item) {
   return { ...rest, _id, expiredAt, message: String(message ?? '') }
 }
 
+export const MOBILE_MEDIA_QUERY = '(max-width: 767px)'
+
+export function readIsMobileViewport() {
+  if (typeof window === 'undefined' || !window.matchMedia) return false
+  return window.matchMedia(MOBILE_MEDIA_QUERY).matches
+}
+
+/** Keeps `common.isMobile` in sync when the viewport crosses the mobile breakpoint. */
+export function setupMobileBreakpointListener(store) {
+  if (typeof window === 'undefined' || !window.matchMedia) return () => {}
+
+  const media = window.matchMedia(MOBILE_MEDIA_QUERY)
+  const sync = () => store.dispatch(setIsMobile(media.matches))
+
+  sync()
+  media.addEventListener('change', sync)
+  return () => media.removeEventListener('change', sync)
+}
+
 const initialState = {
-  isMobile:
-    typeof window !== 'undefined' && window.matchMedia
-      ? window.matchMedia('(max-width: 767px)').matches
-      : false,
+  isMobile: readIsMobileViewport(),
   isFullScreenLoader: false,
   isMainScreenLoader: false,
   authModalType: null,

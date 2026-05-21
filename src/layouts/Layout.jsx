@@ -11,6 +11,7 @@ import { selectLayoutedRoutes } from "../store/slices/layoutSlice"
 import BetSlip from "../components/BetSlip"
 import DevAuthToggle from "../components/DevAuthToggle"
 import Header from "../components/Header"
+import MobileNavigation from "../components/MobileNavigation.jsx"
 import NewsLine from "../components/NewsLine"
 import SportsSidebar from "../shared/components/sports-sidebar/SportsSidebar"
 import "./layout.scss"
@@ -41,6 +42,7 @@ export default function Layout() {
   }, [isMobile, layoutedRoutes, firstSegment])
 
   const showRightContent = !isMobile && !isAccountRoute
+  const showMobileNavigation = isMobile && !isPlatformPage
 
     const showRightSidebar = useMemo(() => {
     if (isMobile) return false
@@ -88,6 +90,8 @@ export default function Layout() {
           <div className={scrollWrapClass}>
             <Outlet />
           </div>
+
+          {showMobileNavigation && <MobileNavigation />}
 
           {showRightSidebar && (
             <div className="right-data">
