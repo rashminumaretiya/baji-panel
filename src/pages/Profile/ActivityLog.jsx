@@ -1,5 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import Table from '../../shared/Table.jsx'
+import {
+  fetchActivityLogs,
+  selectActivityLogs,
+} from '../../store/slices/accountSlice.js'
 import './activityLog.scss'
 
 const wrapSpan = (value) => <span>{value}</span>
@@ -22,10 +27,18 @@ const columns = [
   { key: 'userAgentType', label: 'User Agent Type', render: wrapSpan },
 ]
 
+const PER_PAGE = 10
+
 export default function ActivityLog() {
-  const [logs] = useState([])
+  const dispatch = useDispatch()
+  const { data: logs, totalCount } = useSelector(selectActivityLogs)
   const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages] = useState(0)
+
+  useEffect(() => {
+    dispatch(fetchActivityLogs({ page: currentPage, perPage: PER_PAGE }))
+  }, [dispatch, currentPage])
+
+  const totalPages = Math.max(1, Math.ceil((totalCount || 0) / PER_PAGE))
 
   return (
     <div className="inner-outer-wrapper">

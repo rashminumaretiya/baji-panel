@@ -1,0 +1,77 @@
+// Ported from baji-exchange-frontend deposit-history.component.scss
+// (the :host ::ng-deep wrapper stripped — no Shadow DOM in React).
+.payment-img {
+  height: 30px;
+  width: auto;
+}
+
+// Status pill colors — mirror baji-exchange-frontend src/styles.scss
+// `.status-initiated/-pending/-completed/...` rules used by the
+// `dynamicClass: 'status'` column.
+.status-initiated span,
+.status-pending span {
+  color: var(--primary-yellow);
+  text-transform: capitalize;
+  font-size: 12px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.status-active span,
+.status-completed span,
+.status-transfered span,
+.status-accept span {
+  color: var(--avocado-green);
+  text-transform: capitalize;
+  font-size: 12px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.status-suspend span,
+.status-rejected span,
+.status-declined span,
+.statusreject span,
+.status-failed span {
+  color: var(--failed-status);
+  text-transform: capitalize;
+  font-size: 12px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border-radius: 5px;
+}
+
+// Action buttons inside the table cells.
+.deposit-action-btn {
+  background: none;
+  border: none;
+  padding: 4px 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--primary);
+
+  &:hover {
+    color: var(--lg-primary);
+  }
+
+  i {
+    display: inline-flex;
+    line-height: 0;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+

@@ -35,3 +35,28 @@ export function resolveThemeBodyClass(panelTheme) {
   if (!panelTheme) return THEME_BODY_CLASSES[PanelTheme.BETJILI]
   return THEME_BODY_CLASSES[panelTheme] ?? ''
 }
+
+export const CURRENCY_TYPE = Object.freeze({
+  USD: 'USD',
+  BDT: 'BDT',
+  INR: 'INR',
+})
+
+export const PAYMENT_TYPE = Object.freeze({
+  UDDOKTAPAY: 'UDDOKTAPAY',
+  CATOPAY: 'CATOPAY',
+})
+
+export const PAYMENT_LIST = [
+  { name: 'agent', img: '/img/payment/agent.png', value: 'AGENT', isHidden: false },
+  { name: 'merchant', img: '/img/payment/merchant.png', value: 'MERCHANT', isHidden: false },
+  { name: 'personal', img: '/img/payment/personal.png', value: 'PERSONAL', isHidden: false },
+]
+
+export const WITHDRAW_PAYMENT_METHODS = [
+  { name: 'bkash', img: '/img/payment/BKash_logo.svg', value: 'BKASH' },
+  { name: 'nagad', img: '/img/payment/Nagad.jpeg', value: 'NAGAD' },
+  { name: 'rocket', img: '/img/payment/rocket.png', value: 'ROCKET' },
+]
+
+export const onlyDigitsRegex = /^[0-9]+(\.[0-9]+)?$/
