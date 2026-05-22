@@ -21,7 +21,11 @@ import {
 import MobileSports from '../components/home/MobileSports.jsx'
 import Footer from '../components/Footer.jsx'
 import Loader from '../shared/components/Loader.jsx'
-import { GAME_LIST_FILTERS, RACING_SPORTS, SPORT_IDS } from '../core/constant/constants.js'
+import {
+  GAME_LIST_FILTERS,
+  RACING_SPORTS,
+  SPORT_IDS,
+} from '../core/constant/constants.js'
 
 const SPORT_BANNER = {
   [SPORT_IDS.SOCCER]: '/img/soccer-img.jpg',
@@ -31,8 +35,7 @@ const SPORT_BANNER = {
   [SPORT_IDS.GREYHOUND_RACING]: '/img/greyhound_landing.webp',
 }
 
-const LANDING_IMG_CLASS =
-  'h-[194px] w-full object-cover mt-px mb-4'
+const LANDING_IMG_CLASS = 'h-[194px] w-full object-cover mt-px mb-4'
 
 const TAB_LIST_CLASS =
   'flex rounded-none gap-[5px] justify-start border-b-0 m-0 px-[10px] pt-0 pb-px bg-[var(--xl-dark-green)] list-none'
@@ -46,7 +49,7 @@ const TAB_LINK_ACTIVE =
   'bg-[var(--xl-th-bg)] text-black border-[var(--xl-th-bg)] shadow-[inset_0_7px_2px_-7px_var(--white)]'
 
 const GAME_TITLE_CLASS =
-  'flex items-center justify-between bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xxl-blue)] text-white text-[12px] p-2 mb-2 max-mobile:text-center max-mobile:font-semibold max-mobile:text-[3.73vw] max-mobile:leading-[1.05] max-mobile:p-[2.043vw]'
+  'flex items-center justify-between bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xxl-blue)] text-white text-[12px] p-2 mb-2 max-md:text-center max-md:font-semibold max-md:text-[3.73vw] max-md:leading-[1.05] max-md:p-[2.043vw]'
 
 export default function Home() {
   const { t } = useTranslation()
@@ -60,7 +63,7 @@ export default function Home() {
 
   const visibleEventIds = useMemo(
     () => games.map((g) => g.event?.id).filter(Boolean),
-    [games],
+    [games]
   )
   useEventSubscription(visibleEventIds)
 
@@ -107,7 +110,11 @@ export default function Home() {
                 const isActive = String(tab.id) === activeSportId
                 const navId = `ngb-nav-${idx}`
                 return (
-                  <li key={tab.id} className={TAB_ITEM_CLASS} role="presentation">
+                  <li
+                    key={tab.id}
+                    className={TAB_ITEM_CLASS}
+                    role="presentation"
+                  >
                     <button
                       type="button"
                       className={`${TAB_LINK_BASE} ${isActive ? TAB_LINK_ACTIVE : ''}`}

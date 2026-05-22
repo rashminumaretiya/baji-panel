@@ -46,7 +46,7 @@ function getDisplayAmount(wallet) {
 }
 
 const HEADER_BASE =
-  'flex items-center px-5 pr-[25px] py-2 h-[74px] bg-[var(--primary)] min-w-[1350px] max-mobile:px-0 max-mobile:pr-[1.87vw] max-mobile:py-[2.67vw] max-mobile:h-[14.67vw] max-mobile:min-w-0'
+  'flex items-center px-5 pr-[25px] py-2 h-[74px] bg-[var(--primary)] min-w-[1350px] max-md:px-0 max-md:pr-[1.87vw] max-md:py-[2.67vw] max-md:h-[14.67vw] max-md:min-w-0'
 
 const HEADER_YELLOW = 'bg-gradient-to-b from-[#ffcb2e] to-[#ffb80c]'
 const HEADER_MCW = 'bg-gradient-to-b from-[#2f2f2f] to-[#010101]'
@@ -132,7 +132,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   }
 
   return (
-    <div>
+    <div className="fixed left-0 top-0 right-0 z-[1000]">
       <header className={headerClass}>
         {!isMob ? (
           <div className="inline-flex sm:flex-1 items-center">
@@ -165,16 +165,16 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
               <>
                 <span
                   className={cx(
-                    'flex items-center justify-center max-mobile:px-0 max-mobile:pt-[1.87vw] max-mobile:pb-[1.33vw] max-mobile:rounded-r-[1.07vw] max-mobile:min-w-[29.33vw] max-mobile:max-w-[31.2vw] max-mobile:text-[3.47vw] max-mobile:font-bold max-mobile:border-l-0 max-mobile:w-auto max-mobile:text-white text-base max-w-fit min-w-0',
+                    'flex items-center justify-center max-md:px-0 max-md:pt-[1.87vw] max-md:pb-[1.33vw] max-md:rounded-r-[1.07vw] max-md:min-w-[29.33vw] max-md:max-w-[31.2vw] max-md:text-[3.47vw] max-md:font-bold max-md:border-l-0 max-md:w-auto max-md:text-white text-base max-w-fit min-w-0',
                     isStreamAvailable &&
-                      'max-mobile:min-w-[18.03vw] max-mobile:max-w-[21.2vw]',
+                      'max-md:min-w-[18.03vw] max-md:max-w-[21.2vw]',
                     !isYellowTheme &&
                       !isMcwCasinoTheme &&
-                      'max-mobile:bg-black/10 max-mobile:border max-mobile:border-black/40 max-mobile:shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.3)]',
+                      'max-md:bg-black/10 max-md:border max-md:border-black/40 max-md:shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.3)]',
                     isYellowTheme &&
-                      'max-mobile:!text-[var(--dark)] max-mobile:!bg-transparent',
+                      'max-md:!text-[var(--dark)] max-md:!bg-transparent',
                     isMcwCasinoTheme &&
-                      'max-mobile:!bg-white/10 max-mobile:!text-[#ffd45f]'
+                      'max-md:!bg-white/10 max-md:!text-[#ffd45f]'
                   )}
                   onClick={openBetsClick}
                   role="button"
@@ -182,7 +182,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                   onKeyDown={(e) => e.key === 'Enter' && openBetsClick()}
                 >
                   <SvgIcon name="dollarCoin" />
-                  <p className="mb-0 ms-lg-2 max-mobile:ml-[1.33vw]">Bets</p>
+                  <p className="mb-0 ms-lg-2 max-md:ml-[1.33vw]">Bets</p>
                 </span>
                 <div
                   className={cx(
@@ -193,7 +193,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                   )}
                 >
                   <div className={stakeHeaderClass}>
-                    <div className="flex items-center text-white flex-1 max-mobile:px-[1.87vw] max-mobile:leading-[2.6] max-mobile:border-r max-mobile:border-white/30 [&_svg]:max-mobile:w-[6.33vw] [&_svg]:max-mobile:h-[6.33vw] [&_svg]:mr-[1.33vw]">
+                    <div className="flex items-center text-white flex-1 max-md:px-[1.87vw] max-md:leading-[2.6] max-md:border-r max-md:border-white/30 [&_svg]:max-md:w-[6.33vw] [&_svg]:max-md:h-[6.33vw] [&_svg]:mr-[1.33vw]">
                       <SvgIcon name="dollarCoin" />
                       <span>Open Bets</span>
                     </div>
@@ -213,7 +213,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
           </>
         )}
 
-        <div className="flex items-center justify-end ms-auto md:ms-0">
+        <div className="flex items-center justify-end ml-auto md:ms-0">
           <div
             className={cx(
               'flex items-center text-white',
@@ -225,7 +225,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
           >
             <div className="flex items-center justify-between">
               {isBalanceRefresh ? (
-                <div className="me-2 [&_span]:inline-block [&_span]:w-1 [&_span]:h-1 [&_span]:rounded-full [&_span]:bg-white [&_span]:opacity-0 [&_span]:mr-1.5 [&_span]:animate-[loadBar_0.8s_ease_infinite] max-mobile:[&_span]:bg-black">
+                <div className="me-2 [&_span]:inline-block [&_span]:w-1 [&_span]:h-1 [&_span]:rounded-full [&_span]:bg-white [&_span]:opacity-0 [&_span]:mr-1.5 [&_span]:animate-[loadBar_0.8s_ease_infinite] max-md:[&_span]:bg-black">
                   {LOADING_BAR_ITEMS.map((n) => (
                     <span
                       key={n}
@@ -235,7 +235,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                 </div>
               ) : (
                 <a
-                  className="md:flex items-center pr-3.5 max-mobile:pr-[2.13vw] max-mobile:text-right max-mobile:text-[3.2vw] text-white no-underline [&_span]:opacity-70 [&_.value]:opacity-100! [&_.value]:font-bold"
+                  className="md:flex items-center pr-3.5 max-md:pr-[2.13vw] max-md:text-right max-md:text-[3.2vw] text-white no-underline [&_span]:opacity-70 [&_.value]:opacity-100! [&_.value]:font-bold"
                   href="#"
                   onClick={(e) => e.preventDefault()}
                 >
@@ -265,7 +265,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
             <button
               type="button"
               className={cx(
-                'h-[26px] w-[28px] flex items-center justify-center px-1.5 bg-black/30 border border-black/30 shadow-[inset_0_1px_0_0_rgba(var(--white-rgb),0.5)] rounded-[3px] hover:underline max-mobile:h-[9.47vw] max-mobile:w-auto max-mobile:px-[1.87vw] max-mobile:py-[1.7vw] max-mobile:bg-black/10 max-mobile:border max-mobile:border-black/40 max-mobile:shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.5)] [&_svg]:h-[14px] [&_svg]:w-[14px] max-mobile:[&_svg]:h-[5.07vw] max-mobile:[&_svg]:w-[5.07vw]',
+                'h-[26px] w-[28px] flex items-center justify-center px-1.5 bg-black/30 border border-black/30 shadow-[inset_0_1px_0_0_rgba(var(--white-rgb),0.5)] rounded-[3px] hover:underline max-md:h-[9.47vw] max-md:w-auto max-md:px-[1.87vw] max-md:py-[1.7vw] max-md:bg-black/10 max-md:border max-md:border-black/40 max-md:shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.5)] [&_svg]:h-[14px] [&_svg]:w-[14px] max-md:[&_svg]:h-[5.07vw] max-md:[&_svg]:w-[5.07vw]',
                 isYellowTheme && '!bg-transparent [&_svg]:brightness-0'
               )}
               onClick={balanceRefresh}
@@ -284,7 +284,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
         {showMobileStake && (
           <div
             className={cx(
-              'flex items-center h-[9.47vw] w-auto px-[1.27vw] py-[1.7vw] rounded-[1.07vw] ml-[2.13vw] bg-black/10 border border-black/40 shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.3)] [&_svg]:text-white max-mobile:[&_svg]:w-[6.07vw] max-mobile:[&_svg]:h-[6.07vw]',
+              'flex items-center h-[9.47vw] w-auto px-[1.27vw] py-[1.7vw] rounded-[1.07vw] ml-[2.13vw] bg-black/10 border border-black/40 shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.3)] [&_svg]:text-white max-md:[&_svg]:w-[6.07vw] max-md:[&_svg]:h-[6.07vw]',
               isYellowTheme && '!bg-transparent [&_svg]:brightness-0',
               isMcwCasinoTheme && '!bg-white/10 [&_svg]:!text-[#ffd45f]'
             )}
@@ -305,7 +305,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
         rootClose={false}
         onHide={() => setStakeOpen(false)}
       >
-        <Popover className="max-mobile:fixed max-mobile:inset-0 max-mobile:!max-w-full max-mobile:!mt-0 max-mobile:rounded-none max-mobile:overflow-y-auto max-mobile:pb-[16.33vw]">
+        <Popover className="max-md:fixed max-md:inset-0 max-md:!max-w-full max-md:!mt-0 max-md:rounded-none max-md:overflow-y-auto max-md:pb-[16.33vw]">
           <Popover.Body className="p-0">
             <Stake isMobile onCancel={() => setStakeOpen(false)} />
           </Popover.Body>

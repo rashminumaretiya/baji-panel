@@ -2,7 +2,12 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Modal from '../../shared/components/Modal.jsx'
 
-export default function PinEventModal({ show, eventName, onConfirm, onCancel }) {
+export default function PinEventModal({
+  show,
+  eventName,
+  onConfirm,
+  onCancel,
+}) {
   const { t } = useTranslation()
   const [alias, setAlias] = useState(eventName || '')
 
@@ -22,13 +27,16 @@ export default function PinEventModal({ show, eventName, onConfirm, onCancel }) 
       centered
     >
       <div className="mb-3">
-        <label htmlFor="aliasInput" className="block mb-2 text-[14px] font-medium">
+        <label
+          htmlFor="aliasInput"
+          className="block mb-2 text-[14px] font-medium"
+        >
           {t('common.aliasName')}
         </label>
         <input
           id="aliasInput"
           type="text"
-          className="block w-full px-3 py-1.5 text-sm leading-normal text-[var(--dark)] bg-white border border-[var(--input-group-border)] rounded focus:outline-none focus:border-[var(--blue)] focus:shadow-[0_0_4px_2px_rgba(var(--blue-rgb),0.8)] max-mobile:px-[1.86vw] max-mobile:py-[2.66vw] max-mobile:text-[4vw] max-mobile:rounded-[1.6vw]"
+          className="block w-full px-3 py-1.5 text-sm leading-normal text-[var(--dark)] bg-white border border-[var(--input-group-border)] rounded focus:outline-none focus:border-[var(--blue)] focus:shadow-[0_0_4px_2px_rgba(var(--blue-rgb),0.8)] max-md:px-[1.86vw] max-md:py-[2.66vw] max-md:text-[4vw] max-md:rounded-[1.6vw]"
           placeholder={t('common.aliasName')}
           value={alias}
           onChange={(e) => setAlias(e.target.value)}

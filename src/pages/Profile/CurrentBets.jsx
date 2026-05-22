@@ -14,7 +14,7 @@ const BET_STATUS_OPTIONS = [
 
 // Tailwind class strings ported from myBets.scss `.bets-filter`.
 const betsFilterClass =
-  'flex items-center flex-wrap bg-[var(--platinum-grey)] py-[6px] px-[10px] border-b border-[#d0d0d0] text-[12px] text-[#1e1e1e] min-h-[32px] gap-2 mb-[15px] max-mobile:p-2'
+  'flex items-center flex-wrap bg-[var(--platinum-grey)] py-[6px] px-[10px] border-b border-[#d0d0d0] text-[12px] text-[#1e1e1e] min-h-[32px] gap-2 mb-[15px] max-md:p-2'
 const filterLabelClass = 'text-[#1e1e1e] whitespace-nowrap'
 const betStatusSelectClass =
   'h-6 pl-[6px] pr-[22px] py-0 text-[12px] leading-[22px] rounded-[3px] border border-[#aaa] bg-white min-w-[110px] w-auto appearance-none bg-no-repeat bg-[position:right_4px_center] bg-[length:14px_10px] bg-[url("data:image/svg+xml,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3e%3cpath%20fill=%27none%27%20stroke=%27%23343a40%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20stroke-width=%272%27%20d=%27M2%205l6%206%206-6%27/%3e%3c/svg%3e")]'
@@ -25,7 +25,10 @@ const checkboxInputClass =
 function BetsFilter({ status, onStatusChange, orderBy, onOrderChange }) {
   const selectOrder = (key) => {
     if (orderBy?.[key]) return
-    onOrderChange?.({ betPlaced: key === 'betPlaced', market: key === 'market' })
+    onOrderChange?.({
+      betPlaced: key === 'betPlaced',
+      market: key === 'market',
+    })
   }
   return (
     <div className={betsFilterClass}>
@@ -72,15 +75,32 @@ function BetsFilter({ status, onStatusChange, orderBy, onOrderChange }) {
 }
 
 const COLUMNS = [
-  { key: 'betId', label: 'Bet ID', render: (_v, row) => row?.betId ?? row?._id ?? '--' },
+  {
+    key: 'betId',
+    label: 'Bet ID',
+    render: (_v, row) => row?.betId ?? row?._id ?? '--',
+  },
   { key: 'plId', label: 'PL ID', render: (_v, row) => row?.plId ?? '--' },
-  { key: 'market', label: 'Market', render: (_v, row) => row?.marketName ?? row?.market ?? '--' },
-  { key: 'selection', label: 'Selection', render: (_v, row) => row?.selectionName ?? row?.selection ?? '--' },
-  { key: 'type', label: 'Type', render: (_v, row) => row?.betType ?? row?.type ?? '--' },
+  {
+    key: 'market',
+    label: 'Market',
+    render: (_v, row) => row?.marketName ?? row?.market ?? '--',
+  },
+  {
+    key: 'selection',
+    label: 'Selection',
+    render: (_v, row) => row?.selectionName ?? row?.selection ?? '--',
+  },
+  {
+    key: 'type',
+    label: 'Type',
+    render: (_v, row) => row?.betType ?? row?.type ?? '--',
+  },
   {
     key: 'betPlaced',
     label: 'Bet Placed',
-    render: (_v, row) => (row?.createdAt ? new Date(row.createdAt).toLocaleString() : '--'),
+    render: (_v, row) =>
+      row?.createdAt ? new Date(row.createdAt).toLocaleString() : '--',
   },
   { key: 'stake', label: 'Stake', render: (_v, row) => row?.stake ?? '--' },
   {
@@ -104,7 +124,7 @@ export default function CurrentBets() {
     http
       .get(
         `bet/history?page=1&perPage=10&betStatus=${betStatus}&marketCategory=${marketCategory}`,
-        { headers: { Authorization: `Bearer ${token}` } },
+        { headers: { Authorization: `Bearer ${token}` } }
       )
       .then((res) => {
         if (cancelled) return

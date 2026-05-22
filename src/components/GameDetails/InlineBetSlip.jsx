@@ -67,13 +67,13 @@ const DESKTOP_STAKE_BTN =
 
 // Mobile stake buttons (`.mobile-stake button`).
 const MOBILE_STAKE_BTN =
-  'text-white bg-transparent border-0 flex-1 p-0 max-mobile:text-[var(--white)] max-mobile:bg-white max-mobile:w-auto max-mobile:px-1 max-mobile:py-[3px]'
+  'text-white bg-transparent border-0 flex-1 p-0 max-md:text-[var(--white)] max-md:bg-white max-md:w-auto max-md:px-1 max-md:py-[3px]'
 
 function StakeButtons({ isMobile, onStakeClick }) {
   const stakes = isMobile ? DEFAULT_STAKES.slice(0, 5) : DEFAULT_STAKES
   // Wrapper differs: desktop `.stake`, mobile `.mobile-stake` (with full bg).
   const wrapperClass = isMobile
-    ? 'flex justify-end items-center text-white border-r border-[#4a4a4a] py-2 px-1 max-mobile:bg-[image:linear-gradient(-180deg,#32617f_20%,#1f4258_91%)] max-mobile:p-0 max-mobile:leading-[2.46] max-mobile:text-[3.46667vw] max-mobile:border-r max-mobile:border-[rgba(var(--black-rgb),0.15)]'
+    ? 'flex justify-end items-center text-white border-r border-[#4a4a4a] py-2 px-1 max-md:bg-[image:linear-gradient(-180deg,#32617f_20%,#1f4258_91%)] max-md:p-0 max-md:leading-[2.46] max-md:text-[3.46667vw] max-md:border-r max-md:border-[rgba(var(--black-rgb),0.15)]'
     : 'flex justify-end'
   const btnClass = isMobile ? MOBILE_STAKE_BTN : DESKTOP_STAKE_BTN
   return (
@@ -109,12 +109,12 @@ const BackspaceIcon = (
 
 // Common keypad button (`.keypad-wrapper .btn`).
 const KEYPAD_BTN =
-  'w-full cursor-pointer text-[18px] py-[6px] px-1 rounded-none border border-[var(--tbl-border-color)] border-l-0 text-[var(--header-primary)] bg-white max-mobile:text-[4vw] max-mobile:text-[#1e1e1e] max-mobile:leading-[10.4vw] max-mobile:p-0 max-mobile:bg-white max-mobile:border-0 max-mobile:border-l max-mobile:border-[#aaa] max-mobile:!border-b max-mobile:!border-b-[#aaa] [&_svg]:max-mobile:w-[4.8vw] [&_svg]:max-mobile:h-[3.2vw]'
+  'w-full cursor-pointer text-[18px] py-[6px] px-1 rounded-none border border-[var(--tbl-border-color)] border-l-0 text-[var(--header-primary)] bg-white max-md:text-[4vw] max-md:text-[#1e1e1e] max-md:leading-[10.4vw] max-md:p-0 max-md:bg-white max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:!border-b max-md:!border-b-[#aaa] [&_svg]:max-md:w-[4.8vw] [&_svg]:max-md:h-[3.2vw]'
 
 function Keypad({ onValueChanged }) {
   const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '00', '.']
   return (
-    <div className="flex flex-row flex-wrap mx-0 max-mobile:border-t max-mobile:border-[#aaa]">
+    <div className="flex flex-row flex-wrap mx-0 max-md:border-t max-md:border-[#aaa]">
       <div className="w-[83.333%]">
         <div className="flex flex-row flex-wrap">
           {keys.map((key, idx) => (
@@ -137,7 +137,7 @@ function Keypad({ onValueChanged }) {
           ))}
         </div>
       </div>
-      <div className="w-[16.667%] max-mobile:-ml-px">
+      <div className="w-[16.667%] max-md:-ml-px">
         <button
           type="button"
           className={`${KEYPAD_BTN} flex h-full items-center justify-center`}
@@ -161,7 +161,13 @@ function betTypeBg(type) {
     : 'bg-[var(--md-red-bg)]'
 }
 
-export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPlaceBet, isPlacing = false }) {
+export default function InlineBetSlip({
+  betSlipDetails,
+  onChange,
+  onCancel,
+  onPlaceBet,
+  isPlacing = false,
+}) {
   const isMobile = useIsMobile()
   const [isMatchChecked, setIsMatchChecked] = useState(false)
 
@@ -216,34 +222,34 @@ export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPl
 
     return (
       <table
-        className={`w-full m-0 max-mobile:-ml-px max-mobile:w-[calc(100%+1px)] ${betTypeClass} ${lastRowBg}`}
+        className={`w-full m-0 max-md:-ml-px max-md:w-[calc(100%+1px)] ${betTypeClass} ${lastRowBg}`}
       >
         <tbody>
           <tr>
             <td
               colSpan={2}
-              className="bg-transparent max-mobile:pt-[10px] max-mobile:px-[1.86667vw] max-mobile:pb-[1.86667vw]"
+              className="bg-transparent max-md:pt-[10px] max-md:px-[1.86667vw] max-md:pb-[1.86667vw]"
             >
               <div className="flex items-end justify-around">
-                <div className="text-center flex-1 mr-[1.86667vw] max-mobile:[&:last-of-type]:mr-0 max-mobile:flex-[1_1_47.2vw]">
+                <div className="text-center flex-1 mr-[1.86667vw] max-md:[&:last-of-type]:mr-0 max-md:flex-[1_1_47.2vw]">
                   {isSportsBook && (
-                    <p className="text-[var(--dark-gray)] text-[14px] mb-0 mr-[2vw] max-mobile:text-[2.93333vw] max-mobile:text-[#1e1e1e] max-mobile:leading-[1.3]">
+                    <p className="text-[var(--dark-gray)] text-[14px] mb-0 mr-[2vw] max-md:text-[2.93333vw] max-md:text-[#1e1e1e] max-md:leading-[1.3]">
                       Odds
                     </p>
                   )}
-                  <div className="flex items-center border border-[#4a4a4a] rounded-md max-mobile:border-[#aaa] max-mobile:justify-between max-mobile:bg-white max-mobile:rounded-[1.6vw]">
+                  <div className="flex items-center border border-[#4a4a4a] rounded-md max-md:border-[#aaa] max-md:justify-between max-md:bg-white max-md:rounded-[1.6vw]">
                     {isMatchOdds ? (
                       <>
                         <button
                           type="button"
-                          className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-l-md max-mobile:h-[10.66667vw] max-mobile:w-[12vw] max-mobile:bg-gradient-to-t max-mobile:from-[#eee] max-mobile:to-white max-mobile:p-0 max-mobile:border-0 max-mobile:border-r max-mobile:border-[#aaa] max-mobile:rounded-tl-[1.6vw] max-mobile:rounded-bl-[1.6vw] max-mobile:rounded-tr-none max-mobile:rounded-br-none [&_svg]:max-mobile:w-[7.5vw] [&_svg]:max-mobile:h-[7.5vw]"
+                          className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-l-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-gradient-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-r max-md:border-[#aaa] max-md:rounded-tl-[1.6vw] max-md:rounded-bl-[1.6vw] max-md:rounded-tr-none max-md:rounded-br-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]"
                           onClick={() => updateField('odds', 'DEC')}
                         >
                           {MinusIcon}
                         </button>
                         <input
                           type="text"
-                          className="p-1 text-center max-w-[63px] bg-[#d9d9d9] text-[var(--primary)] h-[34px] rounded-none border border-[#4a4a4a] border-t-0 border-b-0 text-[20px] max-mobile:h-[10.66667vw] max-mobile:border-0 max-mobile:p-0 max-mobile:text-[#1e1e1e] max-mobile:text-[4vw] max-mobile:leading-[10.13333vw] max-mobile:font-bold max-mobile:bg-white max-mobile:shadow-[inset_0_0.53333vw_0_0_rgba(0,0,0,0.1)] max-mobile:max-w-none max-mobile:flex-1"
+                          className="p-1 text-center max-w-[63px] bg-[#d9d9d9] text-[var(--primary)] h-[34px] rounded-none border border-[#4a4a4a] border-t-0 border-b-0 text-[20px] max-md:h-[10.66667vw] max-md:border-0 max-md:p-0 max-md:text-[#1e1e1e] max-md:text-[4vw] max-md:leading-[10.13333vw] max-md:font-bold max-md:bg-white max-md:shadow-[inset_0_0.53333vw_0_0_rgba(0,0,0,0.1)] max-md:max-w-none max-md:flex-1"
                           value={betSlipDetails?.odds ?? ''}
                           onKeyDown={(e) => e.preventDefault()}
                           inputMode="none"
@@ -251,35 +257,35 @@ export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPl
                         />
                         <button
                           type="button"
-                          className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-r-md max-mobile:h-[10.66667vw] max-mobile:w-[12vw] max-mobile:bg-gradient-to-t max-mobile:from-[#eee] max-mobile:to-white max-mobile:p-0 max-mobile:border-0 max-mobile:border-l max-mobile:border-[#aaa] max-mobile:rounded-tr-[1.6vw] max-mobile:rounded-br-[1.6vw] max-mobile:rounded-tl-none max-mobile:rounded-bl-none [&_svg]:max-mobile:w-[7.5vw] [&_svg]:max-mobile:h-[7.5vw]"
+                          className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-r-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-gradient-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:rounded-tr-[1.6vw] max-md:rounded-br-[1.6vw] max-md:rounded-tl-none max-md:rounded-bl-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]"
                           onClick={() => updateField('odds', 'INC')}
                         >
                           {PlusIcon}
                         </button>
                       </>
                     ) : (
-                      <p className="m-0 flex items-center justify-center bg-[#dcdcdc] text-[var(--dark-gray)] border-[#dcdcdc] w-full max-mobile:h-[10.66667vw] max-mobile:p-0 max-mobile:border-0 max-mobile:rounded-[1.6vw]">
+                      <p className="m-0 flex items-center justify-center bg-[#dcdcdc] text-[var(--dark-gray)] border-[#dcdcdc] w-full max-md:h-[10.66667vw] max-md:p-0 max-md:border-0 max-md:rounded-[1.6vw]">
                         {oddDisplay}
                       </p>
                     )}
                   </div>
                 </div>
 
-                <div className="text-center flex-1 mr-[1.86667vw] max-mobile:[&:last-of-type]:mr-0 max-mobile:flex-[1_1_47.2vw]">
-                  <p className="text-[var(--dark-gray)] text-[14px] mb-0 mr-[2vw] max-mobile:text-[2.93333vw] max-mobile:text-[#1e1e1e] max-mobile:leading-[1.3]">
+                <div className="text-center flex-1 mr-[1.86667vw] max-md:[&:last-of-type]:mr-0 max-md:flex-[1_1_47.2vw]">
+                  <p className="text-[var(--dark-gray)] text-[14px] mb-0 mr-[2vw] max-md:text-[2.93333vw] max-md:text-[#1e1e1e] max-md:leading-[1.3]">
                     Min Bet : {betSlipDetails?.min || 1}
                   </p>
-                  <div className="flex items-center border border-[#4a4a4a] rounded-md max-mobile:border-[#aaa] max-mobile:justify-between max-mobile:bg-white max-mobile:rounded-[1.6vw]">
+                  <div className="flex items-center border border-[#4a4a4a] rounded-md max-md:border-[#aaa] max-md:justify-between max-md:bg-white max-md:rounded-[1.6vw]">
                     <button
                       type="button"
-                      className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-l-md max-mobile:h-[10.66667vw] max-mobile:w-[12vw] max-mobile:bg-gradient-to-t max-mobile:from-[#eee] max-mobile:to-white max-mobile:p-0 max-mobile:border-0 max-mobile:border-r max-mobile:border-[#aaa] max-mobile:rounded-tl-[1.6vw] max-mobile:rounded-bl-[1.6vw] max-mobile:rounded-tr-none max-mobile:rounded-br-none [&_svg]:max-mobile:w-[7.5vw] [&_svg]:max-mobile:h-[7.5vw]"
+                      className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-l-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-gradient-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-r max-md:border-[#aaa] max-md:rounded-tl-[1.6vw] max-md:rounded-bl-[1.6vw] max-md:rounded-tr-none max-md:rounded-br-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]"
                       onClick={() => updateField('stake', 'DEC')}
                     >
                       {MinusIcon}
                     </button>
                     <input
                       type="text"
-                      className="p-1 text-center max-w-[63px] bg-[var(--xs-secondary)] shadow-[inset_0_0.26667vw_1.33333vw_var(--primary)] text-[var(--primary)] h-[34px] rounded-none border border-[#4a4a4a] border-t-0 border-b-0 text-[20px] max-mobile:h-[10.66667vw] max-mobile:border-0 max-mobile:p-0 max-mobile:text-[#1e1e1e] max-mobile:text-[4vw] max-mobile:leading-[10.13333vw] max-mobile:font-bold max-mobile:max-w-none max-mobile:flex-1"
+                      className="p-1 text-center max-w-[63px] bg-[var(--xs-secondary)] shadow-[inset_0_0.26667vw_1.33333vw_var(--primary)] text-[var(--primary)] h-[34px] rounded-none border border-[#4a4a4a] border-t-0 border-b-0 text-[20px] max-md:h-[10.66667vw] max-md:border-0 max-md:p-0 max-md:text-[#1e1e1e] max-md:text-[4vw] max-md:leading-[10.13333vw] max-md:font-bold max-md:max-w-none max-md:flex-1"
                       inputMode="none"
                       min={0}
                       value={betSlipDetails?.stake ?? ''}
@@ -287,7 +293,7 @@ export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPl
                     />
                     <button
                       type="button"
-                      className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-r-md max-mobile:h-[10.66667vw] max-mobile:w-[12vw] max-mobile:bg-gradient-to-t max-mobile:from-[#eee] max-mobile:to-white max-mobile:p-0 max-mobile:border-0 max-mobile:border-l max-mobile:border-[#aaa] max-mobile:rounded-tr-[1.6vw] max-mobile:rounded-br-[1.6vw] max-mobile:rounded-tl-none max-mobile:rounded-bl-none [&_svg]:max-mobile:w-[7.5vw] [&_svg]:max-mobile:h-[7.5vw]"
+                      className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-r-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-gradient-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:rounded-tr-[1.6vw] max-md:rounded-br-[1.6vw] max-md:rounded-tl-none max-md:rounded-bl-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]"
                       onClick={() => updateField('stake', 'INC')}
                     >
                       {PlusIcon}
@@ -313,13 +319,13 @@ export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPl
           </tr>
 
           <tr>
-            <td colSpan={2} className="bg-transparent max-mobile:p-[1.86667vw]">
+            <td colSpan={2} className="bg-transparent max-md:p-[1.86667vw]">
               <div className="flex justify-around min-[768px]:gap-6">
                 <button
                   type="button"
                   className={cx(
                     'bg-gradient-to-b from-white to-[#eeeeee] text-[12px] border border-[#bbb] rounded p-0 min-w-0 w-full max-w-[75px] leading-[31px] font-semibold flex-1 py-2',
-                    'max-mobile:text-[4vw] max-mobile:font-bold max-mobile:leading-[2.6] max-mobile:text-[#1e1e1e] max-mobile:!p-0 max-mobile:!max-w-none max-mobile:rounded-[1.6vw] max-mobile:w-1/2 max-mobile:mr-[1.86667vw]',
+                    'max-md:text-[4vw] max-md:font-bold max-md:leading-[2.6] max-md:text-[#1e1e1e] max-md:!p-0 max-md:!max-w-none max-md:rounded-[1.6vw] max-md:w-1/2 max-md:mr-[1.86667vw]',
                     isPlacing && 'opacity-60 cursor-not-allowed'
                   )}
                   onClick={onCancel}
@@ -355,21 +361,24 @@ export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPl
 
           {showAcceptOdds && (
             <tr className="table-row">
-              <td colSpan={2} className="max-mobile:px-[1.86667vw] max-mobile:h-[8.53333vw]">
+              <td
+                colSpan={2}
+                className="max-md:px-[1.86667vw] max-md:h-[8.53333vw]"
+              >
                 <div className="flex items-center h-full">
                   <div
                     className={cx(
-                      'relative max-mobile:h-[4.8vw] max-mobile:w-[4.8vw] max-mobile:shadow-[inset_0_0.53333vw_0_0_rgba(0,0,0,0.4)] max-mobile:bg-white max-mobile:rounded-[1.06667vw]',
-                      isMatchChecked && 'max-mobile:bg-[var(--spanish-yellow)]'
+                      'relative max-md:h-[4.8vw] max-md:w-[4.8vw] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(0,0,0,0.4)] max-md:bg-white max-md:rounded-[1.06667vw]',
+                      isMatchChecked && 'max-md:bg-[var(--spanish-yellow)]'
                     )}
                   >
                     <i
                       className={cx(
                         'not-italic',
-                        '[&_svg]:max-mobile:h-[3vw] [&_svg]:max-mobile:w-[3vw] [&_svg]:max-mobile:absolute [&_svg]:max-mobile:top-1/2 [&_svg]:max-mobile:left-1/2 [&_svg]:max-mobile:-translate-x-1/2 [&_svg]:max-mobile:-translate-y-1/2',
+                        '[&_svg]:max-md:h-[3vw] [&_svg]:max-md:w-[3vw] [&_svg]:max-md:absolute [&_svg]:max-md:top-1/2 [&_svg]:max-md:left-1/2 [&_svg]:max-md:-translate-x-1/2 [&_svg]:max-md:-translate-y-1/2',
                         isMatchChecked
-                          ? '[&_svg]:max-mobile:block'
-                          : '[&_svg]:max-mobile:hidden'
+                          ? '[&_svg]:max-md:block'
+                          : '[&_svg]:max-md:hidden'
                       )}
                     >
                       {CheckIcon}
@@ -379,11 +388,11 @@ export default function InlineBetSlip({ betSlipDetails, onChange, onCancel, onPl
                       type="checkbox"
                       checked={isMatchChecked}
                       onChange={() => setIsMatchChecked((v) => !v)}
-                      className="max-mobile:h-[4.8vw] max-mobile:w-[4.8vw] max-mobile:opacity-0 max-mobile:absolute max-mobile:top-0 max-mobile:left-0 max-mobile:z-[2]"
+                      className="max-md:h-[4.8vw] max-md:w-[4.8vw] max-md:opacity-0 max-md:absolute max-md:top-0 max-md:left-0 max-md:z-[2]"
                     />
                   </div>
                   <label
-                    className="text-black whitespace-nowrap max-mobile:ml-[1.86667vw] max-mobile:text-[#1e1e1e]"
+                    className="text-black whitespace-nowrap max-md:ml-[1.86667vw] max-md:text-[#1e1e1e]"
                     htmlFor={marketData}
                   >
                     Accept Any Odds

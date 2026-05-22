@@ -56,33 +56,33 @@ function activateOnKey(handler) {
 // Each chip variant condenses a colour scheme onto the same base layout. On
 // mobile (.icon-row context) the original SCSS layered extra width/padding;
 // since desktop and mobile breakpoints are mutually exclusive we fold those
-// overrides directly into the base via `max-mobile:` utilities.
+// overrides directly into the base via `max-md:` utilities.
 // `.wrapper` ─ rounded pill, 16px tall on desktop / 4vw tall + 4.53vw wide
 // (padded) on mobile inside .icon-row.
 const WRAPPER_BASE =
   'inline-flex items-center justify-center rounded-[3px] h-4 ' +
-  'max-mobile:rounded-[0.8vw] max-mobile:h-[4vw] max-mobile:w-[4.53vw] max-mobile:p-0.5 max-mobile:text-white'
+  'max-md:rounded-[0.8vw] max-md:h-[4vw] max-md:w-[4.53vw] max-md:p-0.5 max-md:text-white'
 const WRAPPER_ORANGE = 'bg-[var(--orange-darkest)]'
 const WRAPPER_BLUE_DARK = 'bg-[var(--blue-dark)] [&_i]:inline-flex'
 
 // `.current-chip` ─ taller compound chip with an alarm icon.
 const CURRENT_CHIP_BASE =
   'inline-flex rounded-[4px] overflow-hidden items-center h-4 ' +
-  'max-mobile:rounded-[0.8vw] max-mobile:h-[4vw] max-mobile:w-8'
+  'max-md:rounded-[0.8vw] max-md:h-[4vw] max-md:w-8'
 const CURRENT_CHIP_LIGHTEST = 'bg-[var(--lightest-neavy)]'
 const CURRENT_CHIP_BLUE_DARK = 'bg-[var(--blue-dark)]'
 
 const ALARM_ICON_CLASS =
   'w-4 h-full inline-flex items-center justify-center text-white bg-[#60ba1e] ' +
-  'max-mobile:w-[4vw] max-mobile:h-[4vw] ' +
+  'max-md:w-[4vw] max-md:h-[4vw] ' +
   '[&_svg]:w-[11px] [&_svg]:h-[11px] [&_svg]:block'
 
 const TEXT_CHIP_CLASS =
   'h-full inline-flex items-center justify-center w-4 px-0.5 text-white/85 ' +
-  'max-mobile:w-[4.1vw] max-mobile:px-0 ' +
+  'max-md:w-[4.1vw] max-md:px-0 ' +
   '[&_i]:inline-flex [&_i]:leading-[0] ' +
   '[&_svg]:w-[11px] [&_svg]:h-[11px] ' +
-  'max-mobile:[&_svg]:w-[2.93vw] max-mobile:[&_svg]:h-[2.93vw]'
+  'max-md:[&_svg]:w-[2.93vw] max-md:[&_svg]:h-[2.93vw]'
 
 // ─── Event "SRL" book chip ─────────────────────────────────────────────────
 const EVENT_BOOK_WRAPPER =
@@ -204,18 +204,17 @@ const OddsCell = memo(function OddsCell({ value, isBack, disabled, onClick }) {
 // ─── Name / title block (`.name-wrap`) ─────────────────────────────────────
 // White cursor block with the live-dot ::before. On mobile the dot becomes a
 // floating circle pushed left of the title; on desktop it's an inline bullet.
-const NAME_WRAP_CLASS =
-  'pt-[2px] pb-[3px] pl-2 cursor-pointer max-mobile:pl-0'
+const NAME_WRAP_CLASS = 'pt-[2px] pb-[3px] pl-2 cursor-pointer max-md:pl-0'
 
 const MATCH_TITLE_BASE =
   'text-[var(--blue)] text-[12px] mb-0 relative font-semibold tracking-[0.01px] hover:underline ' +
-  'max-mobile:text-[4vw] max-mobile:leading-[1.6] ' +
+  'max-md:text-[4vw] max-md:leading-[1.6] ' +
   "before:content-[''] before:bg-[var(--light-green)] before:border before:border-black/40 " +
   'before:rounded-full before:w-2 before:h-2 before:inline-block ' +
-  'max-mobile:before:absolute max-mobile:before:right-full max-mobile:before:translate-x-[-5px] ' +
-  'max-mobile:before:top-[1.6vw] max-mobile:before:w-[2.8vw] max-mobile:before:h-[2.8vw] ' +
-  '[&>span]:max-mobile:overflow-hidden [&>span]:max-mobile:text-ellipsis [&>span]:max-mobile:line-clamp-1 ' +
-  '[&>span]:max-mobile:[-webkit-box-orient:vertical] [&>span]:max-mobile:[display:-webkit-box]'
+  'max-md:before:absolute max-md:before:right-full max-md:before:translate-x-[-5px] ' +
+  'max-md:before:top-[1.6vw] max-md:before:w-[2.8vw] max-md:before:h-[2.8vw] ' +
+  '[&>span]:max-md:overflow-hidden [&>span]:max-md:text-ellipsis [&>span]:max-md:line-clamp-1 ' +
+  '[&>span]:max-md:[-webkit-box-orient:vertical] [&>span]:max-md:[display:-webkit-box]'
 
 const MATCH_TITLE_NOT_IN_PLAY = 'before:!bg-[var(--sm-white)]'
 
@@ -226,7 +225,7 @@ const TIME_LABEL = 'inline-block ml-1 text-[var(--lg-black)] text-[12px]'
 // ─── Desktop row (`.games-detail`) ─────────────────────────────────────────
 const GAMES_DETAIL_BASE =
   'flex border-b border-[var(--light-bg)] last:border-b-[var(--sm-text-color)] ' +
-  'max-mobile:last:border-b-[0.8vw] max-mobile:last:border-[var(--light-bg)] ' +
+  'max-md:last:border-b-[0.8vw] max-md:last:border-[var(--light-bg)] ' +
   'hover:bg-[var(--hover-bg)]'
 
 const GAME_NAME_PART =
@@ -330,7 +329,7 @@ const MOBILE_DETAIL_CLASS =
 const ICON_ROW_CLASS = 'flex items-center gap-[1.33vw]'
 
 const MOBILE_INPLAY_TEXT =
-  'text-[var(--md-parrot)] max-mobile:text-[var(--primary)] max-mobile:text-[13px]'
+  'text-[var(--md-parrot)] max-md:text-[var(--primary)] max-md:text-[13px]'
 const MOBILE_TIME_TEXT = 'text-[var(--dark-gray)]'
 
 const ICON_PIN_CLASS =
@@ -338,7 +337,7 @@ const ICON_PIN_CLASS =
   '[&_svg]:w-[6.67vw] [&_svg]:h-[6.67vw]'
 
 const GAMES_BORDER_CLASS =
-  'max-mobile:last:border-b-[0.8vw] max-mobile:last:border-[var(--mobile-sport-active-menu-bg)]'
+  'max-md:last:border-b-[0.8vw] max-md:last:border-[var(--mobile-sport-active-menu-bg)]'
 
 const MobileGameCard = memo(function MobileGameCard({
   game,
@@ -352,10 +351,7 @@ const MobileGameCard = memo(function MobileGameCard({
 
   const goToEvent = useCallback(() => onSelect(game), [game, onSelect])
 
-  const titleClass = [
-    MATCH_TITLE_BASE,
-    !isInPlay && MATCH_TITLE_NOT_IN_PLAY,
-  ]
+  const titleClass = [MATCH_TITLE_BASE, !isInPlay && MATCH_TITLE_NOT_IN_PLAY]
     .filter(Boolean)
     .join(' ')
 
@@ -391,8 +387,7 @@ const MobileGameCard = memo(function MobileGameCard({
   )
 })
 
-const RACING_GAMES_DETAILS_CLASS =
-  'py-1 px-2 max-mobile:py-1 max-mobile:px-5'
+const RACING_GAMES_DETAILS_CLASS = 'py-1 px-2 max-md:py-1 max-md:px-5'
 
 const RacingMarketRow = memo(function RacingMarketRow({
   game,
@@ -403,7 +398,7 @@ const RacingMarketRow = memo(function RacingMarketRow({
   const { t } = useTranslation()
   const goToMarket = useCallback(
     () => onSelect(game, market),
-    [game, market, onSelect],
+    [game, market, onSelect]
   )
 
   const titleClass = [
@@ -497,8 +492,7 @@ const GAME_DETAIL_HEADER_CLASS =
   'flex items-center bg-[var(--xl-th-bg)] justify-end ' +
   'max-[991px]:shadow-none max-[991px]:justify-start max-[991px]:pl-2'
 
-const GAME_DETAIL_INNER_CLASS =
-  'flex items-center max-w-[40%] w-full'
+const GAME_DETAIL_INNER_CLASS = 'flex items-center max-w-[40%] w-full'
 
 const GAME_DETAIL_HEADING_CLASS =
   'text-[var(--header-primary)] flex-1 mx-1 text-center py-1 text-[12px] leading-[17px]'
@@ -561,7 +555,7 @@ export default function GameList({
       }
       navigate(`/odds/${id}/${slug}`)
     },
-    [isRacingSport, navigate],
+    [isRacingSport, navigate]
   )
 
   const renderEmpty = () =>

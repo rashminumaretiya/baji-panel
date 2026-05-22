@@ -29,20 +29,20 @@ const formSelectClass =
 const errorTextClass = 'block text-[12px] text-[var(--red)] mt-1'
 
 // `.payment-methods-cards` — flex w/ 10px gap (4px on mobile).
-const paymentMethodsCardsClass = 'flex gap-[10px] max-mobile:gap-[4px]'
+const paymentMethodsCardsClass = 'flex gap-[10px] max-md:gap-[4px]'
 
 // `.form-check` — relative 100px box (33.33%-2.666 on mobile), absolute
 // invisible <input>, padded <label> with column flex layout.
 const formCheckClass =
-  'relative mb-0 w-[100px] pl-0 max-mobile:w-[calc(33.33%-2.666px)]'
+  'relative mb-0 w-[100px] pl-0 max-md:w-[calc(33.33%-2.666px)]'
 const formCheckInputClass =
   'absolute top-0 left-0 w-full h-full m-0 cursor-pointer bg-transparent rounded-[5px] border border-[#262626] shadow-none appearance-none checked:border-[var(--primary-yellow)]'
 const formCheckLabelClass =
-  'flex flex-col justify-center mb-0 p-2 rounded-[5px] whitespace-nowrap max-mobile:bg-[#262626] max-mobile:p-[1.86vw] max-mobile:rounded-[1.163vw]'
+  'flex flex-col justify-center mb-0 p-2 rounded-[5px] whitespace-nowrap max-md:bg-[#262626] max-md:p-[1.86vw] max-md:rounded-[1.163vw]'
 const formCheckImgClass =
-  'h-10 w-10 mx-auto max-mobile:w-[9.302vw] max-mobile:h-[9.302vw]'
+  'h-10 w-10 mx-auto max-md:w-[9.302vw] max-md:h-[9.302vw]'
 const formCheckSpanClass =
-  'text-[14px] mt-[5px] block max-mobile:text-[3.256vw] max-mobile:mt-[1.163vw]'
+  'text-[14px] mt-[5px] block max-md:text-[3.256vw] max-md:mt-[1.163vw]'
 
 // Make Payment / Withdraw submit button (matches Deposit's `.make-payment`).
 const withdrawBtnClass =
@@ -131,15 +131,14 @@ export default function Withdraw({ showTitle = true }) {
 
   const errors = validate(
     { ...values, accountNumber: effectiveAccountNumber },
-    limits,
+    limits
   )
   const submitting = submit.status === 'loading'
 
   const setField = (key, value) =>
     setValues((prev) => ({ ...prev, [key]: value }))
 
-  const markTouched = (key) =>
-    setTouched((prev) => ({ ...prev, [key]: true }))
+  const markTouched = (key) => setTouched((prev) => ({ ...prev, [key]: true }))
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -240,9 +239,7 @@ export default function Withdraw({ showTitle = true }) {
                             className={formCheckImgClass}
                           />
                         )}
-                        <span
-                          className={`${formCheckSpanClass} text-center`}
-                        >
+                        <span className={`${formCheckSpanClass} text-center`}>
                           {providerName}
                         </span>
                       </label>

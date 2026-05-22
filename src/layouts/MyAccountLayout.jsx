@@ -30,9 +30,9 @@ const tabs = [
 
 // Ported from layout.scss .main-wrapper auth / no-header-wrapper.
 const MAIN_WRAPPER_AUTH =
-  'relative mx-auto bg-[var(--xs-gray)] w-[calc(100%-40px)] mt-[105px] min-[768px]:max-[1440px]:w-[calc(100%-25px)] max-mobile:mt-[14.67vw] max-mobile:w-full'
+  'relative mx-auto bg-[var(--xs-gray)] w-[calc(100%-40px)] mt-[105px] min-[768px]:max-[1440px]:w-[calc(100%-25px)] max-md:mt-[14.67vw] max-md:w-full'
 const MAIN_WRAPPER_NO_HEADER =
-  'relative mx-auto bg-[var(--xs-gray)] w-[calc(100%-40px)] mt-[31px] max-mobile:mt-0 max-mobile:w-full'
+  'relative mx-auto bg-[var(--xs-gray)] w-[calc(100%-40px)] mt-[31px] max-md:mt-0 max-md:w-full'
 
 const sidebarLiBase =
   'list-none py-[5.5px] pl-2.5 pr-1.5 text-[12px] text-[var(--xl-gray)] cursor-pointer border-b border-[rgba(var(--white-rgb),0.1)] bg-[var(--xl-black)]'
@@ -77,7 +77,7 @@ export default function MyAccountLayout() {
       <div className={mainWrapperClass}>
         <div className="max-w-[1349px] w-full mx-auto bg-[var(--xs-gray)] md:w-[calc(100%-40px)]">
           <NewsLine />
-          <div className="relative w-full h-full pl-[15px] max-mobile:pl-0">
+          <div className="relative w-full h-full pl-[15px] max-md:pl-0">
             {showSidebar && (
               <div className="absolute top-0 left-0 w-[17.36%]">
                 <ul
@@ -112,7 +112,7 @@ export default function MyAccountLayout() {
                 </ul>
               </div>
             )}
-            <div className="ml-[17.36%] h-full w-[calc(100%-17.36%)] overflow-y-auto max-h-[calc(100svh-106px)] max-mobile:ml-0 max-mobile:w-auto max-mobile:max-h-none">
+            <div className="ml-[17.36%] h-full w-[calc(100%-17.36%)] overflow-y-auto max-h-[calc(100svh-106px)] max-md:ml-0 max-md:w-auto max-md:max-h-none">
               {isMobile && activeTab && (
                 <div className="flex items-center bg-gradient-to-t from-[#141e21] to-[#2f424d] border-t border-white">
                   <i

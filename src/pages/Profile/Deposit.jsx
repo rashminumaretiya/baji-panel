@@ -41,7 +41,7 @@ function titleCase(value) {
 // Promotion-item container (used both inline and in the modal list).
 // `.promotion-item` from deposit.scss: bg sm-dark, padding 16, gap row, etc.
 const promoItemBase =
-  'bg-[var(--sm-dark)] rounded-lg p-4 flex justify-between items-center cursor-pointer transition-colors duration-200 border-[3px] border-transparent min-w-[calc(33.33%-7px)] max-mobile:max-w-full max-mobile:py-[25px] max-mobile:px-[15px]'
+  'bg-[var(--sm-dark)] rounded-lg p-4 flex justify-between items-center cursor-pointer transition-colors duration-200 border-[3px] border-transparent min-w-[calc(33.33%-7px)] max-md:max-w-full max-md:py-[25px] max-md:px-[15px]'
 const promoItemActive =
   'border-[var(--primary)] [&_.radio-button]:border-[5px] [&_.radio-button]:border-[var(--primary)] [&_.radio-button]:bg-white'
 const promoItemDisabled = 'opacity-70 pointer-events-none'
@@ -54,7 +54,7 @@ function PromotionListItems({ promotions, activeId, onClick }) {
   return (
     // .promotion-list: row flex with horizontal scroll on desktop,
     // column with vertical scroll on mobile (max-h calc(100vh-145px)).
-    <div className="flex flex-row gap-[10px] overflow-auto max-mobile:max-h-[calc(100vh-145px)] max-mobile:flex-col max-mobile:gap-4 max-mobile:my-0 max-mobile:mx-4 max-mobile:mb-4">
+    <div className="flex flex-row gap-[10px] overflow-auto max-md:max-h-[calc(100vh-145px)] max-md:flex-col max-md:gap-4 max-md:my-0 max-md:mx-4 max-md:mb-4">
       {promotions.map((p) => {
         const isDisabled = p.promotionType === 'deposit_refund_interval_bonus'
         const active = activeId === p._id
@@ -67,15 +67,13 @@ function PromotionListItems({ promotions, activeId, onClick }) {
             onClick={() => !isDisabled && onClick(p)}
             role="button"
             tabIndex={isDisabled ? -1 : 0}
-            onKeyDown={(e) =>
-              e.key === 'Enter' && !isDisabled && onClick(p)
-            }
+            onKeyDown={(e) => e.key === 'Enter' && !isDisabled && onClick(p)}
           >
             <div className="flex-1">
-              <h3 className="mb-2 text-[var(--sm-gray-30)] font-semibold text-[16px] max-mobile:text-[20px] max-mobile:mb-[10px]">
+              <h3 className="mb-2 text-[var(--sm-gray-30)] font-semibold text-[16px] max-md:text-[20px] max-md:mb-[10px]">
                 {p.title}
               </h3>
-              <p className="text-[var(--sm-gray-30)] mb-[13px] text-[14px] max-mobile:text-[16px] max-mobile:mb-[10px]">
+              <p className="text-[var(--sm-gray-30)] mb-[13px] text-[14px] max-md:text-[16px] max-md:mb-[10px]">
                 {titleCase(p.category)}
               </p>
               {p.promotionTimeline && (
@@ -158,11 +156,11 @@ export default function Deposit({ showTitle = true }) {
   // identity across renders — otherwise allowedMethods recomputes every time.
   const paymentMethods = useMemo(
     () => methods.data?.paymentMethods || [],
-    [methods.data],
+    [methods.data]
   )
   const allowedMethods = useMemo(
     () => buildAllowedMethods(paymentMethods),
-    [paymentMethods],
+    [paymentMethods]
   )
   // Hide merchant if not allowed (mirrors Angular's only specific case).
   // Other PAYMENT_LIST entries (agent / personal) are always shown.
@@ -174,7 +172,7 @@ export default function Deposit({ showTitle = true }) {
           return false
         return true
       }),
-    [allowedMethods],
+    [allowedMethods]
   )
 
   const promotions = promotion.data || []
@@ -216,8 +214,7 @@ export default function Deposit({ showTitle = true }) {
   const setField = (key, value) =>
     setValues((prev) => ({ ...prev, [key]: value }))
 
-  const markTouched = (key) =>
-    setTouched((prev) => ({ ...prev, [key]: true }))
+  const markTouched = (key) => setTouched((prev) => ({ ...prev, [key]: true }))
 
   // Form-control style errors (mirrors Angular's Validators.required / min / pattern).
   const amountValue = String(values.amount ?? '').trim()
@@ -246,10 +243,7 @@ export default function Deposit({ showTitle = true }) {
   const onPromotionItemClick = (p) => {
     if (showTitle) {
       // Inline list: commit immediately.
-      setField(
-        'promotionId',
-        values.promotionId === p._id ? null : p._id,
-      )
+      setField('promotionId', values.promotionId === p._id ? null : p._id)
     } else {
       // Modal list: stage in draft until Confirm.
       setDraftPromotion(draftPromotion?._id === p._id ? null : p)
@@ -325,7 +319,7 @@ export default function Deposit({ showTitle = true }) {
         {promotions.length > 0 &&
           (!showTitle ? (
             <div className="w-full max-w-[400px]">
-              <h3 className="text-[14px] font-medium mb-3 max-mobile:mb-[10px]">
+              <h3 className="text-[14px] font-medium mb-3 max-md:mb-[10px]">
                 Select Your Promotion
               </h3>
               <div
@@ -483,11 +477,9 @@ export default function Deposit({ showTitle = true }) {
       {showPromotionModal && (
         // .promotion-list-wrapper: fixed full screen, sm-gray-20 bg, z-1000,
         // slide-in animation from the right.
-        <div
-          className="fixed inset-0 bg-[#d4d4d4] flex items-center justify-center z-[1000] animate-[deposit-slide-in_300ms_ease-out]"
-        >
+        <div className="fixed inset-0 bg-[#d4d4d4] flex items-center justify-center z-[1000] animate-[deposit-slide-in_300ms_ease-out]">
           {/* .promotion-modal — flexible column on mobile, full svh */}
-          <div className="w-full bg-[var(--dark)] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.5)] min-h-[100svh] max-mobile:flex max-mobile:flex-col">
+          <div className="w-full bg-[var(--dark)] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.5)] min-h-[100svh] max-md:flex max-md:flex-col">
             <div className="flex justify-between items-center p-4">
               <h2 className="text-[20px] font-semibold mb-0 text-white">
                 Select Promotion
@@ -508,7 +500,7 @@ export default function Deposit({ showTitle = true }) {
             />
             <button
               type="button"
-              className="w-[calc(100%-32px)] mx-4 mb-4 py-[14px] bg-[var(--orange-dark)] text-white border-0 rounded-md text-[16px] font-medium cursor-pointer transition-colors duration-200 max-mobile:mt-auto"
+              className="w-[calc(100%-32px)] mx-4 mb-4 py-[14px] bg-[var(--orange-dark)] text-white border-0 rounded-md text-[16px] font-medium cursor-pointer transition-colors duration-200 max-md:mt-auto"
               onClick={savePromotion}
             >
               Confirm

@@ -31,22 +31,22 @@ const NAV_TABS = [
 
 // ─── Tailwind utility groupings (ported from inplay.scss) ────────────────────
 const INPLAY_TABS_WRAPPER =
-  'overflow-x-auto pb-2 max-mobile:bg-[#172832] max-mobile:text-white max-mobile:text-[3.73vw] max-mobile:leading-[2.2] max-mobile:font-bold max-mobile:flex max-mobile:items-center max-mobile:!pb-0 [&_.search-out]:max-mobile:border-l [&_.search-out]:max-mobile:border-white/15 [&_.search-out]:max-mobile:!bg-gradient-to-t [&_.search-out]:max-mobile:!from-black/15 [&_.search-out]:max-mobile:!to-white/15'
+  'overflow-x-auto pb-2 max-md:bg-[#172832] max-md:text-white max-md:text-[3.73vw] max-md:leading-[2.2] max-md:font-bold max-md:flex max-md:items-center max-md:!pb-0 [&_.search-out]:max-md:border-l [&_.search-out]:max-md:border-white/15 [&_.search-out]:max-md:!bg-gradient-to-t [&_.search-out]:max-md:!from-black/15 [&_.search-out]:max-md:!to-white/15'
 
 const TAB_LIST_CLASS =
-  'flex w-[40%] list-none m-0 p-0 border-b-0 max-mobile:w-full max-mobile:border-none max-mobile:!pt-0 max-mobile:!pb-0'
+  'flex w-[40%] list-none m-0 p-0 border-b-0 max-md:w-full max-md:border-none max-md:!pt-0 max-md:!pb-0'
 
 const TAB_LINK_BASE =
-  'block bg-[var(--xts-light-bg)] border border-[var(--xxl-blue)] rounded-t-[4px] rounded-b-none w-[130px] text-[12px] text-white leading-[21px] font-normal p-0 shadow-[inset_0_7px_2px_-7px_var(--xts-gray)] max-mobile:text-[3.33vw] max-mobile:w-auto max-mobile:px-2'
+  'block bg-[var(--xts-light-bg)] border border-[var(--xxl-blue)] rounded-t-[4px] rounded-b-none w-[130px] text-[12px] text-white leading-[21px] font-normal p-0 shadow-[inset_0_7px_2px_-7px_var(--xts-gray)] max-md:text-[3.33vw] max-md:w-auto max-md:px-2'
 
 const TAB_LINK_ACTIVE =
   'bg-[var(--xl-th-bg)] text-black border-[var(--xl-th-bg)] shadow-[inset_0_7px_2px_-7px_var(--white)]'
 
 const SECOND_PART_WRAPPER =
-  'mt-1 max-h-[calc(100vh-198px)] overflow-y-auto min-h-[200px] max-mobile:max-h-none max-mobile:min-h-0 max-mobile:overflow-y-visible'
+  'mt-1 max-h-[calc(100vh-198px)] overflow-y-auto min-h-[200px] max-md:max-h-none max-md:min-h-0 max-md:overflow-y-visible'
 
 const GAME_TITLE_CLASS =
-  'bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xxl-blue)] p-2 text-white text-[12px] max-mobile:text-center max-mobile:font-semibold max-mobile:text-[3.73vw] max-mobile:leading-[1.05] max-mobile:p-[2.043vw]'
+  'bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xxl-blue)] p-2 text-white text-[12px] max-md:text-center max-md:font-semibold max-md:text-[3.73vw] max-md:leading-[1.05] max-md:p-[2.043vw]'
 
 const EVENT_NAME_WRAPPER =
   'flex flex-wrap mb-1 bg-[var(--xxs-text-color)] py-2 px-0'
@@ -255,7 +255,10 @@ export default function InPlay() {
       const dateFormat = tabType === EventTime.TODAY ? 'H:mm' : 'y-MM-dd'
       const isRowLayout = tabType === EventTime.TODAY
       return (
-        <div key={game.sport} className={isRowLayout ? 'flex flex-wrap mx-0' : undefined}>
+        <div
+          key={game.sport}
+          className={isRowLayout ? 'flex flex-wrap mx-0' : undefined}
+        >
           <div className={`w-full ${GAME_TITLE_CLASS}`}>{title}</div>
           {renderEventList(game.sport, dateFormat)}
         </div>
@@ -287,9 +290,7 @@ export default function InPlay() {
           </ul>
           {isMobile && <MobileSearchEvent />}
         </div>
-        <div className={SECOND_PART_WRAPPER}>
-          {renderTabContent(activeTab)}
-        </div>
+        <div className={SECOND_PART_WRAPPER}>{renderTabContent(activeTab)}</div>
       </div>
     </div>
   )

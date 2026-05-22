@@ -59,22 +59,21 @@ const TABS_WRAPPER_BASE =
 
 // Theme overrides — colour-swap the wrapper border + background.
 const TABS_WRAPPER_YELLOW =
-  'max-mobile:border-b-[0.1875rem] max-mobile:border-[rgb(255,161,12)]'
-const TABS_WRAPPER_BABU =
-  'max-mobile:border-b-[0.1875rem] max-mobile:border-[#550b0b]'
+  'max-md:border-b-[0.1875rem] max-md:border-[rgb(255,161,12)]'
+const TABS_WRAPPER_BABU = 'max-md:border-b-[0.1875rem] max-md:border-[#550b0b]'
 const TABS_WRAPPER_MCW =
-  'max-mobile:border-[#0d0d0d] max-mobile:bg-gradient-to-b max-mobile:from-[#e8d877] max-mobile:to-[#c9a43e]'
+  'max-md:border-[#0d0d0d] max-md:bg-gradient-to-b max-md:from-[#e8d877] max-md:to-[#c9a43e]'
 
 // `.sport-header-tabs` ─ horizontally scrolling row.
 const SPORT_HEADER_TABS_BASE =
   'bg-[var(--md-black)] flex mr-auto pr-[4vw] flex-nowrap [scroll-behavior:smooth] ' +
   '[&::-webkit-scrollbar]:hidden'
 const SPORT_HEADER_TABS_YELLOW =
-  'max-mobile:bg-gradient-to-b max-mobile:from-black max-mobile:to-black max-mobile:text-white'
+  'max-md:bg-gradient-to-b max-md:from-black max-md:to-black max-md:text-white'
 const SPORT_HEADER_TABS_BABU =
-  'max-mobile:bg-gradient-to-b max-mobile:from-black max-mobile:to-black max-mobile:text-white'
+  'max-md:bg-gradient-to-b max-md:from-black max-md:to-black max-md:text-white'
 const SPORT_HEADER_TABS_MCW =
-  'max-mobile:bg-gradient-to-b max-mobile:from-[#e8d877] max-mobile:to-[#c9a43e]'
+  'max-md:bg-gradient-to-b max-md:from-[#e8d877] max-md:to-[#c9a43e]'
 
 // `.sport-header-tabs li button` ─ the tab pill itself.
 const TAB_BUTTON_BASE =
@@ -85,15 +84,14 @@ const TAB_BUTTON_BASE =
 const TAB_BUTTON_ACTIVE_DEFAULT =
   '!bg-[var(--lg-yellow)] !text-black [&_i]:!text-black'
 const TAB_BUTTON_ACTIVE_YELLOW =
-  'max-mobile:!bg-gradient-to-b max-mobile:!from-[var(--md-primary-yellow)] max-mobile:!to-[#ffa10c]'
+  'max-md:!bg-gradient-to-b max-md:!from-[var(--md-primary-yellow)] max-md:!to-[#ffa10c]'
 const TAB_BUTTON_ACTIVE_BABU =
-  'max-mobile:!bg-gradient-to-b max-mobile:!from-[#0e0e0e] max-mobile:!to-[#fd1111] max-mobile:!text-white ' +
-  'max-mobile:[&_i]:!text-white'
-const TAB_BUTTON_MCW =
-  'max-mobile:!text-[#1e1e1e] max-mobile:[&_svg]:!text-[#1e1e1e]'
+  'max-md:!bg-gradient-to-b max-md:!from-[#0e0e0e] max-md:!to-[#fd1111] max-md:!text-white ' +
+  'max-md:[&_i]:!text-white'
+const TAB_BUTTON_MCW = 'max-md:!text-[#1e1e1e] max-md:[&_svg]:!text-[#1e1e1e]'
 const TAB_BUTTON_ACTIVE_MCW =
-  'max-mobile:!bg-gradient-to-b max-mobile:!from-[#474747] max-mobile:!to-[#070707] ' +
-  'max-mobile:!text-[#f2d65e] max-mobile:[&_svg]:!text-[#f2d65e]'
+  'max-md:!bg-gradient-to-b max-md:!from-[#474747] max-md:!to-[#070707] ' +
+  'max-md:!text-[#f2d65e] max-md:[&_svg]:!text-[#f2d65e]'
 
 // `.live-chip` ─ small floating count pill above each tab.
 const LIVE_CHIP_CLASS =

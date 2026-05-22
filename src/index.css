@@ -26,10 +26,7 @@
   --font-product-sans: 'Product Sans Regular', Tahoma, Helvetica, sans-serif;
   --font-product-sans-bold: 'Product Sans Bold', Tahoma, Helvetica, sans-serif;
 
-  /* Custom breakpoint matching the original mobile media query
-     (max-width: 767px). Use as `max-mobile:foo` for mobile styles
-     and `mobile:foo` for desktop (min-width: 767px). */
-  --breakpoint-mobile: 767px;
+
 }
 
 /* ─── :root CSS variables (ported from variable.scss) ──────────────────────── */
@@ -346,11 +343,6 @@
 }
 
 /* ─── Global resets + body (mirrors the original style.scss base) ──────────── */
-
-html,
-body {
-  height: 100%;
-}
 
 body {
   font-family: Tahoma, Helvetica, sans-serif;

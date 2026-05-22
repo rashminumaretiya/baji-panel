@@ -1,4 +1,12 @@
-import { Children, cloneElement, createContext, isValidElement, useContext, useMemo, useState } from 'react'
+import {
+  Children,
+  cloneElement,
+  createContext,
+  isValidElement,
+  useContext,
+  useMemo,
+  useState,
+} from 'react'
 
 // Hand-rolled drop-in for react-bootstrap's Accordion. Supports the same
 // composition pattern used in the codebase:
@@ -22,7 +30,9 @@ function Accordion({
 }) {
   const [uncontrolled, setUncontrolled] = useState(() => {
     if (defaultActiveKey == null) return []
-    return Array.isArray(defaultActiveKey) ? defaultActiveKey : [defaultActiveKey]
+    return Array.isArray(defaultActiveKey)
+      ? defaultActiveKey
+      : [defaultActiveKey]
   })
 
   const controlled = activeKey != null
@@ -40,7 +50,7 @@ function Accordion({
       next = isOpen ? [] : [key]
     }
     if (!controlled) setUncontrolled(next)
-    onSelect?.(alwaysOpen ? next : next[0] ?? null)
+    onSelect?.(alwaysOpen ? next : (next[0] ?? null))
   }
 
   return (
@@ -53,7 +63,11 @@ function Accordion({
 function Item({ eventKey, className = '', children }) {
   return (
     <ItemContext.Provider value={{ eventKey }}>
-      <div className={`accordion-item mb-[15px] max-mobile:mb-[5.33vw] ${className}`}>{children}</div>
+      <div
+        className={`accordion-item mb-[15px] max-md:mb-[5.33vw] ${className}`}
+      >
+        {children}
+      </div>
     </ItemContext.Provider>
   )
 }
@@ -63,13 +77,17 @@ function Header({ className = '', children, as: As = 'h2' }) {
   const { activeKeys, toggle } = useContext(AccordionContext)
   const isOpen = activeKeys.includes(eventKey)
   return (
-    <As className={`accordion-header relative bg-[var(--light-navy)] ${className}`}>
+    <As
+      className={`accordion-header relative bg-[var(--light-navy)] ${className}`}
+    >
       <button
         type="button"
         onClick={() => toggle(eventKey)}
         aria-expanded={isOpen}
         className={`w-full text-left text-white px-2.5 py-0 leading-[25px] text-[12px] font-medium bg-no-repeat bg-right ${
-          isOpen ? 'bg-[url(/img/square-remove.png)]' : 'bg-[url(/img/square-add.png)]'
+          isOpen
+            ? 'bg-[url(/img/square-remove.png)]'
+            : 'bg-[url(/img/square-add.png)]'
         }`}
       >
         {children}

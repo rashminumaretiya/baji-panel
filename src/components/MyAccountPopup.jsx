@@ -22,6 +22,7 @@ const MENU_ITEMS = [
 export default function MyAccountPopup({
   isMobile = false,
   userName = 'User',
+  placement = 'bottom-end',
 }) {
   const [show, setShow] = useState(false)
   const [target, setTarget] = useState(null)
@@ -40,20 +41,21 @@ export default function MyAccountPopup({
   return (
     <>
       <div
-        className="flex items-center justify-center cursor-pointer lg:ms-3 sm:ms-2 text-[var(--header-balance-color)] h-[26px] px-1.5 bg-black/30 border border-black/40 shadow-[inset_0_1px_0_0_rgba(var(--dark-alpha),0.5)] font-normal text-[12px] rounded-[3px] whitespace-nowrap max-mobile:h-[9.6vw] max-mobile:w-[9.6vw] [&_.user-icon_svg]:h-[18px] [&_.user-icon_svg]:w-[18px] [&_.dropdown-icon_svg]:w-[9px]"
+        className="flex items-center justify-center cursor-pointer lg:ms-4 sm:ms-2 text-[var(--header-balance-color)] h-[26px] px-1.5 bg-black/30 border border-black/40 shadow-[inset_0_1px_0_0_rgba(var(--dark-alpha),0.5)] font-normal text-[12px] rounded-[3px] whitespace-nowrap max-md:h-[9.6vw] max-md:w-[9.6vw] [&_.user-icon_svg]:h-[18px] [&_.user-icon_svg]:w-[18px] [&_.dropdown-icon_svg]:w-[9px]"
         onClick={handleToggle}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => e.key === 'Enter' && handleToggle(e)}
       >
         <SvgIcon name="userIcon" className="user-icon" />
-        <span className="inline-block mx-1 max-mobile:hidden">My Account</span>
+        <span className="inline-block mx-1 max-md:hidden">My Account</span>
         {!isMobile && <SvgIcon name="dropdown" className="dropdown-icon" />}
       </div>
       <Overlay
         show={show}
         target={target}
-        placement="bottom"
+        placement={placement}
+        flip
         rootClose
         onHide={() => setShow(false)}
       >

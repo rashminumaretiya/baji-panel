@@ -10,30 +10,114 @@ import { createPortal } from 'react-dom'
 //     </Popover>
 //   </Overlay>
 //
-// Only the small subset we use in the codebase is implemented:
-//   - placement: 'top' | 'bottom' | 'left' | 'right' (defaults to 'bottom')
-//   - rootClose: close on outside click
-//   - onHide: invoked when rootClose fires
-//   - target: HTMLElement to anchor against
+// Supported placement values (Bootstrap / Popper naming):
+//   top | top-start | top-end
+//   bottom | bottom-start | bottom-end
+//   left | left-start | left-end
+//   right | right-start | right-end
+//
+// flip (default true): when the preferred placement overflows the viewport,
+// tries sensible alternates (e.g. bottom-end → bottom-start → top-end → top-start).
 
-function getPlacement(target, popover, placement) {
-  const t = target.getBoundingClientRect()
-  const p = popover.getBoundingClientRect()
-  const gap = 8
-  switch (placement) {
-    case 'top':
-      return { top: t.top - p.height - gap, left: t.left + t.width / 2 - p.width / 2 }
-    case 'left':
-      return { top: t.top + t.height / 2 - p.height / 2, left: t.left - p.width - gap }
-    case 'right':
-      return { top: t.top + t.height / 2 - p.height / 2, left: t.right + gap }
-    case 'bottom':
-    default:
-      return { top: t.bottom + gap, left: t.left + t.width / 2 - p.width / 2 }
-  }
+const GAP = 8
+const VIEWPORT_PADDING = 8
+
+const FLIP_CANDIDATES = {
+  'bottom-end': ['bottom-end', 'bottom-start', 'top-end', 'top-start', 'bottom'],
+  'bottom-start': ['bottom-start', 'bottom-end', 'top-start', 'top-end', 'bottom'],
+  'top-end': ['top-end', 'top-start', 'bottom-end', 'bottom-start', 'top'],
+  'top-start': ['top-start', 'top-end', 'bottom-start', 'bottom-end', 'top'],
+  'left-end': ['left-end', 'left-start', 'right-end', 'right-start', 'left'],
+  'left-start': ['left-start', 'left-end', 'right-start', 'right-end', 'left'],
+  'right-end': ['right-end', 'right-start', 'left-end', 'left-start', 'right'],
+  'right-start': ['right-start', 'right-end', 'left-start', 'left-end', 'right'],
+  bottom: ['bottom', 'top'],
+  top: ['top', 'bottom'],
+  left: ['left', 'right'],
+  right: ['right', 'left'],
 }
 
-export function Overlay({ show, target, placement = 'bottom', rootClose = false, onHide, children }) {
+function parsePlacement(placement) {
+  const parts = placement.split('-')
+  if (parts.length === 1) return { base: parts[0], align: 'center' }
+  return { base: parts[0], align: parts[1] }
+}
+
+function computePosition(target, popover, placement) {
+  const t = target.getBoundingClientRect()
+  const w = popover.offsetWidth
+  const h = popover.offsetHeight
+  const { base, align } = parsePlacement(placement)
+
+  let top = 0
+  let left = 0
+
+  switch (base) {
+    case 'top':
+      top = t.top - h - GAP
+      if (align === 'start') left = t.left
+      else if (align === 'end') left = t.right - w
+      else left = t.left + t.width / 2 - w / 2
+      break
+    case 'bottom':
+      top = t.bottom + GAP
+      if (align === 'start') left = t.left
+      else if (align === 'end') left = t.right - w
+      else left = t.left + t.width / 2 - w / 2
+      break
+    case 'left':
+      left = t.left - w - GAP
+      if (align === 'start') top = t.top
+      else if (align === 'end') top = t.bottom - h
+      else top = t.top + t.height / 2 - h / 2
+      break
+    case 'right':
+      left = t.right + GAP
+      if (align === 'start') top = t.top
+      else if (align === 'end') top = t.bottom - h
+      else top = t.top + t.height / 2 - h / 2
+      break
+    default:
+      top = t.bottom + GAP
+      left = t.left + t.width / 2 - w / 2
+  }
+
+  return { top, left }
+}
+
+function fitsViewport({ top, left }, width, height) {
+  return (
+    top >= VIEWPORT_PADDING &&
+    left >= VIEWPORT_PADDING &&
+    top + height <= window.innerHeight - VIEWPORT_PADDING &&
+    left + width <= window.innerWidth - VIEWPORT_PADDING
+  )
+}
+
+function resolvePlacement(target, popover, placement, flip) {
+  const w = popover.offsetWidth
+  const h = popover.offsetHeight
+  const candidates = flip
+    ? FLIP_CANDIDATES[placement] ?? [placement]
+    : [placement]
+
+  for (const candidate of candidates) {
+    const pos = computePosition(target, popover, candidate)
+    if (fitsViewport(pos, w, h)) return pos
+  }
+
+  return computePosition(target, popover, placement)
+}
+
+export function Overlay({
+  show,
+  target,
+  placement = 'bottom',
+  flip = true,
+  rootClose = false,
+  onHide,
+  children,
+}) {
   const popoverRef = useRef(null)
   const [pos, setPos] = useState({ top: 0, left: 0 })
 
@@ -41,7 +125,7 @@ export function Overlay({ show, target, placement = 'bottom', rootClose = false,
     if (!show || !target || !popoverRef.current) return
     const update = () => {
       if (!popoverRef.current) return
-      setPos(getPlacement(target, popoverRef.current, placement))
+      setPos(resolvePlacement(target, popoverRef.current, placement, flip))
     }
     update()
     window.addEventListener('resize', update)
@@ -50,7 +134,7 @@ export function Overlay({ show, target, placement = 'bottom', rootClose = false,
       window.removeEventListener('resize', update)
       window.removeEventListener('scroll', update, true)
     }
-  }, [show, target, placement])
+  }, [show, target, placement, flip])
 
   useEffect(() => {
     if (!show || !rootClose) return

@@ -90,25 +90,23 @@ const MAIN_FANCY = {
 
 // ── Match-Odds table base
 const MATCH_ODDS_TABLE =
-  'w-full border-separate [border-spacing:1px_0] max-mobile:bg-white'
+  'w-full border-separate [border-spacing:1px_0] max-md:bg-white'
 
 // ── Generic table th/td (mirrors the SCSS .table th / .table td defaults)
 const TABLE_TH =
-  'text-[var(--dark)] text-center align-bottom text-[11px] font-normal pb-[3px] max-mobile:px-[1.86667vw] max-mobile:pt-[1.86667vw] max-mobile:pb-[0.8vw] max-mobile:text-[3.46667vw] max-mobile:font-bold'
+  'text-[var(--dark)] text-center align-bottom text-[11px] font-normal pb-[3px] max-md:px-[1.86667vw] max-md:pt-[1.86667vw] max-md:pb-[0.8vw] max-md:text-[3.46667vw] max-md:font-bold'
 
 // ── Price cell base (back/lay)
 const PRICE_CELL_BASE =
-  'text-center border-t border-[var(--tbl-border-color)] text-[var(--header-primary)] relative text-[12px] cursor-pointer w-[10.9%] h-[40px] max-mobile:text-[4vw] max-mobile:w-[70px] max-mobile:h-[11.51vw] max-mobile:min-w-[18.66667vw] hover:opacity-80 [&_p]:font-bold [&_p]:leading-none [&_p]:text-[12px] max-mobile:[&_p]:text-[3.46667vw] max-mobile:[&_p]:leading-normal [&_span]:leading-none [&_span]:text-[12px] max-mobile:[&_span]:text-[2.93333vw]'
+  'text-center border-t border-[var(--tbl-border-color)] text-[var(--header-primary)] relative text-[12px] cursor-pointer w-[10.9%] h-[40px] max-md:text-[4vw] max-md:w-[70px] max-md:h-[11.51vw] max-md:min-w-[18.66667vw] hover:opacity-80 [&_p]:font-bold [&_p]:leading-none [&_p]:text-[12px] max-md:[&_p]:text-[3.46667vw] max-md:[&_p]:leading-normal [&_span]:leading-none [&_span]:text-[12px] max-md:[&_span]:text-[2.93333vw]'
 
 // ── Back (blue) tones
-const BLUE_XS =
-  'bg-[var(--back-0)] hover:bg-[var(--back-0-hover)]'
+const BLUE_XS = 'bg-[var(--back-0)] hover:bg-[var(--back-0-hover)]'
 const BLUE_MD = 'bg-[var(--back-1)] hover:bg-[var(--back-1-hover)]'
 const BLUE_XXS = 'bg-[var(--back-2)] hover:bg-[var(--back-2-hover)]'
 
 // ── Lay (red/pink) tones
-const RED_XS =
-  'bg-[var(--lay-0)] hover:bg-[rgba(var(--light-red),0.8)]'
+const RED_XS = 'bg-[var(--lay-0)] hover:bg-[rgba(var(--light-red),0.8)]'
 const RED_MD = 'bg-[var(--lay-1)] hover:bg-[var(--lay-1-hover)]'
 const RED_XXS = 'bg-[var(--lay-2)] hover:bg-[var(--lay-2-hover)]'
 
@@ -128,11 +126,11 @@ const LAY_SPARK = 'animate-[sparkLay_0.8s_ease-in-out]'
 
 // ── Runner-name first cell (white bg desktop / transparent mobile)
 const RUNNER_FIRST_CELL =
-  'whitespace-nowrap bg-white text-start px-[10px] py-[3px] text-[var(--header-primary)] border-t border-[var(--tbl-border-color)] max-mobile:bg-transparent max-mobile:px-[1.8666666667vw] max-mobile:py-[0.3333333333vw]'
+  'whitespace-nowrap bg-white text-start px-[10px] py-[3px] text-[var(--header-primary)] border-t border-[var(--tbl-border-color)] max-md:bg-transparent max-md:px-[1.8666666667vw] max-md:py-[0.3333333333vw]'
 
 // ── Game-status overlay (suspended / etc.) inside bookmaker / fancy
 const GAME_STATUS_OVERLAY =
-  'absolute inset-0 max-w-[665px] !w-full bg-[rgba(36,58,72,0.4)] z-[9] flex items-center justify-center text-white/80 [text-shadow:0_1px_4px_rgba(0,0,0,0.5)] text-[13px] cursor-default hover:bg-[rgba(36,58,72,0.6)] max-mobile:text-[3.46667vw] max-mobile:font-bold'
+  'absolute inset-0 max-w-[665px] !w-full bg-[rgba(36,58,72,0.4)] z-[9] flex items-center justify-center text-white/80 [text-shadow:0_1px_4px_rgba(0,0,0,0.5)] text-[13px] cursor-default hover:bg-[rgba(36,58,72,0.6)] max-md:text-[3.46667vw] max-md:font-bold'
 
 // ── Fancy_info popup
 const FANCY_INFO_POPUP =
@@ -755,13 +753,13 @@ export default function LiveOdds() {
         {isMobile && showStream && (
           <>
             {showPip && (
-              <div className="w-full aspect-video max-mobile:aspect-video" />
+              <div className="w-full aspect-video max-md:aspect-video" />
             )}
             <div
               className={cx(
                 'hover:[&_.close]:opacity-100',
                 showPip &&
-                  'fixed top-[120px] left-[calc(50%-40px)] z-[999] max-w-[260px] h-auto transition-all duration-300 ease-in-out max-h-[32vw] overflow-visible max-mobile:top-[15.583vw] max-mobile:left-auto max-mobile:right-[1vw] max-mobile:max-w-[54.167vw] max-mobile:rounded-[2vw] max-mobile:overflow-hidden'
+                  'fixed top-[120px] left-[calc(50%-40px)] z-[999] max-w-[260px] h-auto transition-all duration-300 ease-in-out max-h-[32vw] overflow-visible max-md:top-[15.583vw] max-md:left-auto max-md:right-[1vw] max-md:max-w-[54.167vw] max-md:rounded-[2vw] max-md:overflow-hidden'
               )}
             >
               <LiveStream
@@ -793,7 +791,7 @@ export default function LiveOdds() {
             <div
               className={cx(
                 'text-center pb-0 bg-[#1e1e1e]',
-                isMobile && '[&_iframe]:max-mobile:h-[185px]'
+                isMobile && '[&_iframe]:max-md:h-[185px]'
               )}
             >
               <iframe
@@ -935,16 +933,14 @@ function PinRefresh({ onRefresh }) {
   // Each div is a Pin / Refresh pill; the first has a rotated ::before tail,
   // the second a rotated ::after tail to give the angled-pill shape.
   const baseDiv =
-    'text-white font-bold z-[1] min-w-[90px] h-[25px] leading-[20px] relative max-mobile:px-3 max-mobile:py-[6px] max-mobile:h-[7.46667vw] max-mobile:leading-tight max-mobile:text-[3.2vw] max-mobile:min-w-[25.5vw] [&_i_svg]:h-[14px] [&_i_svg]:w-[14px] max-mobile:[&_i_svg]:h-[3.73333vw] max-mobile:[&_i_svg]:w-[3.73333vw] mobile:[&_span]:hidden'
+    'text-white font-bold z-[1] min-w-[90px] h-[25px] leading-[20px] relative max-md:px-3 max-md:py-[6px] max-md:h-[7.46667vw] max-md:leading-tight max-md:text-[3.2vw] max-md:min-w-[25.5vw] [&_i_svg]:h-[14px] [&_i_svg]:w-[14px] max-md:[&_i_svg]:h-[3.73333vw] max-md:[&_i_svg]:w-[3.73333vw] mobile:[&_span]:hidden'
 
-  const firstDiv =
-    `${baseDiv} bg-[var(--text-xl-color)] rounded-bl-[10px] max-mobile:bg-gradient-to-t max-mobile:from-[var(--xls-navy)] max-mobile:to-[var(--xts-light-bg)] max-mobile:w-[25.5vw] max-mobile:rounded-bl-[3vw] before:content-[''] before:absolute before:left-[-3px] before:w-[19px] before:bg-[var(--text-xl-color)] before:top-[-4px] before:bottom-[1px] before:-z-[1] before:[transform:rotate(-22deg)] before:rounded-bl-[10px] max-mobile:before:[transform:rotate(-16deg)] max-mobile:before:bg-gradient-to-t max-mobile:before:from-[var(--xs-navy)] max-mobile:before:to-[var(--xts-md-bg)] max-mobile:before:rounded-bl-[3vw]`
+  const firstDiv = `${baseDiv} bg-[var(--text-xl-color)] rounded-bl-[10px] max-md:bg-gradient-to-t max-md:from-[var(--xls-navy)] max-md:to-[var(--xts-light-bg)] max-md:w-[25.5vw] max-md:rounded-bl-[3vw] before:content-[''] before:absolute before:left-[-3px] before:w-[19px] before:bg-[var(--text-xl-color)] before:top-[-4px] before:bottom-[1px] before:-z-[1] before:[transform:rotate(-22deg)] before:rounded-bl-[10px] max-md:before:[transform:rotate(-16deg)] max-md:before:bg-gradient-to-t max-md:before:from-[var(--xs-navy)] max-md:before:to-[var(--xts-md-bg)] max-md:before:rounded-bl-[3vw]`
 
-  const secondDiv =
-    `${baseDiv} bg-[var(--text-xl-color)] shadow-[1px_0_0_0_rgba(255,255,255,0.3)_inset] rounded-br-[10px] max-mobile:bg-gradient-to-t max-mobile:from-[var(--xls-navy)] max-mobile:to-[var(--xts-light-bg)] max-mobile:rounded-br-[3vw] max-mobile:border-l-[0.53333vw] max-mobile:border-l-[rgba(22,40,49,0.9)] after:content-[''] after:absolute after:right-[-3px] after:w-[19px] after:bg-[var(--text-xl-color)] after:top-[-4px] after:bottom-[1px] after:-z-[1] after:rounded-br-[10px] after:[transform:rotate(22deg)] max-mobile:after:[transform:rotate(16deg)] max-mobile:after:bg-gradient-to-t max-mobile:after:from-[var(--xs-navy)] max-mobile:after:to-[var(--xts-md-bg)] max-mobile:after:rounded-br-[3vw]`
+  const secondDiv = `${baseDiv} bg-[var(--text-xl-color)] shadow-[1px_0_0_0_rgba(255,255,255,0.3)_inset] rounded-br-[10px] max-md:bg-gradient-to-t max-md:from-[var(--xls-navy)] max-md:to-[var(--xts-light-bg)] max-md:rounded-br-[3vw] max-md:border-l-[0.53333vw] max-md:border-l-[rgba(22,40,49,0.9)] after:content-[''] after:absolute after:right-[-3px] after:w-[19px] after:bg-[var(--text-xl-color)] after:top-[-4px] after:bottom-[1px] after:-z-[1] after:rounded-br-[10px] after:[transform:rotate(22deg)] max-md:after:[transform:rotate(16deg)] max-md:after:bg-gradient-to-t max-md:after:from-[var(--xs-navy)] max-md:after:to-[var(--xts-md-bg)] max-md:after:rounded-br-[3vw]`
 
   return (
-    <div className="text-center overflow-hidden bg-white mt-px max-mobile:bg-[var(--light-bg)] max-mobile:mt-0">
+    <div className="text-center overflow-hidden bg-white mt-px max-md:bg-[var(--light-bg)] max-md:mt-0">
       <div className="inline-flex items-center relative cursor-pointer">
         <div className={firstDiv}>
           <PinIcon />
@@ -969,14 +965,14 @@ function LiveStream({
 }) {
   if (!url) return null
   return (
-    <div className="relative max-w-[500px] mx-auto text-center mobile:mb-3 mobile:p-2 pb-0 max-mobile:max-w-full max-mobile:overflow-hidden">
+    <div className="relative max-w-[500px] mx-auto text-center mobile:mb-3 mobile:p-2 pb-0 max-md:max-w-full max-md:overflow-hidden">
       <iframe
         ref={iframeRef}
         className={cx(
           'mx-auto h-auto block aspect-video',
           isPip
-            ? 'max-w-[260px] max-mobile:max-w-[54.167vw] max-mobile:h-[32vw]'
-            : 'max-w-[480px] max-mobile:max-w-full max-mobile:w-full'
+            ? 'max-w-[260px] max-md:max-w-[54.167vw] max-md:h-[32vw]'
+            : 'max-w-[480px] max-md:max-w-full max-md:w-full'
         )}
         src={url}
         width="100%"
@@ -988,13 +984,15 @@ function LiveStream({
         <div
           className={cx(
             'absolute top-[15px] right-[15px] max-[991px]:right-0',
-            isPip && 'top-[5px] right-[5px] max-mobile:top-[1.042vw] max-mobile:right-[1.042vw]'
+            isPip &&
+              'top-[5px] right-[5px] max-md:top-[1.042vw] max-md:right-[1.042vw]'
           )}
         >
           <i
             className={cx(
-              'close cursor-pointer h-[35px] w-[50px] bg-black/50 rounded-md border border-[var(--xxl-gray)] flex items-center justify-center z-[999] text-white hover:bg-black/60 [&_svg]:h-[14px] [&_svg]:w-[14px] max-mobile:h-[8.33333vw] max-mobile:w-[8.33333vw] max-mobile:[&_svg]:h-[2.73333vw] max-mobile:[&_svg]:w-[2.73333vw]',
-              isPip && '!rounded-full !h-[15px] !w-[15px] max-mobile:!h-[3.125vw] max-mobile:!w-[3.125vw]'
+              'close cursor-pointer h-[35px] w-[50px] bg-black/50 rounded-md border border-[var(--xxl-gray)] flex items-center justify-center z-[999] text-white hover:bg-black/60 [&_svg]:h-[14px] [&_svg]:w-[14px] max-md:h-[8.33333vw] max-md:w-[8.33333vw] max-md:[&_svg]:h-[2.73333vw] max-md:[&_svg]:w-[2.73333vw]',
+              isPip &&
+                '!rounded-full !h-[15px] !w-[15px] max-md:!h-[3.125vw] max-md:!w-[3.125vw]'
             )}
             onClick={onClose}
             role="button"
@@ -1006,7 +1004,7 @@ function LiveStream({
       )}
       <div>
         <i
-          className="absolute right-[18px] bottom-[8px] max-mobile:right-[16px] cursor-pointer"
+          className="absolute right-[18px] bottom-[8px] max-md:right-[16px] cursor-pointer"
           onClick={onFullscreen}
           role="button"
           aria-label="Fullscreen"
@@ -1043,8 +1041,8 @@ function MatchOddsSection({
 
   const matchOddsTabClass = isYellowTheme
     ? // mobile yellow theme: gradient + coffee border + dark text
-      'inline-block relative font-bold mr-0 max-mobile:!bg-gradient-to-t max-mobile:!from-[#ffa10c] max-mobile:!to-[var(--md-primary-yellow)] max-mobile:border max-mobile:!border-[var(--coffee)] max-mobile:!text-[var(--dark)] max-mobile:px-[3.4vw] max-mobile:rounded-[4.8vw] max-mobile:text-[3.46667vw] max-mobile:leading-[9.06667vw] mobile:bg-[var(--sm-white)] mobile:text-[var(--xxl-blue)] mobile:px-[2px] mobile:py-[8px_2px_7px_10px] mobile:py-2 mobile:pl-[10px] mobile:pr-[2px] mobile:text-[13px] mobile:mr-5 mobile:after:content-[""] mobile:after:absolute mobile:after:[background-image:url(/img/main-s1aea395e8c.png)] mobile:after:z-[1] mobile:after:bottom-0 mobile:after:top-0 mobile:after:-right-5 mobile:after:h-[30px] mobile:after:[background-position:432px_1725px] mobile:after:w-5'
-    : 'inline-block relative font-bold mr-0 max-mobile:text-white max-mobile:border max-mobile:border-[rgba(var(--md-dark-rgb),0.3)] max-mobile:bg-gradient-to-b max-mobile:from-[var(--xs-primary)] max-mobile:to-[var(--xxs-primary)] max-mobile:px-[3.4vw] max-mobile:rounded-[4.8vw] max-mobile:text-[3.46667vw] max-mobile:leading-[9.06667vw] mobile:bg-[var(--sm-white)] mobile:text-[var(--xxl-blue)] mobile:pl-[10px] mobile:pr-[2px] mobile:py-2 mobile:text-[13px] mobile:mr-5 mobile:after:content-[""] mobile:after:absolute mobile:after:[background-image:url(/img/main-s1aea395e8c.png)] mobile:after:z-[1] mobile:after:bottom-0 mobile:after:top-0 mobile:after:-right-5 mobile:after:h-[30px] mobile:after:[background-position:432px_1725px] mobile:after:w-5'
+      'inline-block relative font-bold mr-0 max-md:!bg-gradient-to-t max-md:!from-[#ffa10c] max-md:!to-[var(--md-primary-yellow)] max-md:border max-md:!border-[var(--coffee)] max-md:!text-[var(--dark)] max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] mobile:bg-[var(--sm-white)] mobile:text-[var(--xxl-blue)] mobile:px-[2px] mobile:py-[8px_2px_7px_10px] mobile:py-2 mobile:pl-[10px] mobile:pr-[2px] mobile:text-[13px] mobile:mr-5 mobile:after:content-[""] mobile:after:absolute mobile:after:[background-image:url(/img/main-s1aea395e8c.png)] mobile:after:z-[1] mobile:after:bottom-0 mobile:after:top-0 mobile:after:-right-5 mobile:after:h-[30px] mobile:after:[background-position:432px_1725px] mobile:after:w-5'
+    : 'inline-block relative font-bold mr-0 max-md:text-white max-md:border max-md:border-[rgba(var(--md-dark-rgb),0.3)] max-md:bg-gradient-to-b max-md:from-[var(--xs-primary)] max-md:to-[var(--xxs-primary)] max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] mobile:bg-[var(--sm-white)] mobile:text-[var(--xxl-blue)] mobile:pl-[10px] mobile:pr-[2px] mobile:py-2 mobile:text-[13px] mobile:mr-5 mobile:after:content-[""] mobile:after:absolute mobile:after:[background-image:url(/img/main-s1aea395e8c.png)] mobile:after:z-[1] mobile:after:bottom-0 mobile:after:top-0 mobile:after:-right-5 mobile:after:h-[30px] mobile:after:[background-position:432px_1725px] mobile:after:w-5'
 
   return (
     <div className="mobile:mb-[30px]">
@@ -1053,7 +1051,7 @@ function MatchOddsSection({
           <div
             className={cx(
               'flex justify-between relative bg-white border-b border-[var(--sm-text-color)]',
-              'max-mobile:border-b-0 max-mobile:bg-[var(--light-bg)] max-mobile:p-[1.86667vw]'
+              'max-md:border-b-0 max-md:bg-[var(--light-bg)] max-md:p-[1.86667vw]'
             )}
           >
             <div>
@@ -1132,10 +1130,15 @@ function MatchOddsSection({
                 <>
                   <th className={cx(TABLE_TH, 'text-start whitespace-nowrap')}>
                     <div className="flex items-center">
-                      <div className="bg-[var(--light-bg)] relative max-mobile:m-[-1.86vw_3.7vw_-2vw_-1.9vw] max-mobile:p-[2.13333vw_1.86667vw_3.2vw_1.86667vw] max-mobile:before:content-[''] max-mobile:before:absolute max-mobile:before:top-0 max-mobile:before:left-[10.4vw] max-mobile:before:border-b-[14.33333vw] max-mobile:before:border-b-transparent max-mobile:before:border-l-[1.86667vw] max-mobile:before:border-l-[var(--light-bg)] [&_svg]:max-mobile:w-[6.66667vw] [&_svg]:max-mobile:h-[6.66667vw]">
+                      <div className="bg-[var(--light-bg)] relative max-md:m-[-1.86vw_3.7vw_-2vw_-1.9vw] max-md:p-[2.13333vw_1.86667vw_3.2vw_1.86667vw] max-md:before:content-[''] max-md:before:absolute max-md:before:top-0 max-md:before:left-[10.4vw] max-md:before:border-b-[14.33333vw] max-md:before:border-b-transparent max-md:before:border-l-[1.86667vw] max-md:before:border-l-[var(--light-bg)] [&_svg]:max-md:w-[6.66667vw] [&_svg]:max-md:h-[6.66667vw]">
                         <InfoIcon onClick={onToggleBetLimit} />
                         {betLimitOpen && (
-                          <div className={cx(FANCY_INFO_POPUP, 'left-0 w-max [&_svg]:!h-[14px] [&_svg]:!w-[14px]')}>
+                          <div
+                            className={cx(
+                              FANCY_INFO_POPUP,
+                              'left-0 w-max [&_svg]:!h-[14px] [&_svg]:!w-[14px]'
+                            )}
+                          >
                             <div>
                               <p>Max</p>
                               <span>{fmt(marketSetting.max || 100)}</span>
@@ -1150,8 +1153,8 @@ function MatchOddsSection({
                           </div>
                         )}
                       </div>
-                      <i className="[background-image:url('/img/svg/barChart.svg')] bg-contain bg-no-repeat max-mobile:w-[6.5vw] max-mobile:h-[6.66667vw]" />
-                      <div className="max-mobile:pl-[1.86667vw] [&_p]:leading-[7px] [&_p]:font-normal [&_p]:mt-1 [&_p]:max-mobile:text-[2.93333vw] [&_span]:font-bold [&_span]:max-mobile:text-[2.93333vw]">
+                      <i className="[background-image:url('/img/svg/barChart.svg')] bg-contain bg-no-repeat max-md:w-[6.5vw] max-md:h-[6.66667vw]" />
+                      <div className="max-md:pl-[1.86667vw] [&_p]:leading-[7px] [&_p]:font-normal [&_p]:mt-1 [&_p]:max-md:text-[2.93333vw] [&_span]:font-bold [&_span]:max-md:text-[2.93333vw]">
                         <p className="mb-0">Matched</p>
                         <span>{currency || 'PBU'}</span>{' '}
                         <span>{fmt(totalMatched)}</span>
@@ -1217,16 +1220,19 @@ function MatchOddsSection({
               const backClasses = isMobile
                 ? [BLUE_XS]
                 : [BLUE_XXS, BLUE_MD, BLUE_XS]
-              const layClasses = isMobile
-                ? [RED_XS]
-                : [RED_XS, RED_MD, RED_XXS]
+              const layClasses = isMobile ? [RED_XS] : [RED_XS, RED_MD, RED_XXS]
 
               const isFirstRow = rowIdx === 0
 
               return (
                 <Fragment key={runner.selectionId}>
                   <tr className="hover:[&>td:first-child:not(.price)]:bg-[var(--mds-light-bg)]">
-                    <td className={cx(RUNNER_FIRST_CELL, 'h-[40px] max-mobile:h-[11.51vw]')}>
+                    <td
+                      className={cx(
+                        RUNNER_FIRST_CELL,
+                        'h-[40px] max-md:h-[11.51vw]'
+                      )}
+                    >
                       <div className="flex flex-col">
                         <p className="mb-1 font-bold overflow-hidden text-ellipsis [-webkit-line-clamp:2] [-webkit-box-orient:vertical] [display:-webkit-box] min-w-[150px]">
                           <i className="inline-block align-bottom w-[15px] h-[15px] mr-[5px] bg-no-repeat [background-image:url('/img/main-s1aea395e8c.png')] [background-position:-398px_-1968px]" />
@@ -1250,7 +1256,8 @@ function MatchOddsSection({
                         active?.selectionId === runner.selectionId &&
                         active?.betType === 'BACK'
                       // First-row best back cell shows the "Back All" pseudo-header (desktop only).
-                      const showBackAllHeader = isFirstRow && isBestBack && !isMobile
+                      const showBackAllHeader =
+                        isFirstRow && isBestBack && !isMobile
                       return (
                         <td
                           key={`b-${idx}`}
@@ -1281,7 +1288,8 @@ function MatchOddsSection({
                         isBestLay &&
                         active?.selectionId === runner.selectionId &&
                         active?.betType === 'LAY'
-                      const showLayAllHeader = isFirstRow && isBestLay && !isMobile
+                      const showLayAllHeader =
+                        isFirstRow && isBestLay && !isMobile
                       // last cell on the lay side gets a white border-left (mirrors :last-child rule)
                       const isLastLay = idx === layCells.length - 1
                       return (
@@ -1387,7 +1395,7 @@ function BookmakerSection({
     cx(
       PRICE_CELL_BASE,
       // status-table cells have their own size + transparent bg
-      'h-[42px] !w-[16.66667%] !border-l-0 text-center bg-transparent z-[9] !border-t-0 max-mobile:!min-w-[18.66667vw] max-mobile:!h-[11.51vw]',
+      'h-[42px] !w-[16.66667%] !border-l-0 text-center bg-transparent z-[9] !border-t-0 max-md:!min-w-[18.66667vw] max-md:!h-[11.51vw]',
       i === 2 && BLUE_XS,
       i === 1 && BLUE_MD,
       i === 0 && BLUE_XXS,
@@ -1397,7 +1405,7 @@ function BookmakerSection({
   const layCellCls = (i, isActiveAny) =>
     cx(
       PRICE_CELL_BASE,
-      'h-[42px] !w-[16.66667%] !border-l-0 text-center bg-transparent z-[9] !border-t-0 max-mobile:!min-w-[18.66667vw] max-mobile:!h-[11.51vw]',
+      'h-[42px] !w-[16.66667%] !border-l-0 text-center bg-transparent z-[9] !border-t-0 max-md:!min-w-[18.66667vw] max-md:!h-[11.51vw]',
       i === 0 && RED_XS,
       i === 1 && RED_MD,
       i === 2 && RED_XXS,
@@ -1407,13 +1415,13 @@ function BookmakerSection({
   return (
     <div>
       <MatchHeader>
-        <div className="flex items-center justify-center [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center [&_.icon-wrapper]:max-mobile:pl-[1.86667vw] mobile:[&_.icon-wrapper_i]:bg-no-repeat mobile:[&_.icon-wrapper_i]:[background-image:url('/img/main-s1aea395e8c.png')] mobile:[&_.icon-wrapper_i]:[background-position:-385px_-833px] mobile:[&_.icon-wrapper_i]:h-[28px] mobile:[&_.icon-wrapper_i]:w-[29px] mobile:[&_.icon-wrapper_i]:mr-[6px] mobile:[&_.icon-wrapper_svg]:hidden max-mobile:[&_.icon-wrapper_svg]:block max-mobile:[&_.icon-wrapper_svg]:w-[6.66667vw] max-mobile:[&_.icon-wrapper_svg]:h-[6.66667vw]">
+        <div className="flex items-center justify-center [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center [&_.icon-wrapper]:max-md:pl-[1.86667vw] mobile:[&_.icon-wrapper_i]:bg-no-repeat mobile:[&_.icon-wrapper_i]:[background-image:url('/img/main-s1aea395e8c.png')] mobile:[&_.icon-wrapper_i]:[background-position:-385px_-833px] mobile:[&_.icon-wrapper_i]:h-[28px] mobile:[&_.icon-wrapper_i]:w-[29px] mobile:[&_.icon-wrapper_i]:mr-[6px] mobile:[&_.icon-wrapper_svg]:hidden max-md:[&_.icon-wrapper_svg]:block max-md:[&_.icon-wrapper_svg]:w-[6.66667vw] max-md:[&_.icon-wrapper_svg]:h-[6.66667vw]">
           <span className="icon-wrapper">
             <i>
               <PinSvg />
             </i>
           </span>
-          <span className="text-white font-bold text-[14px] inline-block max-mobile:ml-[1.86667vw] max-mobile:text-[3.46667vw] max-mobile:leading-[8.53333vw]">
+          <span className="text-white font-bold text-[14px] inline-block max-md:ml-[1.86667vw] max-md:text-[3.46667vw] max-md:leading-[8.53333vw]">
             Bookmaker Market
             <small className="opacity-70 font-normal">| Zero Commission</small>
           </span>
@@ -1435,7 +1443,7 @@ function BookmakerSection({
             </span>
           </div>
         ) : (
-          <span className="bg-gradient-to-br from-[var(--xts-lightest-navy)] to-[var(--mds-lightest-navy)] inline-block rounded-tr-[12px] relative mobile:px-2 mr-[1.86667vw] text-white [&_svg]:max-mobile:w-[4vw] [&_svg]:max-mobile:h-[4vw]">
+          <span className="bg-gradient-to-br from-[var(--xts-lightest-navy)] to-[var(--mds-lightest-navy)] inline-block rounded-tr-[12px] relative mobile:px-2 mr-[1.86667vw] text-white [&_svg]:max-md:w-[4vw] [&_svg]:max-md:h-[4vw]">
             <i onClick={onToggleInfo} role="button" aria-label="Info">
               <WarningSvg />
             </i>
@@ -1462,18 +1470,18 @@ function BookmakerSection({
       </MatchHeader>
 
       <div className="mb-4">
-        <table className="w-full border-collapse bg-[var(--light-xs-yellow)] max-mobile:bg-[var(--light-xts-yellow)]">
-          <thead className="bg-[var(--light-xs-yellow)] max-mobile:bg-[var(--light-xts-yellow)]">
+        <table className="w-full border-collapse bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)]">
+          <thead className="bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)]">
             <tr>
-              <th className="h-[22px] p-[5px] max-mobile:h-[8vw]" />
+              <th className="h-[22px] p-[5px] max-md:h-[8vw]" />
               <th
                 colSpan={isMobile ? 1 : 2}
-                className="h-[22px] p-[5px] max-mobile:h-[8vw] w-[64px]"
+                className="h-[22px] p-[5px] max-md:h-[8vw] w-[64px]"
               />
               {!isMobile && (
                 <>
-                  <th className="h-[22px] p-[5px] max-mobile:h-[8vw]" />
-                  <th className="h-[22px] p-[5px] max-mobile:h-[8vw] w-[64px]" />
+                  <th className="h-[22px] p-[5px] max-md:h-[8vw]" />
+                  <th className="h-[22px] p-[5px] max-md:h-[8vw] w-[64px]" />
                 </>
               )}
             </tr>
@@ -1491,10 +1499,12 @@ function BookmakerSection({
 
               return (
                 <Fragment key={bookmaker.selectionId}>
-                  <tr className="bg-[var(--light-xs-yellow)] max-mobile:bg-[var(--light-xts-yellow)] hover:[&_td]:bg-white/40 hover:[&_td:first-child]:bg-white/40">
-                    <td className="px-[10px] pt-[4px] !align-top bg-[var(--light-xs-yellow)] max-mobile:bg-[var(--light-xts-yellow)] max-mobile:px-[1.8666666667vw] max-mobile:py-0 max-mobile:!align-middle">
+                  <tr className="bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)] hover:[&_td]:bg-white/40 hover:[&_td:first-child]:bg-white/40">
+                    <td className="px-[10px] pt-[4px] !align-top bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)] max-md:px-[1.8666666667vw] max-md:py-0 max-md:!align-middle">
                       <div className="flex flex-col">
-                        <span className="font-bold">{bookmaker.runnerName}</span>
+                        <span className="font-bold">
+                          {bookmaker.runnerName}
+                        </span>
                         <div className="flex items-center">
                           {/* bet-exposure slot (Angular: <app-bet-exposure />) */}
                         </div>
@@ -1502,7 +1512,7 @@ function BookmakerSection({
                     </td>
                     <td
                       colSpan={isMobile ? 1 : 5}
-                      className="p-0 w-full max-mobile:w-[140px]"
+                      className="p-0 w-full max-md:w-[140px]"
                     >
                       <table
                         align="right"
@@ -1514,17 +1524,16 @@ function BookmakerSection({
                             {bookmaker.back.map((backCell, i) => {
                               if (isMobile && i !== 2) return null
                               const isBestBack = i === 2
-                              const showBackHeader =
-                                isFirstRow && isBestBack
+                              const showBackHeader = isFirstRow && isBestBack
                               return (
                                 <td
                                   key={`back-${i}`}
                                   className={cx(
                                     backCellCls(i, isInlineBookmaker),
                                     showBackHeader &&
-                                      "relative max-mobile:bg-gradient-to-r max-mobile:from-[rgba(151,199,234,0.7)] max-mobile:to-[var(--xs-lightest-navy)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Back'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-mobile:before:text-[3.46667vw]",
+                                      "relative max-md:bg-gradient-to-r max-md:from-[rgba(151,199,234,0.7)] max-md:to-[var(--xs-lightest-navy)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Back'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-md:before:text-[3.46667vw]",
                                     // chip styling: rounded outer cell — handled by ::after layer
-                                    "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-blue)] after:-z-[1] max-mobile:after:inset-[1vw]",
+                                    "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-blue)] after:-z-[1] max-md:after:inset-[1vw]",
                                     isInlineBookmaker &&
                                       active?.betType === 'BACK' &&
                                       isBestBack &&
@@ -1551,8 +1560,8 @@ function BookmakerSection({
                                   className={cx(
                                     layCellCls(i, isInlineBookmaker),
                                     showLayHeader &&
-                                      "relative !bg-transparent max-mobile:bg-gradient-to-l max-mobile:from-[var(--xts-red)] max-mobile:to-[rgba(247,205,214,0.75)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Lay'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-mobile:before:text-[3.46667vw]",
-                                    "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-red)] after:-z-[1] max-mobile:after:inset-[5px]",
+                                      "relative !bg-transparent max-md:bg-gradient-to-l max-md:from-[var(--xts-red)] max-md:to-[rgba(247,205,214,0.75)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Lay'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-md:before:text-[3.46667vw]",
+                                    "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-red)] after:-z-[1] max-md:after:inset-[5px]",
                                     isInlineBookmaker &&
                                       active?.betType === 'LAY' &&
                                       isBestLay &&
@@ -1611,7 +1620,7 @@ function BookmakerSection({
 // Tiny shared header bar (used by Bookmaker + Fancy "match-header")
 function MatchHeader({ children }) {
   return (
-    <div className="flex items-center justify-between bg-[var(--light-navy)] max-mobile:bg-[var(--text-color)]">
+    <div className="flex items-center justify-between bg-[var(--light-navy)] max-md:bg-[var(--text-color)]">
       {children}
     </div>
   )
@@ -1623,7 +1632,7 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
   return (
     <div
       className={cx(
-        'flex items-center border-b-2 border-[var(--sky-blue-light)] max-mobile:border-b-[1.06667vw] max-mobile:border-b-[var(--smd-text-color)]',
+        'flex items-center border-b-2 border-[var(--sky-blue-light)] max-md:border-b-[1.06667vw] max-md:border-b-[var(--smd-text-color)]',
         isSportsBookSelected && '!border-b-[var(--orange)]'
       )}
     >
@@ -1634,7 +1643,7 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
 
         // Base chip wrapper
         const chipBase =
-          'inline-flex items-center cursor-pointer relative ml-4 max-mobile:ml-[4.786vw]'
+          'inline-flex items-center cursor-pointer relative ml-4 max-md:ml-[4.786vw]'
         const chipActive = isActive ? 'ml-0' : ''
         // Hide the pin for the second chip (sports-book), as per :nth-child(2) rule
         // We approximate by checking the tab type instead of index.
@@ -1642,12 +1651,12 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
 
         // Inner-bg base
         let innerBg =
-          'flex items-center px-[10px] py-[7px] h-[30px] bg-[var(--light-navy)] text-white relative font-bold max-mobile:px-[1.66667vw] max-mobile:py-[1.3vw] max-mobile:h-[7.55vw]'
+          'flex items-center px-[10px] py-[7px] h-[30px] bg-[var(--light-navy)] text-white relative font-bold max-md:px-[1.66667vw] max-md:py-[1.3vw] max-md:h-[7.55vw]'
         // Skew tails before/after — only when NOT active
         if (!isActive) {
           innerBg +=
-            " before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-[-6px] before:w-[10px] before:rounded-tl-[4px] before:[transform:skew(-14deg,0deg)] before:bg-[var(--light-navy)] before:z-[1] max-mobile:before:left-[-1.582vw] max-mobile:before:w-[3.304vw] max-mobile:before:rounded-tl-[0.522vw] max-mobile:before:h-[8.55vw]" +
-            " after:content-[''] after:absolute after:top-0 after:bottom-0 after:right-[-6px] after:w-[10px] after:rounded-tr-[4px] after:[transform:skew(14deg,0deg)] after:bg-[var(--light-navy)] after:z-[1] max-mobile:after:right-[-1.782vw] max-mobile:after:w-[3.304vw] max-mobile:after:rounded-tr-[0.522vw] max-mobile:after:h-[8.55vw]"
+            " before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-[-6px] before:w-[10px] before:rounded-tl-[4px] before:[transform:skew(-14deg,0deg)] before:bg-[var(--light-navy)] before:z-[1] max-md:before:left-[-1.582vw] max-md:before:w-[3.304vw] max-md:before:rounded-tl-[0.522vw] max-md:before:h-[8.55vw]" +
+            " after:content-[''] after:absolute after:top-0 after:bottom-0 after:right-[-6px] after:w-[10px] after:rounded-tr-[4px] after:[transform:skew(14deg,0deg)] after:bg-[var(--light-navy)] after:z-[1] max-md:after:right-[-1.782vw] max-md:after:w-[3.304vw] max-md:after:rounded-tr-[0.522vw] max-md:after:h-[8.55vw]"
         } else {
           innerBg = innerBg.replace(
             'bg-[var(--light-navy)]',
@@ -1665,28 +1674,24 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
             role="button"
           >
             {tab.type === MAIN_FANCY.SPORTS_BOOK && !isActive && (
-              <p
-                className="absolute overflow-visible top-[-5px] right-[-15px] h-[14px] z-[99] [filter:drop-shadow(1px_1px_2px_rgba(0,0,0,0.6))] mb-0 max-mobile:top-[-3.5667vw] max-mobile:right-[-5vw] before:content-[''] before:absolute before:bottom-[-8px] before:left-[15px] before:w-0 before:h-0 before:border-solid before:border-t-[8px] before:border-r-[7px] before:border-b-0 before:border-l-0 before:border-t-[var(--xsm-red)] before:border-r-transparent max-mobile:before:border-t-[1.8vw] max-mobile:before:border-r-[1.8vw] max-mobile:before:left-[3.5vw] max-mobile:before:bottom-[-1.3vw]"
-              >
-                <span className="rounded-[15px] px-2 py-[3px] text-white text-[10px] bg-[var(--xsm-red)] max-mobile:px-[1.7vw] max-mobile:py-[0.2vw] max-mobile:rounded-[0.8vw]">
+              <p className="absolute overflow-visible top-[-5px] right-[-15px] h-[14px] z-[99] [filter:drop-shadow(1px_1px_2px_rgba(0,0,0,0.6))] mb-0 max-md:top-[-3.5667vw] max-md:right-[-5vw] before:content-[''] before:absolute before:bottom-[-8px] before:left-[15px] before:w-0 before:h-0 before:border-solid before:border-t-[8px] before:border-r-[7px] before:border-b-0 before:border-l-0 before:border-t-[var(--xsm-red)] before:border-r-transparent max-md:before:border-t-[1.8vw] max-md:before:border-r-[1.8vw] max-md:before:left-[3.5vw] max-md:before:bottom-[-1.3vw]">
+                <span className="rounded-[15px] px-2 py-[3px] text-white text-[10px] bg-[var(--xsm-red)] max-md:px-[1.7vw] max-md:py-[0.2vw] max-md:rounded-[0.8vw]">
                   New
                 </span>
               </p>
             )}
             <div className={cx(innerBg)}>
               {isMobile && tab.type !== MAIN_FANCY.SPORTS_BOOK && !hidePin && (
-                <i
-                  className="relative z-[2] mr-[4vw] before:content-[''] before:absolute before:left-[-4vw] before:right-0 before:top-[0.2vw] before:bottom-[0.3vw] before:bg-[var(--xsm-blue)] before:w-[10.5vw] before:[transform:skewX(15deg)] before:-z-[1] [&_svg]:w-[5vw] [&_svg]:h-[8vw]"
-                >
+                <i className="relative z-[2] mr-[4vw] before:content-[''] before:absolute before:left-[-4vw] before:right-0 before:top-[0.2vw] before:bottom-[0.3vw] before:bg-[var(--xsm-blue)] before:w-[10.5vw] before:[transform:skewX(15deg)] before:-z-[1] [&_svg]:w-[5vw] [&_svg]:h-[8vw]">
                   <PinSvg />
                 </i>
               )}
-              <i className="bg-gradient-to-t from-[var(--xs-green-primary)] via-[var(--xs-green-primary)] to-[var(--xs-shadow-primary)] rounded-[3px] max-mobile:w-[4vw] max-mobile:h-[4vw] max-mobile:text-center [&_svg]:max-mobile:w-[3.8vw] [&_svg]:max-mobile:h-[3.8vw] [&_svg]:max-mobile:leading-[3.8vw]">
+              <i className="bg-gradient-to-t from-[var(--xs-green-primary)] via-[var(--xs-green-primary)] to-[var(--xs-shadow-primary)] rounded-[3px] max-md:w-[4vw] max-md:h-[4vw] max-md:text-center [&_svg]:max-md:w-[3.8vw] [&_svg]:max-md:h-[3.8vw] [&_svg]:max-md:leading-[3.8vw]">
                 <TimeSvg />
               </i>
               <span
                 className={cx(
-                  'inline-block align-middle text-[12px] text-[var(--xts-gray)] max-mobile:text-[3.73333vw]',
+                  'inline-block align-middle text-[12px] text-[var(--xts-gray)] max-md:text-[3.73333vw]',
                   isActive && 'ml-2 !text-white'
                 )}
               >
@@ -1694,13 +1699,13 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
               </span>
             </div>
             {isActive && (
-              <i className="inline-flex text-center relative text-white z-[2] px-1 w-[16px] h-[16px] max-mobile:w-[4vw] max-mobile:h-[4.45vw] after:content-[''] after:bg-no-repeat after:absolute after:z-[1] after:bg-center after:left-0 after:top-0 after:bg-contain after:w-[16px] after:h-[16px] after:[background-image:url('/img/svg/info.svg')] max-mobile:after:w-[5vw] max-mobile:after:h-[4vw] max-mobile:after:[background-image:url('/img/svg/questionMarkRounded.svg')] before:content-[''] before:absolute before:rounded-tr-[4px] before:[transform:skew(14deg,0deg)] before:-z-[1] before:left-[-5px] before:w-[28px] before:top-[-7px] before:bottom-[-7px] max-mobile:before:top-[-1.6vw] max-mobile:before:bottom-0 max-mobile:before:w-[7vw] max-mobile:before:h-[7.6vw] max-mobile:before:left-[-1vw]" />
+              <i className="inline-flex text-center relative text-white z-[2] px-1 w-[16px] h-[16px] max-md:w-[4vw] max-md:h-[4.45vw] after:content-[''] after:bg-no-repeat after:absolute after:z-[1] after:bg-center after:left-0 after:top-0 after:bg-contain after:w-[16px] after:h-[16px] after:[background-image:url('/img/svg/info.svg')] max-md:after:w-[5vw] max-md:after:h-[4vw] max-md:after:[background-image:url('/img/svg/questionMarkRounded.svg')] before:content-[''] before:absolute before:rounded-tr-[4px] before:[transform:skew(14deg,0deg)] before:-z-[1] before:left-[-5px] before:w-[28px] before:top-[-7px] before:bottom-[-7px] max-md:before:top-[-1.6vw] max-md:before:bottom-0 max-md:before:w-[7vw] max-md:before:h-[7.6vw] max-md:before:left-[-1vw]" />
             )}
           </div>
         )
       })}
       {isSportsBookSelected && (
-        <p className="text-black mb-0 inline-flex items-center bg-[var(--xl-light-bg)] !text-[var(--light-navy)] ml-auto px-2 py-px rounded-[3px] mr-[5px] text-[11px] leading-4 max-mobile:h-[6.4vw] max-mobile:px-[1.6vw] max-mobile:mr-[1.86667vw] max-mobile:-mt-[0.9vw] max-mobile:text-[3.46667vw] max-mobile:leading-[6.4vw] max-mobile:rounded-[1.06667vw] [&_i]:inline-flex [&_i]:mr-1 [&_svg]:w-[11px] [&_svg]:h-[11px] [&_svg_path]:fill-black max-mobile:[&_i]:mr-[1vw] max-mobile:[&_i]:text-[var(--light-navy)] max-mobile:[&_svg]:w-[3.4666666667vw] max-mobile:[&_svg]:h-[3.4666666667vw]">
+        <p className="text-black mb-0 inline-flex items-center bg-[var(--xl-light-bg)] !text-[var(--light-navy)] ml-auto px-2 py-px rounded-[3px] mr-[5px] text-[11px] leading-4 max-md:h-[6.4vw] max-md:px-[1.6vw] max-md:mr-[1.86667vw] max-md:-mt-[0.9vw] max-md:text-[3.46667vw] max-md:leading-[6.4vw] max-md:rounded-[1.06667vw] [&_i]:inline-flex [&_i]:mr-1 [&_svg]:w-[11px] [&_svg]:h-[11px] [&_svg_path]:fill-black max-md:[&_i]:mr-[1vw] max-md:[&_i]:text-[var(--light-navy)] max-md:[&_svg]:w-[3.4666666667vw] max-md:[&_svg]:h-[3.4666666667vw]">
           <i>
             <WarningSvg />
           </i>
@@ -1720,13 +1725,13 @@ function PriorityTabs({ tabs, selectedType, onSelectType, variant = 'fancy' }) {
   )
 
   const wrapperCls = cx(
-    'flex justify-center items-center shadow-[inset_0_1px_0_0_rgba(var(--black-rgb),0.2)] bg-gradient-to-b from-[var(--md-lightest-navy)] from-[15%] to-[var(--lg-lightest-navy)] max-mobile:!shadow-none max-mobile:bg-none max-mobile:bg-[var(--smd-text-color)] max-mobile:justify-start max-mobile:pl-[1.6vw]',
+    'flex justify-center items-center shadow-[inset_0_1px_0_0_rgba(var(--black-rgb),0.2)] bg-gradient-to-b from-[var(--md-lightest-navy)] from-[15%] to-[var(--lg-lightest-navy)] max-md:!shadow-none max-md:bg-none max-md:bg-[var(--smd-text-color)] max-md:justify-start max-md:pl-[1.6vw]',
     isSportBook &&
-      '!bg-gradient-to-b !from-[var(--xs-orange)] !from-[15%] !to-[var(--md-orange)] pb-[3px] max-mobile:!bg-[var(--orange)]'
+      '!bg-gradient-to-b !from-[var(--xs-orange)] !from-[15%] !to-[var(--md-orange)] pb-[3px] max-md:!bg-[var(--orange)]'
   )
 
   const ulCls =
-    'flex pl-0 mb-0 w-auto bg-white/50 rounded-[5px] my-[1px_3px_0] justify-center items-center max-mobile:bg-transparent'
+    'flex pl-0 mb-0 w-auto bg-white/50 rounded-[5px] my-[1px_3px_0] justify-center items-center max-md:bg-transparent'
 
   return (
     <div className={containerCls}>
@@ -1735,17 +1740,19 @@ function PriorityTabs({ tabs, selectedType, onSelectType, variant = 'fancy' }) {
           {tabs.map((tab) => {
             const isActive = selectedType === tab.type
             const liBase =
-              'min-w-[70px] h-[18px] leading-[18px] font-bold rounded-[4px] px-[5px] text-center max-mobile:h-[5.9333333333vw] max-mobile:min-w-0 max-mobile:px-[2.6666666667vw] max-mobile:leading-[6vw] max-mobile:rounded-none max-mobile:border-r max-mobile:border-r-white/40 hover:[&_a]:underline'
+              'min-w-[70px] h-[18px] leading-[18px] font-bold rounded-[4px] px-[5px] text-center max-md:h-[5.9333333333vw] max-md:min-w-0 max-md:px-[2.6666666667vw] max-md:leading-[6vw] max-md:rounded-none max-md:border-r max-md:border-r-white/40 hover:[&_a]:underline'
             const liActive = isActive
               ? cx(
-                  'bg-white hover:[&_a]:!no-underline max-mobile:rounded-[1.0666666667vw]',
-                  isSportBook && 'max-mobile:!bg-[var(--orange)] max-mobile:!rounded-none'
+                  'bg-white hover:[&_a]:!no-underline max-md:rounded-[1.0666666667vw]',
+                  isSportBook &&
+                    'max-md:!bg-[var(--orange)] max-md:!rounded-none'
                 )
               : ''
             const aCls = cx(
-              'no-underline text-[var(--lg-lightest-navy)] max-mobile:text-white',
-              isSportBook && 'text-[rgba(var(--orange-rgba),0.85)] max-mobile:text-white',
-              isActive && 'max-mobile:!text-[var(--lg-lightest-navy)]'
+              'no-underline text-[var(--lg-lightest-navy)] max-md:text-white',
+              isSportBook &&
+                'text-[rgba(var(--orange-rgba),0.85)] max-md:text-white',
+              isActive && 'max-md:!text-[var(--lg-lightest-navy)]'
             )
 
             return (
@@ -1817,14 +1824,14 @@ function FancySection({
       )}
 
       <div className="overflow-auto">
-        <table className="w-full border-collapse max-mobile:bg-white">
+        <table className="w-full border-collapse max-md:bg-white">
           <thead className="bg-white">
             <tr>
-              <th className="px-[10px] py-1 font-bold text-[12px] max-mobile:text-[var(--lg-white,#fff)] max-mobile:text-[3.46667vw] max-mobile:h-[4.954vw] max-mobile:p-[1.33333vw_1.86667vw]" />
-              <th className="px-[10px] py-1 font-bold text-[12px] max-mobile:text-[var(--lg-white,#fff)] max-mobile:text-[3.46667vw] max-mobile:h-[4.954vw] max-mobile:p-[1.33333vw_1.86667vw]">
+              <th className="px-[10px] py-1 font-bold text-[12px] max-md:text-[var(--lg-white,#fff)] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]" />
+              <th className="px-[10px] py-1 font-bold text-[12px] max-md:text-[var(--lg-white,#fff)] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
                 No
               </th>
-              <th className="px-[10px] py-1 font-bold text-[12px] max-mobile:text-[var(--lg-white,#fff)] max-mobile:text-[3.46667vw] max-mobile:h-[4.954vw] max-mobile:p-[1.33333vw_1.86667vw]">
+              <th className="px-[10px] py-1 font-bold text-[12px] max-md:text-[var(--lg-white,#fff)] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
                 Yes
               </th>
               {!isMobile && (
@@ -1846,16 +1853,16 @@ function FancySection({
               return (
                 <Fragment key={`${item.SelectionId}-${i}`}>
                   {isMobile && (
-                    <tr className="bg-[var(--xsl-blue-bg)] max-mobile:even:[&_td]:border-t-0">
+                    <tr className="bg-[var(--xsl-blue-bg)] max-md:even:[&_td]:border-t-0">
                       <td
                         colSpan={3}
-                        className="p-[7px_0_7px_8px] border-b-0 h-[38px] max-mobile:!p-[1.33333vw_1.86667vw] max-mobile:h-[8.954vw] [&_svg]:h-[15px] [&_svg]:w-[15px] [&_svg]:text-[var(--sm-light-bg)] max-mobile:[&_svg]:w-[4vw] max-mobile:[&_svg]:h-[4vw]"
+                        className="p-[7px_0_7px_8px] border-b-0 h-[38px] max-md:!p-[1.33333vw_1.86667vw] max-md:h-[8.954vw] [&_svg]:h-[15px] [&_svg]:w-[15px] [&_svg]:text-[var(--sm-light-bg)] max-md:[&_svg]:w-[4vw] max-md:[&_svg]:h-[4vw]"
                       >
                         <div className="flex justify-between items-center">
-                          <span className="block w-full max-w-[90%] overflow-hidden text-ellipsis whitespace-nowrap font-bold max-mobile:!text-[3.4666666667vw]">
+                          <span className="block w-full max-w-[90%] overflow-hidden text-ellipsis whitespace-nowrap font-bold max-md:!text-[3.4666666667vw]">
                             {item.RunnerName}
                           </span>
-                          <span className="relative mr-[1.86667vw] text-white [&_svg]:max-mobile:w-[4vw] [&_svg]:max-mobile:h-[4vw]">
+                          <span className="relative mr-[1.86667vw] text-white [&_svg]:max-md:w-[4vw] [&_svg]:max-md:h-[4vw]">
                             <i
                               onClick={() =>
                                 setFancyInfoIndex(fancyInfoIndex === i ? -1 : i)
@@ -1890,7 +1897,7 @@ function FancySection({
                     </tr>
                   )}
                   <tr className="hover:bg-[var(--hover-bg)] hover:[&>td]:bg-[var(--hover-bg)] hover:[&>td:last-child]:border-l-[var(--hover-bg)]">
-                    <td className="px-[10px] py-[5px] relative min-w-[100px] max-mobile:min-w-[70px]">
+                    <td className="px-[10px] py-[5px] relative min-w-[100px] max-md:min-w-[70px]">
                       {!isMobile && (
                         <div>
                           <span className="block w-full max-w-[90%] overflow-hidden text-ellipsis whitespace-nowrap font-bold min-w-[50px]">
@@ -1902,12 +1909,9 @@ function FancySection({
                         {/* bet-exposure slot (Angular: <app-bet-exposure />) */}
                       </div>
                     </td>
-                    <td
-                      colSpan={2}
-                      className="p-0 relative"
-                    >
+                    <td colSpan={2} className="p-0 relative">
                       {item.GameStatus && (
-                        <div className="absolute inset-0 bg-[rgba(36,58,72,0.4)] z-[9] flex items-center justify-center text-white/80 font-bold [text-shadow:0_1px_4px_rgba(0,0,0,0.5)] text-[13px] cursor-default max-mobile:text-[3.46667vw]">
+                        <div className="absolute inset-0 bg-[rgba(36,58,72,0.4)] z-[9] flex items-center justify-center text-white/80 font-bold [text-shadow:0_1px_4px_rgba(0,0,0,0.5)] text-[13px] cursor-default max-md:text-[3.46667vw]">
                           {item.GameStatus === 'SUSPENDED'
                             ? 'Suspended'
                             : item.GameStatus}
@@ -1920,7 +1924,7 @@ function FancySection({
                               className={cx(
                                 PRICE_CELL_BASE,
                                 RED_XS,
-                                'h-[42px] !w-[100px] !min-w-[53px] !px-[5px] max-mobile:!h-[11.51vw]',
+                                'h-[42px] !w-[100px] !min-w-[53px] !px-[5px] max-md:!h-[11.51vw]',
                                 isInline &&
                                   active?.betType === 'NO' &&
                                   RED_XS_ACTIVE
@@ -1928,7 +1932,7 @@ function FancySection({
                               onClick={() => onPick(item, 'NO')}
                             >
                               <p className="m-0">{item.LayPrice1 || ''}</p>
-                              <small className="text-[12px] leading-none max-mobile:text-[2.93333vw]">
+                              <small className="text-[12px] leading-none max-md:text-[2.93333vw]">
                                 {!isSuspended && item.LaySize1
                                   ? item.LaySize1
                                   : ''}
@@ -1938,7 +1942,7 @@ function FancySection({
                               className={cx(
                                 PRICE_CELL_BASE,
                                 BLUE_XS,
-                                'h-[42px] !w-[100px] !min-w-[53px] !px-[5px] max-mobile:!h-[11.51vw]',
+                                'h-[42px] !w-[100px] !min-w-[53px] !px-[5px] max-md:!h-[11.51vw]',
                                 isInline &&
                                   active?.betType === 'YES' &&
                                   BLUE_XS_ACTIVE
@@ -1946,7 +1950,7 @@ function FancySection({
                               onClick={() => onPick(item, 'YES')}
                             >
                               <p className="m-0">{item.BackPrice1 || ''}</p>
-                              <small className="text-[12px] leading-none max-mobile:text-[2.93333vw]">
+                              <small className="text-[12px] leading-none max-md:text-[2.93333vw]">
                                 {!isSuspended && item.BackSize1
                                   ? item.BackSize1
                                   : ''}
@@ -2036,13 +2040,13 @@ function SportbookSection({
               <h2>
                 <button
                   type="button"
-                  className="pl-0 flex items-center w-full text-left max-mobile:bg-[var(--text-color)] max-mobile:px-0 max-mobile:pl-[1.8666666667vw] max-mobile:leading-[8.6vw] max-mobile:border-b max-mobile:border-b-[var(--sm-text-color)] max-mobile:text-white"
+                  className="pl-0 flex items-center w-full text-left max-md:bg-[var(--text-color)] max-md:px-0 max-md:pl-[1.8666666667vw] max-md:leading-[8.6vw] max-md:border-b max-md:border-b-[var(--sm-text-color)] max-md:text-white"
                   onClick={() => toggle(id)}
                 >
-                  <i className="mobile:mr-1 inline-flex items-center justify-center bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xs-black)] h-[25px] w-[25px] text-center leading-[22px] text-[var(--sm-white)] hover:bg-gradient-to-b hover:from-[var(--xs-black)] hover:to-[var(--xl-blue)] hover:text-[var(--xs-shadow-primary)] [&_svg]:h-[16px] [&_svg]:w-[18px] max-mobile:rounded-full max-mobile:h-[6.6666666667vw] max-mobile:w-[6.6666666667vw] max-mobile:leading-normal max-mobile:bg-[var(--xs-dark)] max-mobile:mr-[1.4vw] max-mobile:[&_svg]:w-[4.6666666667vw] max-mobile:[&_svg]:h-[4.6666666667vw]">
+                  <i className="mobile:mr-1 inline-flex items-center justify-center bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xs-black)] h-[25px] w-[25px] text-center leading-[22px] text-[var(--sm-white)] hover:bg-gradient-to-b hover:from-[var(--xs-black)] hover:to-[var(--xl-blue)] hover:text-[var(--xs-shadow-primary)] [&_svg]:h-[16px] [&_svg]:w-[18px] max-md:rounded-full max-md:h-[6.6666666667vw] max-md:w-[6.6666666667vw] max-md:leading-normal max-md:bg-[var(--xs-dark)] max-md:mr-[1.4vw] max-md:[&_svg]:w-[4.6666666667vw] max-md:[&_svg]:h-[4.6666666667vw]">
                     <PinSvg />
                   </i>
-                  <span className="text-[14px] font-bold max-mobile:text-[3.4666666667vw] max-mobile:leading-[1.5] max-mobile:flex-1">
+                  <span className="text-[14px] font-bold max-md:text-[3.4666666667vw] max-md:leading-[1.5] max-md:flex-1">
                     {market.market}
                   </span>
                 </button>
@@ -2059,22 +2063,22 @@ function SportbookSection({
                       <Fragment key={runner.selectionId}>
                         <div
                           className={cx(
-                            'w-full flex items-center min-h-[40px] border-b border-[var(--sm-text-color)] relative hover:bg-[var(--hover-bg)] max-mobile:min-h-0',
+                            'w-full flex items-center min-h-[40px] border-b border-[var(--sm-text-color)] relative hover:bg-[var(--hover-bg)] max-md:min-h-0',
                             isSuspended && 'z-[9]'
                           )}
                           onClick={() => !isSuspended && onPick(market, runner)}
                           role="button"
                         >
-                          <p className="m-0 flex-[0_0_60%] w-[60%] py-1 pl-[10px] pr-[5px] max-mobile:flex-1 max-mobile:w-auto max-mobile:font-bold max-mobile:py-[1.3333333333vw] max-mobile:px-[1.8666666667vw] max-mobile:leading-[7vw]">
+                          <p className="m-0 flex-[0_0_60%] w-[60%] py-1 pl-[10px] pr-[5px] max-md:flex-1 max-md:w-auto max-md:font-bold max-md:py-[1.3333333333vw] max-md:px-[1.8666666667vw] max-md:leading-[7vw]">
                             <span className="font-bold">
                               {titleCase(runner.runnerName)}
                             </span>
                             {/* bet-exposure slot */}
                           </p>
-                          <div className="flex items-center flex-[0_0_40%] max-mobile:flex-[0_0_37.3333333333vw]">
+                          <div className="flex items-center flex-[0_0_40%] max-md:flex-[0_0_37.3333333333vw]">
                             <span
                               className={cx(
-                                'relative cursor-pointer min-h-[39px] w-full block border border-transparent text-center leading-[34px] max-mobile:min-h-[11vw] max-mobile:leading-[10vw] [&_b]:max-mobile:text-[2.9333333333vw] [&_b]:max-mobile:font-normal',
+                                'relative cursor-pointer min-h-[39px] w-full block border border-transparent text-center leading-[34px] max-md:min-h-[11vw] max-md:leading-[10vw] [&_b]:max-md:text-[2.9333333333vw] [&_b]:max-md:font-normal',
                                 isActive &&
                                   'text-white !bg-[var(--lg-green-bg)] shadow-[inset_0_1px_3px_rgba(var(--black-rgb),0.5)]'
                               )}
@@ -2086,7 +2090,7 @@ function SportbookSection({
                               )}
                               <b>{runner.back?.[0]?.price || ''}</b>
                             </span>
-                            <span className="mobile:inline-block max-mobile:hidden" />
+                            <span className="mobile:inline-block max-md:hidden" />
                           </div>
                         </div>
                         {isActive && (

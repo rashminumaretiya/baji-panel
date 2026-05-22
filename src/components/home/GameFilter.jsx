@@ -2,14 +2,20 @@ import { useTranslation } from 'react-i18next'
 import { GAME_LIST_FILTERS } from '../../core/constant/constants.js'
 
 const DESKTOP_OPTIONS = [
-  { labelKey: 'common.gameFilters.competition', value: GAME_LIST_FILTERS.COMPETITION },
+  {
+    labelKey: 'common.gameFilters.competition',
+    value: GAME_LIST_FILTERS.COMPETITION,
+  },
   { labelKey: 'common.gameFilters.time', value: GAME_LIST_FILTERS.TIME },
   { labelKey: 'common.gameFilters.matched', value: GAME_LIST_FILTERS.MATCHED },
 ]
 
 const MOBILE_OPTIONS = [
   { labelKey: 'common.gameFilters.time', value: GAME_LIST_FILTERS.TIME },
-  { labelKey: 'common.gameFilters.competition', value: GAME_LIST_FILTERS.COMPETITION },
+  {
+    labelKey: 'common.gameFilters.competition',
+    value: GAME_LIST_FILTERS.COMPETITION,
+  },
 ]
 
 // ─── Desktop game-title row ────────────────────────────────────────────────
@@ -75,19 +81,19 @@ export function MobileGameFilter({ value, onChange }) {
     <div>
       <h3
         className={
-          'text-center mb-0 max-mobile:px-[1.87vw] ' +
-          'max-mobile:bg-gradient-to-t max-mobile:from-[var(--xxl-blue)] max-mobile:to-[var(--xl-blue)] ' +
-          'max-mobile:text-white max-mobile:text-[3.73vw] max-mobile:leading-[2.2] max-mobile:font-bold'
+          'text-center mb-0 max-md:px-[1.87vw] ' +
+          'max-md:bg-gradient-to-t max-md:from-[var(--xxl-blue)] max-md:to-[var(--xl-blue)] ' +
+          'max-md:text-white max-md:text-[3.73vw] max-md:leading-[2.2] max-md:font-bold'
         }
       >
         {t('titles.highLights')}
       </h3>
-      <div className="max-mobile:flex max-mobile:justify-center max-mobile:items-center max-mobile:h-[10.67vw]">
+      <div className="max-md:flex max-md:justify-center max-md:items-center max-md:h-[10.67vw]">
         <ul
           className={
-            'p-0 flex max-mobile:w-[80%] max-mobile:mx-auto max-mobile:h-fit ' +
-            'max-mobile:bg-[var(--light-xl-bg)] max-mobile:shadow-[inset_0_1px_3px_0_rgba(var(--black-rgb),0.15)] ' +
-            'max-mobile:rounded-[1.6vw] max-mobile:p-[0.27vw]'
+            'p-0 flex max-md:w-[80%] max-md:mx-auto max-md:h-fit ' +
+            'max-md:bg-[var(--light-xl-bg)] max-md:shadow-[inset_0_1px_3px_0_rgba(var(--black-rgb),0.15)] ' +
+            'max-md:rounded-[1.6vw] max-md:p-[0.27vw]'
           }
           role="tablist"
         >
@@ -97,21 +103,21 @@ export function MobileGameFilter({ value, onChange }) {
               <li
                 key={opt.value}
                 className={
-                  'max-mobile:flex-1 max-mobile:text-[3.2vw] max-mobile:font-bold ' +
-                  'max-mobile:flex max-mobile:items-center max-mobile:justify-center'
+                  'max-md:flex-1 max-md:text-[3.2vw] max-md:font-bold ' +
+                  'max-md:flex max-md:items-center max-md:justify-center'
                 }
                 role="presentation"
               >
                 <button
                   type="button"
                   className={
-                    'max-mobile:h-[8vw] max-mobile:w-[calc(100%-0.5vw)] max-mobile:bg-transparent ' +
-                    'max-mobile:text-black max-mobile:rounded-[1.33vw] max-mobile:p-0 max-mobile:mb-0 ' +
-                    'max-mobile:text-[3.2vw] max-mobile:leading-[3.2vw] max-mobile:border ' +
-                    'max-mobile:border-transparent max-mobile:m-[0.25vw] max-mobile:font-semibold ' +
+                    'max-md:h-[8vw] max-md:w-[calc(100%-0.5vw)] max-md:bg-transparent ' +
+                    'max-md:text-black max-md:rounded-[1.33vw] max-md:p-0 max-md:mb-0 ' +
+                    'max-md:text-[3.2vw] max-md:leading-[3.2vw] max-md:border ' +
+                    'max-md:border-transparent max-md:m-[0.25vw] max-md:font-semibold ' +
                     (isActive
-                      ? 'max-mobile:!bg-white max-mobile:!text-[var(--active-blue)] ' +
-                        'max-mobile:shadow-[0_0_3px_0_rgba(var(--black-rgb),0.15)]'
+                      ? 'max-md:!bg-white max-md:!text-[var(--active-blue)] ' +
+                        'max-md:shadow-[0_0_3px_0_rgba(var(--black-rgb),0.15)]'
                       : '')
                   }
                   role="tab"

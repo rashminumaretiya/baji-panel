@@ -170,8 +170,8 @@ export default function MobileSearchEvent() {
           <i
             className={
               'inline-flex items-center justify-center ' +
-              '[&_svg]:scale-80 max-mobile:[&_svg]:scale-100 ' +
-              'max-mobile:[&_svg]:w-[10.67vw] max-mobile:[&_svg]:h-[10.07vw]'
+              '[&_svg]:scale-80 max-md:[&_svg]:scale-100 ' +
+              'max-md:[&_svg]:w-[10.67vw] max-md:[&_svg]:h-[10.07vw]'
             }
             onClick={close}
             role="button"
@@ -202,7 +202,7 @@ export default function MobileSearchEvent() {
                   autoFocus={open}
                   // SCSS reset on mobile: `padding-left: 0; height: 100%;`
                   className={
-                    'h-[46px] max-mobile:h-full max-mobile:pl-0 w-full outline-none border-0 ' +
+                    'h-[46px] max-md:h-full max-md:pl-0 w-full outline-none border-0 ' +
                     'font-normal placeholder:text-[#9b9b9b] placeholder:font-normal placeholder:ml-0'
                   }
                 />
@@ -211,7 +211,7 @@ export default function MobileSearchEvent() {
             {query && (
               <span
                 className={
-                  'w-[22px] flex items-center font-thin max-mobile:w-[6.07vw]'
+                  'w-[22px] flex items-center font-thin max-md:w-[6.07vw]'
                 }
                 role="button"
                 tabIndex={0}
@@ -224,7 +224,7 @@ export default function MobileSearchEvent() {
                 <span
                   className={
                     'text-[26px] leading-[20px] text-[var(--lg-black)] ' +
-                    'max-mobile:text-[var(--xxl-black)] max-mobile:text-[7vw] max-mobile:leading-normal'
+                    'max-md:text-[var(--xxl-black)] max-md:text-[7vw] max-md:leading-normal'
                   }
                 >
                   ×
@@ -242,7 +242,7 @@ export default function MobileSearchEvent() {
             className={
               'p-2.5 leading-[45px] ' +
               '[&_svg]:w-[5.67vw] [&_svg]:h-[5.07vw] ' +
-              '[&_svg_path]:fill-[var(--lg-black)] max-mobile:[&_svg_path]:fill-[var(--xxl-black)]'
+              '[&_svg_path]:fill-[var(--lg-black)] max-md:[&_svg_path]:fill-[var(--xxl-black)]'
             }
           >
             {SearchSvg}
@@ -253,23 +253,23 @@ export default function MobileSearchEvent() {
           // `.ng-select` ─ dropdown results panel
           <div
             className={
-              'bg-white flex items-center w-full overflow-y-auto max-mobile:h-[16vw]'
+              'bg-white flex items-center w-full overflow-y-auto max-md:h-[16vw]'
             }
           >
             {/* `.ng-dropdown-panel` */}
             <div
               className={
-                'max-mobile:fixed max-mobile:left-0 max-mobile:right-0 ' +
-                'max-mobile:top-[16vw] max-mobile:border-t max-mobile:border-[var(--xxl-gray)]'
+                'max-md:fixed max-md:left-0 max-md:right-0 ' +
+                'max-md:top-[16vw] max-md:border-t max-md:border-[var(--xxl-gray)]'
               }
             >
               {/* `.ng-dropdown-panel-items` */}
-              <div className="max-mobile:max-h-[46.67vw]">
+              <div className="max-md:max-h-[46.67vw]">
                 {isSearching && effectiveResults.length === 0 && (
                   <div
                     className={
                       'px-1 bg-white text-[var(--text-color)] text-[14px] ' +
-                      'max-mobile:px-[2vw] max-mobile:text-[4vw] max-mobile:text-[var(--blue)]'
+                      'max-md:px-[2vw] max-md:text-[4vw] max-md:text-[var(--blue)]'
                     }
                   >
                     {t('common.loading', 'Searching…')}
@@ -281,11 +281,11 @@ export default function MobileSearchEvent() {
                     key={`${item.sportId}-${item.eventId}`}
                     className={
                       'px-1 bg-white text-[var(--text-color)] text-[14px] cursor-pointer ' +
-                      'max-mobile:px-[2vw] max-mobile:text-[4vw] max-mobile:text-[var(--blue)] ' +
-                      'max-mobile:[&_.item]:overflow-hidden max-mobile:[&_.item]:text-ellipsis ' +
-                      'max-mobile:[&_.item]:leading-[11.68vw] ' +
-                      'max-mobile:[&_.time]:mr-[1.87vw] max-mobile:[&_.time]:font-normal ' +
-                      'max-mobile:[&_.time]:text-[var(--lg-black)]'
+                      'max-md:px-[2vw] max-md:text-[4vw] max-md:text-[var(--blue)] ' +
+                      'max-md:[&_.item]:overflow-hidden max-md:[&_.item]:text-ellipsis ' +
+                      'max-md:[&_.item]:leading-[11.68vw] ' +
+                      'max-md:[&_.time]:mr-[1.87vw] max-md:[&_.time]:font-normal ' +
+                      'max-md:[&_.time]:text-[var(--lg-black)]'
                     }
                     onClick={() => onResultClick(item)}
                   >
@@ -301,7 +301,7 @@ export default function MobileSearchEvent() {
                   <div
                     className={
                       'px-1 bg-white text-[var(--text-color)] text-[14px] ' +
-                      'max-mobile:px-[2vw] max-mobile:text-[4vw] max-mobile:text-[var(--blue)]'
+                      'max-md:px-[2vw] max-md:text-[4vw] max-md:text-[var(--blue)]'
                     }
                   >
                     {t('common.noEventsFound', 'No events found')}

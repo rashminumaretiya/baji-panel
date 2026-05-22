@@ -30,7 +30,7 @@ const trClass =
 // Padding/font/line-height ported from .profile-container table td.
 // SCSS: `padding: 7px; font-size: 11px; line-height: 16px; vertical-align: top;`
 const tdLabelClass =
-  'p-[7px] text-[11px] leading-4 align-top w-[22%] min-w-[115px] max-mobile:min-w-[80px]'
+  'p-[7px] text-[11px] leading-4 align-top w-[22%] min-w-[115px] max-md:min-w-[80px]'
 const tdValueClass = 'p-[7px] text-[11px] leading-4 align-top'
 
 function ActionCell({ children, onClick }) {
@@ -205,9 +205,7 @@ export default function Profile() {
 
         {/* Right column (col-md-6) */}
         <div className="w-full md:w-1/2 md:pl-2 px-0">
-          <div
-            className={`flex flex-wrap mx-0 ${isMobile ? 'p-0' : 'pl-3'}`}
-          >
+          <div className={`flex flex-wrap mx-0 ${isMobile ? 'p-0' : 'pl-3'}`}>
             <div className="w-full px-0">
               <div className={cardHeaderClass}>Contact Details</div>
               <div>
@@ -227,9 +225,7 @@ export default function Profile() {
                         <td className={tdValueClass}>
                           {backupNumbers[0] || '--'}
                         </td>
-                        <ActionCell
-                          onClick={() => setIsBackupModalOpen(true)}
-                        >
+                        <ActionCell onClick={() => setIsBackupModalOpen(true)}>
                           <span className="cursor-pointer">
                             {backupNumbers[0] ? 'Edit ' : 'Add '}
                           </span>
@@ -241,9 +237,7 @@ export default function Profile() {
                         <td className={tdValueClass}>
                           {backupNumbers[1] || '--'}
                         </td>
-                        <ActionCell
-                          onClick={() => setIsBackupModalOpen(true)}
-                        >
+                        <ActionCell onClick={() => setIsBackupModalOpen(true)}>
                           <span className="cursor-pointer">
                             {backupNumbers[1] ? 'Edit ' : 'Add '}
                           </span>

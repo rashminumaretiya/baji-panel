@@ -15,16 +15,16 @@ function cx(...classes) {
 // Section wrapper used for "Default Stake", "Stake/Quick Stakes",
 // "Odds", "Fancy Bet", "Sportsbook" and "Win Selection Forecast".
 const SECTION_WRAPPER =
-  'relative border-b border-[var(--sm-text-color)] shadow-[0_1px_0_rgba(var(--white-rgb),0.8)] leading-[15px] pb-0.5 mb-[5px] max-mobile:text-[4vw] max-mobile:text-[var(--light-navy)] max-mobile:border-b max-mobile:border-[var(--light-bg)] max-mobile:px-[1.86667vw] max-mobile:py-0 max-mobile:mb-0'
+  'relative border-b border-[var(--sm-text-color)] shadow-[0_1px_0_rgba(var(--white-rgb),0.8)] leading-[15px] pb-0.5 mb-[5px] max-md:text-[4vw] max-md:text-[var(--light-navy)] max-md:border-b max-md:border-[var(--light-bg)] max-md:px-[1.86667vw] max-md:py-0 max-md:mb-0'
 
 // `.title` from the SCSS — bold blue/dark heading on desktop, full-width
 // gradient bar on mobile.
 const TITLE_CLASS =
-  'text-[11px] font-bold mb-[5px] max-mobile:mx-[-2.4vw] max-mobile:mb-[1.86667vw] max-mobile:px-[1.86667vw] max-mobile:bg-[image:linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] max-mobile:text-white max-mobile:text-[3.73333vw] max-mobile:leading-[2.2] max-mobile:font-bold'
+  'text-[11px] font-bold mb-[5px] max-md:mx-[-2.4vw] max-md:mb-[1.86667vw] max-md:px-[1.86667vw] max-md:bg-[image:linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] max-md:text-white max-md:text-[3.73333vw] max-md:leading-[2.2] max-md:font-bold'
 
 // `.title.odds` variant on mobile.
 const TITLE_ODDS_OVERRIDE =
-  'max-mobile:bg-none max-mobile:text-[var(--light-navy)] max-mobile:m-0 max-mobile:p-0 max-mobile:font-normal'
+  'max-md:bg-none max-md:text-[var(--light-navy)] max-md:m-0 max-md:p-0 max-md:font-normal'
 
 // The mobile-only switch (toggle) — replaces the BS form-check styling.
 const SWITCH_LABEL =
@@ -33,12 +33,11 @@ const SLIDER =
   'absolute cursor-pointer inset-0 bg-[var(--chip-xl-color)] rounded-[1.6vw] shadow-[inset_0_0.26667vw_0.8vw_0_rgba(var(--black-rgb),0.5)] before:absolute before:content-[""] before:h-[7.2vw] before:w-[2.66667vw] before:left-[1.06667vw] before:top-1/2 before:-translate-y-1/2 before:bg-white before:rounded-[1.06667vw] before:shadow-[0_0.53333vw_1.06667vw_0_rgba(var(--black-rgb),0.5),inset_0_-0.8vw_0_0_var(--chip-sm-color)] after:content-[""] after:w-[1.06667vw] after:h-[1.33333vw] after:bg-[var(--light-bg)] after:shadow-[inset_0_0.26667vw_0.26667vw_0_rgba(var(--black-rgb),0.26)] after:rounded-[0.53333vw] after:absolute after:top-1/2 after:left-[7px] after:-translate-y-1/2 peer-checked:bg-[var(--light-green)] peer-checked:before:left-auto peer-checked:before:right-[1.06667vw] peer-checked:after:left-auto peer-checked:after:right-[7px]'
 
 // Footer-button wrapper (half-width on desktop, flex-1 on mobile).
-const BTN_WRAPPER =
-  'w-1/2 max-mobile:flex-1 max-mobile:w-auto'
+const BTN_WRAPPER = 'w-1/2 max-md:flex-1 max-md:w-auto'
 
 // `.btn` inside `.btn-wrapper` — 90% wide on desktop, full on mobile.
 const FOOTER_BTN_BASE =
-  'w-[90%] max-mobile:h-[10.93333vw] max-mobile:w-full max-mobile:text-[4vw] max-mobile:rounded-[1.6vw] text-[12px] font-bold leading-[23px] p-0 border rounded'
+  'w-[90%] max-md:h-[10.93333vw] max-md:w-full max-md:text-[4vw] max-md:rounded-[1.6vw] text-[12px] font-bold leading-[23px] p-0 border rounded'
 
 export default function Stake({
   isMobile = false,
@@ -110,12 +109,12 @@ export default function Stake({
           )}
 
           <div className={SECTION_WRAPPER}>
-            <div className="flex items-center text-[11px] mr-[5px] mb-[5px] max-mobile:my-[1.86667vw] max-mobile:mx-0 max-mobile:text-[4vw] [&_label]:font-bold [&_label]:text-[var(--text-color)] max-mobile:[&_label]:font-normal">
+            <div className="flex items-center text-[11px] mr-[5px] mb-[5px] max-md:my-[1.86667vw] max-md:mx-0 max-md:text-[4vw] [&_label]:font-bold [&_label]:text-[var(--text-color)] max-md:[&_label]:font-normal">
               <label htmlFor="stake-default">Default Stake</label>
               <input
                 id="stake-default"
                 type="number"
-                className="h-5 leading-5 px-[5px] mx-[5px] w-[29.16666%] text-[11px] border border-[var(--input-group-border)] rounded max-mobile:w-[29.66667vw] max-mobile:px-[1.86667vw] max-mobile:py-[2.66667vw] max-mobile:mx-[1.6666vw] max-mobile:my-0 max-mobile:h-auto max-mobile:text-[4vw] max-mobile:leading-normal max-mobile:border-[var(--xxl-gray)] max-mobile:rounded-[1.6vw] max-mobile:shadow-[inset_0_0.53333vw_0_0_rgba(var(--black-rgb),0.1)] max-mobile:text-right focus:max-mobile:shadow-[inset_0_0.26667vw_1.33333vw_rgba(var(--xss-yellow),0.6)] focus:max-mobile:border-[var(--coffee)]"
+                className="h-5 leading-5 px-[5px] mx-[5px] w-[29.16666%] text-[11px] border border-[var(--input-group-border)] rounded max-md:w-[29.66667vw] max-md:px-[1.86667vw] max-md:py-[2.66667vw] max-md:mx-[1.6666vw] max-md:my-0 max-md:h-auto max-md:text-[4vw] max-md:leading-normal max-md:border-[var(--xxl-gray)] max-md:rounded-[1.6vw] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(var(--black-rgb),0.1)] max-md:text-right focus:max-md:shadow-[inset_0_0.26667vw_1.33333vw_rgba(var(--xss-yellow),0.6)] focus:max-md:border-[var(--coffee)]"
                 min={0}
                 value={defaultStake}
                 onChange={(e) => setDefaultStake(e.target.value)}
@@ -125,7 +124,7 @@ export default function Stake({
 
           <div>
             <div className={SECTION_WRAPPER}>
-              <div className="max-mobile:mr-[-1.86667vw]">
+              <div className="max-md:mr-[-1.86667vw]">
                 <h6
                   className={cx(
                     'block md:hidden',
@@ -142,11 +141,11 @@ export default function Stake({
                       {QUICK_STAKE_SLOTS.map((slot) => (
                         <div
                           key={slot}
-                          className="w-[50px] mr-[5px] mb-[5px] max-mobile:w-[22.65vw] max-mobile:mr-[1.86667vw] max-mobile:mb-[1.86667vw]"
+                          className="w-[50px] mr-[5px] mb-[5px] max-md:w-[22.65vw] max-md:mr-[1.86667vw] max-md:mb-[1.86667vw]"
                         >
                           <input
                             type="text"
-                            className="w-full bg-gradient-to-b from-white to-[var(--xs-gray)] border border-[var(--lg-black)] shadow-[inset_0_2px_0_0_rgba(var(--black-rgb),0.1)] leading-[18px] p-0 text-center text-[11px] hover:bg-gradient-to-b hover:from-[var(--xs-gray)] hover:to-white max-mobile:rounded-[1.6vw] max-mobile:text-[4vw] max-mobile:font-bold max-mobile:leading-[2.2]"
+                            className="w-full bg-gradient-to-b from-white to-[var(--xs-gray)] border border-[var(--lg-black)] shadow-[inset_0_2px_0_0_rgba(var(--black-rgb),0.1)] leading-[18px] p-0 text-center text-[11px] hover:bg-gradient-to-b hover:from-[var(--xs-gray)] hover:to-white max-md:rounded-[1.6vw] max-md:text-[4vw] max-md:font-bold max-md:leading-[2.2]"
                             value={availableStake[slot]}
                             disabled={stakesLocked}
                             onChange={(e) =>
@@ -160,7 +159,7 @@ export default function Stake({
                   <button
                     type="button"
                     className={cx(
-                      'border border-[var(--sm-text-color)] shadow-[inset_0_1px_0_0_rgba(var(--white-rgb),0.8)] bg-transparent text-[var(--text-color)] h-[45px] flex items-center justify-center text-[11px] p-0 w-[82px] font-normal max-mobile:w-[calc(100%-1.86667vw)] max-mobile:h-auto max-mobile:leading-[2.6] max-mobile:font-bold max-mobile:bg-[rgba(var(--xss-darkest),0.4)] max-mobile:border-[0.26667vw] max-mobile:border-[var(--sm-text-color)] max-mobile:shadow-[inset_0_0.53333vw_0_0_rgba(var(--white-rgb),0.8)] max-mobile:rounded-[1.6vw] max-mobile:text-[4vw] max-mobile:mb-[1.86667vw] [&>span]:text-[var(--light-navy)]',
+                      'border border-[var(--sm-text-color)] shadow-[inset_0_1px_0_0_rgba(var(--white-rgb),0.8)] bg-transparent text-[var(--text-color)] h-[45px] flex items-center justify-center text-[11px] p-0 w-[82px] font-normal max-md:w-[calc(100%-1.86667vw)] max-md:h-auto max-md:leading-[2.6] max-md:font-bold max-md:bg-[rgba(var(--xss-darkest),0.4)] max-md:border-[0.26667vw] max-md:border-[var(--sm-text-color)] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(var(--white-rgb),0.8)] max-md:rounded-[1.6vw] max-md:text-[4vw] max-md:mb-[1.86667vw] [&>span]:text-[var(--light-navy)]',
                       !stakesLocked &&
                         'text-white border-[var(--lg-primary)] bg-gradient-to-b from-[var(--xs-primary)] to-[var(--xxs-primary)] hover:bg-gradient-to-b hover:from-[var(--xxs-primary)] hover:to-[var(--xs-primary)]',
                       !stakesLocked && themedOkBtn
@@ -170,7 +169,7 @@ export default function Stake({
                     {stakesLocked ? (
                       <>
                         <span>Edit</span>
-                        <div className="h-[9px] w-[9px] bg-[url('/img/icon-stake-edit.png')] bg-no-repeat bg-right max-mobile:w-[4vw] max-mobile:h-[4vw] max-mobile:bg-[url('/img/svg/edit-big.svg')] max-mobile:ml-[1.33333vw] max-mobile:bg-contain" />
+                        <div className="h-[9px] w-[9px] bg-[url('/img/icon-stake-edit.png')] bg-no-repeat bg-right max-md:w-[4vw] max-md:h-[4vw] max-md:bg-[url('/img/svg/edit-big.svg')] max-md:ml-[1.33333vw] max-md:bg-contain" />
                       </>
                     ) : (
                       'OK'
@@ -181,9 +180,9 @@ export default function Stake({
             </div>
           </div>
 
-          <div className={cx(SECTION_WRAPPER, 'max-mobile:pb-[1.86667vw]')}>
+          <div className={cx(SECTION_WRAPPER, 'max-md:pb-[1.86667vw]')}>
             <h6 className={TITLE_CLASS}>Odds</h6>
-            <div className="flex items-center justify-between md:justify-start md:mb-2 max-mobile:flex-row-reverse">
+            <div className="flex items-center justify-between md:justify-start md:mb-2 max-md:flex-row-reverse">
               {isMobile ? (
                 <>
                   <label className={SWITCH_LABEL} htmlFor="highlight">
@@ -214,9 +213,9 @@ export default function Stake({
             </div>
           </div>
 
-          <div className={cx(SECTION_WRAPPER, 'max-mobile:pb-[1.86667vw]')}>
+          <div className={cx(SECTION_WRAPPER, 'max-md:pb-[1.86667vw]')}>
             <h6 className={TITLE_CLASS}>Fancy Bet</h6>
-            <div className="flex items-center justify-between md:justify-start md:mb-2 max-mobile:flex-row-reverse">
+            <div className="flex items-center justify-between md:justify-start md:mb-2 max-md:flex-row-reverse">
               {isMobile ? (
                 <>
                   <label className={SWITCH_LABEL} htmlFor="fancyBet">
@@ -249,17 +248,17 @@ export default function Stake({
             </div>
           </div>
 
-          <div className={cx(SECTION_WRAPPER, 'max-mobile:pb-[1.86667vw]')}>
+          <div className={cx(SECTION_WRAPPER, 'max-md:pb-[1.86667vw]')}>
             <h6 className={TITLE_CLASS}>Sportsbook</h6>
-            <div className="flex items-center justify-between md:justify-start md:mb-2 max-mobile:flex-row-reverse" />
+            <div className="flex items-center justify-between md:justify-start md:mb-2 max-md:flex-row-reverse" />
           </div>
 
-          <div className={cx(SECTION_WRAPPER, 'max-mobile:pb-[1.86667vw]')}>
+          <div className={cx(SECTION_WRAPPER, 'max-md:pb-[1.86667vw]')}>
             <h6 className={TITLE_CLASS}>Win Selection Forecast</h6>
-            <div className="flex items-center justify-between md:justify-start md:mb-2 max-mobile:flex-row-reverse" />
+            <div className="flex items-center justify-between md:justify-start md:mb-2 max-md:flex-row-reverse" />
           </div>
 
-          <div className="flex justify-center md:gap-0 max-mobile:gap-[2vw] max-mobile:py-[3.86667vw] max-mobile:px-[1.86667vw] max-mobile:pt-[3.86667vw] max-mobile:pb-[1.86667vw]">
+          <div className="flex justify-center md:gap-0 max-md:gap-[2vw] max-md:py-[3.86667vw] max-md:px-[1.86667vw] max-md:pt-[3.86667vw] max-md:pb-[1.86667vw]">
             <div className={BTN_WRAPPER}>
               <button
                 type="button"

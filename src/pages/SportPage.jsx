@@ -18,11 +18,10 @@ import Footer from '../components/Footer.jsx'
 import Loader from '../shared/components/Loader.jsx'
 import { GAME_LIST_FILTERS, getSportName } from '../core/constant/constants.js'
 
-const LANDING_IMG_CLASS =
-  'h-[194px] w-full object-cover mt-px mb-4'
+const LANDING_IMG_CLASS = 'h-[194px] w-full object-cover mt-px mb-4'
 
 const GAME_TITLE_CLASS =
-  'flex items-center justify-between bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xxl-blue)] text-white text-[12px] p-2 mb-2 max-mobile:text-center max-mobile:font-semibold max-mobile:text-[3.73vw] max-mobile:leading-[1.05] max-mobile:p-[2.043vw]'
+  'flex items-center justify-between bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xxl-blue)] text-white text-[12px] p-2 mb-2 max-md:text-center max-md:font-semibold max-md:text-[3.73vw] max-md:leading-[1.05] max-md:p-[2.043vw]'
 
 // Mirrors Angular's per-sport components (cricket/soccer/tennis/horse-racing/
 // greyhound-racing). Non-racing sports show the View By filter; racing sports
@@ -44,7 +43,7 @@ export default function SportPage({ sportId, bannerSrc, isRacing = false }) {
 
   const visibleEventIds = useMemo(
     () => games.map((g) => g.event?.id).filter(Boolean),
-    [games],
+    [games]
   )
   useEventSubscription(visibleEventIds)
 
@@ -67,9 +66,7 @@ export default function SportPage({ sportId, bannerSrc, isRacing = false }) {
         {isRacing ? (
           <>
             <div className="mx-0 mt-2">
-              <div className={GAME_TITLE_CLASS}>
-                {t('titles.highLights')}
-              </div>
+              <div className={GAME_TITLE_CLASS}>{t('titles.highLights')}</div>
             </div>
             <GameList
               games={games}

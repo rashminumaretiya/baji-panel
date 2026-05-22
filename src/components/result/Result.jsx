@@ -156,7 +156,9 @@ function MobileResultTable({ data }) {
         <div className={MOBILE_STAKE_ROW} key={`${row.eventDate}-${idx}`}>
           <div className={MATCH_TD}>
             <label className={MATCH_LABEL}>{row.eventDate}</label>
-            <p className={`${MATCH_P} text-[4.27vw] leading-[5.33vw] text-[var(--xs-text-color)] text-start w-full`}>
+            <p
+              className={`${MATCH_P} text-[4.27vw] leading-[5.33vw] text-[var(--xs-text-color)] text-start w-full`}
+            >
               {row.eventName}
             </p>
           </div>
@@ -180,7 +182,7 @@ function MobileResultTable({ data }) {
 // reproduce the Bootstrap-ish active tab here in pure Tailwind.
 const TABS_ROW =
   'flex w-2/5 pl-0 mb-0 list-none ' +
-  'max-mobile:w-full max-mobile:border-b-0 max-mobile:pb-[1.6vw]'
+  'max-md:w-full max-md:border-b-0 max-md:pb-[1.6vw]'
 
 const TAB_BTN_BASE =
   'block px-3 py-1.5 text-[12px] text-[var(--text-color)] bg-transparent border-0 ' +
@@ -192,27 +194,27 @@ const TAB_BTN_ACTIVE =
 // blue background + extra padding (per the @media (max-width: 767px) block).
 const RESULT_TABS_WRAPPER =
   'overflow-x-auto pb-2 flex justify-between ' +
-  'max-mobile:flex-col max-mobile:py-[1.6vw] max-mobile:px-[1.87vw] ' +
-  'max-mobile:bg-[var(--mts-blue)]'
+  'max-md:flex-col max-md:py-[1.6vw] max-md:px-[1.87vw] ' +
+  'max-md:bg-[var(--mts-blue)]'
 
 // `.outer-select` — relative wrapper with the mobile-only chevron via ::after.
 const OUTER_SELECT =
   'relative ' +
-  "max-mobile:after:content-[''] max-mobile:after:absolute max-mobile:after:top-1/2 " +
-  'max-mobile:after:right-[2.13vw] max-mobile:after:translate-y-[-50%] ' +
-  'max-mobile:after:border-t-[2.13vw] max-mobile:after:border-t-[var(--dark)] ' +
-  'max-mobile:after:border-l-[2.13vw] max-mobile:after:border-l-transparent ' +
-  'max-mobile:after:border-r-[2.13vw] max-mobile:after:border-r-transparent ' +
-  'max-mobile:after:pointer-events-none'
+  "max-md:after:content-[''] max-md:after:absolute max-md:after:top-1/2 " +
+  'max-md:after:right-[2.13vw] max-md:after:translate-y-[-50%] ' +
+  'max-md:after:border-t-[2.13vw] max-md:after:border-t-[var(--dark)] ' +
+  'max-md:after:border-l-[2.13vw] max-md:after:border-l-transparent ' +
+  'max-md:after:border-r-[2.13vw] max-md:after:border-r-transparent ' +
+  'max-md:after:pointer-events-none'
 
-const OUTER_SELECT_YELLOW = 'max-mobile:[&_select]:text-[4.1vw]'
+const OUTER_SELECT_YELLOW = 'max-md:[&_select]:text-[4.1vw]'
 
 // `.matched-select` ─ the <select> itself. Desktop: tight 180px pill. Mobile:
 // full-width capsule with appearance:none so our ::after triangle is visible.
 const MATCHED_SELECT =
   'w-[180px] text-[14px] p-0.5 leading-[29px] h-[29px] ' +
-  'max-mobile:appearance-none max-mobile:w-full max-mobile:text-[3.73vw] ' +
-  'max-mobile:h-[10.67vw] max-mobile:px-4 max-mobile:rounded-[1.6vw] max-mobile:uppercase'
+  'max-md:appearance-none max-md:w-full max-md:text-[3.73vw] ' +
+  'max-md:h-[10.67vw] max-md:px-4 max-md:rounded-[1.6vw] max-md:uppercase'
 
 export default function Result() {
   const { t } = useTranslation()
@@ -255,10 +257,7 @@ export default function Result() {
     console.log('filterVal :>> ', filterVal)
   }
 
-  const outerSelectClass = [
-    OUTER_SELECT,
-    isYellowTheme && OUTER_SELECT_YELLOW,
-  ]
+  const outerSelectClass = [OUTER_SELECT, isYellowTheme && OUTER_SELECT_YELLOW]
     .filter(Boolean)
     .join(' ')
 
