@@ -249,16 +249,18 @@
     "noData": {
       "default": "No data found",
       "pnlNoData": {
-        "p1": "Betting Profit & Loss enables you to review the bets you have placed.",
+        "p1": "Betting History enables you to review the bets you have placed.",
         "p2": "Specify the time period during which your bets were placed, the type of markets on which the bets were placed, and the sport.",
-        "p3": "Betting Profit & Loss is available online for the past 2 months.",
+        "p3": "Betting History is available online for the past 62 days.",
+        "p4": "User can search up to 14 days records per query only .",
         "noRecordsForPeriod": "No profit/loss records for the selected period."
       },
       "currentBetsNoData": "You have no active bets.",
       "betHistory": {
-        "p1": " Betting History enables you to review the bets you have placed.",
-        "p2": "  Specify the time period during which your bets were placed, the type of markets on which the bets were placed, and the sport.",
-        "p3": "Betting History is available online for the past 30 days.",
+        "p1": "Betting History enables you to review the bets you have placed.",
+        "p2": "Specify the time period during which your bets were placed, the type of markets on which the bets were placed, and the sport.",
+        "p3": "Betting History is available online for the past 62 days.",
+        "p4": "User can search up to 14 days records per query only .",
         "noBetsForPeriod": "No bets found for the selected period."
       }
     },

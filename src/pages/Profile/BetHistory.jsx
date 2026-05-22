@@ -239,15 +239,36 @@ export default function BetHistory() {
         </div>
       </div>
 
-      <Table
-        columns={COLUMNS}
-        data={bets}
-        rowKey="_id"
-        emptyMessage={t(
-          'table.noData.betHistory.noBetsForPeriod',
-          'No bets found for the selected period.'
-        )}
-      />
+      {bets.length > 0 ? (
+        <Table columns={COLUMNS} data={bets} rowKey="_id" />
+      ) : (
+        <div className="px-[10px] py-[10px] text-[12px] leading-[1.6] text-[#1e1e1e]">
+          <p className="m-0">
+            {t(
+              'table.noData.betHistory.p1',
+              'Betting History enables you to review the bets you have placed.'
+            )}
+          </p>
+          <p className="m-0">
+            {t(
+              'table.noData.betHistory.p2',
+              'Specify the time period during which your bets were placed, the type of markets on which the bets were placed, and the sport.'
+            )}
+          </p>
+          <p className="mt-2 mb-0">
+            {t(
+              'table.noData.betHistory.p3',
+              'Betting History is available online for the past 62 days.'
+            )}
+          </p>
+          <p className="mt-2 mb-0">
+            {t(
+              'table.noData.betHistory.p4',
+              'User can search up to 14 days records per query only .'
+            )}
+          </p>
+        </div>
+      )}
     </MarketTabs>
   )
 }

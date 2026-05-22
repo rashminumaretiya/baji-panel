@@ -275,15 +275,36 @@ export default function ProfitLoss() {
         </div>
       </div>
 
-      <Table
-        columns={COLUMNS}
-        data={rows}
-        rowKey="_id"
-        emptyMessage={t(
-          'table.noData.pnlNoData.noRecordsForPeriod',
-          'No profit/loss records for the selected period.'
-        )}
-      />
+      {rows.length > 0 ? (
+        <Table columns={COLUMNS} data={rows} rowKey="_id" />
+      ) : (
+        <div className="bg-white pt-[10px] text-[12px] leading-[1.6] text-[#1e1e1e]">
+          <p className="m-0">
+            {t(
+              'table.noData.pnlNoData.p1',
+              'Betting History enables you to review the bets you have placed.'
+            )}
+          </p>
+          <p className="m-0">
+            {t(
+              'table.noData.pnlNoData.p2',
+              'Specify the time period during which your bets were placed, the type of markets on which the bets were placed, and the sport.'
+            )}
+          </p>
+          <p className="mt-2 mb-0">
+            {t(
+              'table.noData.pnlNoData.p3',
+              'Betting History is available online for the past 62 days.'
+            )}
+          </p>
+          <p className="mt-2 mb-0">
+            {t(
+              'table.noData.pnlNoData.p4',
+              'User can search up to 14 days records per query only .'
+            )}
+          </p>
+        </div>
+      )}
     </div>
   )
 }
