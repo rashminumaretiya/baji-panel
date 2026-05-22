@@ -144,7 +144,7 @@ const sportSlice = createSlice({
       s.sidebarLoading = false
     })
 
-      b.addCase(fetchSportLiveCount.fulfilled, (s, { payload }) => {
+    b.addCase(fetchSportLiveCount.fulfilled, (s, { payload }) => {
       s.sportTabs = Array.isArray(payload) ? payload : []
     })
 

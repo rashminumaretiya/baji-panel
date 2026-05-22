@@ -69,7 +69,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   const wallet = walletFromStore ?? user?.wallet ?? DEFAULT_WALLET
   const currency = currencyFromStore ?? user?.currency ?? DEFAULT_CURRENCY
   const logoFromStore = useSelector(selectLogo)
-   const logo = logoProp ?? logoFromStore ?? null
+  const logo = logoProp ?? logoFromStore ?? null
 
   const [isBalanceRefresh, setIsBalanceRefresh] = useState(false)
   const [showBets, setShowBets] = useState(false)
