@@ -1601,7 +1601,7 @@ function BookmakerSection({
               return (
                 <Fragment key={bookmaker.selectionId}>
                   <tr className="bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)] hover:[&_td]:bg-white/40 hover:[&_td:first-child]:bg-white/40">
-                    <td className="px-[10px] pt-[4px] !align-top bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)] max-md:px-[1.8666666667vw] max-md:py-0 max-md:!align-middle max-md:text-[4vw]">
+                    <td className="px-[10px] pt-[4px] !align-top bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)] max-md:px-[1.8666666667vw] max-md:py-0 max-md:!align-middle max-md:text-[4vw] min-w-[170px]">
                       <div className="flex flex-col">
                         <span className="font-bold">
                           {bookmaker.runnerName}
@@ -1934,11 +1934,11 @@ function FancySection({
         <table className="w-full border-collapse max-md:bg-white">
           <thead className="bg-white">
             <tr>
-              <th className="px-[10px] py-1 font-bold text-[12px] max-md:text-[var(--lg-white,#fff)] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]" />
-              <th className="px-[10px] py-1 font-bold text-[12px] max-md:text-[var(--lg-white,#fff)] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
+              <th className="px-[10px] py-1 font-bold text-[12px] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]" />
+              <th className="px-[10px] py-1 font-bold text-[12px] max-md:w-[18.66667vw] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
                 No
               </th>
-              <th className="px-[10px] py-1 font-bold text-[12px] max-md:text-[var(--lg-white,#fff)] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
+              <th className="px-[10px] py-1 font-bold text-[12px] max-md:w-[18.66667vw] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
                 Yes
               </th>
               {!isMobile && (
