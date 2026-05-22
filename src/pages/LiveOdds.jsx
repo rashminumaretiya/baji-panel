@@ -999,7 +999,9 @@ export default function LiveOdds() {
                 visibleExposureByMarket.get(String(matchOdds.marketId)) ?? null
               }
               active={
-                activeRightSideBet?.marketName === 'Match Odds' &&
+                // The slip is dispatched with the API-side discriminator
+                // ('MATCH_ODDS'); compare against that, not the display name.
+                activeRightSideBet?.marketName === 'MATCH_ODDS' &&
                 activeRightSideBet?.marketId === matchOdds.marketId
                   ? activeRightSideBet
                   : null
@@ -1976,7 +1978,7 @@ function BookmakerSection({
                             <tr>
                               <td colSpan={6}>
                                 <div className={GAME_STATUS_OVERLAY}>
-                                  {statusLabel}
+                                  {isFirstRow && (statusLabel || 'Suspended')}
                                 </div>
                               </td>
                             </tr>

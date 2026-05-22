@@ -1,4 +1,5 @@
 import { createContext, useContext, useMemo, useState } from 'react'
+import Collapse from './Collapse.jsx'
 
 // Hand-rolled drop-in for react-bootstrap's Accordion. Supports the same
 // composition pattern used in the codebase:
@@ -110,9 +111,12 @@ function Body({ className = '', children }) {
   const { eventKey } = useContext(ItemContext)
   const { activeKeys } = useContext(AccordionContext)
   const isOpen = activeKeys.includes(eventKey)
-  if (!isOpen) return null
   return (
-    <div className={`accordion-body p-0 bg-white ${className}`}>{children}</div>
+    <Collapse in={isOpen}>
+      <div className={`accordion-body p-0 bg-white ${className}`}>
+        {children}
+      </div>
+    </Collapse>
   )
 }
 

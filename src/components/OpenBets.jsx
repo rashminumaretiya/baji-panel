@@ -14,6 +14,7 @@ import {
   setOpenBets,
 } from '../store/slices/betSlipSlice.js'
 import { selectIsAuthenticated } from '../store/slices/authSlice.js'
+import Collapse from '../shared/components/primitives/Collapse.jsx'
 import SvgIcon from './SvgIcon.jsx'
 
 const OPEN_BETS_POLL_MS = 15000
@@ -411,7 +412,7 @@ function OpenBetsDesktop({
                 </button>
               </h2>
             </div>
-            <div className={cx(isCollapsed && 'hidden')}>
+            <Collapse in={!isCollapsed}>
               <div className="p-0">
                 {hasList ? (
                   <div>
@@ -444,7 +445,7 @@ function OpenBetsDesktop({
                   <NoOpenBets isYellowTheme={isYellowTheme} />
                 )}
               </div>
-            </div>
+            </Collapse>
           </div>
         </div>
       </div>
