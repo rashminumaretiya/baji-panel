@@ -27,7 +27,6 @@
 
 .search-events {
   width: 100%;
-  border: 1px solid transparent;
 
   &.ng-select-opened {
     box-shadow: 0 0 4px 2px rgba(114, 187, 239, 0.8);
@@ -39,6 +38,7 @@
     background-color: var(--white);
     height: 25px;
     min-height: auto;
+    padding: 0 4px 0 25px;
     font-size: 12px;
     border-radius: 4px;
     min-width: 280px;

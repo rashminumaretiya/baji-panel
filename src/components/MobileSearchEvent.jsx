@@ -234,10 +234,7 @@ export default function MobileSearchEvent() {
                       <span className="time">
                         {formatEventTime(item.openDate)}
                       </span>
-                      <span> {item.sportName}</span>
-                      <span className="event-name">
-                        {item.eventName?.trim()}
-                      </span>
+                      <span>{item.eventName?.trim()}</span>
                     </div>
                   </div>
                 ))}
