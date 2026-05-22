@@ -118,7 +118,8 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
 
   const navigateToHome = () => navigate('/')
   const openBetsClick = () => setShowBets(true)
-  const toggleLiveStream = () => dispatch(setIsPlayLiveStream(!isPlayLiveStream))
+  const toggleLiveStream = () =>
+    dispatch(setIsPlayLiveStream(!isPlayLiveStream))
   const openMobileStake = (e) => {
     setStakeTarget(e.currentTarget)
     setStakeOpen(true)
