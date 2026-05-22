@@ -98,7 +98,7 @@ export default function OneClickBet() {
   // yellow-theme overrides with yellow gradient + dark text, mcw with grey
   // gradient + gold text.
   const okBtnBase =
-    'block mx-auto w-[46.42857%] p-1.5 rounded-[4px] text-[12px] font-bold border border-black text-white bg-[var(--xts-black)] hover:bg-[var(--xmd-black)]'
+    'block mx-auto w-[46.42857%] p-1.5 rounded-[4px] text-[12px] font-bold btn btn-primary'
   const okBtnYellow =
     'bg-gradient-to-b !from-[var(--md-primary-yellow)] !to-[#ffa10c] !text-[var(--dark)]'
   const okBtnMcw =
@@ -163,10 +163,11 @@ export default function OneClickBet() {
   // Edit / Save button. Default "edit-btn" = transparent w/ white text,
   // "Save" = btn-secondary text white.
   const actionBtnBase =
-    'min-w-[70px] py-0.5 px-1 rounded-[4px] text-[11px] font-normal mr-2'
+    'min-w-[70px] py-0.5! px-1 rounded-[4px] text-[11px] font-normal! mr-2 leading-none!'
   const editBtnClass =
     'mt-0 bg-transparent shadow-[inset_0_1px_0_0_rgba(var(--white-rgb),0.5)] border border-black/50 text-white hover:underline'
-  const saveBtnClass = 'text-white' // matches .btn-secondary fallback
+  const saveBtnClass =
+    'min-w-[70px] py-0.5! px-1! rounded-[4px] text-[11px] font-normal! mr-2 btn btn-secondary' // matches .btn-secondary fallback
 
   return (
     <>
@@ -184,8 +185,9 @@ export default function OneClickBet() {
           placement="top"
           rootClose={false}
         >
-          <Popover className="!bg-black/85 !rounded-[10px] !overflow-visible shadow-[0_0_8px_8px_rgba(var(--white-rgb),0.7)] min-w-[320px] w-full [&_*]:font-[Tahoma,Helvetica,sans-serif]">
-            <Popover.Header className="text-center text-white !bg-transparent text-[15px] font-bold py-[7px] px-0">
+          <div className="absolute top-full left-1/2 -translate-y-6 z-1 -translate-x-1/2 after:content-[''] after:absolute after:-bottom-[10px] after:-left-2 after:w-0 after:h-0 after:border-l-[10px] after:border-r-[10px] after:border-t-[10px] after:border-l-transparent after:border-r-transparent after:border-t-black"></div>
+          <Popover className="bg-black/85! -translate-y-6 rounded-[10px]! overflow-visible! shadow-[0_0_8px_8px_rgba(var(--white-rgb),0.7)]! max-w-[320px] w-full">
+            <Popover.Header className="text-center text-white bg-transparent text-[15px] font-bold py-[10px]! px-0">
               {t('header.oneClickBetOn', 'One Click Bet ON')}
             </Popover.Header>
             <Popover.Body className="!p-0 text-white border-t border-white/30 text-[13px] leading-[18px] font-[Tahoma]">
@@ -201,7 +203,7 @@ export default function OneClickBet() {
             }}
           >
             <div className="flex items-center justify-between">
-              <h6 className="m-0 leading-[31px] text-[var(--dark)] text-[12px] font-bold">
+              <h6 className="m-0 leading-[31px] text-white text-[12px] font-bold">
                 {t('header.oneClickBet', 'One Click Bet')}{' '}
                 {t('header.stake.title', 'Stake')}
               </h6>
@@ -235,7 +237,8 @@ export default function OneClickBet() {
               >
                 {!isEdit ? (
                   <span>
-                    {t('common.edit', 'Edit')} <SvgIcon name="editIcon" />
+                    {t('common.edit', 'Edit')}{' '}
+                    <SvgIcon className="inline-flex" name="editIcon" />
                   </span>
                 ) : (
                   <p className="m-0">{t('common.save', 'Save')}</p>

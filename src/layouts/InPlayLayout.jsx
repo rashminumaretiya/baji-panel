@@ -50,7 +50,7 @@ export default function InPlayLayout() {
         )}
         <div className="relative h-[calc(100svh-105px)] overflow-y-auto ml-0 pl-0 mr-[26.04%] px-[15px] max-md:mr-0 max-md:px-0">
           {showNewsLine && <NewsLine />}
-          <div className="min-h-[calc(100vh-148px)] overflow-y-auto max-md:min-h-[unset] max-md:max-h-[unset] max-md:overflow-y-visible pt-[10px]">
+          <div className="min-h-[calc(100vh-148px)] overflow-y-auto max-md:min-h-[unset] max-md:max-h-[unset] max-md:overflow-y-visible md:pt-2">
             <Suspense fallback={<Loader show variant="wrapper" />}>
               <Outlet />
             </Suspense>

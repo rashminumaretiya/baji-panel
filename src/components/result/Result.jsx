@@ -184,12 +184,6 @@ const TABS_ROW =
   'flex w-2/5 pl-0 mb-0 list-none ' +
   'max-md:w-full max-md:border-b-0 max-md:pb-[1.6vw]'
 
-const TAB_BTN_BASE =
-  'block px-3 py-1.5 text-[12px] text-[var(--text-color)] bg-transparent border-0 ' +
-  'border-b-2 border-transparent cursor-pointer hover:text-[var(--primary)]'
-const TAB_BTN_ACTIVE =
-  '!text-[var(--primary)] !border-[var(--primary)] font-semibold'
-
 // `.result-tabs-wrapper` — outer flex strip; on mobile becomes a column with
 // blue background + extra padding (per the @media (max-width: 767px) block).
 const RESULT_TABS_WRAPPER =
@@ -210,9 +204,7 @@ const OUTER_SELECT =
 const OUTER_SELECT_YELLOW = 'max-md:[&_select]:text-[4.1vw]'
 
 const MATCHED_SELECT =
-  'w-[180px] text-[14px] p-0.5 leading-[29px] h-[29px] ' +
-  'max-md:appearance-none max-md:w-full max-md:text-[3.73vw] ' +
-  'max-md:h-[10.67vw] max-md:px-4 max-md:rounded-[1.6vw] max-md:uppercase'
+  'bg-white w-[180px] text-[14px] p-0.5 leading-[29px] h-[29px] max-md:appearance-none max-md:w-full max-md:text-[3.73vw] max-md:h-[10.67vw] max-md:px-4 max-md:rounded-[1.6vw] max-md:uppercase border rounded-[2px]'
 
 export default function Result() {
   const { t } = useTranslation()
@@ -264,19 +256,21 @@ export default function Result() {
       {/* `.inplay-wrapper mt-md-2` — the original styles for these classes are
           owned by inplay.scss (lives on the page). We retain layout-only
           spacing here. */}
-      <div className="md:mt-2">
+      <>
         <div className={RESULT_TABS_WRAPPER}>
           <ul className={TABS_ROW} role="tablist">
-            {TABS.map((tab) => {
+            {TABS.map((tab, index) => {
               const isActive = tab.id === activeTab
-              const btnClass = [TAB_BTN_BASE, isActive && TAB_BTN_ACTIVE]
-                .filter(Boolean)
-                .join(' ')
+
               return (
-                <li key={tab.id} className="list-none" role="presentation">
+                <li
+                  key={tab.id}
+                  className="list-none flex-1"
+                  role="presentation"
+                >
                   <button
                     type="button"
-                    className={btnClass}
+                    className={`border md:border-[var(--text-color)] border-white w-full p-0 md:text-[13px] text-[3.73333vw] md:leading-[27px] leading-[8.8vw] font-bold ${index === 0 ? 'md:rounded-l rounded-l-[1.6vw]' : ''} ${index === TABS.length - 1 ? 'md:rounded-r rounded-r-[1.6vw]' : ''} ${isActive ? 'border-[var(--primary)] md:bg-[var(--text-color)] bg-white md:text-white text-[var(--text-color)] font-semibold' : 'md:text-[var(--text-color)] text-white md:bg-white'}`}
                     role="tab"
                     aria-selected={isActive}
                     onClick={() => changeTab(tab.id)}
@@ -305,7 +299,7 @@ export default function Result() {
 
         {/* `.second-part-wrapper` — overflow container; the inplay.scss rule
             adds max-h/min-h on desktop. */}
-        <div className="md:max-h-[calc(100vh-198px)] md:min-h-[200px] md:overflow-y-auto">
+        <>
           {isMobile ? (
             <MobileResultTable data={data} />
           ) : (
@@ -320,8 +314,8 @@ export default function Result() {
               )}
             />
           )}
-        </div>
-      </div>
+        </>
+      </>
     </div>
   )
 }

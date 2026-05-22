@@ -27,7 +27,7 @@ export function DesktopGameFilter({ value, onChange }) {
   return (
     <div className="font-bold px-[2px] py-[3px] pl-[10px] text-[var(--white)] bg-[linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] leading-[25px] flex justify-between">
       <div>{t('titles.sportHighLights')}</div>
-      <div className="inline-flex items-center gap-1.5 font-normal">
+      <div className="inline-flex items-center font-normal">
         <label
           htmlFor="viewType"
           className="text-[12px] text-white whitespace-nowrap mb-0 cursor-default"

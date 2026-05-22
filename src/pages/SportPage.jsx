@@ -65,7 +65,7 @@ export default function SportPage({ sportId, bannerSrc, isRacing = false }) {
 
         {isRacing ? (
           <>
-            <div className="mx-0 mt-2">
+            <div className="mx-0 pt-2">
               <div className={GAME_TITLE_CLASS}>{t('titles.highLights')}</div>
             </div>
             <GameList

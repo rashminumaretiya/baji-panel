@@ -153,7 +153,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
                   <div className="flex items-center">
                     <SvgIcon
                       name="cross"
-                      className="mr-1 h-[15px] flex items-center [&_svg]:h-2.5 [&_svg]:w-2.5 [&_svg]:bg-red-600 [&_svg]:text-[var(--white)] [&_svg]:p-0.5 [&_svg]:rounded-[3px]"
+                      className="mr-1 h-[15px] flex items-center [&_svg]:h-2.5 [&_svg]:w-2.5 [&_svg]:bg-red-600 [&_svg]:text- [&_svg]:p-0.5 [&_svg]:rounded-[3px]"
                     />
                     <div className="flex flex-col ml-1">
                       <span className="m-0 whitespace-nowrap inline-block pr-1">
