@@ -28,13 +28,14 @@ const trClass =
   'bg-white border-b border-[var(--xs-lightGray)] last:border-b-[#7e97a7]'
 
 // Padding/font/line-height ported from .profile-container table td.
+// SCSS: `padding: 7px; font-size: 11px; line-height: 16px; vertical-align: top;`
 const tdLabelClass =
-  'py-[5px] pl-2.5 pr-0 text-[11px] leading-4 align-top w-[22%] min-w-[115px] max-mobile:min-w-[80px]'
-const tdValueClass = 'py-[5px] pl-2.5 pr-0 text-[11px] leading-4 align-top'
+  'p-[7px] text-[11px] leading-4 align-top w-[22%] min-w-[115px] max-mobile:min-w-[80px]'
+const tdValueClass = 'p-[7px] text-[11px] leading-4 align-top'
 
 function ActionCell({ children, onClick }) {
   return (
-    <td className={`${tdValueClass} pr-2`}>
+    <td className={tdValueClass}>
       <div
         className="flex items-center justify-end cursor-pointer gap-1"
         onClick={onClick}

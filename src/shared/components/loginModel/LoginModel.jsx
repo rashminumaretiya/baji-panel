@@ -1,44 +1,55 @@
 import { useSelector } from 'react-redux'
-import { Modal as BsModal } from 'react-bootstrap'
 import {
   selectIsMcvYellowTheme,
   selectIsYellowTheme,
 } from '../../../store/slices/commonSlice.js'
-import './loginModel.scss'
+import Modal from '../Modal.jsx'
 
+// Tailwind-only port of loginModel.scss. Uses the in-house Modal primitive
+// instead of react-bootstrap (matches the project-wide migration).
 export default function LoginModel({ isOpen, onClose }) {
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
 
-  const btnClass = [
-    'btn',
-    'btn-primary',
-    isYellowTheme && 'yellow-btn',
-    isMcwCasinoTheme && 'mcw-btn',
-  ]
-    .filter(Boolean)
-    .join(' ')
+  // Replaces `.btn.btn-primary` (+ optional `.yellow-btn` / `.mcw-btn` theme
+  // overrides). Width was 50.4285714286% in the original SCSS — preserved
+  // verbatim so the button keeps its centred half-width footprint.
+  const btnBaseClass =
+    'inline-block w-[50.4285714286%] mx-auto mt-[7px] py-1.5 px-3 rounded text-white font-semibold cursor-pointer transition-colors'
+  const themeClass = isYellowTheme
+    ? 'bg-[var(--primary-yellow)] text-[var(--dark)] hover:bg-[var(--md-primary-yellow)]'
+    : isMcwCasinoTheme
+      ? 'bg-[var(--mcw-primary,var(--primary))] hover:opacity-90'
+      : 'bg-[var(--primary)] hover:opacity-90'
 
   return (
-    <BsModal
-      show={!!isOpen}
-      onHide={onClose}
+    <Modal
+      isOpen={!!isOpen}
+      onClose={onClose}
       size="md"
       centered
-      backdrop="static"
-      keyboard={false}
-      dialogClassName="no-login"
+      closeOnBackdrop={false}
+      closeOnEscape={false}
     >
-      <BsModal.Body>
-        <div className="no-login text-center">
-          <h4 className="pt-1 pb-2">Please login to proceed</h4>
-          <div>
-            <button type="button" className={btnClass} onClick={onClose}>
-              OK
-            </button>
-          </div>
+      {/* `.no-login` container — SCSS: `max-width: 320px; margin: 0 auto;`.
+          The `.no-login .modal-content { box-shadow }` rule targeted bootstrap's
+          card chrome; the in-house Modal primitive already supplies its own
+          card shadow so we don't re-add an inner one. */}
+      <div className="no-login max-w-[320px] mx-auto text-center">
+        {/* SCSS: `h4 { font-size: 15px; font-weight: 700; line-height: 20px }` */}
+        <h4 className="pt-1 pb-2 text-[15px] font-bold leading-5">
+          Please login to proceed
+        </h4>
+        <div>
+          <button
+            type="button"
+            className={`${btnBaseClass} ${themeClass}`}
+            onClick={onClose}
+          >
+            OK
+          </button>
         </div>
-      </BsModal.Body>
-    </BsModal>
+      </div>
+    </Modal>
   )
 }
