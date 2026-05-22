@@ -111,12 +111,12 @@ export default function CurrentBets() {
         render: (_v, row) =>
           row?.selectionName ??
           (typeof row?.selection === 'object'
-            ? (Array.isArray(row.selection)
-                ? row.selection
-                    .map((s) => s?.name)
-                    .filter(Boolean)
-                    .join(' | ')
-                : (row.selection?.name ?? '--'))
+            ? Array.isArray(row.selection)
+              ? row.selection
+                  .map((s) => s?.name)
+                  .filter(Boolean)
+                  .join(' | ')
+              : (row.selection?.name ?? '--')
             : (row?.selection ?? '--')),
       },
       {

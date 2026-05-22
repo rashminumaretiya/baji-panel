@@ -108,7 +108,9 @@ export default function BookFancyModal({
             {selections.map((item, idx) => {
               const exp = Number(item?.exposure) || 0
               const rowBg =
-                exp >= 0 ? 'bg-[rgb(189,218,238)]' : 'bg-[rgba(250,170,186,0.51)]'
+                exp >= 0
+                  ? 'bg-[rgb(189,218,238)]'
+                  : 'bg-[rgba(250,170,186,0.51)]'
               const name = isOddEven
                 ? item?.name === 'Yes'
                   ? t('markets.even', 'Even')

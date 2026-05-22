@@ -45,16 +45,10 @@ import BetExposureCell from '../components/GameDetails/BetExposureCell.jsx'
 import BookFancyModal from '../components/GameDetails/BookFancyModal.jsx'
 import { alertService } from '../shared/services/alert.js'
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Constants
-// ─────────────────────────────────────────────────────────────────────────────
-
 const SPARK_TTL_MS = 750
 const PIP_SCROLL_THRESHOLD = 300
 const SCROLL_CONTAINER_SELECTOR = '.middle-content'
-// Matches `BET_CONFIG.ODD` in baji-exchange-frontend/src/app/core/constants.ts.
-// `BOOKMAKER_ODD = 99` from the Angular constants is intentionally NOT applied
-// to bookmaker cells — the live feed delivers legitimate ACTIVE odds above 99.
+
 const PRICE_LIMIT = 20
 
 const FANCY_TYPES = {
@@ -92,65 +86,45 @@ const MAIN_FANCY = {
   SPORTS_BOOK: 'sportBook',
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Tailwind class constants (extracted to keep the JSX readable since the same
-// styles repeat across runners, bookmaker rows, fancy rows, etc.)
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ── Match-Odds table base
 const MATCH_ODDS_TABLE =
   'w-full border-separate [border-spacing:1px_0] max-md:bg-white'
 
-// ── Generic table th/td (mirrors the SCSS .table th / .table td defaults)
 const TABLE_TH =
   'text-[var(--dark)] text-center align-bottom text-[11px] font-normal pb-[3px] max-md:px-[1.86667vw] max-md:pt-[1.86667vw] max-md:pb-[0.8vw] max-md:text-[3.46667vw] max-md:font-bold'
 
-// ── Price cell base (back/lay)
 const PRICE_CELL_BASE =
   'text-center text-[var(--header-primary)] relative text-[12px] cursor-pointer w-[10.9%] h-[40px] max-md:text-[4vw] max-md:w-[70px] max-md:h-[11.51vw] max-md:px-[1.8666666667vw] py-1 max-md:py-[0.6vw] max-md:min-w-[18.66667vw] hover:opacity-80 [&_p]:font-bold [&_p]:leading-none [&_p]:text-[12px] max-md:[&_p]:text-[3.46667vw] max-md:[&_p]:leading-normal [&_span]:leading-none [&_span]:text-[12px] max-md:[&_span]:text-[2.93333vw]'
 
-// ── Back (blue) tones
 const BLUE_XS = 'bg-[var(--back-0)] hover:bg-[var(--back-0-hover)]'
 const BLUE_MD = 'bg-[var(--back-1)] hover:bg-[var(--back-1-hover)]'
 const BLUE_XXS = 'bg-[var(--back-2)] hover:bg-[var(--back-2-hover)]'
 
-// ── Lay (red/pink) tones
 const RED_XS = 'bg-[var(--lay-0)] hover:bg-[rgba(var(--light-red),0.8)]'
 const RED_MD = 'bg-[var(--lay-1)] hover:bg-[var(--lay-1-hover)]'
 const RED_XXS = 'bg-[var(--lay-2)] hover:bg-[var(--lay-2-hover)]'
 
-// ── Active state (yellow highlight / blue / red as per SCSS)
 const BLUE_XS_ACTIVE =
   '!bg-[var(--lg-blue-bg)] !text-white shadow-[inset_0_1px_3px_rgba(var(--black-rgb),0.5)] hover:opacity-100'
 const RED_XS_ACTIVE =
   '!bg-[var(--lg-red-bg)] !text-white shadow-[inset_0_1px_3px_rgba(var(--black-rgb),0.5)] hover:opacity-100'
 
-// ── Suspended bg (diagonal stripes)
 const BG_LINE =
   '!bg-[url(/img/bg-line.png)] opacity-90 [filter:brightness(0.7)] [background-blend-mode:color-burn] !cursor-default pointer-events-none'
 
-// ── Spark animations on odds change
 const BACK_SPARK = 'animate-[sparkBack_0.8s_ease-in-out]'
 const LAY_SPARK = 'animate-[sparkLay_0.8s_ease-in-out]'
 
-// ── Runner-name first cell (white bg desktop / transparent mobile)
 const RUNNER_FIRST_CELL =
   ' bg-white text-start px-[10px] py-[3px] text-[var(--header-primary)] border-t border-[var(--tbl-border-color)] max-md:bg-transparent max-md:px-[1.8666666667vw] max-md:py-[0.3333333333vw] max-md:h-[11.51vw] max-md:text-[4vw]'
 
-// ── Game-status overlay (suspended / etc.) inside bookmaker / fancy
 const GAME_STATUS_OVERLAY =
   'absolute inset-0 max-w-[665px] !w-full bg-[rgba(36,58,72,0.4)] z-[9] flex items-center justify-center text-white/80 [text-shadow:0_1px_4px_rgba(0,0,0,0.5)] text-[13px] cursor-default hover:bg-[rgba(36,58,72,0.6)] max-md:text-[3.46667vw] max-md:font-bold'
 
-// ── Fancy_info popup
 const FANCY_INFO_POPUP =
   'absolute top-0 right-0 w-auto bg-white z-[99] px-[1.8666666667vw] pb-[1.8666666667vw] shadow-[0_6px_10px_rgba(var(--black-rgb),0.7)] rounded-[1.0666666667vw] flex [&_p]:text-[var(--sxl-text-color)] [&_p]:text-[2.6666666667vw] [&_p]:leading-[3.2vw] [&_p]:pt-[0.8vw] [&_p]:pb-[1.0666666667vw] [&_p]:whitespace-nowrap [&_p]:mb-0 [&_span]:leading-[3.7333333333vw] [&_span]:text-[var(--dark)] [&_span]:whitespace-nowrap [&_span]:text-[3vw]'
 
 const FANCY_INFO_CLOSE_ICON =
   'pl-[2.5vw] pt-[1vw] inline-flex text-black [&_svg]:!h-[3.2vw] [&_svg]:!w-[3.2vw]'
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Pure helpers
-// ─────────────────────────────────────────────────────────────────────────────
 
 const fmt = (value, digits = 0) => {
   if (value == null || value === '') return ''
@@ -162,9 +136,6 @@ const fmt = (value, digits = 0) => {
   })
 }
 
-// Mirrors Angular's default `| number` pipe (format `1.0-3`): 1 minimum integer,
-// 0 minimum / 3 maximum fractional digits — so 1.7 stays "1.7" (not "1.70"),
-// 1.69 stays "1.69", 3371 becomes "3,371" with thousands separator.
 const fmtPrice = (value) => {
   if (value == null || value === '' || value === 0) return ''
   const n = Number(value)
@@ -220,10 +191,8 @@ const normalizeStatus = (status) =>
 const isMarketStatusBlocked = (status) =>
   BLOCKED_STATUSES.has(normalizeStatus(status))
 
-// Back-compat alias for any imports referencing the old name.
 const isBookmakerStatusBlocked = isMarketStatusBlocked
 
-// Diff back/lay arrays against previous snapshot, flagging cells whose price changed.
 const flagChanged = (current, previous) => {
   if (!Array.isArray(current)) return current
   return current.map((cell, i) => ({
@@ -287,7 +256,6 @@ const normalizeMatchOdds = (raw) => {
   return Array.isArray(raw) ? raw : [raw]
 }
 
-// Group fancy items by gtype with stable priority + sort by sr_no.
 const groupFancyByType = (items) => {
   const buckets = { session: [], fancy1: [], oddeven: [], all: [] }
   if (!Array.isArray(items)) return buckets
@@ -310,7 +278,6 @@ const groupFancyByType = (items) => {
   return buckets
 }
 
-// Categorize sportbook markets by name (Innings / Over / Match / Players).
 const groupSportbookByCategory = (items) => {
   const buckets = { all: [], innings: [], over: [], match: [], players: [] }
   if (!Array.isArray(items)) return buckets
@@ -359,9 +326,7 @@ export default function LiveOdds() {
   const activeRightSideBet = useSelector(selectActiveBetSlip)
   const isPlacingBet = useSelector(selectIsPlacingBet)
   const placingSelectionId = useSelector(selectPlacingSelectionId)
-  // Only the active-market discriminator is read at this level — the cells
-  // subscribe to the full preExposure object themselves to avoid re-rendering
-  // the whole page on every stake keystroke.
+
   const preExposureMarket = useSelector(selectPreExposureMarketName)
   const openBetRefreshTick = useSelector(selectOpenBetRefreshTick)
 
@@ -391,10 +356,6 @@ export default function LiveOdds() {
   const [activeSportBook, setActiveSportBook] = useState(null)
   const [bookFancyTarget, setBookFancyTarget] = useState(null)
 
-  // Persisted per-runner P/L bucketed by marketId. Populated from
-  // `GET bet/post-exposure/${eventId}` (one bulk call per event mirroring
-  // sbex-user-fe). Refreshed whenever a bet is placed (via
-  // `openBetRefreshTick`). Empty when guest or no event id.
   const [postExposureByMarket, setPostExposureByMarket] = useState(
     () => new Map()
   )
@@ -465,7 +426,7 @@ export default function LiveOdds() {
 
   useEffect(() => {
     const controller = new AbortController()
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+
     void loadDefaultOdds(controller.signal)
     return () => controller.abort()
   }, [loadDefaultOdds])
@@ -554,12 +515,6 @@ export default function LiveOdds() {
     [matchOddsArray]
   )
 
-  // ── Persisted bet exposure
-  // One bulk call per event returns all markets' exposures. Each entry is
-  // shaped as { marketId, selections: [{ id, exposure }, ...] }. We bucket
-  // by marketId so MatchOddsSection can look up its own selections in O(1).
-  // The fetch is gated to authenticated users with a known eventId, and
-  // re-runs whenever a bet is placed (openBetRefreshTick increments).
   useEffect(() => {
     if (!isAuthenticated || !eventId) return undefined
     let cancelled = false
@@ -572,11 +527,8 @@ export default function LiveOdds() {
         const fancyBucket = []
         for (const entry of entries) {
           if (Array.isArray(entry?.selections) && entry?.marketId) {
-            // Market-level (MATCH_ODDS, BOOKMAKER, SPORTS_BOOK).
             next.set(String(entry.marketId), entry.selections)
           } else if (entry?.selectionId != null) {
-            // Fancy: flat single-selection entry. Aggregate under key '0'
-            // mirroring sbex-user-fe's Exposure service.
             fancyBucket.push({
               id: String(entry.selectionId),
               exposure: entry.exposure,
@@ -595,27 +547,15 @@ export default function LiveOdds() {
     }
   }, [isAuthenticated, eventId, openBetRefreshTick])
 
-  // Gated read — avoids leaking the previous event's exposure between
-  // navigations and when the user logs out, without an in-effect setState.
   const visibleExposureByMarket = useMemo(() => {
     if (!isAuthenticated || !eventId) return new Map()
     return postExposureByMarket
   }, [isAuthenticated, eventId, postExposureByMarket])
 
-  // ── Fancy preExposure publication
-  // Fancy bets do not live in the right-side <BetSlip /> (Redux) — they use the
-  // local `activeFancyBet` + inline slip. Mirror the Angular signal here so the
-  // same `BetExposureCell` can render previews for fancy rows.
   //
-  // Formula (matches sbex-user-fe `calculateRunnerExposure#FANCY`):
-  //   pnl    = (size * stake) / 100
-  //   profit = (type === 'YES' ? +1 : -1) * pnl
-  // Only the matched selectionId shows a preview — fancy markets are single-
-  // selection so the "other runners" liability concept doesn't apply.
+
   //
-  // The published preview is owned by this market: when the fancy slip closes
-  // (cancel / place / switch tab) we clear only if the current preview is
-  // still ours — never clobbering a concurrent match-odds preview.
+
   const fancySelectionId = activeFancyBet?.selectionId
   const fancyType = activeFancyBet?.type
   const fancyStake = Number(activeFancyBet?.stake) || 0
@@ -674,7 +614,6 @@ export default function LiveOdds() {
       fancyMainTabs.length &&
       !fancyMainTabs.some((t) => t.type === selectedFancy)
     ) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedFancy(fancyMainTabs[0].type)
     }
   }, [fancyMainTabs, selectedFancy])
@@ -818,7 +757,7 @@ export default function LiveOdds() {
   }
   const onBookmakerClick = (bookmaker, odd, betType) => {
     if (!odd?.price) return
-    if (isBookmakerStatusBlocked(bookmaker.s ?? bookmaker.status)) return
+    if (isMarketStatusBlocked(bookmaker.s ?? bookmaker.status)) return
     if (!isAuthenticated) {
       dispatch(setLoginWindow(true))
       return
@@ -826,22 +765,25 @@ export default function LiveOdds() {
     const slip = {
       marketId: bookmaker.mid ?? bookmaker.marketId,
       marketName: 'BOOKMAKER',
-      marketDisplayName: 'Bookmaker',
       eventId: String(eventId ?? ''),
       eventTitle: matchOddsArray[0]?.eventName || '',
       sport: sportSlug ?? '',
       runners: matchOddsArray[0]?.runners ?? [],
       selectionId: bookmaker.sid ?? bookmaker.selectionId,
+      runnerId: bookmaker.sid ?? bookmaker.selectionId,
       selectionName: bookmaker.nat ?? bookmaker.runnerName,
+      runnerName: bookmaker.nat ?? bookmaker.runnerName,
       betType,
+      type: betType,
       odd: odd.price,
+      odds: odd.price,
       size: odd.size ?? 0,
-      stake: '',
+      stake: 0,
       min: Number(bookmaker.min ?? bookmakerSetting.min ?? 1),
       max: Number(bookmaker.max ?? bookmakerSetting.max ?? 10000),
     }
     if (tryOneClickPlace(slip)) return
-    dispatch(setActiveBetSlip(slip))
+    setActiveBookmaker(slip)
   }
   const onFancyClick = (item, betType) => {
     const price = betType === 'NO' ? item.LayPrice1 : item.BackPrice1
@@ -1113,10 +1055,6 @@ export default function LiveOdds() {
   )
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Sub-components — flat, file-local, mirror Angular template fragments 1:1
-// ─────────────────────────────────────────────────────────────────────────────
-
 export const PinRefresh = memo(function PinRefresh({ onRefresh }) {
   const baseDiv =
     'text-white font-bold z-[1] min-w-[90px] flex justify-center h-[25px] leading-[20px] relative max-md:px-3 max-md:py-[6px] max-md:h-[7.46667vw] max-md:leading-tight max-md:text-[3.2vw] max-md:min-w-[25.5vw] [&_i_svg]:h-[14px] [&_i_svg]:w-[14px] max-md:[&_i_svg]:h-[3.73333vw] max-md:[&_i_svg]:w-[3.73333vw] mobile:[&_span]:hidden'
@@ -1201,8 +1139,6 @@ const LiveStream = memo(function LiveStream({
   )
 })
 
-// Matched-amount + Live toggle bar — mirrors Angular's `.d-flex > .matched + .btn-live`.
-// Live button colour flips: on = cool blue (stream visible), off = orange (closed).
 const MatchedLiveBar = memo(function MatchedLiveBar({
   currency,
   totalMatched,
@@ -1848,7 +1784,6 @@ function BookmakerSection({
   )
 }
 
-// Tiny shared header bar (used by Bookmaker + Fancy "match-header")
 function MatchHeader({ children }) {
   return (
     <div className="flex items-center justify-between bg-[var(--light-navy)] max-md:bg-[var(--text-color)]">
@@ -1950,7 +1885,6 @@ const FancyTabHeader = memo(function FancyTabHeader({
   )
 })
 
-// Shared tabs (Fancy / Sportbook priority strip)
 const PriorityTabs = memo(function PriorityTabs({
   tabs,
   selectedType,
@@ -2423,10 +2357,6 @@ function SportbookSection({
   )
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SVG icons (inlined, no external sprite dependency)
-// ─────────────────────────────────────────────────────────────────────────────
-
 function PinIcon() {
   return (
     <i>
@@ -2596,10 +2526,6 @@ function TimeSvg() {
     </svg>
   )
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────────────────────────────────────
 
 function applyAdminPatch(current, evt) {
   if (!current) return current
