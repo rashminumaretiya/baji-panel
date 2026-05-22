@@ -101,7 +101,7 @@ const TABLE_TH =
 
 // ── Price cell base (back/lay)
 const PRICE_CELL_BASE =
-  'text-center border-t border-[var(--tbl-border-color)] text-[var(--header-primary)] relative text-[12px] cursor-pointer w-[10.9%] h-[40px] max-md:text-[4vw] max-md:w-[70px] max-md:h-[11.51vw] max-md:min-w-[18.66667vw] hover:opacity-80 [&_p]:font-bold [&_p]:leading-none [&_p]:text-[12px] max-md:[&_p]:text-[3.46667vw] max-md:[&_p]:leading-normal [&_span]:leading-none [&_span]:text-[12px] max-md:[&_span]:text-[2.93333vw]'
+  'text-center border-t border-[var(--tbl-border-color)] text-[var(--header-primary)] relative text-[12px] cursor-pointer w-[10.9%] h-[40px] max-md:text-[4vw] max-md:w-[70px] max-md:h-[11.51vw] max-md:px-[1.8666666667vw] py-1 max-md:py-[0.6vw] max-md:min-w-[18.66667vw] hover:opacity-80 [&_p]:font-bold [&_p]:leading-none [&_p]:text-[12px] max-md:[&_p]:text-[3.46667vw] max-md:[&_p]:leading-normal [&_span]:leading-none [&_span]:text-[12px] max-md:[&_span]:text-[2.93333vw]'
 
 // ── Back (blue) tones
 const BLUE_XS = 'bg-[var(--back-0)] hover:bg-[var(--back-0-hover)]'
@@ -129,7 +129,7 @@ const LAY_SPARK = 'animate-[sparkLay_0.8s_ease-in-out]'
 
 // ── Runner-name first cell (white bg desktop / transparent mobile)
 const RUNNER_FIRST_CELL =
-  'whitespace-nowrap bg-white text-start px-[10px] py-[3px] text-[var(--header-primary)] border-t border-[var(--tbl-border-color)] max-md:bg-transparent max-md:px-[1.8666666667vw] max-md:py-[0.3333333333vw]'
+  ' bg-white text-start px-[10px] py-[3px] text-[var(--header-primary)] border-t border-[var(--tbl-border-color)] max-md:bg-transparent max-md:px-[1.8666666667vw] max-md:py-[0.3333333333vw] max-md:h-[11.51vw] max-md:text-[4vw]'
 
 // ── Game-status overlay (suspended / etc.) inside bookmaker / fancy
 const GAME_STATUS_OVERLAY =
@@ -847,8 +847,10 @@ export default function LiveOdds() {
 
         <div className={cx(isMobile && showStream && '')}>
           {isMobile && (
-            <div className="bg-[var(--text-color)] flex justify-between items-center px-3 mr-0 leading-[2] text-white">
-              <span className="capitalize">{getSportName(sportId)}</span>
+            <div className="bg-[linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] flex justify-between items-center px-3 max-md:px-[1.866667vw] mr-0 leading-[2] text-white max-md:text-[3.7333333333vw]">
+              <span className="capitalize font-bold">
+                {getSportName(sportId)}
+              </span>
               {isInplay && (
                 <div className="inline-flex items-center [&_i]:inline-flex [&_i]:rounded-[0.8vw] [&_i]:mr-[0.6vw] [&_i]:bg-gradient-to-t [&_i]:from-[var(--xs-green-primary)] [&_i]:via-[var(--xs-green-primary)] [&_i]:to-[var(--xs-shadow-primary)] [&_small]:text-[3.2666666667vw] [&_small]:font-normal">
                   <i aria-hidden="true" />
@@ -999,7 +1001,7 @@ export default function LiveOdds() {
 
 export function PinRefresh({ onRefresh }) {
   const baseDiv =
-    'text-white font-bold z-[1] min-w-[90px] h-[25px] leading-[20px] relative max-md:px-3 max-md:py-[6px] max-md:h-[7.46667vw] max-md:leading-tight max-md:text-[3.2vw] max-md:min-w-[25.5vw] [&_i_svg]:h-[14px] [&_i_svg]:w-[14px] max-md:[&_i_svg]:h-[3.73333vw] max-md:[&_i_svg]:w-[3.73333vw] mobile:[&_span]:hidden'
+    'text-white font-bold z-[1] min-w-[90px] flex justify-center h-[25px] leading-[20px] relative max-md:px-3 max-md:py-[6px] max-md:h-[7.46667vw] max-md:leading-tight max-md:text-[3.2vw] max-md:min-w-[25.5vw] [&_i_svg]:h-[14px] [&_i_svg]:w-[14px] max-md:[&_i_svg]:h-[3.73333vw] max-md:[&_i_svg]:w-[3.73333vw] mobile:[&_span]:hidden'
 
   const firstDiv = `${baseDiv} bg-[var(--text-xl-color)] rounded-bl-[10px] max-md:bg-gradient-to-t max-md:from-[var(--xls-navy)] max-md:to-[var(--xts-light-bg)] max-md:w-[25.5vw] max-md:rounded-bl-[3vw] before:content-[''] before:absolute before:left-[-3px] before:w-[19px] before:bg-[var(--text-xl-color)] before:top-[-4px] before:bottom-[1px] before:-z-[1] before:[transform:rotate(-22deg)] before:rounded-bl-[10px] max-md:before:[transform:rotate(-16deg)] max-md:before:bg-gradient-to-t max-md:before:from-[var(--xs-navy)] max-md:before:to-[var(--xts-md-bg)] max-md:before:rounded-bl-[3vw]`
 
@@ -1607,7 +1609,7 @@ function BookmakerSection({
               return (
                 <Fragment key={bookmaker.selectionId}>
                   <tr className="bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)] hover:[&_td]:bg-white/40 hover:[&_td:first-child]:bg-white/40">
-                    <td className="px-[10px] pt-[4px] !align-top bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)] max-md:px-[1.8666666667vw] max-md:py-0 max-md:!align-middle">
+                    <td className="px-[10px] pt-[4px] !align-top bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)] max-md:px-[1.8666666667vw] max-md:py-0 max-md:!align-middle max-md:text-[4vw]">
                       <div className="flex flex-col">
                         <span className="font-bold">
                           {bookmaker.runnerName}
@@ -1623,9 +1625,14 @@ function BookmakerSection({
                     >
                       <table
                         align="right"
-                        className="border-collapse relative md:w-full md:max-w-[76%] before:content-[''] before:bg-gradient-to-r before:from-[rgba(130,183,221,0.15)] before:to-[rgba(130,183,221,0.8)] before:absolute before:left-0 before:right-0 before:top-0 before:bottom-0 before:w-1/2 before:z-0 after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-1/2 after:bg-gradient-to-l after:from-[rgba(231,170,184,0.8)] after:to-[rgba(231,170,184,0.15)] after:z-0 after:top-0"
+                        className="border-collapse relative md:w-full md:max-w-[76%] before:content-[''] before:bg-gradient-to-r before:from-[rgba(130,183,221,0.15)] before:to-[rgba(130,183,221,0.8)] before:absolute before:left-0 before:right-0 before:top-0 before:bottom-0 before:w-1/2 before:z-0 after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-1/2 after:bg-gradient-to-r after:from-[rgba(231,170,184,0.8)] after:to-[rgba(231,170,184,0.15)] after:z-0 after:top-0"
                       >
-                        <tbody>
+                        <tbody className="relative">
+                          {isSuspended && (
+                            <div className="inset-0 w-full h-full absolute bg-[rgba(36,58,72,0.4)] z-50 text-white/80 font-bold flex items-center justify-center text-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
+                              Suspended
+                            </div>
+                          )}
                           <tr>
                             {/* BACK — iterates bookmaker.back; mobile shows only $index === 2 */}
                             {bookmaker.back.map((backCell, i) => {
@@ -1735,7 +1742,7 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
 
         // Base chip wrapper
         const chipBase =
-          'inline-flex items-center cursor-pointer relative ml-4 max-md:ml-[4.786vw]'
+          'inline-flex items-center cursor-pointer relative ml-4 max-md:ml-[4.786vw] first:ml-0'
         const chipActive = isActive ? 'ml-0' : ''
         // Hide the pin for the second chip (sports-book), as per :nth-child(2) rule
         // We approximate by checking the tab type instead of index.
@@ -1747,8 +1754,8 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
         // Skew tails before/after — only when NOT active
         if (!isActive) {
           innerBg +=
-            " before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-[-6px] before:w-[10px] before:rounded-tl-[4px] before:[transform:skew(-14deg,0deg)] before:bg-[var(--light-navy)] before:z-[1] max-md:before:left-[-1.582vw] max-md:before:w-[3.304vw] max-md:before:rounded-tl-[0.522vw] max-md:before:h-[8.55vw]" +
-            " after:content-[''] after:absolute after:top-0 after:bottom-0 after:right-[-6px] after:w-[10px] after:rounded-tr-[4px] after:[transform:skew(14deg,0deg)] after:bg-[var(--light-navy)] after:z-[1] max-md:after:right-[-1.782vw] max-md:after:w-[3.304vw] max-md:after:rounded-tr-[0.522vw] max-md:after:h-[8.55vw]"
+            " before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-[-6px] before:w-[10px] before:rounded-tl-[4px] before:[transform:skew(-14deg,0deg)] before:bg-[var(--light-navy)] before:z-[1] max-md:before:left-[-1.582vw] max-md:before:w-[3.304vw] max-md:before:rounded-tl-[0.522vw] max-md:before:h-[7.6vw]" +
+            " after:content-[''] after:absolute after:top-0 after:bottom-0 after:right-[-6px] after:w-[10px] after:rounded-tr-[4px] after:[transform:skew(14deg,0deg)] after:bg-[var(--light-navy)] after:z-[1] max-md:after:right-[-1.782vw] max-md:after:w-[3.304vw] max-md:after:rounded-tr-[0.522vw] max-md:after:h-[7.6vw]"
         } else {
           innerBg = innerBg.replace(
             'bg-[var(--light-navy)]',
@@ -1766,7 +1773,7 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
             role="button"
           >
             {tab.type === MAIN_FANCY.SPORTS_BOOK && !isActive && (
-              <p className="absolute overflow-visible top-[-5px] right-[-15px] h-[14px] z-[99] [filter:drop-shadow(1px_1px_2px_rgba(0,0,0,0.6))] mb-0 max-md:top-[-3.5667vw] max-md:right-[-5vw] before:content-[''] before:absolute before:bottom-[-8px] before:left-[15px] before:w-0 before:h-0 before:border-solid before:border-t-[8px] before:border-r-[7px] before:border-b-0 before:border-l-0 before:border-t-[var(--xsm-red)] before:border-r-transparent max-md:before:border-t-[1.8vw] max-md:before:border-r-[1.8vw] max-md:before:left-[3.5vw] max-md:before:bottom-[-1.3vw]">
+              <p className="absolute overflow-visible top-[-5px] right-[-15px] h-[14px] z-[99] [filter:drop-shadow(1px_1px_2px_rgba(0,0,0,0.6))] mb-0 max-md:top-[-3.5667vw] max-md:right-[-5vw] before:content-[''] before:absolute before:bottom-[-8px] before:left-[15px] before:w-0 before:h-0 before:border-solid before:border-t-[8px] before:border-r-[7px] before:border-b-0 before:border-l-0 before:border-t-[var(--xsm-red)] before:border-r-transparent max-md:before:border-t-[1.8vw] max-md:before:border-r-[1.8vw] max-md:before:left-[3.5vw] max-md:before:bottom-[-2.3vw]">
                 <span className="rounded-[15px] px-2 py-[3px] text-white text-[10px] bg-[var(--xsm-red)] max-md:px-[1.7vw] max-md:py-[0.2vw] max-md:rounded-[0.8vw]">
                   New
                 </span>
@@ -1791,7 +1798,7 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
               </span>
             </div>
             {isActive && (
-              <i className="inline-flex text-center relative text-white z-[2] px-1 w-[16px] h-[16px] max-md:w-[4vw] max-md:h-[4.45vw] after:content-[''] after:bg-no-repeat after:absolute after:z-[1] after:bg-center after:left-0 after:top-0 after:bg-contain after:w-[16px] after:h-[16px] after:[background-image:url('/img/svg/info.svg')] max-md:after:w-[5vw] max-md:after:h-[4vw] max-md:after:[background-image:url('/img/svg/questionMarkRounded.svg')] before:content-[''] before:absolute before:rounded-tr-[4px] before:[transform:skew(14deg,0deg)] before:-z-[1] before:left-[-5px] before:w-[28px] before:top-[-7px] before:bottom-[-7px] max-md:before:top-[-1.6vw] max-md:before:bottom-0 max-md:before:w-[7vw] max-md:before:h-[7.6vw] max-md:before:left-[-1vw]" />
+              <i className="inline-flex text-center relative text-white z-[2] px-1 w-[16px] h-[16px] max-md:w-[4vw] max-md:h-[4.45vw] after:content-[''] after:bg-no-repeat after:absolute after:z-[1] after:bg-center after:left-0 after:top-0 after:bg-contain after:w-[16px] after:h-[16px] after:[background-image:url('/img/svg/info.svg')] max-md:after:w-[5vw] max-md:after:h-[4vw] max-md:after:[background-image:url('/img/svg/questionMarkRounded.svg')] before:content-[''] before:absolute before:rounded-tr-[4px] before:[transform:skew(14deg,0deg)] before:-z-[1] before:left-[-5px] before:w-[28px] before:top-[-7px] before:bottom-[-7px] max-md:before:top-[-1.6vw] max-md:before:bottom-0 max-md:before:w-[7vw] max-md:before:h-[7.6vw] max-md:before:left-[-1vw] before:bg-[linear-gradient(0deg,var(--xl-lightest-navy)_0%,var(--xts-lightest-navy)_100%)]" />
             )}
           </div>
         )
@@ -1817,7 +1824,7 @@ function PriorityTabs({ tabs, selectedType, onSelectType, variant = 'fancy' }) {
   )
 
   const wrapperCls = cx(
-    'flex justify-center items-center shadow-[inset_0_1px_0_0_rgba(var(--black-rgb),0.2)] bg-gradient-to-b from-[var(--md-lightest-navy)] from-[15%] to-[var(--lg-lightest-navy)] max-md:!shadow-none max-md:bg-none max-md:bg-[var(--smd-text-color)] max-md:justify-start max-md:pl-[1.6vw]',
+    'flex justify-center items-center shadow-[inset_0_1px_0_0_rgba(var(--black-rgb),0.2)] bg-gradient-to-b from-[var(--md-lightest-navy)] from-[15%] to-[var(--lg-lightest-navy)] max-md:!shadow-none max-md:bg-none max-md:bg-[var(--smd-text-color)] max-md:justify-start max-md:py-[0.5vw] max-md:pl-[1.6vw]',
     isSportBook &&
       '!bg-gradient-to-b !from-[var(--xs-orange)] !from-[15%] !to-[var(--md-orange)] pb-[3px] max-md:!bg-[var(--orange)]'
   )
@@ -1832,7 +1839,7 @@ function PriorityTabs({ tabs, selectedType, onSelectType, variant = 'fancy' }) {
           {tabs.map((tab) => {
             const isActive = selectedType === tab.type
             const liBase =
-              'min-w-[70px] h-[18px] leading-[18px] font-bold rounded-[4px] px-[5px] text-center max-md:h-[5.9333333333vw] max-md:min-w-0 max-md:px-[2.6666666667vw] max-md:leading-[6vw] max-md:rounded-none max-md:border-r max-md:border-r-white/40 hover:[&_a]:underline'
+              'min-w-[70px] h-[18px] leading-[18px] font-bold rounded-[4px] px-[5px] text-center max-md:h-[5.9333333333vw] max-md:min-w-0 max-md:px-[2.6666666667vw] max-md:leading-[6vw] max-md:h-[5.9333333333vw] max-md:border-r max-md:border-r-white/40 hover:[&_a]:underline'
             const liActive = isActive
               ? cx(
                   'bg-white hover:[&_a]:!no-underline max-md:rounded-[1.0666666667vw]',
@@ -2341,13 +2348,13 @@ function PinSvg() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="8"
-      height="12"
-      viewBox="0 0 8 12"
+      width="25"
+      height="25"
+      viewBox="0 0 25 25"
     >
       <path
-        d="M6.714 5.25c.857.321 1.286.812 1.286 1.473 0 .232-.036.384-.107.455-.071.071-.214.107-.429.107h-2.893l-.429 4.714h-.286l-.429-4.714h-2.893c-.214 0-.357-.04-.429-.121-.071-.08-.107-.228-.107-.442 0-.661.429-1.152 1.286-1.473l.143-.054c.262-.107.429-.277.5-.509l.643-3.161v-.134c0-.143-.119-.259-.357-.348l-.036-.027h-.036c-.286-.089-.429-.241-.429-.455 0-.25.048-.406.143-.469.095-.063.262-.094.5-.094h3.286c.238 0 .405.031.5.094.095.063.143.219.143.469 0 .214-.143.366-.429.455h-.036l-.036.027c-.238.089-.357.205-.357.348v.134l.643 3.161c.071.232.238.402.5.509l.143.054z"
-        fill="currentColor"
+        fill="rgb(126,151,167)"
+        d="M12.5 25C5.596 25 0 19.404 0 12.5S5.596 0 12.5 0 25 5.596 25 12.5 19.404 25 12.5 25zm0-1C18.85 24 24 18.85 24 12.5S18.85 1 12.5 1 1 6.15 1 12.5 6.15 24 12.5 24zm5.09-12.078c1.606.516 2.41 1.13 2.41 2.19 0 .373-.067.616-.2.73-.135.115-.403.173-.804.173H13.57l-.81 7.988h-.536l-.795-7.988H6.003c-.4 0-.67-.065-.803-.194-.133-.128-.2-.364-.2-.708 0-1.06.804-1.674 2.41-2.19.09 0 .18-.03.27-.086.49-.172.802-.444.936-.816L9.82 5.95v-.216c0-.23-.222-.415-.668-.558l-.067-.043h-.067c-.536-.143-.804-.387-.804-.73 0-.402.09-.652.268-.753.18-.1.49-.15.938-.15h6.16c.447 0 .76.05.938.15.178.1.268.35.268.752 0 .344-.268.588-.804.73h-.067l-.067.044c-.446.143-.67.33-.67.558v.215l1.206 5.07c.134.372.446.644.937.816.09.057.18.086.27.086z"
       ></path>
     </svg>
   )
