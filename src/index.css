@@ -351,6 +351,11 @@ body {
   background-color: var(--xs-gray);
 }
 
+input:focus,
+select:focus {
+  outline: none;
+}
+
 @media screen and (max-width: 767px) {
   body {
     font-size: 3.4666666667vw;

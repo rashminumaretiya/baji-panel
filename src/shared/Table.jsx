@@ -43,7 +43,7 @@ export default function Table({
           {tableTitle}
         </TableTitleTag>
       )}
-      <table className="w-full mb-0 border-collapse">
+      <table className="w-full mb-4 border-collapse">
         <thead>
           <tr>
             {columns.map((col) => (
@@ -69,7 +69,9 @@ export default function Table({
                       key={col.key}
                       className={`border-t border-[var(--xs-gray)] px-2.5 py-2 align-middle bg-white text-[12px] text-[var(--dark)] text-left last:text-right ${cellClassName}`.trim()}
                     >
-                      {col.render ? col.render(value, row, rowIndex) : (value ?? '')}
+                      {col.render
+                        ? col.render(value, row, rowIndex)
+                        : (value ?? '')}
                     </td>
                   )
                 })}

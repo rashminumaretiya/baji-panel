@@ -6,8 +6,16 @@ import BetHistory from './BetHistory.jsx'
 import ProfitLoss from './ProfitLoss.jsx'
 
 const MAIN_TABS = [
-  { id: 'current-bets', i18nKey: 'common.currentBets', fallback: 'Current Bets' },
-  { id: 'bet-history', i18nKey: 'common.betsHistory', fallback: 'Bets History' },
+  {
+    id: 'current-bets',
+    i18nKey: 'common.currentBets',
+    fallback: 'Current Bets',
+  },
+  {
+    id: 'bet-history',
+    i18nKey: 'common.betsHistory',
+    fallback: 'Bets History',
+  },
   { id: 'pnl', i18nKey: 'common.profitLoss', fallback: 'Profit & Loss' },
 ]
 
@@ -37,7 +45,7 @@ export default function MyBets() {
         {t('common.myBets', 'My Bets')}
       </h3>
       <Tabs
-        className="mb-3"
+        className="mb-4"
         tabs={tabs}
         activeId={activeTab}
         onChange={setTab}

@@ -45,19 +45,18 @@ const yesterdayRange = () => {
   return { from: toIsoDate(prev), to: toIsoDate(t) }
 }
 
-function UserIcon() {
+function UserIcon({ ...props }) {
   return (
     <svg
-      width="18"
-      height="18"
+      width="30"
+      height="30"
       viewBox="0 0 30 30"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      className="shrink-0"
+      {...props}
     >
       <mask
-        id="user-icon-mask"
+        id="mask0_195_4371"
         style={{ maskType: 'alpha' }}
         maskUnits="userSpaceOnUse"
         x="0"
@@ -65,36 +64,14 @@ function UserIcon() {
         width="30"
         height="30"
       >
-        <rect width="30" height="30" fill="currentColor" />
+        <rect width="30" height="30" fill="currentColor"></rect>
       </mask>
-      <g mask="url(#user-icon-mask)">
+      <g mask="url(#mask0_195_4371)">
         <path
           d="M15 15C13.625 15 12.4479 14.5104 11.4688 13.5312C10.4896 12.5521 10 11.375 10 10C10 8.625 10.4896 7.44792 11.4688 6.46875C12.4479 5.48958 13.625 5 15 5C16.375 5 17.5521 5.48958 18.5312 6.46875C19.5104 7.44792 20 8.625 20 10C20 11.375 19.5104 12.5521 18.5312 13.5312C17.5521 14.5104 16.375 15 15 15ZM5 25V21.5C5 20.7917 5.18229 20.1406 5.54688 19.5469C5.91146 18.9531 6.39583 18.5 7 18.1875C8.29167 17.5417 9.60417 17.0573 10.9375 16.7344C12.2708 16.4115 13.625 16.25 15 16.25C16.375 16.25 17.7292 16.4115 19.0625 16.7344C20.3958 17.0573 21.7083 17.5417 23 18.1875C23.6042 18.5 24.0885 18.9531 24.4531 19.5469C24.8177 20.1406 25 20.7917 25 21.5V25H5Z"
           fill="currentColor"
-        />
+        ></path>
       </g>
-    </svg>
-  )
-}
-
-function ClockIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="#7e97a7"
-      stroke="currentColor"
-      strokeWidth="2"
-      aria-hidden="true"
-      className="shrink-0"
-    >
-      <circle cx="12" cy="12" r="9" />
-      <polyline
-        points="12 7 12 12 16 14"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
     </svg>
   )
 }
@@ -110,8 +87,9 @@ const plCardClass =
 const plHeaderClass = 'mb-[10px]'
 const plTitleClass = 'text-[15px] font-semibold mb-[6px] text-[#3b5160] mt-0'
 const plMetaClass =
-  'flex items-center flex-wrap gap-[14px] text-[12px] text-[#1e1e1e]'
-const plMetaItemClass = 'inline-flex items-center gap-[6px] text-[#555]'
+  'flex items-center flex-wrap gap-[10px] text-[12px] text-[#1e1e1e]'
+const plMetaItemClass =
+  'inline-flex items-center gap-[4px] text-[var(--text-color)] [&_svg_path]:fill-[var(--sm-text-color)]'
 
 const filterContainerClass =
   'bg-[var(--platinum-grey)] border-b border-[#d0d0d0] px-[10px] py-[8px] text-[12px] text-[#1e1e1e]'
@@ -124,9 +102,9 @@ const timeInputClass =
   'h-6 px-[6px] py-0 text-[12px] leading-[22px] rounded-[3px] border border-[#aaa] w-[60px] text-center bg-[#ececec] text-[#666]'
 const periodSepClass = 'px-1'
 const btnLightClass =
-  'h-[26px] px-[10px] text-[12px] rounded-[3px] bg-[#f8f9fa] border border-[#f8f9fa] text-[#212529] hover:bg-[#e2e6ea] hover:border-[#dae0e5]'
+  'h-[26px] px-[10px] text-[12px]! btn btn-white font-normal!'
 const getHistoryBtnClass =
-  'h-[26px] px-[10px] text-[12px] rounded-[3px] bg-[#0A876D] border border-[#0A876D] text-white hover:bg-[#0A876D] focus:bg-[#0A876D]'
+  'h-[26px] px-[10px] text-[12px]! btn btn-primary w-[97px]'
 
 export default function ProfitLoss() {
   const { t } = useTranslation()
@@ -224,11 +202,11 @@ export default function ProfitLoss() {
         </h4>
         <div className={plMetaClass}>
           <span className={plMetaItemClass}>
-            <UserIcon />
+            <UserIcon className="w-5 h-5 -mt-0.5" />
             <span>{userName}</span>
           </span>
           <span className={plMetaItemClass}>
-            <ClockIcon />
+            <span className="h-4 w-4 inline-block bg-[url('/img/calender-icon.png')] bg-[position:100%_-189px]"></span>
             <span>{generatedAt}</span>
           </span>
         </div>

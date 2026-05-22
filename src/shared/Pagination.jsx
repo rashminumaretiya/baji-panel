@@ -25,7 +25,7 @@ export default function Pagination({
   }
 
   return (
-    <div className="py-3 flex items-center justify-center xl:flex-row flex-wrap">
+    <div className="py-4 flex items-center justify-center xl:flex-row flex-wrap">
       <nav role="navigation">
         <ul className="flex gap-[5px] list-none p-0 m-0">
           <li>

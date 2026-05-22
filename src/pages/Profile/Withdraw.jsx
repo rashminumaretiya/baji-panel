@@ -47,7 +47,7 @@ const formCheckSpanClass =
 
 // Make Payment / Withdraw submit button (matches Deposit's `.make-payment`).
 const withdrawBtnClass =
-  'mt-3 px-3 py-[6px] text-white bg-[var(--primary)] hover:bg-[var(--lg-primary)] rounded text-[14px] font-medium disabled:opacity-65 disabled:cursor-not-allowed'
+  'inline-flex items-center justify-center gap-2 mt-3 w-full btn btn-primary py-2! text-[14px] font-medium disabled:opacity-65 disabled:cursor-not-allowed [&_i_svg]:h-[18px] [&_i_svg]:w-[18px]'
 
 function validate(values, limits) {
   const errors = {}

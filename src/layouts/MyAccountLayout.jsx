@@ -119,7 +119,7 @@ export default function MyAccountLayout() {
       <div className={mainWrapperClass}>
         <div className="max-w-[1349px] w-full mx-auto bg-[var(--xs-gray)] md:w-[calc(100%-40px)]">
           <NewsLine />
-          <div className="relative w-full h-full pl-[15px] max-md:pl-0">
+          <div className="relative w-full h-full">
             {showSidebar && (
               <div className="absolute top-0 left-0 w-[17.36%]">
                 <ul
@@ -156,7 +156,7 @@ export default function MyAccountLayout() {
                 </ul>
               </div>
             )}
-            <div className="ml-[17.36%] h-full w-[calc(100%-17.36%)] overflow-y-auto max-h-[calc(100svh-106px)] max-md:ml-0 max-md:w-auto max-md:max-h-none">
+            <div className="ml-[17.36%] h-full w-[calc(100%-17.36%)] pl-[15px] max-md:pl-0 overflow-y-auto max-h-[calc(100svh-130px)] max-md:ml-0 max-md:w-auto max-md:max-h-none">
               {isMobile && activeTab && (
                 <div className="flex items-center bg-gradient-to-t from-[#141e21] to-[#2f424d] border-t border-white">
                   <i

@@ -932,7 +932,7 @@ export default function Deposit({ showTitle = true }) {
             ) : (
               <button
                 type="submit"
-                className="inline-flex items-center justify-center gap-2 mt-3 w-full py-2 px-3 text-white bg-[var(--primary)] hover:bg-[var(--lg-primary)] rounded text-[14px] font-medium disabled:opacity-65 disabled:cursor-not-allowed [&_i_svg]:h-[18px] [&_i_svg]:w-[18px]"
+                className="inline-flex items-center justify-center gap-2 mt-3 w-full btn btn-primary text-[14px] font-medium disabled:opacity-65 disabled:cursor-not-allowed [&_i_svg]:h-[18px] [&_i_svg]:w-[18px]"
                 disabled={!!promotionLimitError || submitting}
               >
                 <Icon name="bkash" />
