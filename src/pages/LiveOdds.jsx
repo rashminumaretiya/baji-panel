@@ -18,6 +18,7 @@ import { useIsMobile } from '../hooks/useMediaQuery.js'
 import {
   selectCurrency,
   selectIsAuthenticated,
+  setLoginWindow,
 } from '../store/slices/authSlice.js'
 import {
   selectIsYellowTheme,
@@ -578,6 +579,10 @@ export default function LiveOdds() {
 
   const onMatchOddsClick = (runner, odd, betType) => {
     if (!odd?.price) return
+    if (!isAuthenticated) {
+      dispatch(setLoginWindow(true))
+      return
+    }
     // Match Odds bets are placed in the right-side BetSlip panel (Redux).
     // Payload shape matches what `src/components/BetSlip.jsx` reads.
     dispatch(
@@ -597,6 +602,10 @@ export default function LiveOdds() {
   const onBookmakerClick = (bookmaker, odd, betType) => {
     if (!odd?.price) return
     if (isBookmakerStatusBlocked(bookmaker.s ?? bookmaker.status)) return
+    if (!isAuthenticated) {
+      dispatch(setLoginWindow(true))
+      return
+    }
     setActiveBookmaker({
       marketId: bookmaker.mid ?? bookmaker.marketId,
       marketName: 'BOOKMAKER',
@@ -615,6 +624,10 @@ export default function LiveOdds() {
     const price = betType === 'NO' ? item.LayPrice1 : item.BackPrice1
     const size = betType === 'NO' ? item.LaySize1 : item.BackSize1
     if (!price || item.GameStatus === 'SUSPENDED') return
+    if (!isAuthenticated) {
+      dispatch(setLoginWindow(true))
+      return
+    }
     setActiveFancyBet({
       marketId: item.default_marketId,
       marketName: 'FANCY',
@@ -638,6 +651,10 @@ export default function LiveOdds() {
       runner.status !== '1'
     )
       return
+    if (!isAuthenticated) {
+      dispatch(setLoginWindow(true))
+      return
+    }
     setActiveSportBook({
       marketId: market.marketId,
       marketName: 'SPORTS_BOOK',

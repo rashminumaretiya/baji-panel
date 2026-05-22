@@ -7,6 +7,7 @@ import {
   selectIsAuthenticated,
   selectIsOneClickBet,
   setIsOneClickBet,
+  setLoginWindow,
 } from '../store/slices/authSlice.js'
 import {
   selectIsMcvYellowTheme,
@@ -72,6 +73,7 @@ export default function SubHeader() {
       const next = e.target.checked
       if (!isAuthenticated) {
         dispatch(setIsOneClickBet(false))
+        dispatch(setLoginWindow(true))
         return
       }
       dispatch(setIsOneClickBet(next))
@@ -84,11 +86,14 @@ export default function SubHeader() {
   const closeStake = useCallback(() => setStakeOpenRequested(false), [])
   const handleSettingsClick = useCallback(
     (e) => {
-      if (!isAuthenticated) return
+      if (!isAuthenticated) {
+        dispatch(setLoginWindow(true))
+        return
+      }
       setStakeTarget(e.currentTarget)
       setStakeOpenRequested((prev) => !prev)
     },
-    [isAuthenticated]
+    [dispatch, isAuthenticated]
   )
   const stakeOpen = stakeOpenRequested && isAuthenticated
 

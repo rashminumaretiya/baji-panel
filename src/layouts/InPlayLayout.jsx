@@ -1,13 +1,18 @@
 import { Suspense, useMemo } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import BetSlip from '../components/BetSlip.jsx'
 import Header from '../components/Header.jsx'
 import MobileNavigation from '../components/MobileNavigation.jsx'
 import NewsLine from '../components/NewsLine.jsx'
 import OpenBets from '../components/OpenBets.jsx'
 import Loader from '../shared/components/Loader.jsx'
-import { selectIsAuthenticated } from '../store/slices/authSlice.js'
+import LoginModel from '../shared/components/loginModel/LoginModel.jsx'
+import {
+  selectIsAuthenticated,
+  selectIsLoginWindow,
+  setLoginWindow,
+} from '../store/slices/authSlice.js'
 import {
   selectIsMobile,
   selectIsYellowTheme,
@@ -16,9 +21,11 @@ import './layout.scss'
 
 export default function InPlayLayout() {
   const { pathname } = useLocation()
+  const dispatch = useDispatch()
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const isMobile = useSelector(selectIsMobile)
   const isYellowTheme = useSelector(selectIsYellowTheme)
+  const isLoginWindow = useSelector(selectIsLoginWindow)
 
   const isPlatformPage = useMemo(
     () => pathname.includes('platform'),
@@ -52,6 +59,11 @@ export default function InPlayLayout() {
           </div>
         )}
       </div>
+
+      <LoginModel
+        isOpen={isLoginWindow}
+        onClose={() => dispatch(setLoginWindow(false))}
+      />
     </div>
   )
 }
