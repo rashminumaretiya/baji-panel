@@ -1,9 +1,10 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import {
   fetchSidebarSports,
+  selectActiveSportId,
   selectSidebarSports,
 } from '../../../store/slices/sportSlice.js'
 import {
@@ -11,6 +12,10 @@ import {
   selectIsYellowTheme,
 } from '../../../store/slices/commonSlice.js'
 import { selectRacingListShow } from '../../../store/slices/headerSlice.js'
+import {
+  getSportIdFromSlug,
+  getSportName,
+} from '../../../core/constant/constants.js'
 
 // Map sport names (as returned in event.sport) to i18n keys.
 const SPORT_LABEL_KEYS = {
@@ -140,8 +145,10 @@ export default function SportsSidebar() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const allSports = useSelector(selectSidebarSports)
+  const activeSportId = useSelector(selectActiveSportId)
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
   const racingListShow = useSelector(selectRacingListShow)
@@ -248,6 +255,104 @@ export default function SportsSidebar() {
     const sportSlug = (event.sport ?? '').toLowerCase()
     navigate(`/odds/${event.id}/${sportSlug}`)
   }
+
+  // Sync sidebar state to the current URL so the sidebar behaves the same way
+  // whether the user clicks inside it, picks a sport tab from the header, or
+  // opens a match from a sport page. Mirrors `getEventsBySport` /
+  // `getMatchOdds` shapes so the existing render code keeps working.
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (!buckets.length) return
+
+    const path = location.pathname
+    const findBucketIndexBySport = (sportName) => {
+      if (!sportName) return -1
+      const lower = sportName.toLowerCase()
+      return buckets.findIndex((b) => (b._sport || '').toLowerCase() === lower)
+    }
+
+    // /odds/:eventId/:sport — drill into the event.
+    const oddsMatch = path.match(/^\/odds\/([^/]+)\/([^/]+)/)
+    if (oddsMatch) {
+      const [, eventId, sportSlug] = oddsMatch
+      const sportId = getSportIdFromSlug(sportSlug)
+      const sportName = sportId
+        ? getSportName(sportId)
+        : sportSlug.replace(/-/g, ' ')
+      const bucketIndex = findBucketIndexBySport(sportName)
+      if (bucketIndex < 0) return
+
+      const bucket = buckets[bucketIndex]
+      let foundEvent = null
+      for (const comp of bucket.competitions ?? []) {
+        const evt = (comp.events ?? []).find(
+          (e) => String(e?.id) === String(eventId)
+        )
+        if (evt) {
+          foundEvent = evt
+          break
+        }
+      }
+
+      if (foundEvent) {
+        const resolvedSportName = bucket._sport || sportName
+        const labelKey = readSportLabelKey(resolvedSportName)
+        setSportsCompetition([
+          { label: 'All Sports', click: setDefaultSports },
+          {
+            label: labelKey || resolvedSportName || 'Sport',
+            fallback: resolvedSportName || 'Sport',
+            classList: 'title',
+            click: () => getEventsBySport(bucketIndex),
+          },
+          {
+            label: foundEvent.name || '',
+            classList: 'active',
+            event: foundEvent,
+            events: [
+              { name: 'Match Odds', classList: 'match-odds active' },
+            ],
+          },
+        ])
+      } else {
+        getEventsBySport(bucketIndex)
+      }
+      return
+    }
+
+    // /cricket, /soccer, /tennis, /horse-racing, /greyhound-racing —
+    // expand the matching sport.
+    const sportPageMatch = path.match(/^\/([^/]+)\/?$/)
+    if (sportPageMatch) {
+      const slug = sportPageMatch[1]
+      const sportId = getSportIdFromSlug(slug)
+      if (sportId) {
+        const sportName = getSportName(sportId)
+        const bucketIndex = findBucketIndexBySport(sportName)
+        if (bucketIndex >= 0) {
+          getEventsBySport(bucketIndex)
+          return
+        }
+      }
+    }
+
+    // Home page (`/`) — react to the in-page sport tab (Redux `activeSportId`)
+    // so the sidebar expands when the user switches tabs on Home, the same
+    // way it does when they pick a sport from the header.
+    if (path === '/' && activeSportId) {
+      const sportName = getSportName(activeSportId)
+      const bucketIndex = findBucketIndexBySport(sportName)
+      if (bucketIndex >= 0) {
+        getEventsBySport(bucketIndex)
+        return
+      }
+    }
+
+    // Any other route — reset to the root sports list.
+    setSportsCompetition([])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname, buckets, activeSportId])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // `.events` ─ container: capped height + hidden scrollbar.
   const eventsClass =
