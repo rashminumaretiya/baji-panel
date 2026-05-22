@@ -29,10 +29,8 @@ export function buildBetPayload(slip, context = {}) {
     betType: slip.betType ?? slip.type ?? '',
   }
 
-  if (payload.marketName === MARKET_NAME.FANCY) {
+  if (marketName === MARKET_NAME.FANCY) {
     payload.gtype = slip.gtype ?? ''
-  } else if (payload.marketName === MARKET_NAME.SPORTS_BOOK) {
-    payload.gtype = slip.gtype ?? 'sportsBook'
   }
 
   return payload
