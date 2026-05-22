@@ -39,7 +39,7 @@ export default function BetsComplaints() {
         title="Bet Complaints"
         columns={columns}
         data={complaints}
-        emptyMessage="No data found"
+        emptyMessage="No Data Found"
       />
     </div>
   )

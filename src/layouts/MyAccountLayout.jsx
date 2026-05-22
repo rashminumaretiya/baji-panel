@@ -64,7 +64,7 @@ export default function MyAccountLayout() {
     ? 'bg-gradient-to-b from-[#546d7d] to-[var(--text-color)] text-white'
     : isMcwCasinoTheme
       ? 'bg-[#e5ca3a] text-[#222222]'
-      : 'bg-[rgba(var(--primary-rgb),0.6)] text-white'
+      : 'bg-[#15805e99]! text-white'
   const sidebarBg = isYellowTheme
     ? 'bg-transparent'
     : isMcwCasinoTheme

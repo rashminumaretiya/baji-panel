@@ -19,7 +19,7 @@ function formatDate(value) {
 // Tailwind-only port of profile.scss. Rebuilds the 2-column Bootstrap grid
 // (col-md-6) with flex on >=768 and stacks on mobile.
 const cardHeaderClass =
-  'bg-[var(--text-color)] border-b border-[var(--sm-text-color)] text-white leading-6 font-bold px-2.5 mb-0 text-[12px]'
+  'bg-[#7e97a7] border-b border-[var(--sm-text-color)] text-white leading-6 font-bold px-2.5 mb-0 text-[14px]'
 
 const tableClass = 'w-full border-collapse'
 

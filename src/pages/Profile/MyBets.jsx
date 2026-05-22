@@ -29,7 +29,12 @@ export default function MyBets() {
       <h3 className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
         My Bets
       </h3>
-      <Tabs tabs={MAIN_TABS} activeId={activeTab} onChange={setTab} />
+      <Tabs
+        className="mb-3"
+        tabs={MAIN_TABS}
+        activeId={activeTab}
+        onChange={setTab}
+      />
       {activeTab === 'current-bets' && <CurrentBets />}
       {activeTab === 'bet-history' && <BetHistory />}
       {activeTab === 'pnl' && <ProfitLoss />}

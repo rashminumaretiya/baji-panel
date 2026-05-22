@@ -28,7 +28,7 @@ const phoneInputClass =
   'block w-full px-3 py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded-r focus:outline-none focus:border-[var(--light-gray)]'
 // "Add Number" / "Verify" submit button.
 const addNumberBtnClass =
-  'inline-block px-[18px] py-[6px] font-semibold text-white border border-[var(--lg-primary)] rounded bg-gradient-to-b from-[var(--xs-primary)] to-[var(--xxs-primary)] hover:from-[var(--xxs-primary)] hover:to-[var(--xs-primary)] hover:brightness-95 focus:from-[var(--xxs-primary)] focus:to-[var(--xs-primary)] focus:brightness-95 disabled:opacity-65 disabled:cursor-not-allowed'
+  'text-[11px] px-[8px] py-[5px] cursor-pointer inline-block font-semibold text-white border border-[var(--lg-primary)] rounded bg-gradient-to-b from-[var(--xs-primary)] to-[var(--xxs-primary)] hover:from-[var(--xxs-primary)] hover:to-[var(--xs-primary)] hover:brightness-95 focus:from-[var(--xxs-primary)] focus:to-[var(--xs-primary)] focus:brightness-95 disabled:opacity-65 disabled:cursor-not-allowed'
 const resendLinkClass = 'text-[#1e6fff] underline text-[13px]'
 
 export default function AddWhatsAppModal({ isOpen, onClose, onSuccess }) {
