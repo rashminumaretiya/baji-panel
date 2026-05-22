@@ -8,13 +8,18 @@
 //   directly from Redux inside the cell so that per-keystroke updates
 //   re-render only the cells, not the whole page.
 //
-// Discriminating by `marketName`:
+// Discriminating preview consumption:
 // - The cell only consumes `preExposure` when `preExposure.marketName ===
 //   marketName`. This prevents a fancy preview from leaking into match-odds
 //   cells and vice versa when both kinds of bet slips coexist on the page.
-// - Multi-selection markets (MATCH_ODDS / BOOKMAKER / SPORTS_BOOK) show the
-//   profit delta combined with the base (`base + profit` on the matched
-//   runner; `base + liability` on the other runners).
+// - For multi-selection markets (MATCH_ODDS / BOOKMAKER / SPORTS_BOOK) the
+//   cell *also* requires `preExposure.marketId === marketId`. The sportsbook
+//   list renders many independent markets on one page; without this scope
+//   the liability delta would leak onto runners in markets the user isn't
+//   actually betting on.
+// - Multi-selection markets show the profit delta combined with the base
+//   (`base + profit` on the matched runner; `base + liability` on the others
+//   in the same market).
 // - Single-selection markets (FANCY) show the profit delta *standalone* —
 //   i.e. the P/L of the new bet alone, not combined with the base. The base
 //   exposure is rendered separately as its own value. This matches the
@@ -68,17 +73,23 @@ function ExposureValue({ value, withIcon }) {
   )
 }
 
-function computePreviewDelta(preExposure, sid, marketName) {
+function computePreviewDelta(preExposure, sid, marketName, marketId) {
   if (!preExposure) return null
   if (preExposure.marketName !== marketName) return null
   const isSelected = String(preExposure.selectionId) === sid
   if (marketName === 'FANCY') {
-    // Single-selection market — only the matched row gets a preview.
+    // Single-selection market — only the matched row gets a preview, and the
+    // selectionId already identifies the market uniquely, so no marketId check.
     return isSelected && Number.isFinite(preExposure.profit)
       ? preExposure.profit
       : null
   }
-  // Multi-selection market — both branches apply.
+  // Multi-selection market — restrict the preview to runners in the *same*
+  // market. Without this, the liability delta would render on every other
+  // market's runners (visible in sportsbook lists with many markets per page).
+  if (marketId != null && preExposure.marketId != null) {
+    if (String(preExposure.marketId) !== String(marketId)) return null
+  }
   if (!Number.isFinite(preExposure.liability)) return null
   const delta = isSelected ? preExposure.profit : preExposure.liability
   return Number.isFinite(delta) ? delta : null
@@ -86,6 +97,7 @@ function computePreviewDelta(preExposure, sid, marketName) {
 
 export default function BetExposureCell({
   selectionId,
+  marketId,
   exposureData,
   marketName,
 }) {
@@ -98,7 +110,12 @@ export default function BetExposureCell({
   const baseValue = baseEntry ? Number(baseEntry.exposure) : null
   const hasBase = Number.isFinite(baseValue)
 
-  const previewDelta = computePreviewDelta(preExposure, sid, marketName)
+  const previewDelta = computePreviewDelta(
+    preExposure,
+    sid,
+    marketName,
+    marketId
+  )
   // FANCY shows the delta standalone; other markets combine with the base.
   const previewValue =
     previewDelta == null

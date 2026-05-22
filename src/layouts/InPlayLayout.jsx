@@ -56,7 +56,7 @@ export default function InPlayLayout() {
             </Suspense>
           </div>
 
-          {isOneClickBet && <OneClickBet />}
+          {!isMobile && isOneClickBet && <OneClickBet />}
 
           {showMobileNavigation && <MobileNavigation />}
         </div>

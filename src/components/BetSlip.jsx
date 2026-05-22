@@ -68,6 +68,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
   const liability = isBack ? numericStake : (numericOdds - 1) * numericStake
 
   const selectionId = activeMatchOdd?.selectionId
+  const marketId = activeMatchOdd?.marketId
   const betType = activeMatchOdd?.betType
   const marketName = activeMatchOdd?.marketName ?? 'MATCH_ODDS'
   useEffect(() => {
@@ -81,6 +82,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
     dispatch(
       setPreExposure({
         selectionId,
+        marketId,
         profit,
         liability: liabilityVal,
         betType,
@@ -90,6 +92,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
   }, [
     dispatch,
     selectionId,
+    marketId,
     betType,
     isBack,
     numericStake,

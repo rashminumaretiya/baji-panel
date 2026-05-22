@@ -559,9 +559,15 @@ export default function LiveOdds() {
   //
 
   const fancySelectionId = activeFancyBet?.selectionId
+  const fancyMarketId = activeFancyBet?.marketId
   const fancyType = activeFancyBet?.type
   const fancyStake = Number(activeFancyBet?.stake) || 0
   const fancySize = Number(activeFancyBet?.size) || 0
+  const sbSelectionId = activeSportBook?.selectionId
+  const sbMarketId = activeSportBook?.marketId
+  const sbBetType = activeSportBook?.betType ?? activeSportBook?.type
+  const sbOdds = Number(activeSportBook?.odds) || 0
+  const sbStake = Number(activeSportBook?.stake) || 0
   useEffect(() => {
     if (fancySelectionId && fancyStake > 0 && fancySize > 0) {
       const pnl = Number(((fancySize * fancyStake) / 100).toFixed(2))
@@ -569,6 +575,7 @@ export default function LiveOdds() {
       dispatch(
         setPreExposure({
           selectionId: fancySelectionId,
+          marketId: fancyMarketId,
           profit,
           liability: 0,
           betType: fancyType,
@@ -581,11 +588,43 @@ export default function LiveOdds() {
   }, [
     dispatch,
     fancySelectionId,
+    fancyMarketId,
     fancyType,
     fancyStake,
     fancySize,
     preExposureMarket,
   ])
+
+  // ── SportsBook preExposure publication
+  useEffect(() => {
+    if (sbSelectionId && sbStake > 0 && sbOdds > 0) {
+      const isBack = sbBetType === 'BACK'
+      const pnl = Number(((sbOdds * sbStake) / 100).toFixed(2))
+      const profit = (isBack ? 1 : -1) * pnl
+      const liability = (isBack ? -1 : 1) * sbStake
+      dispatch(
+        setPreExposure({
+          selectionId: sbSelectionId,
+          marketId: sbMarketId,
+          profit,
+          liability,
+          betType: sbBetType,
+          marketName: 'SPORTS_BOOK',
+        })
+      )
+    } else if (preExposureMarket === 'SPORTS_BOOK') {
+      dispatch(setPreExposure(null))
+    }
+  }, [
+    dispatch,
+    sbSelectionId,
+    sbMarketId,
+    sbBetType,
+    sbOdds,
+    sbStake,
+    preExposureMarket,
+  ])
+
   const fancyBuckets = useMemo(() => groupFancyByType(fancy), [fancy])
   const sportbookBuckets = useMemo(
     () => groupSportbookByCategory(premium),
@@ -1055,6 +1094,7 @@ export default function LiveOdds() {
                     String(placingSelectionId) ===
                       String(activeSportBook?.selectionId ?? '')
                   }
+                  exposureByMarket={visibleExposureByMarket}
                 />
               )}
             </div>
@@ -1569,6 +1609,7 @@ export function MatchOddsSection({
                         <div className="flex items-center">
                           <BetExposureCell
                             selectionId={runner.selectionId}
+                            marketId={matchOdds.marketId}
                             exposureData={exposureData}
                             marketName="MATCH_ODDS"
                           />
@@ -2299,6 +2340,7 @@ function FancySection({
                       <div className="flex justify-between items-center gap-2">
                         <BetExposureCell
                           selectionId={item.SelectionId}
+                          marketId={item.default_marketId}
                           exposureData={exposureData}
                           marketName="FANCY"
                         />
@@ -2457,6 +2499,7 @@ function SportbookSection({
   onPick,
   onPlaceBet,
   isPlacingActive,
+  exposureByMarket,
 }) {
   const [collapsed, setCollapsed] = useState({})
   const toggle = (id) => setCollapsed((prev) => ({ ...prev, [id]: !prev[id] }))
@@ -2522,7 +2565,18 @@ function SportbookSection({
                             <span className="font-bold">
                               {titleCase(runner.runnerName)}
                             </span>
-                            {/* bet-exposure slot */}
+                            <span className="ml-2 inline-flex items-center">
+                              <BetExposureCell
+                                selectionId={runner.selectionId}
+                                marketId={market.marketId}
+                                exposureData={
+                                  exposureByMarket?.get(
+                                    String(market.marketId)
+                                  ) ?? null
+                                } //marketExposure
+                                marketName="SPORTS_BOOK"
+                              />
+                            </span>
                           </p>
                           <div className="flex items-center flex-[0_0_40%] max-md:flex-[0_0_37.3333333333vw]">
                             <span

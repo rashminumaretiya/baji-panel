@@ -148,7 +148,7 @@ export default function Layout() {
             </Suspense>
           </div>
 
-          {isOneClickBet && <OneClickBet />}
+          {!isMobile && isOneClickBet && <OneClickBet />}
         </div>
 
         {showMobileNavigation && <MobileNavigation />}
