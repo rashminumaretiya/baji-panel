@@ -19,8 +19,11 @@ export function useEventSubscription(eventIds) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idsKey])
 
-  useEffect(() => () => {
-    if (prevRef.current.size) unsubscribeEvents([...prevRef.current])
-    prevRef.current = new Set()
-  }, [])
+  useEffect(
+    () => () => {
+      if (prevRef.current.size) unsubscribeEvents([...prevRef.current])
+      prevRef.current = new Set()
+    },
+    []
+  )
 }

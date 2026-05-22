@@ -309,9 +309,7 @@ export default function SportsSidebar() {
             label: foundEvent.name || '',
             classList: 'active',
             event: foundEvent,
-            events: [
-              { name: 'Match Odds', classList: 'match-odds active' },
-            ],
+            events: [{ name: 'Match Odds', classList: 'match-odds active' }],
           },
         ])
       } else {
@@ -449,7 +447,9 @@ export default function SportsSidebar() {
                   sc.isEvent
                     ? getMatchOdds(event)
                     : navigateToOddsPage(sc.event)
-                const eTokens = (event.classList ?? '').split(/\s+/).filter(Boolean)
+                const eTokens = (event.classList ?? '')
+                  .split(/\s+/)
+                  .filter(Boolean)
                 const isMatchOdds = eTokens.includes('match-odds')
                 const eActive = eTokens.includes('active')
                 return (

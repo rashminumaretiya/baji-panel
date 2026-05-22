@@ -58,7 +58,7 @@ export function diffMatchOddsForSpark(current, previous) {
           availableToLay: diffOddsArray(lay, prevLay),
         },
       }
-    },
+    }
   )
   return { ...current, runners }
 }

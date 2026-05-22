@@ -115,9 +115,7 @@ export default function DepositHistory() {
       {
         key: 'paymentType',
         label: t('myBets.paymentType', 'Payment Type'),
-        render: (value) => (
-          <span className="capitalize">{value || ''}</span>
-        ),
+        render: (value) => <span className="capitalize">{value || ''}</span>,
       },
       {
         key: 'gateway',

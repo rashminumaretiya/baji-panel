@@ -24,7 +24,8 @@ function normalizeBanners(d) {
     const bucket = d?.[key]
     if (bucket && typeof bucket === 'object') {
       next[key] = {
-        light: bucket.light && typeof bucket.light === 'object' ? bucket.light : {},
+        light:
+          bucket.light && typeof bucket.light === 'object' ? bucket.light : {},
         dark: bucket.dark && typeof bucket.dark === 'object' ? bucket.dark : {},
       }
     }
@@ -61,7 +62,8 @@ const layoutSlice = createSlice({
       s.domainConfig = payload
     },
     setBanners(s, { payload }) {
-      s.banners = payload && typeof payload === 'object' ? payload : emptyBanners()
+      s.banners =
+        payload && typeof payload === 'object' ? payload : emptyBanners()
     },
     setFooterData(s, { payload }) {
       s.footerData = payload

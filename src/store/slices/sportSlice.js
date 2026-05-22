@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { http } from '../../core/http/client.js'
-import { RACING_SPORTS, SPORT_TAB_EXCLUDE } from '../../core/constant/constants.js'
+import {
+  RACING_SPORTS,
+  SPORT_TAB_EXCLUDE,
+} from '../../core/constant/constants.js'
 
 const SIDEBAR_SPORTS_TTL_MS = 60_000
 
@@ -33,12 +36,15 @@ export const fetchSidebarSports = createAsyncThunk(
     condition: (_, { getState }) => {
       const s = getState().sport
       if (s.sidebarLoading) return false
-      if (s.sidebarLoadedAt && Date.now() - s.sidebarLoadedAt < SIDEBAR_SPORTS_TTL_MS) {
+      if (
+        s.sidebarLoadedAt &&
+        Date.now() - s.sidebarLoadedAt < SIDEBAR_SPORTS_TTL_MS
+      ) {
         return false
       }
       return true
     },
-  },
+  }
 )
 
 export const loadSportTabs = createAsyncThunk(
@@ -46,7 +52,7 @@ export const loadSportTabs = createAsyncThunk(
   async () => {
     const res = await http.get('sport/live-count')
     return res.data?.data ?? []
-  },
+  }
 )
 
 export const loadGamesForSport = createAsyncThunk(
@@ -63,7 +69,7 @@ export const loadGamesForSport = createAsyncThunk(
       if (entry?.fetchedAt && Date.now() - entry.fetchedAt < 5000) return false
       return true
     },
-  },
+  }
 )
 
 export const loadInplayMap = createAsyncThunk(
@@ -71,7 +77,7 @@ export const loadInplayMap = createAsyncThunk(
   async (params = {}) => {
     const res = await http.get('sport/list', { params })
     return res.data?.data ?? {}
-  },
+  }
 )
 
 export const loadPinnedEvents = createAsyncThunk(
@@ -79,7 +85,7 @@ export const loadPinnedEvents = createAsyncThunk(
   async () => {
     const res = await http.get('sport/pinned-events')
     return res.data?.data ?? []
-  },
+  }
 )
 
 export const pinEvent = createAsyncThunk(
@@ -88,7 +94,7 @@ export const pinEvent = createAsyncThunk(
     const res = await http.post('sport/pin-event', { eventId, sportId, alias })
     dispatch(loadPinnedEvents())
     return res.data?.data
-  },
+  }
 )
 
 export const unpinEvent = createAsyncThunk(
@@ -97,7 +103,7 @@ export const unpinEvent = createAsyncThunk(
     const res = await http.post('sport/unpin-event', { eventId })
     dispatch(loadPinnedEvents())
     return res.data?.data
-  },
+  }
 )
 
 const sportSlice = createSlice({
@@ -220,25 +226,26 @@ export const selectSidebarSports = (s) => s.sport.sidebarSports
 export const selectSidebarLoading = (s) => s.sport.sidebarLoading
 
 export const selectSportTabs = createSelector([selectSportTabsRaw], (tabs) =>
-  tabs.filter((t) => !SPORT_TAB_EXCLUDE.has(t.route)),
+  tabs.filter((t) => !SPORT_TAB_EXCLUDE.has(t.route))
 )
 
 export const selectActiveSportConfig = createSelector(
   [selectSportTabsRaw, selectActiveSportId],
-  (tabs, id) => tabs.find((t) => String(t.id) === id),
+  (tabs, id) => tabs.find((t) => String(t.id) === id)
 )
 
 const selectGamesById = (s) => s.sport.gamesById
 export const selectGamesForActiveSport = createSelector(
   [selectGamesById, selectActiveSportId],
-  (byId, id) => (id ? byId[id]?.items ?? [] : []),
+  (byId, id) => (id ? (byId[id]?.items ?? []) : [])
 )
 export const selectGamesStatusForActiveSport = createSelector(
   [selectGamesById, selectActiveSportId],
-  (byId, id) => (id ? byId[id]?.status ?? 'idle' : 'idle'),
+  (byId, id) => (id ? (byId[id]?.status ?? 'idle') : 'idle')
 )
 
-export const selectIsRacingSport = (s) => RACING_SPORTS.has(s.sport.activeSportId ?? '')
+export const selectIsRacingSport = (s) =>
+  RACING_SPORTS.has(s.sport.activeSportId ?? '')
 
 export const selectInplayMap = (s) => s.sport.inplayMap
 export const selectInplayStatus = (s) => s.sport.inplayStatus
@@ -246,5 +253,5 @@ export const selectInplayStatus = (s) => s.sport.inplayStatus
 const selectPinned = (s) => s.sport.pinned
 export const selectPinnedEventIds = createSelector(
   [selectPinned],
-  (pinned) => new Set(pinned.map((p) => p.eventId)),
+  (pinned) => new Set(pinned.map((p) => p.eventId))
 )

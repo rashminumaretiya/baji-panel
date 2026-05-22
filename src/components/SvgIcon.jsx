@@ -1,6 +1,11 @@
 import { svgIcons } from '../utils/svgIcons.js'
 
-export default function SvgIcon({ name, as: Tag = 'i', className = '', ...rest }) {
+export default function SvgIcon({
+  name,
+  as: Tag = 'i',
+  className = '',
+  ...rest
+}) {
   const html = svgIcons[name]
   if (!html) return null
   return (

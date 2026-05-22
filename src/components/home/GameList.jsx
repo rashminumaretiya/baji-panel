@@ -594,7 +594,9 @@ export default function GameList({
               eventKey={group.competitionId}
               key={group.competitionId}
             >
-              <Accordion.Header variant="light">{group.competitionName}</Accordion.Header>
+              <Accordion.Header variant="light">
+                {group.competitionName}
+              </Accordion.Header>
               <Accordion.Body>
                 {group.games.map((game) => (
                   <MobileGameCard
@@ -653,7 +655,9 @@ export default function GameList({
                   eventKey={group.competitionId}
                   key={group.competitionId}
                 >
-                  <Accordion.Header variant="light">{group.competitionName}</Accordion.Header>
+                  <Accordion.Header variant="light">
+                    {group.competitionName}
+                  </Accordion.Header>
                   <Accordion.Body>
                     {group.games.map((game) => (
                       <DesktopGameRow

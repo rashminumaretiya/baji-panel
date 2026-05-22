@@ -115,7 +115,7 @@ export const fetchDomainConfiguration = createAsyncThunk(
       if (s.isDomainConfigLoaded) return false
       return true
     },
-  },
+  }
 )
 
 const commonSlice = createSlice({
@@ -253,7 +253,8 @@ export const selectIsYellowTheme = (s) => {
   const t = s.common.panelTheme
   return t === null || t === PanelTheme.BETJILI
 }
-export const selectIsMcvYellowTheme = (s) => s.common.panelTheme === PanelTheme.MCV
+export const selectIsMcvYellowTheme = (s) =>
+  s.common.panelTheme === PanelTheme.MCV
 export const selectIsIPBanned = (s) => s.common.isIPBanned
 export const selectIsShowSabaSportBook = (s) => s.common.isShowSabaSportBook
 export const selectIsShowE1Sport = (s) => s.common.isShowE1Sport

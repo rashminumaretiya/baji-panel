@@ -1,5 +1,6 @@
 import {
   Fragment,
+  memo,
   useCallback,
   useEffect,
   useMemo,
@@ -195,10 +196,27 @@ const num = (value) => {
   return Number.isFinite(n) ? n : 0
 }
 
-const isBookmakerStatusBlocked = (status) =>
-  status === 'SUSPENDED' ||
-  status === 'BALL RUNNING' ||
-  status === 'BALL_RUNNING_UPPER'
+const BLOCKED_STATUSES = new Set([
+  'SUSPENDED',
+  'BALL RUNNING',
+  'BALL_RUNNING',
+  'BALL_RUNNING_UPPER',
+  'CLOSED',
+  'SETTLED',
+  'INACTIVE',
+])
+
+const normalizeStatus = (status) =>
+  String(status ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, ' ')
+
+const isMarketStatusBlocked = (status) =>
+  BLOCKED_STATUSES.has(normalizeStatus(status))
+
+// Back-compat alias for any imports referencing the old name.
+const isBookmakerStatusBlocked = isMarketStatusBlocked
 
 // Diff back/lay arrays against previous snapshot, flagging cells whose price changed.
 const flagChanged = (current, previous) => {
@@ -320,10 +338,6 @@ const groupSportbookByCategory = (items) => {
   return buckets
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Main page
-// ─────────────────────────────────────────────────────────────────────────────
-
 export default function LiveOdds() {
   const { t } = useTranslation()
   const { eventId, sport: sportSlug } = useParams()
@@ -336,12 +350,11 @@ export default function LiveOdds() {
   const oneClickBetStake = useSelector(selectOneClickBetStake)
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const currency = useSelector(selectCurrency)
-  // Match-odds bet slip lives in the right-side <BetSlip /> driven by Redux.
+
   const activeRightSideBet = useSelector(selectActiveBetSlip)
   const isPlacingBet = useSelector(selectIsPlacingBet)
   const placingSelectionId = useSelector(selectPlacingSelectionId)
 
-  // ── State
   const [matchOddsList, setMatchOddsList] = useState([])
   const [bookmakerOdds, setBookmakerOdds] = useState([])
   const [fancy, setFancy] = useState([])
@@ -367,12 +380,10 @@ export default function LiveOdds() {
   const [activeFancyBet, setActiveFancyBet] = useState(null)
   const [activeSportBook, setActiveSportBook] = useState(null)
 
-  // Refs
   const previousMatchOddsRef = useRef(new Map())
   const sparkClearTimerRef = useRef(null)
   const iframeRef = useRef(null)
 
-  // ── Spark processing
   const processMatchOddsList = useCallback((incoming) => {
     if (!Array.isArray(incoming)) return []
     const prevMap = previousMatchOddsRef.current
@@ -398,9 +409,6 @@ export default function LiveOdds() {
     }
   }, [])
 
-  // ── Default odds fetch — drives the global `loader-wrapper` overlay via
-  // `setMainScreenLoader`, exactly like Angular's `commonService.showLoader()`
-  // / `hideLoader()` flow in `live-odds.component.ts`.
   const loadDefaultOdds = useCallback(
     async (signal) => {
       if (!sportId || !eventId) return
@@ -451,11 +459,6 @@ export default function LiveOdds() {
     }
   }, [dispatch])
 
-  // Open bets are fetched + polled by <OpenBets /> itself (which reads the
-  // current route's `eventId` from useParams), so it works on /odds/:eventId
-  // (event-scoped) and on home / list pages (all events).
-
-  // ── Socket subscriptions
   useEffect(() => {
     if (!sportId || !eventId) return undefined
     const payload = { sportId, eventId }
@@ -475,8 +478,7 @@ export default function LiveOdds() {
 
     const offFancyBm = listenSocket(SOCKET_EVENTS.FANCY_BM_ODDS, (odds) => {
       if (!odds) return
-      // Server may emit as { bookmaker, fancy } or as the wire-level tuple
-      // [eventName, { bookmaker, fancy }] — accept either.
+
       const data = Array.isArray(odds) ? (odds[1] ?? {}) : odds
       if (Array.isArray(data?.bookmaker)) setBookmakerOdds(data.bookmaker)
       if (Array.isArray(data?.fancy)) setFancy(data.fancy)
@@ -513,7 +515,6 @@ export default function LiveOdds() {
     }
   }, [sportId, eventId, processMatchOddsList])
 
-  // ── PIP scroll handler
   useEffect(() => {
     if (!isMobile) return undefined
     const scrollEl = document.querySelector(SCROLL_CONTAINER_SELECTOR)
@@ -525,7 +526,6 @@ export default function LiveOdds() {
     return () => scrollEl.removeEventListener('scroll', handler)
   }, [isMobile])
 
-  // ── Derived data
   const matchOddsArray = useMemo(
     () => normalizeMatchOdds(matchOddsList),
     [matchOddsList]
@@ -594,7 +594,6 @@ export default function LiveOdds() {
     [marketSettings]
   )
 
-  // ── Handlers
   const refreshMarkets = useCallback(() => {
     const controller = new AbortController()
     void loadDefaultOdds(controller.signal)
@@ -602,6 +601,16 @@ export default function LiveOdds() {
 
   const toggleLiveStream = useCallback(() => setIsLiveStreamOn((on) => !on), [])
   const closeLiveStream = useCallback(() => setIsLiveStreamOn(false), [])
+  const toggleBetLimit = useCallback(() => setBetLimitOpen((v) => !v), [])
+  const toggleBookmakerInfo = useCallback(
+    () => setBookmakerInfoOpen((v) => !v),
+    []
+  )
+
+  const cancelMatchOdds = useCallback(
+    () => dispatch(setActiveBetSlip(null)),
+    [dispatch]
+  )
 
   const handlePlaceBet = useCallback(
     (slip) => {
@@ -624,8 +633,6 @@ export default function LiveOdds() {
     else if (node.webkitRequestFullscreen) node.webkitRequestFullscreen()
   }, [])
 
-  // Auto-place via one-click bet when the toggle is on. Returns true if it
-  // handled the click (auto-placed or showed a stake error) — caller should
   const tryOneClickPlace = useCallback(
     (slip) => {
       if (!isOneClickBet) return false
@@ -729,7 +736,7 @@ export default function LiveOdds() {
   const onFancyClick = (item, betType) => {
     const price = betType === 'NO' ? item.LayPrice1 : item.BackPrice1
     const size = betType === 'NO' ? item.LaySize1 : item.BackSize1
-    if (!price || item.GameStatus === 'SUSPENDED') return
+    if (!price || isMarketStatusBlocked(item.GameStatus)) return
     if (!isAuthenticated) {
       dispatch(setLoginWindow(true))
       return
@@ -783,7 +790,6 @@ export default function LiveOdds() {
     setActiveSportBook(slip)
   }
 
-  // ── Render
   if (error) {
     return (
       <div className="p-4">
@@ -889,7 +895,7 @@ export default function LiveOdds() {
                   : null
               }
               onPick={onMatchOddsClick}
-              onCancelMatchOdds={() => dispatch(setActiveBetSlip(null))}
+              onCancelMatchOdds={cancelMatchOdds}
               onPlaceBet={handlePlaceBet}
               isPlacingActive={
                 isPlacingBet &&
@@ -897,9 +903,7 @@ export default function LiveOdds() {
                   String(activeRightSideBet?.selectionId ?? '')
               }
               betLimitOpen={betLimitOpen}
-              onToggleBetLimit={() => setBetLimitOpen((v) => !v)}
-              // Live stream slot — mirrors Angular's `<ng-container [ngTemplateOutlet]="liveStream"></ng-container>`
-              // rendered inside the first match-odds-wrapper.
+              onToggleBetLimit={toggleBetLimit}
               liveStreamSlot={
                 idx === 0 && !isMobile && showStream ? (
                   <LiveStream
@@ -919,7 +923,7 @@ export default function LiveOdds() {
               setting={bookmakerSetting}
               isMobile={isMobile}
               infoOpen={bookmakerInfoOpen}
-              onToggleInfo={() => setBookmakerInfoOpen((v) => !v)}
+              onToggleInfo={toggleBookmakerInfo}
               active={activeBookmaker}
               onActiveChange={setActiveBookmaker}
               onPick={onBookmakerClick}
@@ -990,7 +994,7 @@ export default function LiveOdds() {
 // Sub-components — flat, file-local, mirror Angular template fragments 1:1
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function PinRefresh({ onRefresh }) {
+export const PinRefresh = memo(function PinRefresh({ onRefresh }) {
   const baseDiv =
     'text-white font-bold z-[1] min-w-[90px] flex justify-center h-[25px] leading-[20px] relative max-md:px-3 max-md:py-[6px] max-md:h-[7.46667vw] max-md:leading-tight max-md:text-[3.2vw] max-md:min-w-[25.5vw] [&_i_svg]:h-[14px] [&_i_svg]:w-[14px] max-md:[&_i_svg]:h-[3.73333vw] max-md:[&_i_svg]:w-[3.73333vw] mobile:[&_span]:hidden'
 
@@ -1010,9 +1014,9 @@ export function PinRefresh({ onRefresh }) {
       </div>
     </div>
   )
-}
+})
 
-function LiveStream({
+const LiveStream = memo(function LiveStream({
   url,
   iframeRef,
   onClose,
@@ -1072,11 +1076,11 @@ function LiveStream({
       </div>
     </div>
   )
-}
+})
 
 // Matched-amount + Live toggle bar — mirrors Angular's `.d-flex > .matched + .btn-live`.
 // Live button colour flips: on = cool blue (stream visible), off = orange (closed).
-function MatchedLiveBar({
+const MatchedLiveBar = memo(function MatchedLiveBar({
   currency,
   totalMatched,
   showLiveButton,
@@ -1103,19 +1107,17 @@ function MatchedLiveBar({
         <span className="ml-1 mr-2">{fmt(totalMatched)}</span>
       </div>
       {showLiveButton && (
-        <div>
-          <button
-            type="button"
-            className={cx(LIVE_BTN_BASE, isLiveStreamOn ? LIVE_ON : LIVE_OFF)}
-            onClick={onToggleLive}
-          >
-            {t('common.live', 'Live')}
-          </button>
-        </div>
+        <button
+          type="button"
+          className={cx(LIVE_BTN_BASE, isLiveStreamOn ? LIVE_OFF : LIVE_ON)}
+          onClick={onToggleLive}
+        >
+          {t('common.live', 'Live')}
+        </button>
       )}
     </div>
   )
-}
+})
 
 export function MatchOddsSection({
   matchOdds,
@@ -1142,8 +1144,7 @@ export function MatchOddsSection({
   const minMaxStr = `${fmt(marketSetting.min || 1)} / ${fmt(marketSetting.max || 100)}`
 
   const matchOddsTabClass = isYellowTheme
-    ? // mobile yellow theme: gradient + coffee border + dark text
-      'inline-block relative font-bold mr-0 max-md:!bg-gradient-to-t max-md:!from-[#ffa10c] max-md:!to-[var(--md-primary-yellow)] max-md:border max-md:!border-[var(--coffee)] max-md:!text-[var(--dark)] max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-[var(--sm-white)] md:text-[var(--xxl-blue)] md:px-[2px] md:py-[8px_2px_7px_10px] md:py-2 md:pl-[10px] md:pr-[2px] md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.png)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
+    ? 'inline-block relative font-bold mr-0 max-md:!bg-gradient-to-t max-md:!from-[#ffa10c] max-md:!to-[var(--md-primary-yellow)] max-md:border max-md:!border-[var(--coffee)] max-md:!text-[var(--dark)] max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-[var(--sm-white)] md:text-[var(--xxl-blue)] md:px-[2px] md:py-[8px_2px_7px_10px] md:py-2 md:pl-[10px] md:pr-[2px] md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.png)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
     : 'inline-block relative font-bold mr-0 max-md:text-white max-md:border max-md:border-[rgba(var(--md-dark-rgb),0.3)] max-md:bg-gradient-to-b max-md:from-[var(--xs-primary)] max-md:to-[var(--xxs-primary)] max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-[var(--sm-white)] md:text-[var(--xxl-blue)] md:pl-[10px] md:pr-[2px] md:pb-[7px] md:pt-2 md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.png)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
 
   return (
@@ -1297,8 +1298,8 @@ export function MatchOddsSection({
               }
               const isSuspended =
                 marketSetting.isSuspended ||
-                matchOdds.status === 'SUSPENDED' ||
-                runner.status === 'SUSPENDED'
+                isMarketStatusBlocked(matchOdds.status) ||
+                isMarketStatusBlocked(runner.status)
 
               const bgLine = (price) =>
                 isSuspended ||
@@ -1343,13 +1344,12 @@ export function MatchOddsSection({
                       const tone = backClasses[idx]
                       const isBestBack =
                         (isMobile && idx === 0) || (!isMobile && idx === 2)
-                      // Active highlight follows Angular: only the best-back cell (blue-xs)
-                      // shows the active state when this runner has an active BACK bet.
+
                       const isActive =
                         isBestBack &&
                         active?.selectionId === runner.selectionId &&
                         active?.betType === 'BACK'
-                      // First-row best back cell shows the "Back All" pseudo-header (desktop only).
+
                       const showBackAllHeader =
                         isFirstRow && isBestBack && !isMobile
                       return (
@@ -1384,7 +1384,7 @@ export function MatchOddsSection({
                         active?.betType === 'LAY'
                       const showLayAllHeader =
                         isFirstRow && isBestLay && !isMobile
-                      // last cell on the lay side gets a white border-left (mirrors :last-child rule)
+
                       const isLastLay = idx === layCells.length - 1
                       return (
                         <td
@@ -1456,22 +1456,20 @@ function BookmakerSection({
   isPlacingActive,
 }) {
   const { t } = useTranslation()
-  // Normalise the React API's flat shape ({sid, nat, s, b1..b3, l1..l3, bs1..bs3, ls1..ls3})
-  // into the Angular shape ({selectionId, runnerName, status, back:[…], lay:[…]}) so the
-  // JSX below mirrors the Angular template element-for-element.
+
   const normalized = useMemo(
     () =>
       runners.map((bm) => ({
         selectionId: bm.sid ?? bm.selectionId,
         runnerName: bm.nat ?? bm.runnerName,
         status: bm.s ?? bm.status ?? 'ACTIVE',
-        // back[0] = worst (blue-xxs), back[2] = best (blue-xs, closest to lay)
+
         back: [
           { price: num(bm.b3), size: num(bm.bs3) },
           { price: num(bm.b2), size: num(bm.bs2) },
           { price: num(bm.b1), size: num(bm.bs1) },
         ],
-        // lay[0] = best (red-xs, closest to back), lay[2] = worst (red-xxs)
+
         lay: [
           { price: num(bm.l1), size: num(bm.ls1) },
           { price: num(bm.l2), size: num(bm.ls2) },
@@ -1487,7 +1485,7 @@ function BookmakerSection({
   const backCellCls = (i, isActiveAny) =>
     cx(
       PRICE_CELL_BASE,
-      // status-table cells have their own size + transparent bg
+
       'h-[42px] !w-[16.66667%] !border-l-0 text-center bg-transparent z-[9] !border-t-0 max-md:!min-w-[18.66667vw] max-md:!h-[11.51vw]',
       i === 2 && BLUE_XS,
       i === 1 && BLUE_MD,
@@ -1637,7 +1635,7 @@ function BookmakerSection({
                                     backCellCls(i, isInlineBookmaker),
                                     showBackHeader &&
                                       "relative max-md:bg-gradient-to-r max-md:from-[rgba(151,199,234,0.7)] max-md:to-[var(--xs-lightest-navy)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Back'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-md:before:text-[3.46667vw]",
-                                    // chip styling: rounded outer cell — handled by ::after layer
+
                                     "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-blue)] after:-z-[1] max-md:after:inset-[1vw]",
                                     isInlineBookmaker &&
                                       active?.betType === 'BACK' &&
@@ -1731,7 +1729,12 @@ function MatchHeader({ children }) {
   )
 }
 
-function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
+const FancyTabHeader = memo(function FancyTabHeader({
+  tabs,
+  selectedFancy,
+  onSelect,
+  isMobile,
+}) {
   const { t } = useTranslation()
   const isSportsBookSelected = selectedFancy === MAIN_FANCY.SPORTS_BOOK
 
@@ -1747,18 +1750,15 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
         const isPremium =
           isSportsBookSelected && tab.type === MAIN_FANCY.SPORTS_BOOK
 
-        // Base chip wrapper
         const chipBase =
           'inline-flex items-center cursor-pointer relative ml-4 max-md:ml-[4.786vw] first:ml-0'
         const chipActive = isActive ? 'ml-0' : ''
-        // Hide the pin for the second chip (sports-book), as per :nth-child(2) rule
-        // We approximate by checking the tab type instead of index.
+
         const hidePin = tab.type === MAIN_FANCY.SPORTS_BOOK
 
-        // Inner-bg base
         let innerBg =
           'flex items-center px-[10px] py-[7px] h-[30px] bg-[var(--light-navy)] text-white relative font-bold max-md:px-[1.66667vw] max-md:py-[1.3vw] max-md:h-[7.55vw]'
-        // Skew tails before/after — only when NOT active
+
         if (!isActive) {
           innerBg +=
             " before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-[-6px] before:w-[10px] before:rounded-tl-[4px] before:[transform:skew(-14deg,0deg)] before:bg-[var(--light-navy)] before:z-[1] max-md:before:left-[-1.582vw] max-md:before:w-[3.304vw] max-md:before:rounded-tl-[0.522vw] max-md:before:h-[7.6vw]" +
@@ -1820,10 +1820,15 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
       )}
     </div>
   )
-}
+})
 
 // Shared tabs (Fancy / Sportbook priority strip)
-function PriorityTabs({ tabs, selectedType, onSelectType, variant = 'fancy' }) {
+const PriorityTabs = memo(function PriorityTabs({
+  tabs,
+  selectedType,
+  onSelectType,
+  variant = 'fancy',
+}) {
   const isSportBook = variant === 'sport-book'
 
   const containerCls = cx(
@@ -1875,7 +1880,7 @@ function PriorityTabs({ tabs, selectedType, onSelectType, variant = 'fancy' }) {
       </div>
     </div>
   )
-}
+})
 
 function FancySection({
   items,
@@ -1951,11 +1956,12 @@ function FancySection({
           </thead>
           <tbody>
             {items.map((item, i) => {
+              const isSuspended = isMarketStatusBlocked(item.GameStatus)
               const isInline =
                 active &&
                 active.selectionId === item.SelectionId &&
-                item.GameStatus !== 'SUSPENDED'
-              const isSuspended = item.GameStatus === 'SUSPENDED'
+                !isSuspended
+              const statusLabel = titleCase(item.GameStatus || '')
 
               return (
                 <Fragment key={`${item.SelectionId}-${i}`}>
@@ -2020,12 +2026,8 @@ function FancySection({
                       </div>
                     </td>
                     <td colSpan={2} className="p-0 relative">
-                      {item.GameStatus && (
-                        <div className="absolute inset-0 bg-[rgba(36,58,72,0.4)] z-[9] flex items-center justify-center text-white/80 font-bold [text-shadow:0_1px_4px_rgba(0,0,0,0.5)] text-[13px] cursor-default max-md:text-[3.46667vw]">
-                          {item.GameStatus === 'SUSPENDED'
-                            ? 'Suspended'
-                            : item.GameStatus}
-                        </div>
+                      {isSuspended && (
+                        <div className={GAME_STATUS_OVERLAY}>{statusLabel}</div>
                       )}
                       <table className="w-full border-collapse">
                         <tbody>
@@ -2108,8 +2110,7 @@ function FancySection({
   )
 }
 
-
-function PlacingBetStrip({ durationMs = 5000 }) {
+const PlacingBetStrip = memo(function PlacingBetStrip({ durationMs = 5000 }) {
   const [elapsedMs, setElapsedMs] = useState(0)
 
   useEffect(() => {
@@ -2144,7 +2145,7 @@ function PlacingBetStrip({ durationMs = 5000 }) {
       </span>
     </div>
   )
-}
+})
 
 function SportbookSection({
   markets,

@@ -6,7 +6,7 @@ function encryptKey(key) {
   return CryptoJS.AES.encrypt(
     JSON.stringify(key),
     CryptoJS.enc.Utf8.parse(environment.cryptoSecret),
-    { mode: CryptoJS.mode.ECB },
+    { mode: CryptoJS.mode.ECB }
   ).toString()
 }
 
@@ -14,7 +14,7 @@ function encryptValue(value) {
   return CryptoJS.AES.encrypt(
     JSON.stringify(value),
     CryptoJS.enc.Utf8.parse(environment.cryptoSecret),
-    { mode: CryptoJS.mode.ECB },
+    { mode: CryptoJS.mode.ECB }
   ).toString()
 }
 
@@ -23,7 +23,7 @@ function decryptValue(value) {
     const bytes = CryptoJS.AES.decrypt(
       value,
       CryptoJS.enc.Utf8.parse(environment.cryptoSecret),
-      { mode: CryptoJS.mode.ECB },
+      { mode: CryptoJS.mode.ECB }
     )
     return JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
   } catch {
@@ -46,7 +46,10 @@ export function removeItem(key) {
 
 export function encryptPayload(data) {
   const str = typeof data === 'string' ? data : JSON.stringify(data ?? {})
-  return CryptoJS.AES.encrypt(str, environment.cryptoSecretforPayload).toString()
+  return CryptoJS.AES.encrypt(
+    str,
+    environment.cryptoSecretforPayload
+  ).toString()
 }
 
 export const localStorageService = {

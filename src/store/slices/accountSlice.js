@@ -34,7 +34,7 @@ export const fetchActivityLogs = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 // ─── Deposit ────────────────────────────────────────────────────────────
@@ -50,7 +50,7 @@ export const fetchDepositPaymentMethods = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 // GET /self-payment/payment-mode → two-page (gateway-redirect) flow.
@@ -66,7 +66,7 @@ export const fetchPaymentMode = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 // GET /promotion(/list) → only the authed variant when logged in.
@@ -80,7 +80,7 @@ export const fetchPromotion = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 // GET /self-payment/PBU → currency conversion preview (pbu/base).
@@ -93,7 +93,7 @@ export const fetchAmount = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 // POST /self-payment/payment → create deposit (Angular: payout()).
@@ -106,7 +106,7 @@ export const submitDeposit = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 // ─── Deposit (one-page flow, sbex-user-fe parity) ───────────────────────
@@ -124,7 +124,7 @@ export const submitSelfDeposit = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 export const verifySelfDeposit = createAsyncThunk(
@@ -136,7 +136,7 @@ export const verifySelfDeposit = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 // ─── Deposit History ────────────────────────────────────────────────────
@@ -168,7 +168,7 @@ export const fetchDepositHistory = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 // DELETE /self-payment/:id
@@ -181,7 +181,7 @@ export const deletePaymentHistory = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 // POST /self-payment/complaint/:trxId
@@ -194,7 +194,7 @@ export const sendDepositComplaint = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 // ─── Withdraw ───────────────────────────────────────────────────────────
@@ -220,7 +220,7 @@ export const fetchWithdrawDetails = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 // POST /sw-request → default gateway on api.mcv88.live (Archive-style path).
@@ -240,7 +240,7 @@ export const createWithdrawRequest = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 // POST /catopay/refund → catopay gateway path.
@@ -255,7 +255,7 @@ export const createCatopayWithdrawRequest = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 // ─── Withdraw History ───────────────────────────────────────────────────
@@ -285,9 +285,7 @@ function mapWithdrawHistoryRows(rows) {
           ? row.remainingAmount.toFixed(2)
           : row?.remainingAmount,
       transactionId: row?.transaction?.transaction_id,
-      reasonTemp: row?.reason
-        ? `<a class="rejected-reason">View Note</a>`
-        : '',
+      reasonTemp: row?.reason ? `<a class="rejected-reason">View Note</a>` : '',
     }
   })
 }
@@ -310,7 +308,7 @@ export const fetchWithdrawalHistory = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
-  },
+  }
 )
 
 // ─── Slice ──────────────────────────────────────────────────────────────
@@ -430,7 +428,8 @@ export default accountSlice.reducer
 export const selectActivityLogs = (s) => s.account.activityLogs
 export const selectDepositHistory = (s) => s.account.depositHistory
 export const selectWithdrawalHistory = (s) => s.account.withdrawalHistory
-export const selectDepositPaymentMethods = (s) => s.account.depositPaymentMethods
+export const selectDepositPaymentMethods = (s) =>
+  s.account.depositPaymentMethods
 export const selectPaymentMode = (s) => s.account.paymentMode
 export const selectPromotion = (s) => s.account.promotion
 export const selectAmount = (s) => s.account.amount

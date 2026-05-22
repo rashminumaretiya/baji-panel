@@ -73,7 +73,7 @@ export const fetchOpenBets = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err?.response?.data?.message || err?.message)
     }
-  },
+  }
 )
 
 export const placeBet = createAsyncThunk(
@@ -82,13 +82,13 @@ export const placeBet = createAsyncThunk(
     try {
       const data = await placeBetApi(slip, context ?? {})
       dispatch(fetchBalance())
-       return { data, slip }
+      return { data, slip }
     } catch (err) {
-       const body = err?.response?.data
+      const body = err?.response?.data
       if (body && (body.key || body.message)) return rejectWithValue(body)
       return rejectWithValue({ message: err?.message || 'Failed to place bet' })
     }
-  },
+  }
 )
 
 const betSlipSlice = createSlice({
@@ -119,7 +119,7 @@ const betSlipSlice = createSlice({
       s.placingSelectionId = null
       // Only auto-close the right-side slip when it was placing this same selection.
       const placedId = String(
-        payload?.slip?.selectionId ?? payload?.slip?.runnerId ?? '',
+        payload?.slip?.selectionId ?? payload?.slip?.runnerId ?? ''
       )
       const activeId = String(s.activeBetSlip?.selectionId ?? '')
       if (placedId && placedId === activeId) {
@@ -137,8 +137,12 @@ const betSlipSlice = createSlice({
   },
 })
 
-export const { setActiveBetSlip, setOpenBets, openBetRefresh, setOneClickBetStake } =
-  betSlipSlice.actions
+export const {
+  setActiveBetSlip,
+  setOpenBets,
+  openBetRefresh,
+  setOneClickBetStake,
+} = betSlipSlice.actions
 export default betSlipSlice.reducer
 
 export const selectActiveBetSlip = (s) => s.betSlip.activeBetSlip

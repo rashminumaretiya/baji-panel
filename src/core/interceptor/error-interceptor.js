@@ -13,7 +13,10 @@ function fallbackKey(status) {
   return ''
 }
 
-export function attachErrorInterceptor(client, { onClearAuth, onIpBanned, onLoaderOff, translate }) {
+export function attachErrorInterceptor(
+  client,
+  { onClearAuth, onIpBanned, onLoaderOff, translate }
+) {
   client.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -39,9 +42,14 @@ export function attachErrorInterceptor(client, { onClearAuth, onIpBanned, onLoad
       }
 
       const baseMsg = err?.key
-        ? (translate ? translate(err.key, err.dynamicValue ?? {}) : err.message || err.key)
+        ? translate
+          ? translate(err.key, err.dynamicValue ?? {})
+          : err.message || err.key
         : err?.message || ''
-      const finalMsg = err?.key && baseMsg === err.key ? err?.message || 'errors.SOMETHING_WENT_WRONG' : baseMsg
+      const finalMsg =
+        err?.key && baseMsg === err.key
+          ? err?.message || 'errors.SOMETHING_WENT_WRONG'
+          : baseMsg
 
       if (!finalMsg) return Promise.reject(error)
 
@@ -55,6 +63,6 @@ export function attachErrorInterceptor(client, { onClearAuth, onIpBanned, onLoad
 
       if (!silent) alertService.error(finalMsg || fallbackKey(status))
       return Promise.reject(error)
-    },
+    }
   )
 }

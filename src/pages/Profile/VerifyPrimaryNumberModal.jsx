@@ -16,7 +16,11 @@ const addNumberBtnClass =
 const resendLinkClass = 'text-[#1e6fff] underline text-[13px]'
 const otpErrorClass = 'block text-[#d33] text-[12px] mt-[4px]'
 
-export default function VerifyPrimaryNumberModal({ isOpen, onClose, onSuccess }) {
+export default function VerifyPrimaryNumberModal({
+  isOpen,
+  onClose,
+  onSuccess,
+}) {
   const token = useSelector(selectToken)
   const [otp, setOtp] = useState('')
   const [touched, setTouched] = useState(false)
@@ -50,7 +54,7 @@ export default function VerifyPrimaryNumberModal({ isOpen, onClose, onSuccess })
     await http.post(
       'user/send-otp-primary-number',
       {},
-      { headers: { Authorization: `Bearer ${token}` } },
+      { headers: { Authorization: `Bearer ${token}` } }
     )
     startTimer()
   }
@@ -79,7 +83,7 @@ export default function VerifyPrimaryNumberModal({ isOpen, onClose, onSuccess })
       await http.post(
         'user/verify-user-primary-number',
         { otp },
-        { headers: { Authorization: `Bearer ${token}` } },
+        { headers: { Authorization: `Bearer ${token}` } }
       )
       onSuccess?.()
       onClose?.()
@@ -101,7 +105,12 @@ export default function VerifyPrimaryNumberModal({ isOpen, onClose, onSuccess })
   const showRequiredError = touched && !otp
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Verify Primary Number" size="md">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Verify Primary Number"
+      size="md"
+    >
       <form onSubmit={handleVerify}>
         <div className="mb-2">
           <label className={labelClass}>Enter Otp :</label>

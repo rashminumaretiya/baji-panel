@@ -55,9 +55,15 @@ function validate(values, limits) {
   const errors = {}
   const pbuStr = String(values.pbu ?? '').trim()
   if (!pbuStr) {
-    errors.pbu = { key: 'withdraw.amountRequired', fallback: 'Amount is required' }
+    errors.pbu = {
+      key: 'withdraw.amountRequired',
+      fallback: 'Amount is required',
+    }
   } else if (!onlyDigitsRegex.test(pbuStr)) {
-    errors.pbu = { key: 'withdraw.amountInvalid', fallback: 'Enter valid amount' }
+    errors.pbu = {
+      key: 'withdraw.amountInvalid',
+      fallback: 'Enter valid amount',
+    }
   } else {
     const value = Number(pbuStr)
     if (value < 1) {
@@ -233,7 +239,12 @@ export default function Withdraw({ showTitle = true }) {
                   onBlur={() => markTouched('pbu')}
                 />
                 {showError('pbu') && (
-                  <span className={errorTextClass}>{t(errors.pbu.key, { ...(errors.pbu.opts || {}), defaultValue: errors.pbu.fallback })}</span>
+                  <span className={errorTextClass}>
+                    {t(errors.pbu.key, {
+                      ...(errors.pbu.opts || {}),
+                      defaultValue: errors.pbu.fallback,
+                    })}
+                  </span>
                 )}
               </div>
             </div>
@@ -282,7 +293,11 @@ export default function Withdraw({ showTitle = true }) {
                 })}
               </div>
               {showError('paymentType') && (
-                <span className={errorTextClass}>{t(errors.paymentType.key, { defaultValue: errors.paymentType.fallback })}</span>
+                <span className={errorTextClass}>
+                  {t(errors.paymentType.key, {
+                    defaultValue: errors.paymentType.fallback,
+                  })}
+                </span>
               )}
             </div>
 
@@ -306,7 +321,11 @@ export default function Withdraw({ showTitle = true }) {
                 ))}
               </select>
               {showError('currency') && (
-                <span className={errorTextClass}>{t(errors.currency.key, { defaultValue: errors.currency.fallback })}</span>
+                <span className={errorTextClass}>
+                  {t(errors.currency.key, {
+                    defaultValue: errors.currency.fallback,
+                  })}
+                </span>
               )}
             </div>
 
@@ -335,7 +354,10 @@ export default function Withdraw({ showTitle = true }) {
                     id="accountNumber"
                     type="text"
                     className={formControlClass}
-                    placeholder={t('withdraw.enterAccountNo', 'Enter account no.')}
+                    placeholder={t(
+                      'withdraw.enterAccountNo',
+                      'Enter account no.'
+                    )}
                     value={effectiveAccountNumber}
                     onChange={(event) =>
                       setField('accountNumber', event.target.value)
@@ -344,7 +366,11 @@ export default function Withdraw({ showTitle = true }) {
                   />
                 )}
                 {showError('accountNumber') && (
-                  <span className={errorTextClass}>{t(errors.accountNumber.key, { defaultValue: errors.accountNumber.fallback })}</span>
+                  <span className={errorTextClass}>
+                    {t(errors.accountNumber.key, {
+                      defaultValue: errors.accountNumber.fallback,
+                    })}
+                  </span>
                 )}
               </div>
             </div>

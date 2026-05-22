@@ -6,7 +6,11 @@ function mergeExchange(prev, next) {
   const lay = next.availableToLay ?? prev.availableToLay
   const vol = next.tradedVolume ?? prev.tradedVolume
 
-  if (back === prev.availableToBack && lay === prev.availableToLay && vol === prev.tradedVolume) {
+  if (
+    back === prev.availableToBack &&
+    lay === prev.availableToLay &&
+    vol === prev.tradedVolume
+  ) {
     return prev
   }
   return { availableToBack: back, availableToLay: lay, tradedVolume: vol }
@@ -32,7 +36,8 @@ function mergeSingleMatchOdds(prev, next) {
     }
 
     const status = nextRunner.status ?? prevRunner.status
-    const lastPriceTraded = nextRunner.lastPriceTraded ?? prevRunner.lastPriceTraded
+    const lastPriceTraded =
+      nextRunner.lastPriceTraded ?? prevRunner.lastPriceTraded
     const totalMatched = nextRunner.totalMatched ?? prevRunner.totalMatched
     const ex = mergeExchange(prevRunner.ex, nextRunner.ex) ?? prevRunner.ex
 
@@ -48,7 +53,11 @@ function mergeSingleMatchOdds(prev, next) {
     return { ...prevRunner, status, lastPriceTraded, totalMatched, ex }
   })
 
-  if (!anyChanged && next.status === prev.status && next.totalMatched === prev.totalMatched) {
+  if (
+    !anyChanged &&
+    next.status === prev.status &&
+    next.totalMatched === prev.totalMatched
+  ) {
     return prev
   }
   return { ...prev, ...next, runners: mergedRunners }
@@ -112,7 +121,9 @@ export function mergeFancy(prev, next) {
       anyChanged = true
       return nextFancy
     }
-    const isSame = Object.keys(nextFancy).every((k) => nextFancy[k] === prevFancy[k])
+    const isSame = Object.keys(nextFancy).every(
+      (k) => nextFancy[k] === prevFancy[k]
+    )
     if (isSame) return prevFancy
     anyChanged = true
     return { ...prevFancy, ...nextFancy }
@@ -129,7 +140,8 @@ export function mergeOddsData(prev, patch) {
     patch.bookmaker !== undefined
       ? mergeBookmaker(prev.bookmaker, patch.bookmaker)
       : prev.bookmaker
-  const fancy = patch.fancy !== undefined ? mergeFancy(prev.fancy, patch.fancy) : prev.fancy
+  const fancy =
+    patch.fancy !== undefined ? mergeFancy(prev.fancy, patch.fancy) : prev.fancy
   const sportBook = patch.sportBook ?? prev.sportBook
 
   if (
@@ -155,9 +167,13 @@ export function computeVisibleMarkets(data) {
   const odds = normalizeMatchOdds(data?.match_odds)
   const sb = data?.sportBook
   return {
-    match_odds: odds.some((mo) => Array.isArray(mo?.runners) && mo.runners.length > 0),
+    match_odds: odds.some(
+      (mo) => Array.isArray(mo?.runners) && mo.runners.length > 0
+    ),
     bookmaker: Array.isArray(data?.bookmaker) && data.bookmaker.length > 0,
     fancy: Array.isArray(data?.fancy) && data.fancy.length > 0,
-    sportBook: Array.isArray(sb) ? sb.length > 0 : !!sb && Object.keys(sb).length > 0,
+    sportBook: Array.isArray(sb)
+      ? sb.length > 0
+      : !!sb && Object.keys(sb).length > 0,
   }
 }

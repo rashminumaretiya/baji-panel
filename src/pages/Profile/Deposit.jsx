@@ -631,7 +631,10 @@ export default function Deposit({ showTitle = true }) {
               />
               {touched.promotionId && !values.promotionId && (
                 <span className="block text-[12px] text-[var(--red)] mt-1 font-bold">
-                  {t('deposit.promotionNotSelected', 'Promotion is not selected')}
+                  {t(
+                    'deposit.promotionNotSelected',
+                    'Promotion is not selected'
+                  )}
                 </span>
               )}
             </div>
@@ -914,7 +917,10 @@ export default function Deposit({ showTitle = true }) {
                 {/* Editable: senderNumber. */}
                 <div className="flex justify-between items-center relative gap-2">
                   <label className="whitespace-nowrap !mb-0 text-[13px] leading-[1.2] text-white">
-                    {t('deposit.transactionNumber', 'Enter the transaction number.')}
+                    {t(
+                      'deposit.transactionNumber',
+                      'Enter the transaction number.'
+                    )}
                   </label>
                   <div className="flex flex-col items-end gap-1 w-full max-w-[180px]">
                     <input

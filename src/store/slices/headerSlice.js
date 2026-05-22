@@ -27,12 +27,15 @@ export const fetchSportLiveCount = createAsyncThunk(
     condition: (_, { getState }) => {
       const s = getState().header
       if (s.isLoadingSportTabs) return false
-      if (s.sportTabsLoadedAt && Date.now() - s.sportTabsLoadedAt < SPORT_LIVE_COUNT_TTL_MS) {
+      if (
+        s.sportTabsLoadedAt &&
+        Date.now() - s.sportTabsLoadedAt < SPORT_LIVE_COUNT_TTL_MS
+      ) {
         return false
       }
       return true
     },
-  },
+  }
 )
 
 const HORSE_RACING_NAME = 'horse racing'

@@ -48,9 +48,24 @@ export const PAYMENT_TYPE = Object.freeze({
 })
 
 export const PAYMENT_LIST = [
-  { name: 'agent', img: '/img/payment/agent.png', value: 'AGENT', isHidden: false },
-  { name: 'merchant', img: '/img/payment/merchant.png', value: 'MERCHANT', isHidden: false },
-  { name: 'personal', img: '/img/payment/personal.png', value: 'PERSONAL', isHidden: false },
+  {
+    name: 'agent',
+    img: '/img/payment/agent.png',
+    value: 'AGENT',
+    isHidden: false,
+  },
+  {
+    name: 'merchant',
+    img: '/img/payment/merchant.png',
+    value: 'MERCHANT',
+    isHidden: false,
+  },
+  {
+    name: 'personal',
+    img: '/img/payment/personal.png',
+    value: 'PERSONAL',
+    isHidden: false,
+  },
 ]
 
 export const WITHDRAW_PAYMENT_METHODS = [

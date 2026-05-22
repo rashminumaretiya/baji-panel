@@ -11,8 +11,19 @@ export const http = axios.create({
   baseURL: environment.apiUrl,
 })
 
-export function bindHttpInterceptors({ getToken, onClearAuth, onIpBanned, onLoaderOff, translate }) {
+export function bindHttpInterceptors({
+  getToken,
+  onClearAuth,
+  onIpBanned,
+  onLoaderOff,
+  translate,
+}) {
   attachHeaderInterceptor(http, getToken)
   attachSuccessInterceptor(http, { translate })
-  attachErrorInterceptor(http, { onClearAuth, onIpBanned, onLoaderOff, translate })
+  attachErrorInterceptor(http, {
+    onClearAuth,
+    onIpBanned,
+    onLoaderOff,
+    translate,
+  })
 }

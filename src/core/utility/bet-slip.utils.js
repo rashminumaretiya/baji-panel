@@ -86,7 +86,8 @@ export function calculateBetProfitLiability(slip) {
 
 export function validateBetSlip(slip /* , balance */) {
   if (!slip) return { valid: false, message: 'betSlip.validation.noBetDetails' }
-  if (slip.odds < 1) return { valid: false, message: 'betSlip.validation.oddsMinimum' }
+  if (slip.odds < 1)
+    return { valid: false, message: 'betSlip.validation.oddsMinimum' }
   if (!slip.stake || slip.stake <= 0)
     return { valid: false, message: 'betSlip.validation.stakeMinimum' }
   return { valid: true }

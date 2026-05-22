@@ -6,13 +6,31 @@ import { selectIsAuthenticated } from '../store/slices/authSlice.js'
 // Translation keys per menu entry — labels resolved inside the component so we
 // can localise without recreating the array on every render.
 const MOBILE_MENUS = [
-  { key: 'inplay', i18nKey: 'common.inPlay', fallback: 'In-Play', to: '/in-play', icon: '/img/svg/clock-1.svg' },
-  { key: 'sports', i18nKey: 'common.sports', fallback: 'Sports', to: '/soccer', icon: '/img/svg/trophy-cup.svg' },
-  { key: 'multiMarket', i18nKey: 'common.multiMarket', fallback: 'Multi Markets', to: '/multi-markets', icon: '/img/svg/pin.svg' },
+  {
+    key: 'inplay',
+    i18nKey: 'common.inPlay',
+    fallback: 'In-Play',
+    to: '/in-play',
+    icon: '/img/svg/clock-1.svg',
+  },
+  {
+    key: 'sports',
+    i18nKey: 'common.sports',
+    fallback: 'Sports',
+    to: '/soccer',
+    icon: '/img/svg/trophy-cup.svg',
+  },
+  {
+    key: 'multiMarket',
+    i18nKey: 'common.multiMarket',
+    fallback: 'Multi Markets',
+    to: '/multi-markets',
+    icon: '/img/svg/pin.svg',
+  },
 ]
 
 const itemBase =
-  "cursor-pointer text-center text-white block w-[16.15vw] relative h-[13.33vw] pt-[1.87vw] pr-[2.67vw] pl-[2.67vw] [&_a]:text-white [&_a]:no-underline [&_img]:w-auto [&_img]:mx-auto [&_img]:mb-[0.03vw] [&_img]:h-[5.33vw] [&_span]:block [&_span]:whitespace-nowrap [&_span]:overflow-hidden [&_span]:text-ellipsis [&_span]:w-full [&_span]:text-[3.2vw] [&_span]:leading-[1.5]"
+  'cursor-pointer text-center text-white block w-[16.15vw] relative h-[13.33vw] pt-[1.87vw] pr-[2.67vw] pl-[2.67vw] [&_a]:text-white [&_a]:no-underline [&_img]:w-auto [&_img]:mx-auto [&_img]:mb-[0.03vw] [&_img]:h-[5.33vw] [&_span]:block [&_span]:whitespace-nowrap [&_span]:overflow-hidden [&_span]:text-ellipsis [&_span]:w-full [&_span]:text-[3.2vw] [&_span]:leading-[1.5]'
 
 const promoteItem =
   "cursor-pointer text-center text-white block w-[16.15vw] relative h-[13.33vw] pt-[1.87vw] before:content-[''] before:absolute before:-top-[4.27vw] before:left-[1vw] before:w-full before:h-[4.53vw] before:bg-[url(/img/svg/home-shape.svg)] before:bg-no-repeat before:bg-[size:100%_100%] before:pointer-events-none before:-z-[1] [&_img.icon-promote]:w-[15.53vw] [&_img.icon-promote]:h-auto [&_img.icon-promote]:-mt-[4.53vw] [&_img.icon-promote]:mb-[1vw] [&_img.icon-promote]:ml-[1vw]"
@@ -49,7 +67,11 @@ export default function MobileNavigation() {
     >
       <ul className="m-0 flex justify-between p-0 bg-gradient-to-t from-[var(--xsm-blue)] to-[var(--xxl-blue)]">
         <li className={promoteItem} onClick={showCasino} role="presentation">
-          <img src="/img/svg/game-card.svg" className="icon-promote" alt="Casino" />
+          <img
+            src="/img/svg/game-card.svg"
+            className="icon-promote"
+            alt="Casino"
+          />
         </li>
         <li
           className={`${itemBase} ${isHome ? `${activeBg} before:bg-[url(/img/svg/home-shape-active.svg)]` : ''}`}

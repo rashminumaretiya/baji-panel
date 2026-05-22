@@ -46,21 +46,12 @@ function formatDateTime(value) {
   const s = String(date.getSeconds()).padStart(2, '0')
   return `${y}-${m}-${d} ${h}:${min}:${s} `
 }
-
-// Shared classes for the open-bets table header cells.
 const TH_BASE =
   'relative px-1.5 py-2 font-medium leading-[14px] text-[11px] whitespace-nowrap border-b border-white text-[var(--dark)] max-md:text-[2.93333vw] max-md:leading-[1.3] max-md:py-[1.8vw] max-md:px-[1.86667vw] max-md:text-[var(--dark)] after:content-[""] after:absolute after:w-px after:h-1/2 after:top-1/2 after:right-0 after:-translate-y-1/2 after:rounded-[1px]'
-
-// Shared classes for table body cells.
 const TD_BASE =
   'font-medium px-1.5 py-2 text-[11px] align-middle overflow-hidden text-center bg-transparent border-b border-white max-md:py-[1.33333vw] max-md:px-[1.86667vw] max-md:[&_p]:text-[3.46667vw] max-md:[&_p]:leading-[1.3]'
-
-// Bet-type chip ("Back" / "Lay"). Mirrors Angular's `.odd-type.dark-back` /
-// `.odd-type.dark-lay` — darker blue/red badge with the text centred.
 const ODD_TYPE_CHIP =
   'm-0 px-1 py-[3px] rounded text-[var(--dark)] w-8 text-center odd-type max-md:rounded-[1.06667vw] max-md:text-[3.46667vw] max-md:leading-[7vw] max-md:w-[12vw] max-md:p-0'
-
-// Row backgrounds — Angular `.light-back` (light blue) / `.light-lay` (light red).
 const ROW_LIGHT_BACK =
   'bg-[var(--md-blue-bg)] [&_.odd-type]:bg-[var(--xs-blue)] max-md:[&_td]:border-b max-md:[&_td]:border-[var(--xs-blue)]'
 const ROW_LIGHT_LAY =
@@ -304,8 +295,6 @@ function OpenBetsListBackLay({
   const { t } = useTranslation()
   if (!openBetsValue) return null
 
-  // Wrapper class controls scroll behaviour: standalone, with a slip open, or
-  // with both slip + multi-market.
   const wrapperClass = isOpen
     ? 'max-h-[200px] overflow-y-auto max-md:max-h-none max-md:overflow-visible'
     : 'max-h-[calc(100vh-360px)] overflow-y-auto max-md:max-h-[calc(100vh-81px)]'
@@ -539,8 +528,6 @@ export default function OpenBets() {
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const refreshTick = useSelector(selectOpenBetRefreshTick)
 
-  // Scope by `eventId` only when on the /odds/:eventId/:sport route. Home / list
-  // pages omit the param so the API returns the user's full open-bet list.
   const { eventId } = useParams()
 
   const handleRefresh = useCallback(() => {
@@ -555,11 +542,35 @@ export default function OpenBets() {
       return undefined
     }
     const params = eventId ? { eventId: String(eventId) } : {}
+
     dispatch(fetchOpenBets(params))
-    const id = setInterval(() => {
-      dispatch(fetchOpenBets(params))
-    }, OPEN_BETS_POLL_MS)
-    return () => clearInterval(id)
+
+    let id = null
+    const start = () => {
+      if (id != null) return
+      id = setInterval(() => {
+        dispatch(fetchOpenBets(params))
+      }, OPEN_BETS_POLL_MS)
+    }
+    const stop = () => {
+      if (id != null) clearInterval(id)
+      id = null
+    }
+    if (typeof document === 'undefined' || !document.hidden) start()
+
+    const onVisibility = () => {
+      if (document.hidden) {
+        stop()
+      } else {
+        dispatch(fetchOpenBets(params))
+        start()
+      }
+    }
+    document?.addEventListener?.('visibilitychange', onVisibility)
+    return () => {
+      stop()
+      document?.removeEventListener?.('visibilitychange', onVisibility)
+    }
   }, [dispatch, isAuthenticated, eventId, refreshTick])
 
   if (isMobile) {

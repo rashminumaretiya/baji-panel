@@ -14,7 +14,12 @@ export const SPORT_ROUTE_BY_ID = Object.freeze({
   [SPORT_IDS.GREYHOUND_RACING]: '/greyhound-racing',
 })
 
-export const RACING_SPORTS = new Set([SPORT_IDS.HORSE_RACING, SPORT_IDS.GREYHOUND_RACING, '10', '65'])
+export const RACING_SPORTS = new Set([
+  SPORT_IDS.HORSE_RACING,
+  SPORT_IDS.GREYHOUND_RACING,
+  '10',
+  '65',
+])
 
 export const INPLAY_FILTER_SPORTS = [
   { label: 'titles.games.cricket', value: SPORT_IDS.CRICKET },
@@ -77,9 +82,7 @@ export function getSportSlug(sportId) {
 export function getSportIdFromSlug(slug) {
   if (!slug) return null
   const normalized = String(slug).toLowerCase().replace(/-/g, ' ')
-  return (
-    SPORTS.find((s) => s.name.toLowerCase() === normalized)?.id || null
-  )
+  return SPORTS.find((s) => s.name.toLowerCase() === normalized)?.id || null
 }
 
 export function isRacingSport(sportId) {

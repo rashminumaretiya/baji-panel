@@ -3,7 +3,10 @@
 import i18n from '../../i18n/index.js'
 import { store } from '../../store/store.js'
 import { setUser } from '../../store/slices/authSlice.js'
-import { setIsIPBanned, setFullScreenLoader } from '../../store/slices/commonSlice.js'
+import {
+  setIsIPBanned,
+  setFullScreenLoader,
+} from '../../store/slices/commonSlice.js'
 import { selectToken } from '../../store/slices/authSlice.js'
 import { bindHttpInterceptors } from './client.js'
 

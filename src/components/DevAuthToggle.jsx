@@ -58,7 +58,7 @@ function DevAuthPanel() {
     setBusy(true)
     try {
       const result = await dispatch(
-        login({ ...form, captchaId: captcha?.captchaId }),
+        login({ ...form, captchaId: captcha?.captchaId })
       )
       if (!login.fulfilled.match(result) || !result.payload) {
         setError(result.payload?.message ?? 'login failed')
@@ -126,9 +126,7 @@ function DevAuthPanel() {
           maxLength={4}
           onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))}
         />
-        <span className="text-[#fbbf24] font-bold">
-          {captcha?.code ?? '…'}
-        </span>
+        <span className="text-[#fbbf24] font-bold">{captcha?.code ?? '…'}</span>
       </div>
       {error && <div className="text-[#fca5a5]">{error}</div>}
       <div className={rowClass}>

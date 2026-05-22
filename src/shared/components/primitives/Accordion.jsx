@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useMemo,
-  useState,
-} from 'react'
+import { createContext, useContext, useMemo, useState } from 'react'
 
 // Hand-rolled drop-in for react-bootstrap's Accordion. Supports the same
 // composition pattern used in the codebase:
@@ -88,12 +83,7 @@ const HEADER_VARIANTS = {
   },
 }
 
-function Header({
-  className = '',
-  children,
-  as: As = 'h2',
-  variant = 'dark',
-}) {
+function Header({ className = '', children, as: As = 'h2', variant = 'dark' }) {
   const { eventKey } = useContext(ItemContext)
   const { activeKeys, toggle } = useContext(AccordionContext)
   const isOpen = activeKeys.includes(eventKey)
@@ -121,7 +111,9 @@ function Body({ className = '', children }) {
   const { activeKeys } = useContext(AccordionContext)
   const isOpen = activeKeys.includes(eventKey)
   if (!isOpen) return null
-  return <div className={`accordion-body p-0 bg-white ${className}`}>{children}</div>
+  return (
+    <div className={`accordion-body p-0 bg-white ${className}`}>{children}</div>
+  )
 }
 
 // Static composition (react-bootstrap parity).

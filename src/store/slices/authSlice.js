@@ -266,7 +266,7 @@ export const selectIsSelfSignUp = (s) => !!s.auth.user?.isSelfSignUp
 export const selectStakesData = (s) => s.auth.stakesData
 export const selectOneClickBetStakes = createSelector(
   [selectStakesData],
-  (d) => ({ 1: d[0] || 10, 2: d[1] || 20, 3: d[2] || 50, 4: d[3] || 100 }),
+  (d) => ({ 1: d[0] || 10, 2: d[1] || 20, 3: d[2] || 50, 4: d[3] || 100 })
 )
 // isShowHeader: authed OR development server (mirrors Angular).
 export const selectIsShowHeader = (s) =>

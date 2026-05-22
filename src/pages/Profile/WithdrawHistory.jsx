@@ -54,9 +54,17 @@ function ReasonCell({ html, onClick }) {
 function getStatusCellClass(value) {
   if (!value) return ''
   const slug = String(value).toLowerCase().trim()
-  if (slug.includes('complete') || slug.includes('approve') || slug.includes('success'))
+  if (
+    slug.includes('complete') ||
+    slug.includes('approve') ||
+    slug.includes('success')
+  )
     return 'text-[var(--avocado-green)] font-bold'
-  if (slug.includes('fail') || slug.includes('reject') || slug.includes('decline'))
+  if (
+    slug.includes('fail') ||
+    slug.includes('reject') ||
+    slug.includes('decline')
+  )
     return 'text-[var(--failed-status)] font-bold'
   if (slug.includes('pending') || slug.includes('process'))
     return 'text-[var(--orange-dark)] font-bold'
@@ -125,7 +133,7 @@ export default function WithdrawHistory() {
         render: (value) => <span>{value}</span>,
       },
     ],
-    [currency, t],
+    [currency, t]
   )
 
   return (

@@ -119,7 +119,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
     () => () => {
       if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current)
     },
-    [],
+    []
   )
 
   const balanceRefresh = () => {
@@ -128,7 +128,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
       if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current)
       refreshTimerRef.current = setTimeout(
         () => setIsBalanceRefresh(false),
-        2000,
+        2000
       )
     })
   }
