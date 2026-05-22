@@ -346,11 +346,6 @@
 }
 
 /* ─── Global resets + body (mirrors the original style.scss base) ──────────── */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
 html,
 body {
@@ -375,64 +370,97 @@ body {
   }
 }
 
-img {
-  max-width: 100%;
-}
-
-a {
-  cursor: pointer;
-}
-
-ul,
-ol {
-  list-style: none;
-}
-
-button {
-  cursor: pointer;
-  background: none;
-  border: none;
-}
-
 /* ─── @keyframes only (referenced via Tailwind animate-[name_...] utilities) ── */
 @keyframes blinking {
-  0% { opacity: 1; }
-  100% { opacity: 0.5; }
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.5;
+  }
 }
 
 @keyframes loadBar {
-  0% { opacity: 0.1; }
-  50% { opacity: 1; transform: scale(1.4); }
-  100% { opacity: 0.1; }
+  0% {
+    opacity: 0.1;
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+
+  100% {
+    opacity: 0.1;
+  }
 }
 
 @keyframes sparkBack {
-  50% { background-color: var(--daisy-yellow); }
+  50% {
+    background-color: var(--daisy-yellow);
+  }
 }
 
 @keyframes sparkLay {
-  50% { background-color: var(--vivid-cyan); }
+  50% {
+    background-color: var(--vivid-cyan);
+  }
 }
 
 @keyframes yellow-circle {
-  0% { left: 0; }
-  50% { left: 50%; }
-  100% { left: 0; }
+  0% {
+    left: 0;
+  }
+
+  50% {
+    left: 50%;
+  }
+
+  100% {
+    left: 0;
+  }
 }
 
 @keyframes blue-circle {
-  0% { left: 50%; z-index: 1; }
-  49% { z-index: 1; }
-  50% { left: 0; z-index: 10; }
-  100% { left: 50%; z-index: 10; }
+  0% {
+    left: 50%;
+    z-index: 1;
+  }
+
+  49% {
+    z-index: 1;
+  }
+
+  50% {
+    left: 0;
+    z-index: 10;
+  }
+
+  100% {
+    left: 50%;
+    z-index: 10;
+  }
 }
 
 @keyframes ticker-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 @keyframes deposit-slide-in {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }

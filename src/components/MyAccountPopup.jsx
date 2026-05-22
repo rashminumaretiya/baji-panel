@@ -40,7 +40,7 @@ export default function MyAccountPopup({
   return (
     <>
       <div
-        className="flex items-center justify-center cursor-pointer ms-lg-3 sm:ms-2 text-[var(--header-balance-color)] h-[26px] px-1.5 bg-black/30 border border-black/40 shadow-[inset_0_1px_0_0_rgba(var(--dark-alpha),0.5)] font-normal text-[12px] rounded-[3px] whitespace-nowrap max-mobile:h-[9.6vw] max-mobile:w-[9.6vw] [&_.user-icon_svg]:h-[18px] [&_.user-icon_svg]:w-[18px] [&_.dropdown-icon_svg]:w-[9px] [&_.dropdown-icon_svg]:ml-2"
+        className="flex items-center justify-center cursor-pointer lg:ms-3 sm:ms-2 text-[var(--header-balance-color)] h-[26px] px-1.5 bg-black/30 border border-black/40 shadow-[inset_0_1px_0_0_rgba(var(--dark-alpha),0.5)] font-normal text-[12px] rounded-[3px] whitespace-nowrap max-mobile:h-[9.6vw] max-mobile:w-[9.6vw] [&_.user-icon_svg]:h-[18px] [&_.user-icon_svg]:w-[18px] [&_.dropdown-icon_svg]:w-[9px]"
         onClick={handleToggle}
         role="button"
         tabIndex={0}
@@ -60,7 +60,9 @@ export default function MyAccountPopup({
         <Popover className="border-0 w-[230px]">
           <Popover.Body className="p-0 text-[12px] font-[Tahoma,Helvetica,sans-serif] text-[var(--popover)]">
             <div className="flex justify-between font-bold text-[12px] border-b border-[var(--sm-text-color)] pl-2.5">
-              <p className="mb-0 leading-[26px] font-semibold flex-1 pr-1.5 border-r border-[#c5d0d7]">{userName}</p>
+              <p className="mb-0 leading-[26px] font-semibold flex-1 pr-1.5 border-r border-[#c5d0d7]">
+                {userName}
+              </p>
               <p className="mb-0 text-[11px] px-1 py-[5px]">GMT +5:30</p>
             </div>
             <ul className="m-0 p-0">
@@ -75,7 +77,9 @@ export default function MyAccountPopup({
                   tabIndex={0}
                   className="px-2.5 leading-[25px] border-b last:border-b-0 border-[var(--light-bg)] text-[#1e1e1e] cursor-pointer hover:bg-[var(--xxs-gray)]"
                   onClick={() => handleMenuClick(item.path)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleMenuClick(item.path)}
+                  onKeyDown={(e) =>
+                    e.key === 'Enter' && handleMenuClick(item.path)
+                  }
                 >
                   {item.label}
                 </li>

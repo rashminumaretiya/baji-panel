@@ -97,7 +97,8 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   // Mobile stake popup header (used inside the open-bets drawer).
   const stakeHeaderClass = cx(
     'flex items-center justify-between bg-[var(--primary)]',
-    isYellowTheme && 'bg-gradient-to-b from-[var(--sm-primary-yellow)] to-[var(--md-primary-yellow)]',
+    isYellowTheme &&
+      'bg-gradient-to-b from-[var(--sm-primary-yellow)] to-[var(--md-primary-yellow)]',
     isMcwCasinoTheme && 'bg-gradient-to-b from-[#2f2f2f] to-[#010101]'
   )
 
@@ -117,7 +118,8 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
 
   const navigateToHome = () => navigate('/')
   const openBetsClick = () => setShowBets(true)
-  const toggleLiveStream = () => dispatch(setIsPlayLiveStream(!isPlayLiveStream))
+  const toggleLiveStream = () =>
+    dispatch(setIsPlayLiveStream(!isPlayLiveStream))
   const openMobileStake = (e) => {
     setStakeTarget(e.currentTarget)
     setStakeOpen(true)
@@ -169,8 +171,10 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                     !isYellowTheme &&
                       !isMcwCasinoTheme &&
                       'max-mobile:bg-black/10 max-mobile:border max-mobile:border-black/40 max-mobile:shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.3)]',
-                    isYellowTheme && 'max-mobile:!text-[var(--dark)] max-mobile:!bg-transparent',
-                    isMcwCasinoTheme && 'max-mobile:!bg-white/10 max-mobile:!text-[#ffd45f]'
+                    isYellowTheme &&
+                      'max-mobile:!text-[var(--dark)] max-mobile:!bg-transparent',
+                    isMcwCasinoTheme &&
+                      'max-mobile:!bg-white/10 max-mobile:!text-[#ffd45f]'
                   )}
                   onClick={openBetsClick}
                   role="button"
@@ -213,20 +217,25 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
           <div
             className={cx(
               'flex items-center text-white',
-              isYellowTheme && '[&_a]:!text-[var(--dark)] [&_.value]:!text-[var(--dark)]',
-              isMcwCasinoTheme && '[&_.label]:!text-[#ffd45f] [&_.value]:!text-[#ffd45f]'
+              isYellowTheme &&
+                '[&_a]:!text-[var(--dark)] [&_.value]:!text-[var(--dark)]',
+              isMcwCasinoTheme &&
+                '[&_.label]:!text-[#ffd45f] [&_.value]:!text-[#ffd45f]'
             )}
           >
             <div className="flex items-center justify-between">
               {isBalanceRefresh ? (
                 <div className="me-2 [&_span]:inline-block [&_span]:w-1 [&_span]:h-1 [&_span]:rounded-full [&_span]:bg-white [&_span]:opacity-0 [&_span]:mr-1.5 [&_span]:animate-[loadBar_0.8s_ease_infinite] max-mobile:[&_span]:bg-black">
                   {LOADING_BAR_ITEMS.map((n) => (
-                    <span key={n} style={{ animationDelay: `${(n - 1) * 0.1}s` }} />
+                    <span
+                      key={n}
+                      style={{ animationDelay: `${(n - 1) * 0.1}s` }}
+                    />
                   ))}
                 </div>
               ) : (
                 <a
-                  className="md:flex items-center pr-3.5 max-mobile:pr-[2.13vw] max-mobile:text-right max-mobile:text-[3.2vw] text-white no-underline [&_span]:opacity-70 [&_.value]:!opacity-100 [&_.value]:font-bold"
+                  className="md:flex items-center pr-3.5 max-mobile:pr-[2.13vw] max-mobile:text-right max-mobile:text-[3.2vw] text-white no-underline [&_span]:opacity-70 [&_.value]:opacity-100! [&_.value]:font-bold"
                   href="#"
                   onClick={(e) => e.preventDefault()}
                 >
