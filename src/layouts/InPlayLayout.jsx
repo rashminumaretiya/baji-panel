@@ -5,12 +5,14 @@ import BetSlip from '../components/BetSlip.jsx'
 import Header from '../components/Header.jsx'
 import MobileNavigation from '../components/MobileNavigation.jsx'
 import NewsLine from '../components/NewsLine.jsx'
+import OneClickBet from '../components/OneClickBet.jsx'
 import OpenBets from '../components/OpenBets.jsx'
 import Loader from '../shared/components/Loader.jsx'
 import LoginModel from '../shared/components/loginModel/LoginModel.jsx'
 import {
   selectIsAuthenticated,
   selectIsLoginWindow,
+  selectIsOneClickBet,
   setLoginWindow,
 } from '../store/slices/authSlice.js'
 import {
@@ -25,6 +27,7 @@ export default function InPlayLayout() {
   const isMobile = useSelector(selectIsMobile)
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const isLoginWindow = useSelector(selectIsLoginWindow)
+  const isOneClickBet = useSelector(selectIsOneClickBet)
 
   const isPlatformPage = useMemo(
     () => pathname.includes('platform'),
@@ -45,6 +48,8 @@ export default function InPlayLayout() {
               <Outlet />
             </Suspense>
           </div>
+
+          {isOneClickBet && <OneClickBet />}
 
           {showMobileNavigation && <MobileNavigation />}
         </div>

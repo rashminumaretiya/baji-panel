@@ -6,10 +6,16 @@ import {
   selectIsMcvYellowTheme,
   selectIsYellowTheme,
 } from '../store/slices/commonSlice.js'
-import { selectOneClickBetStakes } from '../store/slices/authSlice.js'
+import {
+  loadStakes,
+  selectOneClickBetStakes,
+  selectStakesData,
+  updateStakes,
+} from '../store/slices/authSlice.js'
 import { setOneClickBetStake } from '../store/slices/betSlipSlice.js'
 import { LOCALSTORAGE } from '../shared/types/common.js'
 import { localStorageService } from '../shared/services/local-storage.js'
+import { alertService } from '../shared/services/alert.js'
 import SvgIcon from './SvgIcon.jsx'
 
 const STAKE_SLOTS = [1, 2, 3, 4]
@@ -26,6 +32,7 @@ export default function OneClickBet() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const defaultStakes = useSelector(selectOneClickBetStakes)
+  const stakesData = useSelector(selectStakesData)
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
 
@@ -41,6 +48,10 @@ export default function OneClickBet() {
   const [editStakes, setEditStakes] = useState(null)
 
   const stakes = isEdit && editStakes ? editStakes : defaultStakes
+
+  useEffect(() => {
+    if (!stakesData?.length) dispatch(loadStakes())
+  }, [dispatch, stakesData?.length])
 
   useEffect(() => {
     dispatch(setOneClickBetStake(defaultStakes[activeStakeIndex]))
@@ -61,10 +72,18 @@ export default function OneClickBet() {
     setEditStakes((prev) => ({ ...(prev ?? defaultStakes), [index]: value }))
   }
 
-  const saveOneClickStake = () => {
-    setIsEdit(false)
-    setEditStakes(null)
-    onStakeClick(activeStakeIndex)
+  const saveOneClickStake = async () => {
+    const edited = editStakes ?? defaultStakes
+    const first4 = [1, 2, 3, 4].map((slot) => Number(edited[slot]))
+    const rest = (stakesData ?? []).slice(4)
+    try {
+      const action = await dispatch(updateStakes([...first4, ...rest])).unwrap()
+      if (action?.key) alertService.success(t(action.key))
+    } finally {
+      setIsEdit(false)
+      setEditStakes(null)
+      onStakeClick(activeStakeIndex)
+    }
   }
 
   const toggleEdit = () => {
@@ -114,12 +133,11 @@ export default function OneClickBet() {
   // overrides which used different gradients.
   const wrapperClass = cx(
     'sticky bottom-0 z-[1010] px-2.5 shadow-[inset_0_1px_0_0_var(--shadow-primary)]',
-    !isYellowTheme && !isMcwCasinoTheme &&
+    !isYellowTheme &&
+      !isMcwCasinoTheme &&
       'bg-gradient-to-b from-[var(--xts-primary)] to-[var(--mdx-primary)]',
-    isYellowTheme &&
-      'bg-gradient-to-b from-[#4e9600] to-[#386a02]',
-    isMcwCasinoTheme &&
-      'bg-gradient-to-b from-[#b43807] to-[#912b06]'
+    isYellowTheme && 'bg-gradient-to-b from-[#4e9600] to-[#386a02]',
+    isMcwCasinoTheme && 'bg-gradient-to-b from-[#b43807] to-[#912b06]'
   )
 
   // The 4-slot stake row (the curvy banner background). Default uses the green
@@ -149,7 +167,11 @@ export default function OneClickBet() {
 
   return (
     <>
-      <div className={attentionOpen ? 'fixed inset-0 w-full h-full bg-black/30 z-[9]' : ''}> </div>
+      <div
+        className={
+          attentionOpen ? 'fixed inset-0 w-full h-full bg-black/30 z-[9]' : ''
+        }
+      ></div>
       <div className={wrapperClass}>
         <div ref={setAttentionTarget} />
 
@@ -202,7 +224,10 @@ export default function OneClickBet() {
               <button
                 type="button"
                 disabled={attentionOpen}
-                className={cx(actionBtnBase, isEdit ? saveBtnClass : editBtnClass)}
+                className={cx(
+                  actionBtnBase,
+                  isEdit ? saveBtnClass : editBtnClass
+                )}
                 onClick={isEdit ? saveOneClickStake : toggleEdit}
               >
                 {!isEdit ? (

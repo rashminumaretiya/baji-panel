@@ -44,7 +44,7 @@ export const getValidationCode = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message)
     }
-  },
+  }
 )
 
 // Ports app.ts handleTokenAuthentication() — when the URL carries ?token=...,
@@ -79,14 +79,18 @@ export const autoLoginFromUrlToken = createAsyncThunk(
       stripTokenFromUrl()
       return rejectWithValue(err.response?.data || err.message)
     }
-  },
+  }
 )
 
 function stripTokenFromUrl() {
   if (typeof window === 'undefined') return
   const url = new URL(window.location.href)
   url.searchParams.delete('token')
-  window.history.replaceState({}, '', url.pathname + (url.search ? url.search : '') + url.hash)
+  window.history.replaceState(
+    {},
+    '',
+    url.pathname + (url.search ? url.search : '') + url.hash
+  )
 }
 
 // Ports authService.login() — POST /auth/sign-in with {userName, password, code, captchaId}.
@@ -107,7 +111,7 @@ export const login = createAsyncThunk(
       dispatch(getValidationCode())
       return rejectWithValue(err.response?.data || err.message)
     }
-  },
+  }
 )
 
 // Ports authService.logOut() — POST /auth/logout, then clear state regardless
@@ -122,7 +126,7 @@ export const logout = createAsyncThunk(
     }
     dispatch(setUser(null))
     return null
-  },
+  }
 )
 
 // Mirrors authService.getBalance() — GET user/balance
@@ -135,7 +139,37 @@ export const fetchBalance = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message)
     }
-  },
+  }
+)
+
+// Mirrors UserService.getStake() — GET /api/user/stake
+export const loadStakes = createAsyncThunk(
+  'auth/loadStakes',
+  async (_, { getState, rejectWithValue }) => {
+    if (!getState().auth.user) return []
+    try {
+      const res = await http.get('user/stake')
+      return Array.isArray(res.data?.data) ? res.data.data : []
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message)
+    }
+  }
+)
+
+// Mirrors updateStakes() — PUT /api/user/stake.
+export const updateStakes = createAsyncThunk(
+  'auth/updateStakes',
+  async (stake, { dispatch, getState, rejectWithValue }) => {
+    if (!getState().auth.user) return null
+    try {
+      const res = await http.put('user/stake', { stake })
+      return { key: res.data?.key }
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message)
+    } finally {
+      dispatch(loadStakes())
+    }
+  }
 )
 
 const authSlice = createSlice({
@@ -192,6 +226,9 @@ const authSlice = createSlice({
         state.user = { ...state.user, wallet }
         localStorageService.setItem(LOCALSTORAGE.USER, state.user)
       }
+    })
+    b.addCase(loadStakes.fulfilled, (state, { payload }) => {
+      state.stakesData = Array.isArray(payload) ? payload : []
     })
   },
 })
