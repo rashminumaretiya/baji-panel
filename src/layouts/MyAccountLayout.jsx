@@ -1,7 +1,9 @@
+import { Suspense } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import Header from '../components/Header.jsx'
 import NewsLine from '../components/NewsLine.jsx'
+import Loader from '../shared/components/Loader.jsx'
 import { useIsMobile } from '../hooks/useMediaQuery.js'
 import {
   selectIsMcvYellowTheme,
@@ -114,7 +116,9 @@ export default function MyAccountLayout() {
                   </ul>
                 </div>
               )}
-              <Outlet />
+              <Suspense fallback={<Loader show variant="wrapper" />}>
+                <Outlet />
+              </Suspense>
             </div>
           </div>
         </div>

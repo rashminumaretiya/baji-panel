@@ -1,31 +1,35 @@
+import { lazy } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useDomainConfiguration } from './hooks/useDomainConfiguration.js'
 import { useTheme } from './hooks/useTheme.js'
 import Layout from './layouts/Layout.jsx'
 import MyAccountLayout from './layouts/MyAccountLayout.jsx'
 import ResultLayout from './layouts/ResultLayout.jsx'
-import InPlay from './pages/InPlay.jsx'
-import IplWinner from './pages/IplWinner.jsx'
-import MultiMarkets from './pages/MultiMarkets.jsx'
-import AccountStatement from './pages/Profile/AccountStatement.jsx'
-import ActivityLog from './pages/Profile/ActivityLog.jsx'
-import BalanceOverview from './pages/Profile/BalanceOverview.jsx'
-import BetsComplaints from './pages/Profile/BetsComplaints.jsx'
-import Deposit from './pages/Profile/Deposit.jsx'
-import DepositHistory from './pages/Profile/DepositHistory.jsx'
-import MyBets from './pages/Profile/MyBets.jsx'
-import Profile from './pages/Profile/Profile.jsx'
-import Withdraw from './pages/Profile/Withdraw.jsx'
-import WithdrawHistory from './pages/Profile/WithdrawHistory.jsx'
-import Cricket from './pages/Cricket.jsx'
-import GreyhoundRacing from './pages/GreyhoundRacing.jsx'
-import HorseRacing from './pages/HorseRacing.jsx'
-import Result from './pages/Result.jsx'
-import Soccer from './pages/Soccer.jsx'
-import Tennis from './pages/Tennis.jsx'
-import Home from './pages/Home.jsx'
 import InPlayLayout from './layouts/InPlayLayout.jsx'
-import LiveOdds from './pages/LiveOdds.jsx'
+import Home from './pages/Home.jsx'
+
+const Cricket = lazy(() => import('./pages/Cricket.jsx'))
+const Soccer = lazy(() => import('./pages/Soccer.jsx'))
+const Tennis = lazy(() => import('./pages/Tennis.jsx'))
+const HorseRacing = lazy(() => import('./pages/HorseRacing.jsx'))
+const GreyhoundRacing = lazy(() => import('./pages/GreyhoundRacing.jsx'))
+const MultiMarkets = lazy(() => import('./pages/MultiMarkets.jsx'))
+const LiveOdds = lazy(() => import('./pages/LiveOdds.jsx'))
+
+const InPlay = lazy(() => import('./pages/InPlay.jsx'))
+const Result = lazy(() => import('./pages/Result.jsx'))
+const IplWinner = lazy(() => import('./pages/IplWinner.jsx'))
+
+const Profile = lazy(() => import('./pages/Profile/Profile.jsx'))
+const BalanceOverview = lazy(() => import('./pages/Profile/BalanceOverview.jsx'))
+const AccountStatement = lazy(() => import('./pages/Profile/AccountStatement.jsx'))
+const MyBets = lazy(() => import('./pages/Profile/MyBets.jsx'))
+const BetsComplaints = lazy(() => import('./pages/Profile/BetsComplaints.jsx'))
+const ActivityLog = lazy(() => import('./pages/Profile/ActivityLog.jsx'))
+const Deposit = lazy(() => import('./pages/Profile/Deposit.jsx'))
+const DepositHistory = lazy(() => import('./pages/Profile/DepositHistory.jsx'))
+const Withdraw = lazy(() => import('./pages/Profile/Withdraw.jsx'))
+const WithdrawHistory = lazy(() => import('./pages/Profile/WithdrawHistory.jsx'))
 
 function App() {
   useDomainConfiguration()
@@ -35,7 +39,6 @@ function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
-        <Route path="/"element={<Home />} />
         <Route
           path="odds/:eventId/:sport"
           element={<LiveOdds />}

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { Suspense, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { Outlet, useLocation } from 'react-router-dom'
 import {
@@ -109,7 +109,9 @@ export default function Layout() {
 
           {showNewsLine && <NewsLine />}
           <div className={scrollWrapClass}>
-            <Outlet />
+            <Suspense fallback={<Loader show variant="wrapper" />}>
+              <Outlet />
+            </Suspense>
           </div>
 
           {isOneClickBet && <OneClickBet />}
