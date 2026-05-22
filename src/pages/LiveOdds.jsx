@@ -888,7 +888,8 @@ export default function LiveOdds() {
       runnerName: runner.runnerName,
       betType: 'BACK',
       odds: runner.back[0].price,
-      size: runner.back[0].size ?? 0,
+      // SPORTS_BOOK has no per-bet `size` concept
+      size: null,
       stake: 0,
       min: 1,
       max: 5000,

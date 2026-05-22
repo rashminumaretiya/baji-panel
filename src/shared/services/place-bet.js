@@ -17,12 +17,13 @@ export const MARKET_NAME = {
 
 export function buildBetPayload(slip, context = {}) {
   const marketName = slip.marketName ?? ''
+  const size = slip.size == null ? null : Number(slip.size)
   const payload = {
     marketId: String(slip.marketId ?? context.marketId ?? ''),
     selectionId: String(slip.selectionId ?? slip.runnerId ?? ''),
     stake: Number(slip.stake ?? 0),
     odd: Number(slip.odd ?? slip.odds ?? 0),
-    size: Number(slip.size ?? 0),
+    size,
     eventId: String(slip.eventId ?? context.eventId ?? ''),
     marketName,
     betType: slip.betType ?? slip.type ?? '',

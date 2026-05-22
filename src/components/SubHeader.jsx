@@ -192,7 +192,7 @@ export default function SubHeader() {
                   key={page.id ?? page.url}
                   page={page}
                   active={isPageActive(pathname, page)}
-                  showLiveChip={page.isCount && isAuthenticated}
+                  showLiveChip={page.isCount && page?.count && isAuthenticated}
                   label={t(page.label, page.fallback)}
                   onActivate={() => navigate(page.url)}
                   isMcwCasinoTheme={isMcwCasinoTheme}
