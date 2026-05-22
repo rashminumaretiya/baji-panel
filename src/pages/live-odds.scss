@@ -1132,6 +1132,7 @@
           var(--xs-orange) 15%,
           var(--md-orange) 100%
         );
+        padding-bottom: 3px;
 
         @media screen and (max-width: 767px) {
           background: var(--orange);
@@ -1561,8 +1562,8 @@
   .fancy-bet-wrapper {
     @media screen and (max-width: 767px) {
       .accordion-header {
-        &.collapsed {
-          .accordion-button {
+        .accordion-button {
+          &.collapsed {
             background-image: none;
           }
         }

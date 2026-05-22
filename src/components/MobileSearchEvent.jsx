@@ -137,23 +137,16 @@ export default function MobileSearchEvent() {
       navigate(`/odds/${item.eventId}/${slug}`)
       close()
     },
-    [navigate, close],
+    [navigate, close]
   )
 
   const showEmpty =
-    open && trimmedQuery.length > 0 && !isSearching && effectiveResults.length === 0
+    open &&
+    trimmedQuery.length > 0 &&
+    !isSearching &&
+    effectiveResults.length === 0
 
   const placeholder = t('header.searchEvents', 'Search Events')
-  const selectClass = [
-    'ng-select-typeahead',
-    'ng-select-searchable',
-    query && 'ng-select-clearable',
-    'ng-select',
-    'ng-select-single',
-    open && 'ng-select-focused',
-  ]
-    .filter(Boolean)
-    .join(' ')
 
   return (
     <div className="search-collapse">
@@ -181,77 +174,79 @@ export default function MobileSearchEvent() {
             {LeftArrowSvg}
           </i>
 
-          <div className={selectClass}>
-            <div className="ng-select-container">
-              <div className="ng-value-container">
-                {!query && (
-                  <div className="ng-placeholder">{placeholder}</div>
-                )}
-                <div className="ng-input">
-                  <input
-                    aria-autocomplete="list"
-                    role="combobox"
-                    type="text"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    autoComplete="off"
-                    aria-expanded={open}
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    autoFocus={open}
-                  />
-                </div>
+          <div className="ng-select-container">
+            <div className="ng-value-container">
+              <div className="ng-input">
+                <input
+                  aria-autocomplete="list"
+                  role="combobox"
+                  type="text"
+                  placeholder={placeholder}
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  autoComplete="off"
+                  aria-expanded={open}
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  autoFocus={open}
+                />
               </div>
-              {query && (
-                <span
-                  className="ng-clear-wrapper"
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => setQuery('')}
-                  onKeyDown={(e) =>
-                    (e.key === 'Enter' || e.key === ' ') && setQuery('')
-                  }
-                  aria-label="Clear search"
-                >
-                  <span className="ng-clear">×</span>
-                </span>
-              )}
-              <span className="ng-arrow-wrapper">
-                <span className="ng-arrow" />
-              </span>
             </div>
+            {query && (
+              <span
+                className="ng-clear-wrapper"
+                role="button"
+                tabIndex={0}
+                onClick={() => setQuery('')}
+                onKeyDown={(e) =>
+                  (e.key === 'Enter' || e.key === ' ') && setQuery('')
+                }
+                aria-label="Clear search"
+              >
+                <span className="ng-clear">×</span>
+              </span>
+            )}
+            <span className="ng-arrow-wrapper">
+              <span className="ng-arrow" />
+            </span>
           </div>
 
           <i className="search-icon">{SearchSvg}</i>
         </div>
 
         {(effectiveResults.length > 0 || isSearching || showEmpty) && (
-          <div className="ng-dropdown-panel">
-            <div className="ng-dropdown-panel-items">
-              {isSearching && effectiveResults.length === 0 && (
-                <div className="ng-option ng-option-loading">
-                  {t('common.loading', 'Searching…')}
-                </div>
-              )}
-              {effectiveResults.map((item) => (
-                <button
-                  type="button"
-                  key={`${item.sportId}-${item.eventId}`}
-                  className="ng-option"
-                  onClick={() => onResultClick(item)}
-                >
-                  <div title={item.eventName} className="item">
-                    <span className="time">{formatEventTime(item.openDate)}</span>
-                    <span> {item.sportName}</span>
-                    <span className="event-name"> {item.eventName?.trim()}</span>
+          <div className="ng-select">
+            <div className="ng-dropdown-panel">
+              <div className="ng-dropdown-panel-items">
+                {isSearching && effectiveResults.length === 0 && (
+                  <div className="ng-option ng-option-loading">
+                    {t('common.loading', 'Searching…')}
                   </div>
-                </button>
-              ))}
-              {showEmpty && (
-                <div className="ng-option ng-option-empty">
-                  {t('common.noEventsFound', 'No events found')}
-                </div>
-              )}
+                )}
+                {effectiveResults.map((item) => (
+                  <div
+                    type="button"
+                    key={`${item.sportId}-${item.eventId}`}
+                    className="ng-option"
+                    onClick={() => onResultClick(item)}
+                  >
+                    <div title={item.eventName} className="item">
+                      <span className="time">
+                        {formatEventTime(item.openDate)}
+                      </span>
+                      <span> {item.sportName}</span>
+                      <span className="event-name">
+                        {item.eventName?.trim()}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+                {showEmpty && (
+                  <div className="ng-option ng-option-empty">
+                    {t('common.noEventsFound', 'No events found')}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}

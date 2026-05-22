@@ -110,46 +110,52 @@ export default function MobileSports() {
   )
 
   return (
-    <div className="games-tab">
-      <div className={wrapperClass}>
-        <ul
-          ref={tabsRef}
-          className="nav tabs sport-header-tabs ps-0 mb-0 overflow-x-auto"
-          role="tablist"
-        >
-          {tabs.map((tab) => {
-            const isActive = String(tab.id) === activeId
-            const iconKey = resolveTabIcon(tab)
-            return (
-              <li
-                key={tab.id}
-                className={cx('nav-item', tab.classList, isActive && 'active')}
-                role="presentation"
-              >
-                <button
-                  type="button"
-                  className={cx('nav-link', isActive && 'active')}
-                  role="tab"
-                  aria-selected={isActive}
-                  onClick={() => handleTabClick(tab)}
-                  onKeyDown={(e) => onKeyActivate(e, tab)}
-                >
-                  {iconKey && <SvgIcon name={iconKey} />}
-                  <span>{tab.label ? t(tab.label, tab.name) : tab.name}</span>
-                  {tab.count != null && (
-                    <div className="live-chip">
-                      <div className="icon-out">
-                        <SvgIcon name="liveChipIcon" />
-                      </div>
-                      <p className="number">{tab.count}</p>
-                    </div>
+    <div className="mobile-sports-container">
+      <div className="games-tab">
+        <div className={wrapperClass}>
+          <ul
+            ref={tabsRef}
+            className="nav tabs sport-header-tabs ps-0 mb-0 overflow-x-auto"
+            role="tablist"
+          >
+            {tabs.map((tab) => {
+              const isActive = String(tab.id) === activeId
+              const iconKey = resolveTabIcon(tab)
+              return (
+                <li
+                  key={tab.id}
+                  className={cx(
+                    'nav-item',
+                    tab.classList,
+                    isActive && 'active'
                   )}
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-        <MobileSearchEvent />
+                  role="presentation"
+                >
+                  <button
+                    type="button"
+                    className={cx('nav-link', isActive && 'active')}
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => handleTabClick(tab)}
+                    onKeyDown={(e) => onKeyActivate(e, tab)}
+                  >
+                    {iconKey && <SvgIcon name={iconKey} />}
+                    <span>{tab.label ? t(tab.label, tab.name) : tab.name}</span>
+                    {tab.count != null && (
+                      <div className="live-chip">
+                        <div className="icon-out">
+                          <SvgIcon name="liveChipIcon" />
+                        </div>
+                        <p className="number">{tab.count}</p>
+                      </div>
+                    )}
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+          <MobileSearchEvent />
+        </div>
       </div>
     </div>
   )
