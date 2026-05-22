@@ -1913,7 +1913,7 @@ const PriorityTabs = memo(function PriorityTabs({
           {tabs.map((tab) => {
             const isActive = selectedType === tab.type
             const liBase =
-              'min-w-[70px] h-[18px] leading-[18px] font-bold rounded-[4px] px-[5px] text-center max-md:h-[5.9333333333vw] max-md:min-w-0 max-md:px-[2.6666666667vw] max-md:leading-[6vw] max-md:h-[5.9333333333vw] max-md:border-r max-md:border-r-white/40 hover:[&_a]:underline'
+              'min-w-[70px] h-[18px] leading-[18px] font-bold md:rounded-[4px] px-[5px] text-center max-md:h-[5.9333333333vw] max-md:min-w-0 max-md:px-[2.6666666667vw] max-md:leading-[6vw] max-md:h-[5.9333333333vw] max-md:border-r max-md:border-r-white/40 hover:[&_a]:underline'
             const liActive = isActive
               ? cx(
                   'bg-white hover:[&_a]:!no-underline max-md:rounded-[1.0666666667vw]',

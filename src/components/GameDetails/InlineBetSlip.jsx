@@ -117,7 +117,7 @@ const DESKTOP_STAKE_BTN =
 
 // Mobile stake buttons (`.mobile-stake button`).
 const MOBILE_STAKE_BTN =
-  'text-white bg-transparent border-0 flex-1 p-0 max-md:text-[var(--white)] max-md:bg-white max-md:w-auto max-md:px-1 max-md:py-[3px]'
+  'text-white bg-transparent border-0 flex-1 p-0 max-md:text-[var(--white)] max-md:bg-white max-md:w-auto max-md:px-1 max-md:py-[3px] max-md:bg-[linear-gradient(-180deg,#32617f_20%,#1f4258_91%)] max-md:p-0! max-md:leading-[1.76] max-md:text-[3.7vw]'
 
 function StakeButtons({ isMobile, onStakeClick }) {
   const stakes = isMobile ? DEFAULT_STAKES.slice(0, 5) : DEFAULT_STAKES
@@ -144,16 +144,16 @@ function StakeButtons({ isMobile, onStakeClick }) {
 
 const BackspaceIcon = (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
     width="20"
-    height="14"
-    viewBox="0 0 24 24"
-    aria-hidden="true"
+    height="18"
+    viewBox="0 0 20 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      fill="currentColor"
-      d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12z"
-    />
+      d="M18.0159 2.2533H6.37953C5.84425 2.2533 5.42535 2.51493 5.14607 2.91112L0.949219 8.98102L5.14607 15.0434C5.42535 15.4396 5.84425 15.7087 6.37953 15.7087H18.0159C18.8692 15.7087 19.5674 15.036 19.5674 14.2137V3.74834C19.5674 2.92607 18.8692 2.2533 18.0159 2.2533ZM18.0159 14.2137H6.43383L2.81104 8.98102L6.42607 3.74834H18.0159V14.2137ZM9.02487 12.7186L11.8098 10.035L14.5948 12.7186L15.6886 11.6646L12.9037 8.98102L15.6886 6.2974L14.5948 5.24339L11.8098 7.92701L9.02487 5.24339L7.93105 6.2974L10.716 8.98102L7.93105 11.6646L9.02487 12.7186Z"
+      fill="black"
+    ></path>
   </svg>
 )
 
@@ -193,7 +193,9 @@ function Keypad({ onValueChanged }) {
           className={`${KEYPAD_BTN} flex h-full items-center justify-center`}
           onClick={() => onValueChanged('backspace')}
         >
-          <i className="not-italic">{BackspaceIcon}</i>
+          <i className="not-italic max-md:[&_svg]:w-[4.8vw] max-md:[&_svg]:h-[4.8vw]">
+            {BackspaceIcon}
+          </i>
         </button>
       </div>
     </div>
@@ -418,14 +420,15 @@ export default function InlineBetSlip({
                   <div className="flex items-center border border-[#4a4a4a] rounded-md max-md:border-[#aaa] max-md:justify-between max-md:bg-white max-md:rounded-[1.6vw]">
                     <button
                       type="button"
-                      className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-l-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-gradient-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-r max-md:border-[#aaa] max-md:rounded-tl-[1.6vw] max-md:rounded-bl-[1.6vw] max-md:rounded-tr-none max-md:rounded-br-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]"
+                      className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-l-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-gradient-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-r max-md:border-[#aaa] max-md:rounded-tl-[1.6vw] max-md:rounded-bl-[1.6vw] max-md:rounded-tr-none max-md:rounded-br-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw] [&_svg]:mx-auto
+[&_svg]:mx-auto"
                       onClick={() => updateField('stake', 'DEC')}
                     >
                       {MinusIcon}
                     </button>
                     <input
                       type="text"
-                      className="p-1 text-center max-w-[63px] bg-[var(--xs-secondary)] shadow-[inset_0_0.26667vw_1.33333vw_var(--primary)] text-[var(--primary)] h-[34px] rounded-none border border-[#4a4a4a] border-t-0 border-b-0 text-[20px] max-md:h-[10.66667vw] max-md:border-0 max-md:p-0 max-md:text-[#1e1e1e] max-md:text-[4vw] max-md:leading-[10.13333vw] max-md:font-bold max-md:max-w-none max-md:flex-1"
+                      className="p-1 text-center max-w-[63px] bg-[var(--xs-secondary)] shadow-[inset_0_0.26667vw_1.33333vw_var(--primary)] text-[var(--primary)] h-[34px] rounded-none border border-[#4a4a4a] border-t-0 border-b-0 text-[20px] max-md:h-[10.66667vw] max-md:border-0 max-md:p-0 max-md:text-[#1e1e1e] max-md:text-[4vw] max-md:leading-[10.13333vw] max-md:font-bold max-md:max-w-none max-md:flex-1 w-full"
                       inputMode="none"
                       min={0}
                       value={betSlipDetails?.stake ?? ''}
@@ -433,7 +436,8 @@ export default function InlineBetSlip({
                     />
                     <button
                       type="button"
-                      className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-r-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-gradient-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:rounded-tr-[1.6vw] max-md:rounded-br-[1.6vw] max-md:rounded-tl-none max-md:rounded-bl-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]"
+                      className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-r-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-gradient-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:rounded-tr-[1.6vw] max-md:rounded-br-[1.6vw] max-md:rounded-tl-none max-md:rounded-bl-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw] [&_svg]:mx-auto
+[&_svg]:mx-auto"
                       onClick={() => updateField('stake', 'INC')}
                     >
                       {PlusIcon}
@@ -445,7 +449,10 @@ export default function InlineBetSlip({
           </tr>
 
           <tr>
-            <td colSpan={2} className="p-0 bg-transparent bg-[#103c59]">
+            <td
+              colSpan={2}
+              className="p-0 bg-transparent bg-[#103c59] border border-white"
+            >
               <StakeButtons isMobile onStakeClick={updateStake} />
             </td>
           </tr>
@@ -476,7 +483,7 @@ export default function InlineBetSlip({
                 <button
                   type="button"
                   className={cx(
-                    'text-[4vw] font-bold leading-[2.6] !text-white !p-0 !max-w-none rounded-[1.6vw] bg-[var(--primary)] border border-[var(--lg-primary)] w-1/2 py-2 max-w-[120px]',
+                    'text-[4vw]! font-bold leading-[2.6] !text-white !p-0 !max-w-none rounded-[1.6vw]! btn btn-primary w-1/2 py-2 max-w-[120px]',
                     isPlacing && 'opacity-60 cursor-not-allowed'
                   )}
                   onClick={handlePlace}

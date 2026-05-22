@@ -111,7 +111,7 @@ export default function BetExposureCell({
   if (!hasBase && !hasPreview) return null
 
   return (
-    <span className="inline-flex items-center gap-1.5 text-[11px] font-bold leading-none">
+    <span className="inline-flex items-center gap-1.5 font-bold leading-none">
       {hasBase && <ExposureValue value={baseValue} />}
       {hasPreview && <ExposureValue value={previewValue} withIcon />}
     </span>
