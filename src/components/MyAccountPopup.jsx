@@ -40,7 +40,7 @@ export default function MyAccountPopup({
   return (
     <>
       <div
-        className="flex items-center justify-center cursor-pointer lg:ms-3 sm:ms-2 text-[var(--header-balance-color)] h-[26px] px-1.5 bg-black/30 border border-black/40 shadow-[inset_0_1px_0_0_rgba(var(--dark-alpha),0.5)] font-normal text-[12px] rounded-[3px] whitespace-nowrap max-mobile:h-[9.6vw] max-mobile:w-[9.6vw] [&_.user-icon_svg]:h-[18px] [&_.user-icon_svg]:w-[18px] [&_.dropdown-icon_svg]:w-[9px]"
+        className="flex items-center justify-center cursor-pointer ms-lg-3 sm:ms-2 text-[var(--header-balance-color)] h-[26px] px-1.5 bg-black/30 border border-black/40 shadow-[inset_0_1px_0_0_rgba(var(--dark-alpha),0.5)] font-normal text-[12px] rounded-[3px] whitespace-nowrap max-mobile:h-[9.6vw] max-mobile:w-[9.6vw] [&_.user-icon_svg]:h-[18px] [&_.user-icon_svg]:w-[18px] [&_.dropdown-icon_svg]:w-[9px] [&_.dropdown-icon_svg]:ml-2"
         onClick={handleToggle}
         role="button"
         tabIndex={0}
