@@ -122,11 +122,11 @@ export default function DepositHistory() {
         render: (value) => <PaymentMethodCell html={value} />,
       },
       {
-        key: 'payment',
+        key: 'paymentType',
         label: 'Payment Method',
       },
       {
-        key: 'original_amount',
+        key: 'netAmount',
         label: `${currency} Amount`,
       },
       {
