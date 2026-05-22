@@ -77,12 +77,12 @@ const SPORT_HEADER_TABS_MCW =
 
 // `.sport-header-tabs li button` ─ the tab pill itself.
 const TAB_BUTTON_BASE =
-  'relative ml-[1.87vw] h-[9.79vw] font-bold text-white leading-[2.6] ' +
+  'relative ml-[1.87vw] h-[9.79vw] font-bold text-white ' +
   'px-[1.87vw] py-0 mt-[2.67vw] rounded-t-[1.6vw] ' +
-  '[&_i]:text-white [&_i]:m-[2.13vw_1.6vw_0_0] ' +
-  '[&_svg]:w-[5.33vw] [&_svg]:h-[5.33vw]'
+  '[&_i]:text-white [&_>i]:mr-[1.6vw] ' +
+  '[&_svg]:w-[5.33vw] [&_svg]:h-[5.33vw] max-md:[&_>i_>svg]:overflow-visible max-md:[&_>i_>svg]:w-[5.3333333333vw] max-md:[&_>i_>svg]:h-[5.3333333333vw] max-md:[&_svg]:w-[3.233333vw] max-md:[&_svg]:h-[3.233333vw]'
 const TAB_BUTTON_ACTIVE_DEFAULT =
-  '!bg-[var(--lg-yellow)] !text-black [&_i]:!text-black'
+  '!bg-[var(--lg-yellow)] [&_>span]:text-black [&_i]:!text-black'
 const TAB_BUTTON_ACTIVE_YELLOW =
   'max-md:!bg-gradient-to-b max-md:!from-[var(--md-primary-yellow)] max-md:!to-[#ffa10c]'
 const TAB_BUTTON_ACTIVE_BABU =
@@ -95,11 +95,9 @@ const TAB_BUTTON_ACTIVE_MCW =
 
 // `.live-chip` ─ small floating count pill above each tab.
 const LIVE_CHIP_CLASS =
-  'absolute h-[3.2vw] top-[-1.97vw] right-[1.33vw] min-w-[9.33vw] ' +
-  'shadow-[0_0.27vw_0.8vw_0_rgba(var(--black-rgb),0.5)] rounded-[0.8vw] ' +
-  'flex items-center'
+  'absolute h-[3.2vw] top-[-1.97vw] right-[1.33vw] min-w-[9.33vw]  shadow-[0_0.27vw_0.8vw_0_rgba(var(--black-rgb),0.5)] rounded-[0.8vw] flex items-center bg-[linear-gradient(180deg,var(--red)_0%,var(--lg-red)_100%)] overflow-hidden'
 const LIVE_CHIP_ICON =
-  'h-[3.2vw] w-[5vw] [&_i]:m-0 [&_svg]:w-[3.53vw] [&_svg]:h-[3.13vw]'
+  'h-[3.2vw] w-[5vw] [&_i]:m-0 [&_svg]:w-[3.53vw] [&_svg]:h-[3.13vw] bg-[linear-gradient(180deg,var(--white)_0%,var(--xs-gray)_89%)]'
 const LIVE_CHIP_NUMBER = 'text-[2.5vw] font-normal px-[1.33vw] mb-0'
 
 export default function MobileSports() {
@@ -203,12 +201,20 @@ export default function MobileSports() {
                     onClick={() => handleTabClick(tab)}
                     onKeyDown={(e) => onKeyActivate(e, tab)}
                   >
-                    {iconKey && <SvgIcon name={iconKey} />}
+                    {iconKey && (
+                      <SvgIcon
+                        name={iconKey}
+                        className="inline-flex align-middle"
+                      />
+                    )}
                     <span>{tab.label ? t(tab.label, tab.name) : tab.name}</span>
                     {tab.count != null && (
                       <div className={LIVE_CHIP_CLASS}>
                         <div className={LIVE_CHIP_ICON}>
-                          <SvgIcon name="liveChipIcon" />
+                          <SvgIcon
+                            name="liveChipIcon"
+                            className="inline-flex align-top"
+                          />
                         </div>
                         <p className={LIVE_CHIP_NUMBER}>{tab.count}</p>
                       </div>

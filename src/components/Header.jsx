@@ -47,7 +47,7 @@ function getDisplayAmount(wallet) {
 }
 
 const HEADER_BASE =
-  'flex items-center px-5 pr-[25px] py-2 h-[74px] bg-[var(--primary)] min-w-[1350px] max-md:px-0 max-md:pr-[1.87vw] max-md:py-[2.67vw] max-md:h-[14.67vw] max-md:min-w-0'
+  'flex items-center px-5 pr-[25px] py-2 h-[74px] bg-[var(--primary)] max-md:px-0 max-md:pr-[1.87vw] max-md:py-[2.67vw] max-md:h-[14.67vw] max-md:min-w-0'
 
 const HEADER_YELLOW = 'bg-gradient-to-b from-[#ffcb2e] to-[#ffb80c]'
 const HEADER_MCW = 'bg-gradient-to-b from-[#2f2f2f] to-[#010101]'
@@ -198,7 +198,10 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                   tabIndex={0}
                   onKeyDown={(e) => e.key === 'Enter' && openBetsClick()}
                 >
-                  <SvgIcon name="dollarCoin" />
+                  <SvgIcon
+                    name="dollarCoin"
+                    className="max-md:[&_svg]:w-[5.33333vw] max-md:[&_svg]:h-[5.33333vw]"
+                  />
                   <p className="mb-0 ms-lg-2 max-md:ml-[1.33vw]">
                     {' '}
                     {t('header.bets', 'Bets')}

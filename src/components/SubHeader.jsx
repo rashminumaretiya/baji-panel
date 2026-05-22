@@ -239,8 +239,8 @@ export default function SubHeader() {
         </div>
       </div>
 
-      <Overlay show={stakeOpen} target={stakeTarget} placement="bottom">
-        <Popover className="min-w-[282px]">
+      <Overlay show={stakeOpen} target={stakeTarget} placement="bottom-end">
+        <Popover className="max-w-[282px]">
           <Popover.Body className="min-h-[100px] bg-[var(--light-bg)] text-[11px] text-[var(--text-color)] p-2.5 font-[Tahoma,Helvetica,sans-serif]">
             <Stake onCancel={closeStake} />
           </Popover.Body>
@@ -269,7 +269,9 @@ const SubHeaderTab = function SubHeaderTab({
   // Default color and active/hover bg
   const liDefault =
     'text-white hover:bg-white/10 ' +
-    (active ? 'bg-white/20 shadow-[inset_0_1px_3px_0_rgba(var(--black-rgb),0.1)] hover:bg-white/20' : '')
+    (active
+      ? 'bg-white/20 shadow-[inset_0_1px_3px_0_rgba(var(--black-rgb),0.1)] hover:bg-white/20'
+      : '')
 
   // mcw-casino-theme: black text, border-left rgba(0,0,0,0.2), active bg #c9a33d
   const liMcw =
@@ -278,9 +280,9 @@ const SubHeaderTab = function SubHeaderTab({
 
   // babu-theme: active and hover get the red/black gradient
   const liBabu = isBabuTheme
-    ? (active
-        ? 'bg-gradient-to-t from-[#fd1111] to-[#0e0e0e] hover:bg-gradient-to-t hover:from-[#fd1111] hover:to-[#0e0e0e]'
-        : 'hover:bg-gradient-to-t hover:from-[#fd1111] hover:to-[#0e0e0e]')
+    ? active
+      ? 'bg-gradient-to-t from-[#fd1111] to-[#0e0e0e] hover:bg-gradient-to-t hover:from-[#fd1111] hover:to-[#0e0e0e]'
+      : 'hover:bg-gradient-to-t hover:from-[#fd1111] hover:to-[#0e0e0e]'
     : ''
 
   const liClass = [
@@ -303,7 +305,7 @@ const SubHeaderTab = function SubHeaderTab({
       {label}
       {showLiveChip && (
         <div className="absolute top-0 right-[3px] -translate-y-1/2 h-3 rounded-[3px] shadow-[0_1px_3px_0_rgba(0,0,0,0.5)] inline-flex overflow-hidden z-[9]">
-          <div className="h-3 bg-white px-1 py-[2px] leading-[0] flex items-center justify-center before:content-[''] before:bg-[url(/img/svg/live-icon.svg)] before:bg-no-repeat before:bg-contain before:h-2 before:w-3.5" />
+          <div className="h-3 bg-white px-1 py-[2px] leading-[0] flex items-center justify-center before:animate-pulse before:content-[''] before:bg-[url(/img/svg/live-icon.svg)] before:bg-no-repeat before:bg-contain before:h-2 before:w-3.5" />
           <p className="text-[10px] leading-[0.8] mb-0 px-[5px] py-[2px] bg-[var(--red,#e83623)] text-white tracking-[0.4px] font-bold">
             {page.count ?? 0}
           </p>

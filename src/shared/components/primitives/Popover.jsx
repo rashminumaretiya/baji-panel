@@ -23,14 +23,32 @@ const GAP = 8
 const VIEWPORT_PADDING = 8
 
 const FLIP_CANDIDATES = {
-  'bottom-end': ['bottom-end', 'bottom-start', 'top-end', 'top-start', 'bottom'],
-  'bottom-start': ['bottom-start', 'bottom-end', 'top-start', 'top-end', 'bottom'],
+  'bottom-end': [
+    'bottom-end',
+    'bottom-start',
+    'top-end',
+    'top-start',
+    'bottom',
+  ],
+  'bottom-start': [
+    'bottom-start',
+    'bottom-end',
+    'top-start',
+    'top-end',
+    'bottom',
+  ],
   'top-end': ['top-end', 'top-start', 'bottom-end', 'bottom-start', 'top'],
   'top-start': ['top-start', 'top-end', 'bottom-start', 'bottom-end', 'top'],
   'left-end': ['left-end', 'left-start', 'right-end', 'right-start', 'left'],
   'left-start': ['left-start', 'left-end', 'right-start', 'right-end', 'left'],
   'right-end': ['right-end', 'right-start', 'left-end', 'left-start', 'right'],
-  'right-start': ['right-start', 'right-end', 'left-start', 'left-end', 'right'],
+  'right-start': [
+    'right-start',
+    'right-end',
+    'left-start',
+    'left-end',
+    'right',
+  ],
   bottom: ['bottom', 'top'],
   top: ['top', 'bottom'],
   left: ['left', 'right'],
@@ -98,7 +116,7 @@ function resolvePlacement(target, popover, placement, flip) {
   const w = popover.offsetWidth
   const h = popover.offsetHeight
   const candidates = flip
-    ? FLIP_CANDIDATES[placement] ?? [placement]
+    ? (FLIP_CANDIDATES[placement] ?? [placement])
     : [placement]
 
   for (const candidate of candidates) {
@@ -173,12 +191,14 @@ export function Popover({ id, className = '', children }) {
 }
 
 function PopoverBody({ className = '', children }) {
-  return <div className={`p-2 ${className}`}>{children}</div>
+  return <div className={`${className}`}>{children}</div>
 }
 
 function PopoverHeader({ className = '', children }) {
   return (
-    <div className={`px-2 py-1 bg-[var(--xs-gray)] font-bold text-[13px] ${className}`}>
+    <div
+      className={`px-2 py-1 bg-[var(--xs-gray)] font-bold text-[13px] ${className}`}
+    >
       {children}
     </div>
   )

@@ -25,7 +25,7 @@ const MOBILE_OPTIONS = [
 export function DesktopGameFilter({ value, onChange }) {
   const { t } = useTranslation()
   return (
-    <div className="flex items-center justify-between bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xxl-blue)] text-white text-[12px] font-bold leading-[25px] pt-[3px] pb-[3px] pl-[10px] pr-[2px]">
+    <div className="font-bold px-[2px] py-[3px] pl-[10px] text-[var(--white)] bg-[linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] leading-[25px] flex justify-between">
       <div>{t('titles.sportHighLights')}</div>
       <div className="inline-flex items-center gap-1.5 font-normal">
         <label
@@ -34,38 +34,38 @@ export function DesktopGameFilter({ value, onChange }) {
         >
           {t('common.viewBy')}
         </label>
-          <div
+        <div
+          className={
+            'relative ' +
+            "after:content-[''] after:absolute after:right-[7px] after:top-1/2 after:-translate-y-1/2 " +
+            'after:w-0 after:h-0 after:border-l-[4px] after:border-l-transparent ' +
+            'after:border-r-[4px] after:border-r-transparent after:border-t-[5px] after:border-t-white ' +
+            'after:pointer-events-none'
+          }
+        >
+          <select
+            id="viewType"
+            name="View"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            aria-label={t('titles.highLights')}
             className={
-              'relative ' +
-              "after:content-[''] after:absolute after:right-[7px] after:top-1/2 after:-translate-y-1/2 " +
-              'after:w-0 after:h-0 after:border-l-[4px] after:border-l-transparent ' +
-              'after:border-r-[4px] after:border-r-transparent after:border-t-[5px] after:border-t-white ' +
-              'after:pointer-events-none'
+              'w-[108px] h-[23px] border border-black/40 ' +
+              'shadow-[inset_0_1px_rgba(var(--white-rgb),0.5)] rounded-[4px] ' +
+              'bg-white/20 mr-0.5 ml-[7px] inline-block text-white ' +
+              'appearance-none leading-[14px] pl-1 text-[12px] ' +
+              '[&_option]:bg-[var(--dark-black)] [&_option]:text-white'
             }
           >
-            <select
-              id="viewType"
-              name="View"
-              value={value}
-              onChange={(e) => onChange(e.target.value)}
-              aria-label={t('titles.highLights')}
-              className={
-                'w-[108px] h-[23px] border border-black/40 ' +
-                'shadow-[inset_0_1px_rgba(var(--white-rgb),0.5)] rounded-[4px] ' +
-                'bg-white/20 mr-0.5 ml-[7px] inline-block text-white ' +
-                'appearance-none leading-[14px] pl-1 text-[12px] ' +
-                '[&_option]:bg-[var(--dark-black)] [&_option]:text-white'
-              }
-            >
-              {DESKTOP_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {t(opt.labelKey)}
-                </option>
-              ))}
-            </select>
-          </div>
+            {DESKTOP_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {t(opt.labelKey)}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
+    </div>
   )
 }
 

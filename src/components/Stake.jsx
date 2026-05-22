@@ -21,7 +21,7 @@ const SECTION_WRAPPER =
 // `.title` from the SCSS — bold blue/dark heading on desktop, full-width
 // gradient bar on mobile.
 const TITLE_CLASS =
-  'text-[11px] font-bold mb-[5px] max-md:mx-[-2.4vw] max-md:mb-[1.86667vw] max-md:px-[1.86667vw] max-md:bg-[image:linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] max-md:text-white max-md:text-[3.73333vw] max-md:leading-[2.2] max-md:font-bold'
+  'text-[11px] leading-3.25 font-bold mb-[5px] max-md:mx-[-2.4vw] max-md:mb-[1.86667vw] max-md:px-[1.86667vw] max-md:bg-[image:linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] max-md:text-white max-md:text-[3.73333vw] max-md:leading-[2.2] max-md:font-bold'
 
 // `.title.odds` variant on mobile.
 const TITLE_ODDS_OVERRIDE =
@@ -38,7 +38,7 @@ const BTN_WRAPPER = 'w-1/2 max-md:flex-1 max-md:w-auto'
 
 // `.btn` inside `.btn-wrapper` — 90% wide on desktop, full on mobile.
 const FOOTER_BTN_BASE =
-  'w-[90%] max-md:h-[10.93333vw] max-md:w-full max-md:text-[4vw] max-md:rounded-[1.6vw] text-[12px] font-bold leading-[23px] p-0 border rounded'
+  'w-[90%] max-md:h-[10.93333vw] max-md:w-full max-md:text-[4vw] max-md:rounded-[1.6vw] text-[11px] font-bold leading-[23px] p-0 border rounded'
 
 export default function Stake({
   isMobile = false,
@@ -118,7 +118,7 @@ export default function Stake({
               <input
                 id="stake-default"
                 type="number"
-                className="h-5 leading-5 px-[5px] mx-[5px] w-[29.16666%] text-[11px] border border-[var(--input-group-border)] rounded max-md:w-[29.66667vw] max-md:px-[1.86667vw] max-md:py-[2.66667vw] max-md:mx-[1.6666vw] max-md:my-0 max-md:h-auto max-md:text-[4vw] max-md:leading-normal max-md:border-[var(--xxl-gray)] max-md:rounded-[1.6vw] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(var(--black-rgb),0.1)] max-md:text-right focus:max-md:shadow-[inset_0_0.26667vw_1.33333vw_rgba(var(--xss-yellow),0.6)] focus:max-md:border-[var(--coffee)]"
+                className="h-5 leading-5 px-[5px] mx-[5px] w-[29.16666%] text-[11px] border border-[var(--input-group-border)] rounded max-md:w-[29.66667vw] max-md:px-[1.86667vw] max-md:py-[2.66667vw] max-md:mx-[1.6666vw] max-md:my-0 max-md:h-auto max-md:text-[4vw] max-md:leading-normal max-md:border-[var(--xxl-gray)] max-md:rounded-[1.6vw] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(var(--black-rgb),0.1)] max-md:text-right focus:max-md:shadow-[inset_0_0.26667vw_1.33333vw_rgba(var(--xss-yellow),0.6)] focus:max-md:border-[var(--coffee)] bg-white"
                 min={0}
                 value={defaultStake}
                 onChange={(e) => setDefaultStake(e.target.value)}
@@ -138,7 +138,7 @@ export default function Stake({
                 >
                   {t('common.quickStakes', 'Quick Stakes')}
                 </h6>
-                <h6 className={cx('hidden md:block', TITLE_CLASS)}>
+                <h6 className={cx('hidden md:block leading-3.25', TITLE_CLASS)}>
                   {t('common.stake', 'Stake')}
                 </h6>
                 <div className="block md:flex">
@@ -151,7 +151,7 @@ export default function Stake({
                         >
                           <input
                             type="text"
-                            className="w-full bg-gradient-to-b from-white to-[var(--xs-gray)] border border-[var(--lg-black)] shadow-[inset_0_2px_0_0_rgba(var(--black-rgb),0.1)] leading-[18px] p-0 text-center text-[11px] hover:bg-gradient-to-b hover:from-[var(--xs-gray)] hover:to-white max-md:rounded-[1.6vw] max-md:text-[4vw] max-md:font-bold max-md:leading-[2.2]"
+                            className="w-full bg-gradient-to-b from-white to-[var(--xs-gray)] border border-[var(--lg-black)] shadow-[inset_0_2px_0_0_rgba(var(--black-rgb),0.1)] leading-[18px] p-0 text-center text-[11px] hover:bg-gradient-to-b hover:from-[var(--xs-gray)] hover:to-white rounded max-md:rounded-[1.6vw] max-md:text-[4vw] max-md:font-bold max-md:leading-[2.2]"
                             value={availableStake[slot]}
                             disabled={stakesLocked}
                             onChange={(e) =>
@@ -165,7 +165,7 @@ export default function Stake({
                   <button
                     type="button"
                     className={cx(
-                      'border border-[var(--sm-text-color)] shadow-[inset_0_1px_0_0_rgba(var(--white-rgb),0.8)] bg-transparent text-[var(--text-color)] h-[45px] flex items-center justify-center text-[11px] p-0 w-[82px] font-normal max-md:w-[calc(100%-1.86667vw)] max-md:h-auto max-md:leading-[2.6] max-md:font-bold max-md:bg-[rgba(var(--xss-darkest),0.4)] max-md:border-[0.26667vw] max-md:border-[var(--sm-text-color)] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(var(--white-rgb),0.8)] max-md:rounded-[1.6vw] max-md:text-[4vw] max-md:mb-[1.86667vw] [&>span]:text-[var(--light-navy)]',
+                      'border border-[var(--sm-text-color)] shadow-[inset_0_1px_0_0_rgba(var(--white-rgb),0.8)] bg-transparent text-[var(--text-color)] h-[45px] flex items-center justify-center text-[11px] p-0 w-[82px] font-normal max-md:w-[calc(100%-1.86667vw)] max-md:h-auto max-md:leading-[2.6] max-md:font-bold max-md:bg-[rgba(var(--xss-darkest),0.4)] max-md:border-[0.26667vw] max-md:border-[var(--sm-text-color)] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(var(--white-rgb),0.8)] max-md:rounded-[1.6vw] max-md:text-[4vw] max-md:mb-[1.86667vw] [&>span]:text-[var(--light-navy)] rounded',
                       !stakesLocked &&
                         'text-white border-[var(--lg-primary)] bg-gradient-to-b from-[var(--xs-primary)] to-[var(--xxs-primary)] hover:bg-gradient-to-b hover:from-[var(--xxs-primary)] hover:to-[var(--xs-primary)]',
                       !stakesLocked && themedOkBtn
@@ -284,7 +284,7 @@ export default function Stake({
                 type="button"
                 className={cx(
                   FOOTER_BTN_BASE,
-                  'md:mr-2 bg-white border-[#bbb] text-[#1e1e1e]',
+                  'md:mr-2 btn btn-white border-[#bbb] text-[#1e1e1e]',
                   !stakesLocked && 'opacity-60 cursor-not-allowed'
                 )}
                 onClick={onCancel}
@@ -298,7 +298,7 @@ export default function Stake({
                 type="button"
                 className={cx(
                   FOOTER_BTN_BASE,
-                  'bg-[var(--primary)] border-[var(--lg-primary)] text-white',
+                  'btn btn-primary border-[var(--lg-primary)] text-white',
                   themedOkBtn,
                   !stakesLocked && 'opacity-60 cursor-not-allowed'
                 )}

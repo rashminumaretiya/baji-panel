@@ -106,7 +106,7 @@ export default function MyAccountPopup({
         onHide={() => setShow(false)}
       >
         <Popover className="border-0 w-[230px]">
-          <Popover.Body className="p-0 text-[12px] font-[Tahoma,Helvetica,sans-serif] text-[var(--popover)]">
+          <Popover.Body className="text-[12px] font-[Tahoma,Helvetica,sans-serif] text-[var(--popover)]">
             <div className="flex justify-between font-bold text-[12px] border-b border-[var(--sm-text-color)] pl-2.5">
               <p className="mb-0 leading-[26px] font-semibold flex-1 pr-1.5 border-r border-[#c5d0d7]">
                 {userName}

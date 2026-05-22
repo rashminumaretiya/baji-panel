@@ -166,7 +166,7 @@ export default function MobileSearchEvent() {
         }
       >
         {/* `.search-events-inner` ─ search bar row */}
-        <div className="flex bg-white items-center">
+        <div className="flex bg-white items-center max-md:h-[16vw]">
           {/* `.left-arrow` ─ back button */}
           <i
             className={
@@ -265,7 +265,7 @@ export default function MobileSearchEvent() {
               }
             >
               {/* `.ng-dropdown-panel-items` */}
-              <div className="max-md:max-h-[46.67vw]">
+              <div className="max-md:max-h-[46.67vw] overflow-y-auto">
                 {isSearching && effectiveResults.length === 0 && (
                   <div
                     className={
@@ -285,7 +285,7 @@ export default function MobileSearchEvent() {
                       'max-md:px-[2vw] max-md:text-[4vw] max-md:text-[var(--blue)] ' +
                       'max-md:[&_.item]:overflow-hidden max-md:[&_.item]:text-ellipsis ' +
                       'max-md:[&_.item]:leading-[11.68vw] ' +
-                      'max-md:[&_.time]:mr-[1.87vw] max-md:[&_.time]:font-normal ' +
+                      'max-md:[&_.time]:mr-[1.86vw] max-md:[&_.time]:font-normal ' +
                       'max-md:[&_.time]:text-[var(--lg-black)]'
                     }
                     onClick={() => onResultClick(item)}
