@@ -62,7 +62,7 @@ function NoOpenBets({ isYellowTheme }) {
   }
 
   return (
-    <p className="text-center mt-3 text-[var(--white)] text-[13px] max-[991px]:text-[12px]">
+    <p className="text-center my-4 text-[13px] max-[991px]:text-[12px]">
       {t('openBets.noOpenBetsAvailable', 'No open bets available.')}
     </p>
   )
@@ -401,7 +401,7 @@ function OpenBetsDesktop({
                 <button
                   type="button"
                   className={cx(
-                    'w-full text-left px-4 py-3 text-white text-[14px] font-semibold shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] bg-no-repeat bg-right bg-[length:auto_100%]',
+                    'w-full text-left px-2.5 text-white text-xs leading-[25px] shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] bg-no-repeat bg-right bg-[length:auto_100%]',
                     isCollapsed
                       ? 'bg-[url(/img/grediant-slip-plus.png)]'
                       : 'bg-[url(/img/grediant-slip-minus.png)]'
@@ -418,7 +418,7 @@ function OpenBetsDesktop({
                   <div>
                     <div className="py-2 px-1">
                       <select
-                        className="p-1 w-full"
+                        className="p-1 w-full border rounded-[1px]"
                         value={selectedIndex}
                         onChange={(e) =>
                           setSelectedIndex(Number(e.target.value))
