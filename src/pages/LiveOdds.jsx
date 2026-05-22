@@ -2757,7 +2757,7 @@ function SportbookSection({
                             <span className="font-bold">
                               {titleCase(runner.runnerName)}
                             </span>
-                            <span className="ml-2 inline-flex items-center">
+                            <span className="inline-flex items-center w-full">
                               <BetExposureCell
                                 selectionId={runner.selectionId}
                                 marketId={market.marketId}
