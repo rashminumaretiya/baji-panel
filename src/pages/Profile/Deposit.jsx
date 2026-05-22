@@ -380,6 +380,10 @@ export default function Deposit({ showTitle = true }) {
 
   // Click handler shared by inline list (showTitle) AND modal list (!showTitle).
   const onPromotionItemClick = (p) => {
+    // Marking touched on first interaction lets the "not selected" warning
+    // appear when the user picks a promotion then deselects it, without
+    // showing it on initial page load before the user has touched the field.
+    markTouched('promotionId')
     if (showTitle) {
       // Inline list: commit immediately.
       setField('promotionId', values.promotionId === p._id ? null : p._id)
@@ -418,7 +422,12 @@ export default function Deposit({ showTitle = true }) {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    setTouched({ amount: true, methodId: true, paymentType: true })
+    setTouched({
+      amount: true,
+      methodId: true,
+      paymentType: true,
+      promotionId: true,
+    })
     if (
       amountErrors.required ||
       amountErrors.pattern ||
@@ -618,11 +627,11 @@ export default function Deposit({ showTitle = true }) {
                 activeId={values.promotionId}
                 onClick={onPromotionItemClick}
               />
-              <span className="block text-[12px] text-[var(--red)] mt-1 font-bold">
-                {values.promotionId
-                  ? 'Promotion is selected'
-                  : 'Promotion is not selected'}
-              </span>
+              {touched.promotionId && !values.promotionId && (
+                <span className="block text-[12px] text-[var(--red)] mt-1 font-bold">
+                  Promotion is not selected
+                </span>
+              )}
             </div>
           ))}
 
@@ -665,78 +674,86 @@ export default function Deposit({ showTitle = true }) {
               </div>
             </div>
 
-            {/* Step 1 — Payment Method (BKASH / NAGAD / ROCKET). Markup
-                ported from sbex-user-fe deposit.html:48-82 — radio-card
-                pattern using .payment-methods-cards + .form-check with the
-                radio input overlaying the label so the entire card is the
-                click target. Methods come from whichever API the current
-                branch returned, normalized into methodOptions above. */}
+            {/* Step 1 — Payment Method (BKASH / NAGAD / ROCKET). Radio-card
+                pattern: the radio input is absolutely positioned over the
+                label so the entire card is the click target; the yellow
+                border ring appears via `peer-checked:border-...`. Mobile
+                viewport reuses the same vw-based proportions as sbex. */}
             {methodOptions.length > 0 && (
-              <div className="payment-card">
-                <div className="form-group">
-                  {showTitle && (
-                    <label htmlFor="paymentMethod" className="mb-1">
-                      Payment Method <span className="astrisk">*</span>
-                    </label>
-                  )}
-                  <div className="d-flex payment-methods-cards">
-                    {methodOptions.map((m) => {
-                      const active = effectiveMethodId === m.methodId
-                      const locked = isDepositSuccess
-                      return (
-                        <div
-                          key={m.methodId}
-                          className="form-check position-relative"
+              <div>
+                {showTitle && (
+                  <label
+                    htmlFor="paymentMethod"
+                    className={formLabelRequiredClass}
+                  >
+                    Payment Method
+                  </label>
+                )}
+                <div className="flex gap-[10px] flex-wrap max-md:gap-1">
+                  {methodOptions.map((m) => {
+                    const active = effectiveMethodId === m.methodId
+                    const locked = isDepositSuccess
+                    return (
+                      <div
+                        key={m.methodId}
+                        className="relative w-[100px] max-md:w-[calc(33.33%-2.666px)]"
+                      >
+                        <input
+                          type="radio"
+                          name="methodId"
+                          id={`method-${m.methodId}`}
+                          value={m.methodId}
+                          checked={active}
+                          disabled={locked}
+                          onChange={() => selectMethod(m.methodId)}
+                          className={`absolute inset-0 w-full h-full m-0 cursor-pointer bg-transparent rounded-[5px] appearance-none border ${
+                            active
+                              ? 'border-[var(--primary-yellow)]'
+                              : 'border-[#262626]'
+                          } disabled:cursor-not-allowed disabled:opacity-60`}
+                        />
+                        <label
+                          htmlFor={`method-${m.methodId}`}
+                          className="flex flex-col items-center justify-center mb-0 p-2 rounded-[5px] pointer-events-none max-md:bg-white max-md:p-[1.86vw] max-md:rounded-[1.163vw]"
                         >
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="methodId"
-                            id={`method-${m.methodId}`}
-                            value={m.methodId}
-                            checked={active}
-                            disabled={locked}
-                            onChange={() => selectMethod(m.methodId)}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={`method-${m.methodId}`}
-                          >
-                            {m.logo && <img src={m.logo} alt={m.name} />}
-                            <span className="text-center">{m.name}</span>
-                          </label>
-                        </div>
-                      )
-                    })}
-                  </div>
-                  {showMethodRequired && (
-                    <span className="error">Payment method is required</span>
-                  )}
+                          {m.logo && (
+                            <img
+                              src={m.logo}
+                              alt={m.name}
+                              className="h-10 w-auto mx-auto max-md:w-[9.302vw] max-md:h-[9.302vw]"
+                            />
+                          )}
+                          <span className="text-center text-[14px] mt-[5px] block max-md:text-[3.256vw] max-md:mt-[1.163vw]">
+                            {m.name}
+                          </span>
+                        </label>
+                      </div>
+                    )
+                  })}
                 </div>
+                {showMethodRequired && (
+                  <span className={errorTextClass}>
+                    Payment method is required
+                  </span>
+                )}
               </div>
             )}
 
             {/* Step 2 — Payment Type (agent / personal / merchant). Re-uses
-                the original .method-box visual from before the dual-flow
-                refactor so the page keeps a single card style; images come
-                from PAYMENT_TYPE_IMAGES (same assets the old PAYMENT_LIST
-                grid used). Status/is_available is pre-filtered upstream. */}
+                the icon-only `.method-box` visual via Tailwind utilities so
+                the page stays SCSS-free. Status/is_available is pre-filtered
+                upstream by normalizeOnePageMethods. */}
             {effectiveMethod && availableTypes.length > 0 && (
-              <div className="form-group mt-3">
+              <div className="mt-3">
                 {showTitle && (
                   <label
                     htmlFor="paymentType"
                     className={formLabelRequiredClass}
                   >
-                    {' '}
-                    Payment Type{' '}
+                    Payment Type
                   </label>
                 )}
-                <div
-                  className={`flex overflow-x-auto gap-2${
-                    !showTitle ? ' mt-3' : ''
-                  }`}
-                >
+                <div className="flex overflow-x-auto gap-2">
                   {availableTypes.map((t) => {
                     const active = effectivePaymentType === t.name
                     const locked = isDepositSuccess
@@ -744,9 +761,11 @@ export default function Deposit({ showTitle = true }) {
                     return (
                       <div
                         key={t.name}
-                        className={`method-box${active ? ' active' : ''}${
-                          locked ? ' disabled' : ''
-                        }`}
+                        className={`rounded-lg m-[5px] cursor-pointer border-2 box-border ${
+                          active
+                            ? 'border-[var(--primary-yellow)]'
+                            : 'border-transparent'
+                        } ${locked ? 'opacity-60 pointer-events-none' : ''}`}
                         onClick={() => !locked && selectPaymentType(t.name)}
                         role="button"
                         tabIndex={locked ? -1 : 0}
@@ -762,40 +781,47 @@ export default function Deposit({ showTitle = true }) {
                   })}
                 </div>
                 {showPaymentRequired && (
-                  <span className="error">Payment type is required</span>
+                  <span className={errorTextClass}>
+                    Payment type is required
+                  </span>
                 )}
               </div>
             )}
 
-            {submit.status === 'failed' && submit.error && (
-              <span className={errorTextClass}>{submit.error}</span>
-            )}
+            {/* API errors surface as a toast via the http error interceptor
+                (core/http/bootstrap.js + alertService) — no need to also
+                duplicate them as inline text under the form. */}
 
-            {/* One-page verify card — only renders after submitSelfDeposit
-                resolves. Ported from sbex-user-fe deposit.html:172-286 in
-                its `isOnePageNewDepositUI` branch (the "new-bangla-deposit"
-                layout). Background = picked method's brand color (BKASH pink,
-                NAGAD red, ROCKET purple). */}
+            {/* One-page verify card — sbex-user-fe `isOnePageNewDepositUI`
+                layout, rendered in Tailwind. Background color is set inline
+                from cardColor (BKASH pink / NAGAD red / ROCKET purple).
+                Layout: flex-row form groups with label left + bounded input
+                right + absolute copy-icon. Mobile uses vw padding for parity
+                with sbex deposit.scss. */}
             {isDepositSuccess && isDepositOnePage && (
               <div
                 ref={verifyCardRef}
-                className="verify-payment-card new-bangla-deposit mt-3"
+                className="mt-3 text-white rounded-[12px] p-[18px_16px] max-md:rounded-[2.326vw] max-md:p-[2.558vw_1.628vw]"
                 style={{ backgroundColor: cardColor }}
               >
-                <h6 className="text-center">Keep screenshot</h6>
+                <h6 className="text-center text-[14px] font-semibold mb-3 text-white">
+                  Keep screenshot
+                </h6>
 
                 {/* Deposit Amount — read-only display + copy icon. */}
-                <div className="form-group mb-2">
-                  <label>Deposit Amount:</label>
+                <div className="flex justify-between items-center relative gap-2 mb-2">
+                  <label className="whitespace-nowrap !mb-0 text-[13px] leading-[1.2] text-white">
+                    Deposit Amount :
+                  </label>
                   <input
                     type="text"
-                    className="form-control opacity75"
+                    className="max-w-[180px] h-8 py-1 px-[10px] pr-[30px] text-[13px] text-[#364153] bg-white border border-[#ced4da] rounded-[6px] opacity-75 placeholder:text-[12px]"
                     value={`${currency} ${values.amount || ''}`}
                     disabled
                     readOnly
                   />
                   <span
-                    className="copy-icon"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[#364153] cursor-pointer leading-none inline-flex [&_svg]:h-4 [&_svg]:w-auto"
                     role="button"
                     tabIndex={0}
                     onClick={() => copyToClipboard(values.amount)}
@@ -806,17 +832,19 @@ export default function Deposit({ showTitle = true }) {
 
                 {/* Receiver Number — label changes per paymentType; value
                     is masked when privacy_setting is on. */}
-                <div className="form-group mb-2">
-                  <label>{receiverLabel} :</label>
+                <div className="flex justify-between items-center relative gap-2 mb-2">
+                  <label className="whitespace-nowrap !mb-0 text-[13px] leading-[1.2] text-white">
+                    {receiverLabel} :
+                  </label>
                   <input
                     type="text"
-                    className="form-control opacity75"
+                    className="max-w-[180px] h-8 py-1 px-[10px] pr-[30px] text-[13px] text-[#364153] bg-white border border-[#ced4da] rounded-[6px] opacity-75 placeholder:text-[12px]"
                     value={receiverDisplay}
                     disabled
                     readOnly
                   />
                   <span
-                    className="copy-icon"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[#364153] cursor-pointer leading-none inline-flex [&_svg]:h-4 [&_svg]:w-auto"
                     role="button"
                     tabIndex={0}
                     onClick={() =>
@@ -827,27 +855,29 @@ export default function Deposit({ showTitle = true }) {
                   </span>
                 </div>
 
-                <hr />
+                <hr className="opacity-40 my-[10px] border-white" />
 
                 {/* Editable: trxId. */}
-                <div className="form-group mb-2">
-                  <label>Provide transaction ID</label>
-                  <div className="input-with-errors">
+                <div className="flex justify-between items-center relative gap-2 mb-2">
+                  <label className="whitespace-nowrap !mb-0 text-[13px] leading-[1.2] text-white">
+                    Provide transaction ID
+                  </label>
+                  <div className="flex flex-col items-end gap-1 w-full max-w-[180px]">
                     <input
                       type="text"
-                      className="form-control"
+                      className="w-full h-8 py-1 px-[10px] text-[13px] text-[#364153] bg-white border border-[#ced4da] rounded-[6px] placeholder:text-[12px]"
                       placeholder="Provide transaction ID"
                       value={verifyValues.trxId}
                       onChange={(e) => setVerifyField('trxId', e.target.value)}
                       onBlur={() => markVerifyTouched('trxId')}
                     />
                     {verifyTouched.trxId && verifyErrors.trxIdRequired && (
-                      <span className="field-error">
+                      <span className="text-[11px] text-[#ffd6d6] text-left leading-[1.2] self-start">
                         Provide your transaction ID
                       </span>
                     )}
                     {verifyTouched.trxId && verifyErrors.trxIdPattern && (
-                      <span className="field-error">
+                      <span className="text-[11px] text-[#ffd6d6] text-left leading-[1.2] self-start">
                         Invalid transaction ID
                       </span>
                     )}
@@ -855,12 +885,14 @@ export default function Deposit({ showTitle = true }) {
                 </div>
 
                 {/* Editable: senderNumber. */}
-                <div className="form-group">
-                  <label>Transaction number</label>
-                  <div className="input-with-errors">
+                <div className="flex justify-between items-center relative gap-2">
+                  <label className="whitespace-nowrap !mb-0 text-[13px] leading-[1.2] text-white">
+                    Transaction number
+                  </label>
+                  <div className="flex flex-col items-end gap-1 w-full max-w-[180px]">
                     <input
                       type="text"
-                      className="form-control"
+                      className="w-full h-8 py-1 px-[10px] text-[13px] text-[#364153] bg-white border border-[#ced4da] rounded-[6px] placeholder:text-[12px]"
                       placeholder="017XXXXXXXX"
                       value={verifyValues.senderNumber}
                       onChange={(e) =>
@@ -870,13 +902,13 @@ export default function Deposit({ showTitle = true }) {
                     />
                     {verifyTouched.senderNumber &&
                       verifyErrors.senderRequired && (
-                        <span className="field-error">
+                        <span className="text-[11px] text-[#ffd6d6] text-left leading-[1.2] self-start">
                           Enter your transaction number
                         </span>
                       )}
                     {verifyTouched.senderNumber &&
                       verifyErrors.senderPattern && (
-                        <span className="field-error">
+                        <span className="text-[11px] text-[#ffd6d6] text-left leading-[1.2] self-start">
                           Kindly enter a valid{' '}
                           {selectedMethodName === 'ROCKET' ? '12' : '11'} digit
                           number
@@ -890,7 +922,7 @@ export default function Deposit({ showTitle = true }) {
             {isDepositSuccess && isDepositOnePage ? (
               <button
                 type="button"
-                className="btn make-payment w-100 text-white mt-3"
+                className="mt-3 w-full py-2 px-3 text-white rounded text-[14px] font-semibold disabled:opacity-65 disabled:cursor-not-allowed"
                 style={{ backgroundColor: cardColor }}
                 onClick={handleVerifySubmit}
                 disabled={onePageVerify.status === 'loading'}
@@ -900,7 +932,7 @@ export default function Deposit({ showTitle = true }) {
             ) : (
               <button
                 type="submit"
-                className="btn btn-primary mt-3 make-payment"
+                className="inline-flex items-center justify-center gap-2 mt-3 w-full py-2 px-3 text-white bg-[var(--primary)] hover:bg-[var(--lg-primary)] rounded text-[14px] font-medium disabled:opacity-65 disabled:cursor-not-allowed [&_i_svg]:h-[18px] [&_i_svg]:w-[18px]"
                 disabled={!!promotionLimitError || submitting}
               >
                 <Icon name="bkash" />

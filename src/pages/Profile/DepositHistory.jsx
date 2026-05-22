@@ -58,27 +58,40 @@ function ActionButton({ visible, icon, title, label, onClick }) {
   )
 }
 
-// Maps an API status string to a Tailwind colour class. The original SCSS
-// referenced a global `src/shared/table.scss` that was deleted, so each
-// status colour is wired up inline instead.
-function getStatusCellClass(value) {
-  if (!value) return ''
+// Verbatim port of baji-exchange-frontend styles.scss @status mixin (lines
+// 1073-1104). The `$bg` parameter is declared in the mixin signature but
+// never used inside its body — so the visual is colour-only, no background
+// tint. Three buckets match the SCSS rule groups exactly.
+function StatusPill({ value }) {
+  if (!value) return null
   const slug = String(value).toLowerCase().trim()
+  let color = ''
   if (
     slug.includes('complete') ||
     slug.includes('approve') ||
-    slug.includes('success')
-  )
-    return 'text-[var(--avocado-green)] font-bold'
-  if (
-    slug.includes('fail') ||
+    slug === 'active' ||
+    slug === 'accept' ||
+    slug === 'transfered'
+  ) {
+    color = 'text-[var(--avocado-green)]'
+  } else if (
     slug.includes('reject') ||
-    slug.includes('decline')
+    slug.includes('decline') ||
+    slug === 'suspend'
+  ) {
+    color = 'text-[var(--failed-status)]'
+  } else if (slug.includes('pending') || slug.includes('initiated')) {
+    color = 'text-[var(--primary-yellow)]'
+  }
+  // width:100%; border-radius:5px; position:relative; font-size:12px;
+  // text-align:center; display:flex; align-items:center; text-transform:capitalize;
+  return (
+    <span
+      className={`w-full rounded-[5px] relative text-[12px] text-center flex items-center capitalize ${color}`}
+    >
+      {value}
+    </span>
   )
-    return 'text-[var(--failed-status)] font-bold'
-  if (slug.includes('pending') || slug.includes('process'))
-    return 'text-[var(--orange-dark)] font-bold'
-  return ''
 }
 
 export default function DepositHistory() {
@@ -146,8 +159,7 @@ export default function DepositHistory() {
       {
         key: 'status',
         label: t('myBets.status', 'Status'),
-        cellClassName: getStatusCellClass,
-        render: (value) => <span>{value}</span>,
+        render: (value) => <StatusPill value={value} />,
       },
       {
         key: 'uploadScreenshot',

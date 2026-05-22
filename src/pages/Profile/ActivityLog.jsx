@@ -50,10 +50,13 @@ function titleCase(value) {
 function getLoginStatusCellClass(value) {
   if (typeof value !== 'string' || !value) return ''
   const slug = value.toLowerCase().trim()
-  if (slug.includes('success'))
-    return 'text-[var(--avocado-green)] font-bold'
+  // Verbatim port of baji-exchange-frontend styles.scss:830-842 —
+  //   .logInStatus-login-success span { color: var(--dark-green); }
+  //   .logInStatus-login-failed  span { color: var(--red); }
+  // `!` is required to beat the td's base `text-[var(--dark)]`.
+  if (slug.includes('success')) return 'text-[var(--dark-green)]!'
   if (slug.includes('fail') || slug.includes('error'))
-    return 'text-[var(--failed-status)] font-bold'
+    return 'text-[var(--red)]!'
   return ''
 }
 
