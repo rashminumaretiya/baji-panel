@@ -5,7 +5,6 @@ import { useDomainConfiguration } from './hooks/useDomainConfiguration.js'
 import { useTheme } from './hooks/useTheme.js'
 import Layout from './layouts/Layout.jsx'
 import MyAccountLayout from './layouts/MyAccountLayout.jsx'
-import ResultLayout from './layouts/ResultLayout.jsx'
 import InPlayLayout from './layouts/InPlayLayout.jsx'
 import Home from './pages/Home.jsx'
 import { selectIsAuthenticated } from './store/slices/authSlice.js'
@@ -18,10 +17,8 @@ const GreyhoundRacing = lazy(() => import('./pages/GreyhoundRacing.jsx'))
 const MultiMarkets = lazy(() => import('./pages/MultiMarkets.jsx'))
 const LiveOdds = lazy(() => import('./pages/LiveOdds.jsx'))
 const RacingOdds = lazy(() => import('./pages/RacingOdds.jsx'))
-
 const InPlay = lazy(() => import('./pages/InPlay.jsx'))
 const Result = lazy(() => import('./pages/Result.jsx'))
-const IplWinner = lazy(() => import('./pages/IplWinner.jsx'))
 
 const Profile = lazy(() => import('./pages/Profile/Profile.jsx'))
 const BalanceOverview = lazy(
@@ -69,10 +66,6 @@ function App() {
       <Route element={<InPlayLayout />}>
         <Route path="in-play" element={<InPlay />} />
         <Route path="result" element={<Result />} />
-      </Route>
-
-      <Route element={<ResultLayout />}>
-        <Route path="ipl-winner" element={<IplWinner />} />
       </Route>
 
       <Route element={<RequireAuth />}>
