@@ -94,7 +94,7 @@ const TABLE_TH =
   'text-[var(--dark)] text-center align-bottom text-[11px] font-normal pb-[3px] max-md:px-[1.86667vw] max-md:pt-[1.86667vw] max-md:pb-[0.8vw] max-md:text-[3.46667vw] max-md:font-bold'
 
 const PRICE_CELL_BASE =
-  'text-center text-[var(--header-primary)] relative text-[12px] cursor-pointer w-[10.9%] h-[40px] max-md:text-[4vw] max-md:w-[70px] max-md:h-[11.51vw] max-md:px-[1.8666666667vw] py-1 max-md:py-[0.6vw] max-md:min-w-[18.66667vw] hover:opacity-80 [&_p]:font-bold [&_p]:leading-none [&_p]:text-[12px] max-md:[&_p]:text-[3.46667vw] max-md:[&_p]:leading-normal [&_span]:leading-none [&_span]:text-[12px] max-md:[&_span]:text-[2.93333vw]'
+  'text-center text-[var(--header-primary)] border-t border-[var(--tbl-border-color)] relative text-[12px] cursor-pointer w-[10.9%] h-[40px] max-md:text-[4vw] max-md:w-[70px] max-md:h-[11.51vw] max-md:px-[1.8666666667vw] py-1 max-md:py-[0.6vw] max-md:min-w-[18.66667vw] hover:opacity-80 [&_p]:font-bold [&_p]:leading-none [&_p]:text-[12px] max-md:[&_p]:text-[3.46667vw] max-md:[&_p]:leading-normal [&_span]:leading-none [&_span]:text-[12px] max-md:[&_span]:text-[2.93333vw]'
 
 const BLUE_XS = 'bg-[var(--back-0)] hover:bg-[var(--back-0-hover)]'
 const BLUE_MD = 'bg-[var(--back-1)] hover:bg-[var(--back-1-hover)]'
@@ -882,6 +882,7 @@ export default function LiveOdds() {
       marketId: market.marketId,
       marketName: 'SPORTS_BOOK',
       type: 'BACK',
+      gtype: 'sportsBook',
       eventId: String(eventId ?? ''),
       selectionId: runner.selectionId,
       runnerId: runner.selectionId,
@@ -2239,15 +2240,13 @@ const FancyTabHeader = memo(function FancyTabHeader({
           'inline-flex items-center cursor-pointer relative ml-4 max-md:ml-[4.786vw] first:ml-0'
         const chipActive = isActive ? 'ml-0' : ''
 
-        const hidePin = tab.type === MAIN_FANCY.SPORTS_BOOK
-
         let innerBg =
           'flex items-center px-[10px] py-[7px] h-[30px] bg-[var(--light-navy)] text-white relative font-bold max-md:px-[1.66667vw] max-md:py-[1.3vw] max-md:h-[7.55vw]'
 
         if (!isActive) {
           innerBg +=
-            " before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-[-6px] before:w-[10px] before:rounded-tl-[4px] before:[transform:skew(-14deg,0deg)] before:bg-[var(--light-navy)] before:z-[1] max-md:before:left-[-1.582vw] max-md:before:w-[3.304vw] max-md:before:rounded-tl-[0.522vw] max-md:before:h-[7.6vw]" +
-            " after:content-[''] after:absolute after:top-0 after:bottom-0 after:right-[-6px] after:w-[10px] after:rounded-tr-[4px] after:[transform:skew(14deg,0deg)] after:bg-[var(--light-navy)] after:z-[1] max-md:after:right-[-1.782vw] max-md:after:w-[3.304vw] max-md:after:rounded-tr-[0.522vw] max-md:after:h-[7.6vw]"
+            " before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-[-6px] before:w-[10px] before:rounded-tl-[4px] before:[transform:skew(-14deg,0deg)] before:bg-[var(--light-navy)] before:z-[1] max-md:before:left-[-1.582vw] max-md:before:w-[3.304vw] max-md:before:rounded-tl-[0.522vw] max-md:before:h-[7.7vw]" +
+            " after:content-[''] after:absolute after:top-0 after:bottom-0 after:right-[-6px] after:w-[10px] after:rounded-tr-[4px] after:[transform:skew(14deg,0deg)] after:bg-[var(--light-navy)] after:z-[1] max-md:after:right-[-1.782vw] max-md:after:w-[3.304vw] max-md:after:rounded-tr-[0.522vw] max-md:after:h-[7.7vw]"
         } else {
           innerBg = innerBg.replace(
             'bg-[var(--light-navy)]',
@@ -2272,7 +2271,7 @@ const FancyTabHeader = memo(function FancyTabHeader({
               </p>
             )}
             <div className={cx(innerBg)}>
-              {isMobile && tab.type !== MAIN_FANCY.SPORTS_BOOK && !hidePin && (
+              {isMobile && isActive && tab.type === MAIN_FANCY.FANCY_BET && (
                 <i className="relative z-[2] mr-[4vw] before:content-[''] before:absolute before:left-[-4vw] before:right-0 before:top-[0.2vw] before:bottom-[0.3vw] before:bg-[var(--xsm-blue)] before:w-[10.5vw] before:[transform:skewX(15deg)] before:-z-[1] [&_svg]:w-[5vw] [&_svg]:h-[8vw]">
                   <PinSvg />
                 </i>
@@ -2308,7 +2307,7 @@ const FancyTabHeader = memo(function FancyTabHeader({
                   }
                 }}
                 className={cx(
-                  "inline-flex text-center relative text-white z-[2] px-1 w-[16px] h-[16px] cursor-pointer max-md:w-[4vw] max-md:h-[4.45vw] after:content-[''] after:bg-no-repeat after:absolute after:z-[1] after:bg-center after:left-0 after:top-0 after:bg-contain after:w-[16px] after:h-[16px] after:[background-image:url('/img/svg/info.svg')] max-md:after:w-[5vw] max-md:after:h-[4vw] max-md:after:[background-image:url('/img/svg/questionMarkRounded.svg')] before:content-[''] before:absolute before:rounded-tr-[4px] before:[transform:skew(14deg,0deg)] before:-z-[1] before:left-[-5px] before:w-[28px] before:top-[-7px] before:bottom-[-7px] max-md:before:top-[-1.6vw] max-md:before:bottom-0 max-md:before:w-[7vw] max-md:before:h-[7.6vw] max-md:before:left-[-1vw]",
+                  "inline-flex text-center relative text-white z-[2] px-1 w-[16px] h-[16px] cursor-pointer max-md:w-[4vw] max-md:h-[4.45vw] after:content-[''] after:bg-no-repeat after:absolute after:z-[1] after:bg-center after:left-0 after:top-0 after:bg-contain after:w-[16px] after:h-[16px] after:[background-image:url('/img/svg/info.svg')] max-md:after:w-[5vw] max-md:after:h-[4vw] max-md:after:[background-image:url('/img/svg/questionMarkRounded.svg')] before:content-[''] before:absolute before:rounded-tr-[4px] before:[transform:skew(14deg,0deg)] before:-z-[1] before:left-[-5px] before:w-[28px] before:top-[-7px] before:bottom-[-7px] max-md:before:top-[-1.6vw] max-md:before:bottom-0 max-md:before:w-[7vw] max-md:before:h-[7.7vw] max-md:before:left-[-1vw]",
                   isPremium
                     ? 'before:bg-[linear-gradient(180deg,var(--3sm-orange)_0%,var(--orange)_100%)]'
                     : 'before:bg-[linear-gradient(0deg,var(--xl-lightest-navy)_0%,var(--xts-lightest-navy)_100%)]'
@@ -2345,7 +2344,7 @@ const PriorityTabs = memo(function PriorityTabs({
   const wrapperCls = cx(
     'flex justify-center items-center shadow-[inset_0_1px_0_0_rgba(var(--black-rgb),0.2)] bg-gradient-to-b from-[var(--md-lightest-navy)] from-[15%] to-[var(--lg-lightest-navy)] max-md:!shadow-none max-md:bg-none max-md:bg-[var(--smd-text-color)] max-md:justify-start max-md:py-[0.5vw] max-md:pl-[1.6vw]',
     isSportBook &&
-      '!bg-gradient-to-b !from-[var(--xs-orange)] !from-[15%] !to-[var(--md-orange)] pb-[3px] max-md:!bg-[var(--orange)]'
+      'md:!bg-gradient-to-b !from-[var(--xs-orange)] !from-[15%] !to-[var(--md-orange)] pb-[3px] max-md:!bg-[var(--orange)]'
   )
 
   const ulCls =
@@ -2367,9 +2366,9 @@ const PriorityTabs = memo(function PriorityTabs({
                 )
               : ''
             const aCls = cx(
-              'no-underline text-[var(--lg-lightest-navy)] max-md:text-white',
+              'no-underline  max-md:text-white',
               isSportBook &&
-                'text-[rgba(var(--orange-rgba),0.85)] max-md:text-white',
+                'text-[rgba(var(--orange-rgba),0.85)] max-md:!text-white',
               isActive && 'max-md:!text-[var(--lg-lightest-navy)]'
             )
 
@@ -2448,11 +2447,11 @@ function FancySection({
         <table className="w-full border-collapse max-md:bg-white">
           <thead>
             <tr>
-              <th className="bg-white px-[10px] py-1 font-bold text-[12px] max-md:text-[var(--lg-white,#fff)] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]" />
-              <th className="bg-white px-[10px] py-1 font-bold text-[12px] max-md:text-[var(--lg-white,#fff)] max-md:text-[3.46667vw] max-md:w-[18.66667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
+              <th className="bg-white px-[10px] py-1 font-bold text-[12px] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]" />
+              <th className="bg-white px-[10px] py-1 font-bold text-[12px] max-md:text-[3.46667vw] max-md:w-[18.66667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
                 No
               </th>
-              <th className="bg-white px-[10px] py-1 font-bold text-[12px] max-md:text-[var(--lg-white,#fff)] max-md:text-[3.46667vw] max-md:w-[18.66667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
+              <th className="bg-white px-[10px] py-1 font-bold text-[12px] max-md:text-[3.46667vw] max-md:w-[18.66667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
                 Yes
               </th>
               {!isMobile && (
@@ -2722,10 +2721,10 @@ function SportbookSection({
             collapsed[id] === undefined ? i > 5 : collapsed[id]
           return (
             <div key={id} className="md:mb-1 mb-0">
-              <h2>
+              <h2 className="bg-[linear-gradient(180deg,var(--xts-blue)_0%,var(--xts-blue)_100%)] shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] text-white">
                 <button
                   type="button"
-                  className="pl-0 flex items-center w-full text-left max-md:bg-[var(--text-color)] max-md:px-0 max-md:pl-[1.8666666667vw] max-md:leading-[8.6vw] max-md:border-b max-md:border-b-[var(--sm-text-color)] max-md:text-white"
+                  className={`pl-0 flex items-center w-full text-left max-md:bg-[var(--text-color)] max-md:px-0 max-md:pl-[1.8666666667vw] max-md:leading-[8.6vw] max-md:border-b max-md:border-b-[var(--sm-text-color)] max-md:text-white bg-right bg-no-repeat ${isCollapsed ? 'md:bg-[url("/img/grediant-slip-plus.png")]' : 'md:bg-[url("/img/grediant-slip-minus.png")]'}`}
                   onClick={() => toggle(id)}
                 >
                   <i className="md:mr-1 inline-flex items-center justify-center bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xs-black)] h-[25px] w-[25px] text-center leading-[22px] text-[var(--sm-white)] hover:bg-gradient-to-b hover:from-[var(--xs-black)] hover:to-[var(--xl-blue)] hover:text-[var(--xs-shadow-primary)] [&_svg]:h-[16px] [&_svg]:w-[18px] max-md:rounded-full max-md:h-[6.6666666667vw] max-md:w-[6.6666666667vw] max-md:leading-normal max-md:bg-[var(--xs-dark)] max-md:mr-[1.4vw] max-md:[&_svg]:w-[4.6666666667vw] max-md:[&_svg]:h-[4.6666666667vw]">
@@ -2748,7 +2747,7 @@ function SportbookSection({
                       <Fragment key={runner.selectionId}>
                         <div
                           className={cx(
-                            'w-full flex items-center min-h-[40px] border-b border-[var(--sm-text-color)] relative hover:bg-[var(--hover-bg)] max-md:min-h-0',
+                            'w-full flex items-center min-h-[40px] border-b border-[var(--sm-text-color)] relative hover:bg-[var(--hover-bg)] max-md:min-h-0 bg-white',
                             isSuspended && 'z-[9]'
                           )}
                           onClick={() => !isSuspended && onPick(market, runner)}
@@ -2774,7 +2773,7 @@ function SportbookSection({
                           <div className="flex items-center flex-[0_0_40%] max-md:flex-[0_0_37.3333333333vw]">
                             <span
                               className={cx(
-                                'relative cursor-pointer min-h-[39px] w-full block border border-transparent text-center leading-[34px] max-md:min-h-[11vw] max-md:leading-[10vw] [&_b]:max-md:text-[2.9333333333vw] [&_b]:max-md:font-normal',
+                                'relative cursor-pointer min-h-[39px] block border border-transparent text-center leading-[34px] max-md:min-h-[11vw] max-md:leading-[10vw] [&_b]:max-md:text-[2.9333333333vw] [&_b]:max-md:font-normal w-full bg-[var(--xs-green)]',
                                 isActive &&
                                   'text-white !bg-[var(--lg-green-bg)] shadow-[inset_0_1px_3px_rgba(var(--black-rgb),0.5)]'
                               )}
@@ -2786,7 +2785,7 @@ function SportbookSection({
                               )}
                               <b>{runner.back?.[0]?.price || ''}</b>
                             </span>
-                            <span className="md:inline-block max-md:hidden" />
+                            <span className="md:inline-block max-md:hidden w-full" />
                           </div>
                         </div>
                         {isActive && (

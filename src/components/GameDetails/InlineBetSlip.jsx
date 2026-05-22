@@ -206,8 +206,19 @@ function cx(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-// Background colour for the bet-type row (back vs lay).
-function betTypeBg(type) {
+// Background colour for the bet-type row (back vs lay / premium sportsbook).
+function isPremiumSlip(details) {
+  return (
+    details?.marketName === MarketName.SPORTS_BOOK ||
+    details?.gtype === 'sportsBook'
+  )
+}
+
+function betTypeBg(details) {
+  const type = details?.type
+  if (isPremiumSlip(details) && (type === 'BACK' || type === 'YES')) {
+    return 'bg-[var(--md-green-bg)]'
+  }
   return type === 'BACK' || type === 'YES'
     ? 'bg-[var(--md-blue-bg)]'
     : 'bg-[var(--md-red-bg)]'
@@ -303,7 +314,7 @@ export default function InlineBetSlip({
 
   const isBack =
     betSlipDetails?.type === 'BACK' || betSlipDetails?.type === 'YES'
-  const betTypeClass = betTypeBg(betSlipDetails?.type)
+  const betTypeClass = betTypeBg(betSlipDetails)
 
   const isMatchOdds = betSlipDetails?.marketName === MarketName.MATCH_ODDS
   const isFancy = betSlipDetails?.marketName === MarketName.FANCY
@@ -590,7 +601,7 @@ export default function InlineBetSlip({
                 <div className="flex ml-2">
                   <div
                     className={cx(
-                      'mr-2 min-[768px]:w-[69px] min-[768px]:p-0 min-[768px]:border-0 min-[768px]:bg-white/50 min-[768px]:rounded min-[768px]:min-h-[33px] max-[1440px]:w-[70px] max-[1440px]:p-1 flex flex-col justify-center [&_p]:m-0 [&_p]:text-right min-[768px]:[&_p]:leading-[18px] min-[768px]:[&_p]:text-[12px] min-[768px]:[&_p]:px-[5px] min-[768px]:[&_p]:font-semibold min-[768px]:[&_p]:text-[#1e1e1e] min-[768px]:[&_small]:leading-[12px] min-[768px]:[&_small]:text-[10px] min-[768px]:[&_small]:px-[5px] min-[768px]:[&_small]:text-[#222] min-[768px]:[&_small]:opacity-50 min-[768px]:[&_small]:font-medium [&_small]:text-right',
+                      'mr-2 min-[768px]:w-[69px] min-[768px]:p-0 min-[768px]:border-0 min-[768px]:bg-white/50 min-[768px]:rounded min-[768px]:min-h-[33px] max-[1440px]:w-[70px] max-[1440px]:p-1 flex flex-col justify-center [&_p]:m-0 [&_p]:text-right min-[768px]:[&_p]:leading-[18px] min-[768px]:[&_p]:text-[12px] min-[768px]:[&_p]:px-[8px] min-[768px]:[&_p]:font-semibold min-[768px]:[&_p]:text-[#1e1e1e] min-[768px]:[&_small]:leading-[12px] min-[768px]:[&_small]:text-[10px] min-[768px]:[&_small]:px-[5px] min-[768px]:[&_small]:text-[#222] min-[768px]:[&_small]:opacity-50 min-[768px]:[&_small]:font-medium [&_small]:text-right',
                       betTypeClass
                     )}
                   >
@@ -600,7 +611,7 @@ export default function InlineBetSlip({
 
                   <input
                     type="number"
-                    className="text-right mr-2 min-[768px]:w-[86px] min-[768px]:p-0 min-[768px]:border-0 min-[768px]:bg-white min-[768px]:rounded min-[768px]:min-h-[33px] min-[768px]:shadow-[inset_0_1px_0_rgba(0,0,0,0.5)] min-[768px]:text-[#1e1e1e] min-[768px]:text-[12px] max-[1440px]:w-[70px] max-[1440px]:px-2 max-[1440px]:py-1 [&::-webkit-inner-spin-button]:opacity-100 [&::-webkit-inner-spin-button]:mr-0 [&::-webkit-inner-spin-button]:ml-[5px]"
+                    className="text-right mr-2 min-[768px]:w-[100px] min-[768px]:p-0 min-[768px]:border-0 min-[768px]:bg-white min-[768px]:rounded min-[768px]:min-h-[33px] min-[768px]:shadow-[inset_0_1px_0_rgba(0,0,0,0.5)] min-[768px]:text-[#1e1e1e] min-[768px]:text-[12px] max-[1440px]:w-[70px] max-[1440px]:px-2 max-[1440px]:py-1 [&::-webkit-inner-spin-button]:opacity-100 [&::-webkit-inner-spin-button]:mr-0 [&::-webkit-inner-spin-button]:ml-[5px]"
                     min={0}
                     value={betSlipDetails?.stake ?? ''}
                     onChange={(e) => updateStake(e.target.value)}
@@ -612,7 +623,7 @@ export default function InlineBetSlip({
                 <button
                   type="button"
                   className={cx(
-                    'min-w-[182px] h-[31px] btn btn-primary',
+                    'min-w-[182px] h-[31px] md:text-xs! btn btn-primary',
                     isPlacing && 'opacity-60 cursor-not-allowed'
                   )}
                   onClick={handlePlace}
