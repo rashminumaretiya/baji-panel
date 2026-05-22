@@ -10,12 +10,17 @@
     }
   }
 
+  .flex-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
   table {
     width: 100%;
 
     th,
     td {
-      padding: 5px 0px 5px 10px;
+      padding: 7px;
       font-size: 11px;
       color: var(--lg-white);
       vertical-align: top;

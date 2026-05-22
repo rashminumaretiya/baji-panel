@@ -29,13 +29,36 @@ const summaryCards = [
   },
 ]
 
+const PER_PAGE = 10
+
 const columns = [
-  { key: 'date', label: 'Date' },
-  { key: 'transactionNo', label: 'Transaction №' },
-  { key: 'debits', label: 'Debits' },
-  { key: 'credits', label: 'Credits' },
+  {
+    key: 'date',
+    label: 'Date',
+    render: (_v, row) =>
+      row?.createdAt ? new Date(row.createdAt).toLocaleString() : '--',
+  },
+  {
+    key: 'transactionNo',
+    label: 'Transaction №',
+    render: (_v, row) => row?.transactionId ?? row?._id ?? '--',
+  },
+  {
+    key: 'debits',
+    label: 'Debits',
+    render: (_v, row) => row?.withdraw ?? 0,
+  },
+  {
+    key: 'credits',
+    label: 'Credits',
+    render: (_v, row) => row?.deposit ?? 0,
+  },
   { key: 'balance', label: 'Balance' },
-  { key: 'remarks', label: 'Remarks' },
+  {
+    key: 'remarks',
+    label: 'Remarks',
+    render: (_v, row) => row?.remark ?? row?.remarks ?? '--',
+  },
 ]
 
 export default function BalanceOverview() {
@@ -45,7 +68,9 @@ export default function BalanceOverview() {
     betHold: { amount: 0, currency: 'BDT' },
     withdrawHold: { amount: 0, currency: 'BDT' },
   })
-  const [transactions] = useState([])
+  const [transactions, setTransactions] = useState([])
+  const [page, setPage] = useState(1)
+  const [totalCount, setTotalCount] = useState(0)
 
   useEffect(() => {
     if (!token) return
@@ -67,6 +92,26 @@ export default function BalanceOverview() {
       cancelled = true
     }
   }, [token])
+
+  useEffect(() => {
+    if (!token) return
+    let cancelled = false
+    http
+      .get(`user/transaction-history?page=${page}&perPage=${PER_PAGE}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        if (cancelled) return
+        const d = res.data?.data
+        setTransactions(d?.data ?? d ?? [])
+        setTotalCount(d?.totalCount ?? 0)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [token, page])
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / PER_PAGE))
 
   return (
     <>
@@ -92,7 +137,16 @@ export default function BalanceOverview() {
         )
       })}
 
-      <Table columns={columns} data={transactions} />
+      <Table
+        columns={columns}
+        data={transactions}
+        rowKey="_id"
+        pagination={{
+          currentPage: page,
+          totalPages,
+          onPageChange: setPage,
+        }}
+      />
     </>
   )
 }
