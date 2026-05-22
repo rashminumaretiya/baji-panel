@@ -594,7 +594,10 @@ export default function GameList({
               eventKey={group.competitionId}
               key={group.competitionId}
             >
-              <Accordion.Header variant="light">
+              <Accordion.Header
+                variant="light"
+                className="flex items-center  [&_button]:justify-center [&_button]:bg-right [&_buttton]:bg-[url(/img/collapse_icon.png)]! [&_button]:h-[8.19vw] [&_button]:items-center [&_button]:flex [&_button]:row-reverse [&_button]:text-[3.73vw] [&_button]:leading-[1.2] [&_button]:text-white mb-0 px-[1.87vw] bg-gradient-to-t from-[var(--xxl-blue)] to-[var(--xl-blue)] max-md:font-bold"
+              >
                 {group.competitionName}
               </Accordion.Header>
               <Accordion.Body>
