@@ -528,9 +528,9 @@ export default function Deposit({ showTitle = true }) {
     if (!text) return
     try {
       await navigator.clipboard.writeText(text)
-      alertService.success('Copied to clipboard')
+      alertService.success(t('copyToClipboard.success'))
     } catch {
-      alertService.error('Copy failed')
+      alertService.error(t('copyToClipboard.error'))
     }
   }
 
@@ -551,12 +551,12 @@ export default function Deposit({ showTitle = true }) {
   // 197-205. Falls back to a generic "Receiver Number" if no type is picked.
   const receiverLabel =
     effectivePaymentType === 'personal'
-      ? 'Personal Number'
+      ? t('deposit.personalNumberLabel', 'Personal Number')
       : effectivePaymentType === 'agent'
-        ? 'Agent Number'
+        ? t('deposit.agentNumberLabel', 'Agent Number')
         : effectivePaymentType === 'merchant'
-          ? 'Merchant Number'
-          : 'Receiver Number'
+          ? t('deposit.merchantNumberLabel', 'Merchant Number')
+          : t('deposit.receiverNumberLabel', 'Receiver Number')
 
   const showRequired = touched.amount && amountErrors.required
   const showMin = touched.amount && amountErrors.min
@@ -584,7 +584,7 @@ export default function Deposit({ showTitle = true }) {
           (!showTitle ? (
             <div className="w-full max-w-[400px]">
               <h3 className="text-[14px] font-medium mb-3 max-md:mb-[10px]">
-                Select Your Promotion
+                {t('deposit.selectYourPromotion', 'Select Your Promotion')}
               </h3>
               <div
                 className={`${promotionCardBase}${
@@ -601,7 +601,7 @@ export default function Deposit({ showTitle = true }) {
                 <div className="flex-1 flex justify-between items-center">
                   <div>
                     <div className="text-[16px] font-medium mb-[2px] text-white">
-                      Promotion
+                      {t('common.promotion', 'Promotion')}
                     </div>
                     {selectedPromotion && (
                       <div className="text-[14px] text-white">
@@ -619,7 +619,7 @@ export default function Deposit({ showTitle = true }) {
             <div className="mb-2">
               <div>
                 <label className="block mb-1 text-[14px]">
-                  Select Your Promotion
+                  {t('deposit.selectYourPromotion', 'Select Your Promotion')}
                 </label>
               </div>
               <PromotionListItems
@@ -629,7 +629,7 @@ export default function Deposit({ showTitle = true }) {
               />
               {touched.promotionId && !values.promotionId && (
                 <span className="block text-[12px] text-[var(--red)] mt-1 font-bold">
-                  Promotion is not selected
+                  {t('deposit.promotionNotSelected', 'Promotion is not selected')}
                 </span>
               )}
             </div>
@@ -639,36 +639,43 @@ export default function Deposit({ showTitle = true }) {
           <div className="flex flex-col">
             <div className="mb-2">
               <label htmlFor="amount" className={formLabelRequiredClass}>
-                {currency} amount
+                {currency} {t('common.amount', 'Amount').toLowerCase()}
               </label>
               <div>
                 <input
                   id="amount"
                   type="number"
                   className={formControlClass}
-                  placeholder="Enter amount"
+                  placeholder={t('deposit.enterAmount', 'Enter amount')}
                   value={values.amount}
                   onChange={(event) => setField('amount', event.target.value)}
                   onBlur={() => markTouched('amount')}
                   disabled={isDepositSuccess}
                 />
                 {showRequired && (
-                  <span className={errorTextClass}>Amount is required</span>
+                  <span className={errorTextClass}>
+                    {t('deposit.amountRequired', 'Amount is required')}
+                  </span>
                 )}
                 {showMin && (
                   <span className={errorTextClass}>
-                    Amount must be greater than 0
+                    {t('deposit.amountGtZero', 'Amount must be greater than 0')}
                   </span>
                 )}
                 {showPattern && (
-                  <span className={errorTextClass}>Enter valid amount</span>
+                  <span className={errorTextClass}>
+                    {t('deposit.amountInvalid', 'Enter valid amount')}
+                  </span>
                 )}
                 {values.promotionId && promotionLimitError && (
                   <p className={`${errorTextClass} mb-0`}>
-                    {currency} must be between{' '}
-                    {promotionLimitError.depositLimit?.min} and{' '}
-                    {promotionLimitError.depositLimit?.max} for selected
-                    promotion.
+                    {t('deposit.promotionLimitError', {
+                      currency,
+                      min: promotionLimitError.depositLimit?.min,
+                      max: promotionLimitError.depositLimit?.max,
+                      defaultValue:
+                        '{{currency}} must be between {{min}} and {{max}} for selected promotion.',
+                    })}
                   </p>
                 )}
               </div>
@@ -686,7 +693,7 @@ export default function Deposit({ showTitle = true }) {
                     htmlFor="paymentMethod"
                     className={formLabelRequiredClass}
                   >
-                    Payment Method
+                    {t('common.paymentMethod', 'Payment Method')}
                   </label>
                 )}
                 <div className="flex gap-[10px] flex-wrap max-md:gap-1">
@@ -733,7 +740,10 @@ export default function Deposit({ showTitle = true }) {
                 </div>
                 {showMethodRequired && (
                   <span className={errorTextClass}>
-                    Payment method is required
+                    {t(
+                      'deposit.paymentMethodRequired',
+                      'Payment method is required'
+                    )}
                   </span>
                 )}
               </div>
@@ -750,7 +760,7 @@ export default function Deposit({ showTitle = true }) {
                     htmlFor="paymentType"
                     className={formLabelRequiredClass}
                   >
-                    Payment Type
+                    {t('common.paymentType', 'Payment Type')}
                   </label>
                 )}
                 <div className="flex overflow-x-auto gap-2">
@@ -782,7 +792,10 @@ export default function Deposit({ showTitle = true }) {
                 </div>
                 {showPaymentRequired && (
                   <span className={errorTextClass}>
-                    Payment type is required
+                    {t(
+                      'deposit.paymentTypeRequired',
+                      'Payment Type is required'
+                    )}
                   </span>
                 )}
               </div>
@@ -805,13 +818,13 @@ export default function Deposit({ showTitle = true }) {
                 style={{ backgroundColor: cardColor }}
               >
                 <h6 className="text-center text-[14px] font-semibold mb-3 text-white">
-                  Keep screenshot
+                  {t('deposit.keepScreenshot', 'Keep screenshot')}
                 </h6>
 
                 {/* Deposit Amount — read-only display + copy icon. */}
                 <div className="flex justify-between items-center relative gap-2 mb-2">
                   <label className="whitespace-nowrap !mb-0 text-[13px] leading-[1.2] text-white">
-                    Deposit Amount :
+                    {t('deposit.depositAmountLabel', 'Deposit Amount')} :
                   </label>
                   <input
                     type="text"
@@ -860,25 +873,37 @@ export default function Deposit({ showTitle = true }) {
                 {/* Editable: trxId. */}
                 <div className="flex justify-between items-center relative gap-2 mb-2">
                   <label className="whitespace-nowrap !mb-0 text-[13px] leading-[1.2] text-white">
-                    Provide transaction ID
+                    {t(
+                      'deposit.provideTransactionId',
+                      'Please provide the transaction ID.'
+                    )}
                   </label>
                   <div className="flex flex-col items-end gap-1 w-full max-w-[180px]">
                     <input
                       type="text"
                       className="w-full h-8 py-1 px-[10px] text-[13px] text-[#364153] bg-white border border-[#ced4da] rounded-[6px] placeholder:text-[12px]"
-                      placeholder="Provide transaction ID"
+                      placeholder={t(
+                        'deposit.provideTransactionId',
+                        'Please provide the transaction ID.'
+                      )}
                       value={verifyValues.trxId}
                       onChange={(e) => setVerifyField('trxId', e.target.value)}
                       onBlur={() => markVerifyTouched('trxId')}
                     />
                     {verifyTouched.trxId && verifyErrors.trxIdRequired && (
                       <span className="text-[11px] text-[#ffd6d6] text-left leading-[1.2] self-start">
-                        Provide your transaction ID
+                        {t(
+                          'deposit.provideYourTransactionId',
+                          'Please provide your transaction ID.'
+                        )}
                       </span>
                     )}
                     {verifyTouched.trxId && verifyErrors.trxIdPattern && (
                       <span className="text-[11px] text-[#ffd6d6] text-left leading-[1.2] self-start">
-                        Invalid transaction ID
+                        {t(
+                          'deposit.invalidTransactionId',
+                          'Please enter a valid transaction ID.'
+                        )}
                       </span>
                     )}
                   </div>
@@ -887,7 +912,7 @@ export default function Deposit({ showTitle = true }) {
                 {/* Editable: senderNumber. */}
                 <div className="flex justify-between items-center relative gap-2">
                   <label className="whitespace-nowrap !mb-0 text-[13px] leading-[1.2] text-white">
-                    Transaction number
+                    {t('deposit.transactionNumber', 'Enter the transaction number.')}
                   </label>
                   <div className="flex flex-col items-end gap-1 w-full max-w-[180px]">
                     <input
@@ -903,15 +928,23 @@ export default function Deposit({ showTitle = true }) {
                     {verifyTouched.senderNumber &&
                       verifyErrors.senderRequired && (
                         <span className="text-[11px] text-[#ffd6d6] text-left leading-[1.2] self-start">
-                          Enter your transaction number
+                          {t(
+                            'deposit.enterYourTransactionNumber',
+                            'Enter your transaction number.'
+                          )}
                         </span>
                       )}
                     {verifyTouched.senderNumber &&
                       verifyErrors.senderPattern && (
                         <span className="text-[11px] text-[#ffd6d6] text-left leading-[1.2] self-start">
-                          Kindly enter a valid{' '}
-                          {selectedMethodName === 'ROCKET' ? '12' : '11'} digit
-                          number
+                          {t('deposit.kindly', 'Please kindly enter the')}{' '}
+                          {selectedMethodName === 'ROCKET'
+                            ? t('deposit.12', '12')
+                            : t('deposit.11', '11')}{' '}
+                          {t(
+                            'deposit.roketNumber',
+                            'digits transaction number and must start with 0.'
+                          )}
                         </span>
                       )}
                   </div>
@@ -927,7 +960,7 @@ export default function Deposit({ showTitle = true }) {
                 onClick={handleVerifySubmit}
                 disabled={onePageVerify.status === 'loading'}
               >
-                Confirm
+                {t('common.confirm', 'Confirm')}
               </button>
             ) : (
               <button
@@ -937,7 +970,7 @@ export default function Deposit({ showTitle = true }) {
               >
                 <Icon name="bkash" />
                 <Icon name="nagad" />
-                Make Payment
+                {t('deposit.makePayment', 'Make Payment')}
                 <Icon name="rocket" />
                 <Icon name="mobileBanking" />
               </button>
@@ -954,13 +987,13 @@ export default function Deposit({ showTitle = true }) {
           <div className="w-full bg-[var(--dark)] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.5)] min-h-[100svh] max-md:flex max-md:flex-col">
             <div className="flex justify-between items-center p-4">
               <h2 className="text-[20px] font-semibold mb-0 text-white">
-                Select Promotion
+                {t('deposit.selectPromotion', 'Select Promotion')}
               </h2>
               <button
                 type="button"
                 className="bg-transparent border-0 text-white cursor-pointer w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 [&_i]:text-[16px]"
                 onClick={closePromotionModal}
-                aria-label="Close promotions"
+                aria-label={t('deposit.closePromotions', 'Close promotions')}
               >
                 <Icon name="close" />
               </button>
@@ -975,7 +1008,7 @@ export default function Deposit({ showTitle = true }) {
               className="w-[calc(100%-32px)] mx-4 mb-4 py-[14px] bg-[var(--orange-dark)] text-white border-0 rounded-md text-[16px] font-medium cursor-pointer transition-colors duration-200 max-md:mt-auto"
               onClick={savePromotion}
             >
-              Confirm
+              {t('common.confirm', 'Confirm')}
             </button>
           </div>
         </div>

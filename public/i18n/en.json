@@ -154,7 +154,9 @@
     "description": "Description",
     "miniGame": "MiniGame",
     "royal": "Royal",
-    "saba": "SABA"
+    "saba": "SABA",
+    "action": "Action",
+    "paymentType": "Payment Type"
   },
   "news": {
     "welcomeOurExchange": "Welcome to our exchange"
@@ -456,7 +458,21 @@
     "11": "11",
     "12": "12",
     "roketNumber": "digits transaction number and must start with 0.",
-    "message": "To get the money transfer number, please click the copy button and paste it into your mobile banking app or anywhere else."
+    "message": "To get the money transfer number, please click the copy button and paste it into your mobile banking app or anywhere else.",
+    "keepScreenshot": "Keep screenshot",
+    "depositAmountLabel": "Deposit Amount",
+    "personalNumberLabel": "Personal Number",
+    "agentNumberLabel": "Agent Number",
+    "merchantNumberLabel": "Merchant Number",
+    "receiverNumberLabel": "Receiver Number",
+    "selectYourPromotion": "Select Your Promotion",
+    "selectPromotion": "Select Promotion",
+    "promotionNotSelected": "Promotion is not selected",
+    "promotionLimitError": "{{currency}} must be between {{min}} and {{max}} for selected promotion.",
+    "makePayment": "Make Payment",
+    "enterAmount": "Enter amount",
+    "amountGtZero": "Amount must be greater than 0",
+    "closePromotions": "Close promotions"
   },
   "selfDeposit": {
     "paymentMethods": "Select self deposit payment methods"
@@ -1148,5 +1164,19 @@
     "heading": "Multi Markets",
     "noFollowed": "There are currently no followed multi markets.",
     "addMarkets": "Please add some markets from events."
+  },
+  "withdraw": {
+    "amountRequired": "Amount is required",
+    "amountInvalid": "Enter valid amount",
+    "amountGtZero": "Amount must be greater than 0",
+    "amountMinValue": "Amount must be at least {{min}}",
+    "amountMaxValue": "Amount must not exceed {{max}}",
+    "paymentMethodRequired": "Payment method is required",
+    "currencyRequired": "Currency is required",
+    "accountNumberRequired": "Account No is required",
+    "selectCurrency": "Select currency",
+    "enterAccountNo": "Enter account no.",
+    "enterAmount": "Enter amount",
+    "submit": "Withdraw"
   }
 }

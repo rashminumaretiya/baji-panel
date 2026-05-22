@@ -133,7 +133,7 @@
     "transactionImage": "لین دین کی تصویر",
     "uploadImage": "تصویر اپ لوڈ کریں۔",
     "paymentScreenshot": "ادائیگی کا اسکرین شاٹ",
-    "actions": "اعمال",
+    "actions": "ایکشن",
     "announcements": "اعلانات",
     "noAnnouncements": "کوئی اعلانات نہیں ملے۔",
     "comingSoon": "جلد آ رہا ہے...",
@@ -149,7 +149,9 @@
     "description": "تفصیل",
     "miniGame": "منی گیم",
     "royal": "رائل",
-    "saba": "سابا"
+    "saba": "سابا",
+    "action": "ایکشن",
+    "paymentType": "ادائیگی کی قسم"
   },
   "news": {
     "welcomeOurExchange": "ہمارے تبادلے میں خوش آمدید"
@@ -450,7 +452,21 @@
     "enterYourTransactionNumber": "اپنا ٹرانزیکشن نمبر درج کریں۔",
     "kindly": "برائے مہربانی درج کریں۔",
     "roketNumber": "ہندسوں کا ٹرانزیکشن نمبر اور 0 سے شروع ہونا چاہیے۔",
-    "message": "رقم کی منتقلی کا نمبر حاصل کرنے کے لیے، براہ کرم کاپی بٹن پر کلک کریں اور اسے اپنے موبائل بینکنگ ایپ میں یا کہیں اور چسپاں کریں۔"
+    "message": "رقم کی منتقلی کا نمبر حاصل کرنے کے لیے، براہ کرم کاپی بٹن پر کلک کریں اور اسے اپنے موبائل بینکنگ ایپ میں یا کہیں اور چسپاں کریں۔",
+    "keepScreenshot": "اسکرین شاٹ محفوظ رکھیں",
+    "depositAmountLabel": "جمع کی رقم",
+    "personalNumberLabel": "ذاتی نمبر",
+    "agentNumberLabel": "ایجنٹ نمبر",
+    "merchantNumberLabel": "مرچنٹ نمبر",
+    "receiverNumberLabel": "وصول کنندہ نمبر",
+    "selectYourPromotion": "اپنا پروموشن منتخب کریں",
+    "selectPromotion": "پروموشن منتخب کریں",
+    "promotionNotSelected": "پروموشن منتخب نہیں ہے",
+    "promotionLimitError": "منتخب پروموشن کے لیے {{currency}} {{min}} اور {{max}} کے درمیان ہونا چاہیے۔",
+    "makePayment": "ادائیگی کریں",
+    "enterAmount": "رقم درج کریں",
+    "amountGtZero": "رقم 0 سے زیادہ ہونی چاہیے",
+    "closePromotions": "پروموشن بند کریں"
   },
   "selfDeposit": {
     "paymentMethods": "سیلف ڈپازٹ ادائیگی کے طریقے منتخب کریں۔"
@@ -1142,5 +1158,19 @@
     "heading": "ملٹی مارکیٹس",
     "noFollowed": "فی الحال کوئی فالو شدہ ملٹی مارکیٹس نہیں ہیں۔",
     "addMarkets": "براہ کرم ایونٹس سے کچھ مارکیٹس شامل کریں۔"
+  },
+  "withdraw": {
+    "amountRequired": "رقم درکار ہے۔",
+    "amountInvalid": "درست رقم درج کریں۔",
+    "amountGtZero": "رقم 0 سے زیادہ ہونی چاہیے",
+    "amountMinValue": "رقم کم از کم {{min}} ہونی چاہیے",
+    "amountMaxValue": "رقم {{max}} سے زیادہ نہیں ہو سکتی",
+    "paymentMethodRequired": "ادائیگی کا طریقہ درکار ہے۔",
+    "currencyRequired": "کرنسی درکار ہے",
+    "accountNumberRequired": "اکاؤنٹ نمبر درکار ہے",
+    "selectCurrency": "کرنسی منتخب کریں",
+    "enterAccountNo": "اکاؤنٹ نمبر درج کریں",
+    "enterAmount": "رقم درج کریں",
+    "submit": "واپس لینا"
   }
 }

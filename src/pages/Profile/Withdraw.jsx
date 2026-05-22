@@ -49,22 +49,54 @@ const formCheckSpanClass =
 const withdrawBtnClass =
   'inline-flex items-center justify-center gap-2 mt-3 w-full btn btn-primary py-2! text-[14px] font-medium disabled:opacity-65 disabled:cursor-not-allowed [&_i_svg]:h-[18px] [&_i_svg]:w-[18px]'
 
+// Validation returns i18n key + interpolation args rather than baked strings,
+// so the JSX can hand them to `t()` at render time with the active language.
 function validate(values, limits) {
   const errors = {}
   const pbuStr = String(values.pbu ?? '').trim()
-  if (!pbuStr) errors.pbu = 'Amount is required'
-  else if (!onlyDigitsRegex.test(pbuStr)) errors.pbu = 'Enter valid amount'
-  else {
+  if (!pbuStr) {
+    errors.pbu = { key: 'withdraw.amountRequired', fallback: 'Amount is required' }
+  } else if (!onlyDigitsRegex.test(pbuStr)) {
+    errors.pbu = { key: 'withdraw.amountInvalid', fallback: 'Enter valid amount' }
+  } else {
     const value = Number(pbuStr)
-    if (value < 1) errors.pbu = 'Amount must be greater than 0'
-    else if (limits?.withdrawMinLimit && value < limits.withdrawMinLimit)
-      errors.pbu = `Amount must be at least ${limits.withdrawMinLimit}`
-    else if (limits?.withdrawMaxLimit && value > limits.withdrawMaxLimit)
-      errors.pbu = `Amount must not exceed ${limits.withdrawMaxLimit}`
+    if (value < 1) {
+      errors.pbu = {
+        key: 'withdraw.amountGtZero',
+        fallback: 'Amount must be greater than 0',
+      }
+    } else if (limits?.withdrawMinLimit && value < limits.withdrawMinLimit) {
+      errors.pbu = {
+        key: 'withdraw.amountMinValue',
+        fallback: 'Amount must be at least {{min}}',
+        opts: { min: limits.withdrawMinLimit },
+      }
+    } else if (limits?.withdrawMaxLimit && value > limits.withdrawMaxLimit) {
+      errors.pbu = {
+        key: 'withdraw.amountMaxValue',
+        fallback: 'Amount must not exceed {{max}}',
+        opts: { max: limits.withdrawMaxLimit },
+      }
+    }
   }
-  if (!values.paymentType) errors.paymentType = 'Payment method is required'
-  if (!values.currency) errors.currency = 'Currency is required'
-  if (!values.accountNumber) errors.accountNumber = 'Account No is required'
+  if (!values.paymentType) {
+    errors.paymentType = {
+      key: 'withdraw.paymentMethodRequired',
+      fallback: 'Payment method is required',
+    }
+  }
+  if (!values.currency) {
+    errors.currency = {
+      key: 'withdraw.currencyRequired',
+      fallback: 'Currency is required',
+    }
+  }
+  if (!values.accountNumber) {
+    errors.accountNumber = {
+      key: 'withdraw.accountNumberRequired',
+      fallback: 'Account No is required',
+    }
+  }
   return errors
 }
 
@@ -188,27 +220,27 @@ export default function Withdraw({ showTitle = true }) {
           <div className="flex flex-col">
             <div className="mb-3">
               <label htmlFor="pbu" className={formLabelRequiredClass}>
-                {values.currency} amount
+                {values.currency} {t('common.amount', 'Amount').toLowerCase()}
               </label>
               <div>
                 <input
                   id="pbu"
                   type="text"
                   className={formControlClass}
-                  placeholder="Enter amount"
+                  placeholder={t('withdraw.enterAmount', 'Enter amount')}
                   value={values.pbu}
                   onChange={(event) => setField('pbu', event.target.value)}
                   onBlur={() => markTouched('pbu')}
                 />
                 {showError('pbu') && (
-                  <span className={errorTextClass}>{errors.pbu}</span>
+                  <span className={errorTextClass}>{t(errors.pbu.key, { ...(errors.pbu.opts || {}), defaultValue: errors.pbu.fallback })}</span>
                 )}
               </div>
             </div>
 
             <div className="mb-3">
               <label htmlFor="paymentMethod" className={formLabelRequiredClass}>
-                Payment Method
+                {t('common.paymentMethod', 'Payment Method')}
               </label>
               <div className={paymentMethodsCardsClass}>
                 {paymentMethods.map((method) => {
@@ -250,13 +282,13 @@ export default function Withdraw({ showTitle = true }) {
                 })}
               </div>
               {showError('paymentType') && (
-                <span className={errorTextClass}>{errors.paymentType}</span>
+                <span className={errorTextClass}>{t(errors.paymentType.key, { defaultValue: errors.paymentType.fallback })}</span>
               )}
             </div>
 
             <div className="mb-3">
               <label htmlFor="paymentType" className={formLabelRequiredClass}>
-                Currency
+                {t('common.currency', 'Currency')}
               </label>
               <select
                 className={formSelectClass}
@@ -265,7 +297,7 @@ export default function Withdraw({ showTitle = true }) {
                 onBlur={() => markTouched('currency')}
               >
                 <option value="" disabled>
-                  Select currency
+                  {t('withdraw.selectCurrency', 'Select currency')}
                 </option>
                 {currencyOptions.map((c) => (
                   <option key={c} value={c}>
@@ -274,13 +306,13 @@ export default function Withdraw({ showTitle = true }) {
                 ))}
               </select>
               {showError('currency') && (
-                <span className={errorTextClass}>{errors.currency}</span>
+                <span className={errorTextClass}>{t(errors.currency.key, { defaultValue: errors.currency.fallback })}</span>
               )}
             </div>
 
             <div className="mb-3">
               <label htmlFor="AccountNo" className={formLabelRequiredClass}>
-                Account No.{' '}
+                {t('common.accountNo', 'Account No.')}
               </label>
               <div>
                 {details.data?.accountNumbers?.length ? (
@@ -303,7 +335,7 @@ export default function Withdraw({ showTitle = true }) {
                     id="accountNumber"
                     type="text"
                     className={formControlClass}
-                    placeholder="Enter account no."
+                    placeholder={t('withdraw.enterAccountNo', 'Enter account no.')}
                     value={effectiveAccountNumber}
                     onChange={(event) =>
                       setField('accountNumber', event.target.value)
@@ -312,7 +344,7 @@ export default function Withdraw({ showTitle = true }) {
                   />
                 )}
                 {showError('accountNumber') && (
-                  <span className={errorTextClass}>{errors.accountNumber}</span>
+                  <span className={errorTextClass}>{t(errors.accountNumber.key, { defaultValue: errors.accountNumber.fallback })}</span>
                 )}
               </div>
             </div>
@@ -322,7 +354,7 @@ export default function Withdraw({ showTitle = true }) {
               className={withdrawBtnClass}
               disabled={submitting}
             >
-              Withdraw
+              {t('common.withdraw', 'Withdraw')}
             </button>
           </div>
         </form>

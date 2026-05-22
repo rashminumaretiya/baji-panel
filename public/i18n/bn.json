@@ -133,7 +133,7 @@
     "transactionImage": "লেনদেন ছবি",
     "uploadImage": "ছবি আপলোড করুন",
     "paymentScreenshot": "পেমেন্ট স্ক্রীনশট",
-    "actions": "কার্যক্রম",
+    "actions": "অ্যাকশন",
     "announcements": "ঘোষণা",
     "noAnnouncements": "কোন ঘোষণা পাওয়া যায়নি।",
     "comingSoon": "শীঘ্রই আসছে...",
@@ -149,7 +149,9 @@
     "description": "বিবরণ",
     "miniGame": "মিনি গেম",
     "royal": "রয়াল",
-    "saba": "সাবা"
+    "saba": "সাবা",
+    "action": "অ্যাকশন",
+    "paymentType": "পেমেন্ট প্রকার"
   },
   "news": {
     "welcomeOurExchange": "আমাদের এক্সচেঞ্জে স্বাগতম"
@@ -450,7 +452,21 @@
     "enterYourTransactionNumber": "আপনার ট্রান্স্যাকশন নম্বর লিখুন।",
     "kindly": "অনুগ্রহ করে লিখুন",
     "roketNumber": "সংখ্যার ট্রান্স্যাকশন নম্বর এবং এটি অবশ্যই 0 দিয়ে শুরু হতে হবে।",
-    "message": "মানি ট্রান্সফার নম্বর পেতে, অনুগ্রহ করে কপি বাটনে ক্লিক করুন এবং এটি আপনার মোবাইল ব্যাংকিং অ্যাপ বা অন্য কোথাও পেস্ট করুন।"
+    "message": "মানি ট্রান্সফার নম্বর পেতে, অনুগ্রহ করে কপি বাটনে ক্লিক করুন এবং এটি আপনার মোবাইল ব্যাংকিং অ্যাপ বা অন্য কোথাও পেস্ট করুন।",
+    "keepScreenshot": "স্ক্রিনশট রাখুন",
+    "depositAmountLabel": "জমার পরিমাণ",
+    "personalNumberLabel": "ব্যক্তিগত নম্বর",
+    "agentNumberLabel": "এজেন্ট নম্বর",
+    "merchantNumberLabel": "মার্চেন্ট নম্বর",
+    "receiverNumberLabel": "রিসিভার নম্বর",
+    "selectYourPromotion": "আপনার প্রমোশন নির্বাচন করুন",
+    "selectPromotion": "প্রমোশন নির্বাচন করুন",
+    "promotionNotSelected": "প্রমোশন নির্বাচন করা হয়নি",
+    "promotionLimitError": "নির্বাচিত প্রমোশনের জন্য {{currency}} অবশ্যই {{min}} এবং {{max}} এর মধ্যে হতে হবে।",
+    "makePayment": "পেমেন্ট করুন",
+    "enterAmount": "পরিমাণ লিখুন",
+    "amountGtZero": "পরিমাণ অবশ্যই ০ এর বেশি হতে হবে",
+    "closePromotions": "প্রমোশন বন্ধ করুন"
   },
   "selfDeposit": {
     "paymentMethods": "সেলফ ডিপোজিট পেমেন্ট পদ্ধতি নির্বাচন করুন"
@@ -1142,5 +1158,19 @@
     "heading": "মাল্টি মার্কেট",
     "noFollowed": "বর্তমানে কোনো অনুসৃত মাল্টি মার্কেট নেই।",
     "addMarkets": "অনুগ্রহ করে ইভেন্ট থেকে কিছু মার্কেট যোগ করুন।"
+  },
+  "withdraw": {
+    "amountRequired": "পরিমাণ প্রয়োজন",
+    "amountInvalid": "সঠিক পরিমাণ লিখুন",
+    "amountGtZero": "পরিমাণ অবশ্যই ০ এর বেশি হতে হবে",
+    "amountMinValue": "পরিমাণ অবশ্যই কমপক্ষে {{min}} হতে হবে",
+    "amountMaxValue": "পরিমাণ {{max}} এর বেশি হতে পারবে না",
+    "paymentMethodRequired": "পেমেন্ট পদ্ধতি প্রয়োজন",
+    "currencyRequired": "মুদ্রা প্রয়োজন",
+    "accountNumberRequired": "অ্যাকাউন্ট নম্বর প্রয়োজন",
+    "selectCurrency": "মুদ্রা নির্বাচন করুন",
+    "enterAccountNo": "অ্যাকাউন্ট নম্বর লিখুন",
+    "enterAmount": "পরিমাণ লিখুন",
+    "submit": "উত্তোলন"
   }
 }

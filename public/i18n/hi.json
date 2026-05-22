@@ -133,7 +133,7 @@
     "transactionImage": "लेन-देन छवि",
     "uploadImage": "छवि अपलोड करें",
     "paymentScreenshot": "भुगतान स्क्रीनशॉट",
-    "actions": "कार्रवाई",
+    "actions": "एक्शन",
     "announcements": "घोषणाएँ",
     "noAnnouncements": "कोई घोषणा नहीं मिली।",
     "comingSoon": "जल्द ही आ रहा है...",
@@ -149,7 +149,9 @@
     "description": "विवरण",
     "miniGame": "मिनी गेम",
     "royal": "रॉयल",
-    "saba": "साबा"
+    "saba": "साबा",
+    "action": "एक्शन",
+    "paymentType": "भुगतान प्रकार"
   },
   "news": {
     "welcomeOurExchange": "हमारे एक्सचेंज में आपका स्वागत है"
@@ -450,7 +452,21 @@
     "enterYourTransactionNumber": "अपना ट्रांजैक्शन नंबर दर्ज करें।",
     "kindly": "कृपया दर्ज करें",
     "roketNumber": "अंकों का ट्रांजैक्शन नंबर और यह 0 से शुरू होना चाहिए।",
-    "message": "मनी ट्रांसफर नंबर प्राप्त करने के लिए, कृपया कॉपी बटन पर क्लिक करें और इसे अपने मोबाइल बैंकिंग ऐप या कहीं भी पेस्ट करें।"
+    "message": "मनी ट्रांसफर नंबर प्राप्त करने के लिए, कृपया कॉपी बटन पर क्लिक करें और इसे अपने मोबाइल बैंकिंग ऐप या कहीं भी पेस्ट करें।",
+    "keepScreenshot": "स्क्रीनशॉट रखें",
+    "depositAmountLabel": "जमा राशि",
+    "personalNumberLabel": "पर्सनल नंबर",
+    "agentNumberLabel": "एजेंट नंबर",
+    "merchantNumberLabel": "मर्चेंट नंबर",
+    "receiverNumberLabel": "रिसीवर नंबर",
+    "selectYourPromotion": "अपना प्रमोशन चुनें",
+    "selectPromotion": "प्रमोशन चुनें",
+    "promotionNotSelected": "प्रमोशन चयनित नहीं है",
+    "promotionLimitError": "चयनित प्रमोशन के लिए {{currency}} {{min}} और {{max}} के बीच होना चाहिए।",
+    "makePayment": "भुगतान करें",
+    "enterAmount": "राशि दर्ज करें",
+    "amountGtZero": "राशि 0 से अधिक होनी चाहिए",
+    "closePromotions": "प्रमोशन बंद करें"
   },
   "selfDeposit": {
     "paymentMethods": "सेल्फ डिपॉजिट भुगतान विधियाँ चुनें"
@@ -1142,5 +1158,19 @@
     "heading": "मल्टी मार्केट्स",
     "noFollowed": "अभी कोई फॉलो किए गए मल्टी मार्केट्स नहीं हैं।",
     "addMarkets": "कृपया इवेंट्स से कुछ मार्केट्स जोड़ें।"
+  },
+  "withdraw": {
+    "amountRequired": "राशि आवश्यक है",
+    "amountInvalid": "मान्य राशि दर्ज करें",
+    "amountGtZero": "राशि 0 से अधिक होनी चाहिए",
+    "amountMinValue": "राशि कम से कम {{min}} होनी चाहिए",
+    "amountMaxValue": "राशि {{max}} से अधिक नहीं हो सकती",
+    "paymentMethodRequired": "भुगतान विधि आवश्यक है",
+    "currencyRequired": "मुद्रा आवश्यक है",
+    "accountNumberRequired": "खाता संख्या आवश्यक है",
+    "selectCurrency": "मुद्रा चुनें",
+    "enterAccountNo": "खाता संख्या दर्ज करें",
+    "enterAmount": "राशि दर्ज करें",
+    "submit": "निकासी"
   }
 }

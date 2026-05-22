@@ -142,14 +142,24 @@ export default function DepositHistory() {
       {
         key: 'action',
         label: t('common.actions', 'Action'),
-        render: (_, row) => (
-          <ActionButton
-            visible={!!row?.isShowRepayment}
-            icon="arrowRoundBox"
-            title={t('myBets.repayment', 'Repay')}
-            onClick={() => onRepayment(row)}
-          />
-        ),
+        render: (_, row) => {
+          // The button is only meaningful when both `isShowRepayment` is true
+          // AND the API actually returned a `paymentUrl`/`payment_url` to
+          // redirect to. Otherwise clicking silently does nothing, so render
+          // an explicit "undefined" placeholder instead of an empty cell.
+          const redirectUrl = row?.paymentUrl || row?.payment_url
+          if (!row?.isShowRepayment || !redirectUrl) {
+            return <span className="text-(--dark)">undefined</span>
+          }
+          return (
+            <ActionButton
+              visible
+              icon="arrowRoundBox"
+              title={t('myBets.repayment', 'Repay')}
+              onClick={() => onRepayment(row)}
+            />
+          )
+        },
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
