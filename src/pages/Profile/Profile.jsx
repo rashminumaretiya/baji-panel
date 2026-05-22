@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
 import { useIsMobile } from '../../hooks/useMediaQuery.js'
@@ -47,6 +48,7 @@ function ActionCell({ children, onClick }) {
 }
 
 export default function Profile() {
+  const { t } = useTranslation()
   const token = useSelector(selectToken)
   const isMobile = useIsMobile()
   const [user, setUser] = useState(null)
@@ -98,7 +100,7 @@ export default function Profile() {
   return (
     <div>
       <h3 className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
-        Account Details
+        {t('profile.accountDetails', 'Account Details')}
       </h3>
 
       <div className="flex flex-wrap mx-0">
@@ -106,43 +108,57 @@ export default function Profile() {
         <div className="w-full md:w-1/2 px-0">
           <div className="flex flex-wrap mx-0">
             <div className="w-full px-0">
-              <div className={cardHeaderClass}>About You</div>
+              <div className={cardHeaderClass}>
+                {t('common.aboutYou', 'About You')}
+              </div>
               <div>
                 <div className="bg-white p-0 flex items-center">
                   <table className={tableClass}>
                     <tbody>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>First Name</td>
+                        <td className={tdLabelClass}>
+                          {t('common.firstName', 'First Name')}
+                        </td>
                         <td className={tdValueClass} colSpan="2">
                           {profile.firstName || profile.userName || '--'}
                         </td>
                       </tr>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>Last Name</td>
+                        <td className={tdLabelClass}>
+                          {t('common.lastName', 'Last Name')}
+                        </td>
                         <td className={tdValueClass} colSpan="2">
                           {profile.lastName || '--'}
                         </td>
                       </tr>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>Birthday</td>
+                        <td className={tdLabelClass}>
+                          {t('common.birthday', 'Birthday')}
+                        </td>
                         <td className={tdValueClass} colSpan="2">
                           {formatDate(profile.dateOfBirth)}
                         </td>
                       </tr>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>E-mail</td>
+                        <td className={tdLabelClass}>
+                          {t('common.email', 'E-mail')}
+                        </td>
                         <td className={tdValueClass} colSpan="2">
                           {email.email || '--'}
                         </td>
                       </tr>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>Whatsapp Number</td>
+                        <td className={tdLabelClass}>
+                          {t('profile.whatsappNo', 'Whatsapp Number')}
+                        </td>
                         <td className={tdValueClass}>{whatsappNumber}</td>
                         <ActionCell
                           onClick={() => setIsWhatsAppModalOpen(true)}
                         >
                           <span className="cursor-pointer">
-                            {whatsapp.phoneNumber ? 'Edit ' : 'Add '}
+                            {whatsapp.phoneNumber
+                              ? t('common.edit', 'Edit')
+                              : t('common.add', 'Add')}{' '}
                           </span>
                           <EditIcon />
                         </ActionCell>
@@ -154,43 +170,57 @@ export default function Profile() {
             </div>
 
             <div className="w-full px-0 mt-3">
-              <div className={cardHeaderClass}>Address</div>
+              <div className={cardHeaderClass}>
+                {t('common.address', 'Address')}
+              </div>
               <div>
                 <div className="bg-white p-0 flex items-center">
                   <table className={tableClass}>
                     <tbody>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>Address</td>
+                        <td className={tdLabelClass}>
+                          {t('common.address', 'Address')}
+                        </td>
                         <td className={tdValueClass} colSpan="2">
                           --
                         </td>
                       </tr>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>Town/City</td>
+                        <td className={tdLabelClass}>
+                          {t('profile.townCity', 'Town/City')}
+                        </td>
                         <td className={tdValueClass} colSpan="2">
                           --
                         </td>
                       </tr>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>Country</td>
+                        <td className={tdLabelClass}>
+                          {t('profile.country', 'Country')}
+                        </td>
                         <td className={tdValueClass} colSpan="2">
                           --
                         </td>
                       </tr>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>Country/State</td>
+                        <td className={tdLabelClass}>
+                          {t('profile.countryState', 'Country/State')}
+                        </td>
                         <td className={tdValueClass} colSpan="2">
                           --
                         </td>
                       </tr>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>Postcode</td>
+                        <td className={tdLabelClass}>
+                          {t('profile.postcode', 'Postcode')}
+                        </td>
                         <td className={tdValueClass} colSpan="2">
                           --
                         </td>
                       </tr>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>Timezone</td>
+                        <td className={tdLabelClass}>
+                          {t('profile.timezone', 'Timezone')}
+                        </td>
                         <td className={tdValueClass} colSpan="2">
                           IST
                         </td>
@@ -207,39 +237,53 @@ export default function Profile() {
         <div className="w-full md:w-1/2 md:pl-2 px-0">
           <div className={`flex flex-wrap mx-0 ${isMobile ? 'p-0' : 'pl-3'}`}>
             <div className="w-full px-0">
-              <div className={cardHeaderClass}>Contact Details</div>
+              <div className={cardHeaderClass}>
+                {t('common.contactDetails', 'Contact Details')}
+              </div>
               <div>
                 <div className="bg-white p-0 flex items-center">
                   <table className={tableClass}>
                     <tbody>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>Primary Number</td>
+                        <td className={tdLabelClass}>
+                          {t('profile.primaryNumber', 'Primary Number')}
+                        </td>
                         <td className={tdValueClass}>{primaryNumber}</td>
                         <ActionCell onClick={openVerifyPrimaryModal}>
-                          <span className="cursor-pointer ml-1">Verify </span>
-                          <EditIcon />
-                        </ActionCell>
-                      </tr>
-                      <tr className={trClass}>
-                        <td className={tdLabelClass}>Backup Number 1</td>
-                        <td className={tdValueClass}>
-                          {backupNumbers[0] || '--'}
-                        </td>
-                        <ActionCell onClick={() => setIsBackupModalOpen(true)}>
-                          <span className="cursor-pointer">
-                            {backupNumbers[0] ? 'Edit ' : 'Add '}
+                          <span className="cursor-pointer ml-1">
+                            {t('common.verify', 'Verify')}{' '}
                           </span>
                           <EditIcon />
                         </ActionCell>
                       </tr>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>Backup Number 2</td>
+                        <td className={tdLabelClass}>
+                          {t('profile.backupNumber1', 'Backup Number 1')}
+                        </td>
+                        <td className={tdValueClass}>
+                          {backupNumbers[0] || '--'}
+                        </td>
+                        <ActionCell onClick={() => setIsBackupModalOpen(true)}>
+                          <span className="cursor-pointer">
+                            {backupNumbers[0]
+                              ? t('common.edit', 'Edit')
+                              : t('common.add', 'Add')}{' '}
+                          </span>
+                          <EditIcon />
+                        </ActionCell>
+                      </tr>
+                      <tr className={trClass}>
+                        <td className={tdLabelClass}>
+                          {t('profile.backupNumber2', 'Backup Number 2')}
+                        </td>
                         <td className={tdValueClass}>
                           {backupNumbers[1] || '--'}
                         </td>
                         <ActionCell onClick={() => setIsBackupModalOpen(true)}>
                           <span className="cursor-pointer">
-                            {backupNumbers[1] ? 'Edit ' : 'Add '}
+                            {backupNumbers[1]
+                              ? t('common.edit', 'Edit')
+                              : t('common.add', 'Add')}{' '}
                           </span>
                           <EditIcon />
                         </ActionCell>
@@ -251,19 +295,25 @@ export default function Profile() {
             </div>
 
             <div className="w-full px-0 mt-3">
-              <div className={cardHeaderClass}>Setting</div>
+              <div className={cardHeaderClass}>
+                {t('common.settings', 'Settings')}
+              </div>
               <div>
                 <div className="bg-white p-0 flex items-center">
                   <table className={tableClass}>
                     <tbody>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>Currency</td>
+                        <td className={tdLabelClass}>
+                          {t('common.currency', 'Currency')}
+                        </td>
                         <td className={tdValueClass}>
                           {user?.currency || '--'}
                         </td>
                       </tr>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>Odds Format</td>
+                        <td className={tdLabelClass}>
+                          {t('profile.oddsFormat', 'Odds Format')}
+                        </td>
                         <td className={tdValueClass}>--</td>
                       </tr>
                     </tbody>
@@ -273,13 +323,17 @@ export default function Profile() {
             </div>
 
             <div className="w-full px-0 mt-3">
-              <div className={cardHeaderClass}>Commission</div>
+              <div className={cardHeaderClass}>
+                {t('common.commission', 'Commission')}
+              </div>
               <div>
                 <div className="bg-white p-0 flex items-center">
                   <table className={tableClass}>
                     <tbody>
                       <tr className={trClass}>
-                        <td className={tdLabelClass}>Comm Charged</td>
+                        <td className={tdLabelClass}>
+                          {t('profile.commCharged', 'Comm Charged')}
+                        </td>
                         <td className={tdValueClass}>2%</td>
                       </tr>
                     </tbody>

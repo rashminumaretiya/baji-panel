@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import {
   selectIsMcvYellowTheme,
@@ -45,6 +46,7 @@ export default function Stake({
   isYellowTheme: isYellowThemeProp,
   isMcwCasinoTheme: isMcwCasinoThemeProp,
 }) {
+  const { t } = useTranslation()
   const isYellowThemeFromStore = useSelector(selectIsYellowTheme)
   const isMcwCasinoThemeFromStore = useSelector(selectIsMcvYellowTheme)
   const isYellowTheme = isYellowThemeProp ?? isYellowThemeFromStore
@@ -87,7 +89,7 @@ export default function Stake({
               <div className="flex items-center justify-between [&>div]:flex [&>div]:items-center">
                 <div>
                   <SvgIcon name="settingIcon" />
-                  <span>Setting</span>
+                  <span>{t('common.settings', 'Setting')}</span>
                 </div>
                 <SvgIcon
                   name="closePopover"
@@ -99,18 +101,20 @@ export default function Stake({
                 />
               </div>
               <h3 className="mb-0 bg-[var(--xxl-blue)] text-white px-[1.86667vw] py-[1.86667vw] text-[3.73333vw] font-bold leading-[2.2]">
-                Stake
+                {t('common.stake', 'Stake')}
               </h3>
             </>
           ) : (
             <h6 className="block md:hidden text-[12px] font-bold p-2 bg-[var(--xl-th-bg)]">
-              Stake
+              {t('common.stake', 'Stake')}
             </h6>
           )}
 
           <div className={SECTION_WRAPPER}>
             <div className="flex items-center text-[11px] mr-[5px] mb-[5px] max-md:my-[1.86667vw] max-md:mx-0 max-md:text-[4vw] [&_label]:font-bold [&_label]:text-[var(--text-color)] max-md:[&_label]:font-normal">
-              <label htmlFor="stake-default">Default Stake</label>
+              <label htmlFor="stake-default">
+                {t('common.defaultStake', 'Default Stake')}
+              </label>
               <input
                 id="stake-default"
                 type="number"
@@ -132,9 +136,11 @@ export default function Stake({
                     isMobile && TITLE_ODDS_OVERRIDE
                   )}
                 >
-                  Quick Stakes
+                  {t('common.quickStakes', 'Quick Stakes')}
                 </h6>
-                <h6 className={cx('hidden md:block', TITLE_CLASS)}>Stake</h6>
+                <h6 className={cx('hidden md:block', TITLE_CLASS)}>
+                  {t('common.stake', 'Stake')}
+                </h6>
                 <div className="block md:flex">
                   <div>
                     <div className="flex flex-wrap">
@@ -168,11 +174,11 @@ export default function Stake({
                   >
                     {stakesLocked ? (
                       <>
-                        <span>Edit</span>
+                        <span>{t('common.edit', 'Edit')}</span>
                         <div className="h-[9px] w-[9px] bg-[url('/img/icon-stake-edit.png')] bg-no-repeat bg-right max-md:w-[4vw] max-md:h-[4vw] max-md:bg-[url('/img/svg/edit-big.svg')] max-md:ml-[1.33333vw] max-md:bg-contain" />
                       </>
                     ) : (
-                      'OK'
+                      t('common.ok', 'OK')
                     )}
                   </button>
                 </div>
@@ -195,7 +201,12 @@ export default function Stake({
                     />
                     <span className={SLIDER} />
                   </label>
-                  <span>Highlight when odds change</span>
+                  <span>
+                    {t(
+                      'common.highlightWhenOddsChange',
+                      'Highlight when odds change'
+                    )}
+                  </span>
                 </>
               ) : (
                 <>
@@ -206,7 +217,10 @@ export default function Stake({
                     onChange={(e) => setIsHighlighted(e.target.checked)}
                   />
                   <label className="m-0 ml-1" htmlFor="highlight">
-                    Highlight when odds change
+                    {t(
+                      'common.highlightWhenOddsChange',
+                      'Highlight when odds change'
+                    )}
                   </label>
                 </>
               )}
@@ -214,7 +228,7 @@ export default function Stake({
           </div>
 
           <div className={cx(SECTION_WRAPPER, 'max-md:pb-[1.86667vw]')}>
-            <h6 className={TITLE_CLASS}>Fancy Bet</h6>
+            <h6 className={TITLE_CLASS}>{t('common.fancyBet', 'Fancy Bet')}</h6>
             <div className="flex items-center justify-between md:justify-start md:mb-2 max-md:flex-row-reverse">
               {isMobile ? (
                 <>
@@ -230,7 +244,9 @@ export default function Stake({
                     />
                     <span className={SLIDER} />
                   </label>
-                  <span className="m-0 ml-1">Accept Any Odds</span>
+                  <span className="m-0 ml-1">
+                    {t('common.acceptAnyOdds', 'Accept Any Odds')}
+                  </span>
                 </>
               ) : (
                 <>
@@ -241,7 +257,7 @@ export default function Stake({
                     onChange={(e) => setFancyBetAcceptAnyOdds(e.target.checked)}
                   />
                   <label className="m-0 ml-1" htmlFor="fancyBet">
-                    Accept Any Odds
+                    {t('common.acceptAnyOdds', 'Accept Any Odds')}
                   </label>
                 </>
               )}
@@ -249,12 +265,16 @@ export default function Stake({
           </div>
 
           <div className={cx(SECTION_WRAPPER, 'max-md:pb-[1.86667vw]')}>
-            <h6 className={TITLE_CLASS}>Sportsbook</h6>
+            <h6 className={TITLE_CLASS}>
+              {t('common.sportsbook', 'Sportsbook')}
+            </h6>
             <div className="flex items-center justify-between md:justify-start md:mb-2 max-md:flex-row-reverse" />
           </div>
 
           <div className={cx(SECTION_WRAPPER, 'max-md:pb-[1.86667vw]')}>
-            <h6 className={TITLE_CLASS}>Win Selection Forecast</h6>
+            <h6 className={TITLE_CLASS}>
+              {t('common.winSelectionForecast', 'Win Selection Forecast')}
+            </h6>
             <div className="flex items-center justify-between md:justify-start md:mb-2 max-md:flex-row-reverse" />
           </div>
 
@@ -270,7 +290,7 @@ export default function Stake({
                 onClick={onCancel}
                 disabled={!stakesLocked}
               >
-                Cancel
+                {t('common.cancel', 'Cancel')}
               </button>
             </div>
             <div className={cx(BTN_WRAPPER, 'text-right')}>
@@ -284,7 +304,7 @@ export default function Stake({
                 )}
                 disabled={!stakesLocked}
               >
-                Save
+                {t('common.save', 'Save')}
               </button>
             </div>
           </div>

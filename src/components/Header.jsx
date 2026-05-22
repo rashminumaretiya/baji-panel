@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Overlay, Popover } from '../shared/components/primitives/Popover.jsx'
@@ -52,6 +53,7 @@ const HEADER_YELLOW = 'bg-gradient-to-b from-[#ffcb2e] to-[#ffb80c]'
 const HEADER_MCW = 'bg-gradient-to-b from-[#2f2f2f] to-[#010101]'
 
 export default function Header({ logo: logoProp, isStreamAvailable = false }) {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
@@ -86,7 +88,10 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   const isExposure = exposure > 0
   const amount = getDisplayAmount(wallet)
 
-  const balanceLabel = !isMob && !isYellowTheme ? 'Main Balance' : 'Main'
+  const balanceLabel =
+    !isMob && !isYellowTheme
+      ? t('common.mainBalance', 'Main Balance')
+      : t('common.main', 'Main')
 
   const headerClass = cx(
     HEADER_BASE,
@@ -182,20 +187,23 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                   onKeyDown={(e) => e.key === 'Enter' && openBetsClick()}
                 >
                   <SvgIcon name="dollarCoin" />
-                  <p className="mb-0 ms-lg-2 max-md:ml-[1.33vw]">Bets</p>
+                  <p className="mb-0 ms-lg-2 max-md:ml-[1.33vw]">
+                    {' '}
+                    {t('header.bets', 'Bets')}
+                  </p>
                 </span>
                 <div
                   className={cx(
                     'fixed inset-0 transition-all duration-100 bg-white',
                     showBets
-                      ? 'opacity-100 visible z-[999]'
-                      : 'opacity-0 invisible -z-[999]'
+                      ? 'opacity-100 visible z-999'
+                      : 'opacity-0 invisible z-[-999]'
                   )}
                 >
                   <div className={stakeHeaderClass}>
                     <div className="flex items-center text-white flex-1 max-md:px-[1.87vw] max-md:leading-[2.6] max-md:border-r max-md:border-white/30 [&_svg]:max-md:w-[6.33vw] [&_svg]:max-md:h-[6.33vw] [&_svg]:mr-[1.33vw]">
                       <SvgIcon name="dollarCoin" />
-                      <span>Open Bets</span>
+                      <span>{t('openBets.title', 'Open Bets')}</span>
                     </div>
                     <SvgIcon
                       name="closePopover"
@@ -217,8 +225,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
           <div
             className={cx(
               'flex items-center text-white',
-              isYellowTheme &&
-                '[&_a]:!text-[var(--dark)] [&_.value]:!text-[var(--dark)]',
+              isYellowTheme && '[&_a]:text-(--dark)! [&_.value]:text-(--dark)!',
               isMcwCasinoTheme &&
                 '[&_.label]:!text-[#ffd45f] [&_.value]:!text-[#ffd45f]'
             )}
@@ -246,7 +253,9 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                     </span>
                   </p>
                   <p className="mb-0">
-                    <span className="label">Exposure</span>
+                    <span className="label">
+                      {t('common.exposure', 'Exposure')}
+                    </span>
                     <span
                       className={cx(
                         'value text-white px-1.5 py-px',

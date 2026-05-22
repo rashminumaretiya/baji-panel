@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import {
@@ -50,23 +51,25 @@ const TD_BASE =
   'font-medium px-1.5 py-2 text-[11px] align-middle overflow-hidden text-center bg-transparent border-b border-white max-md:py-[1.33333vw] max-md:px-[1.86667vw] max-md:[&_p]:text-[3.46667vw] max-md:[&_p]:leading-[1.3]'
 
 function NoOpenBets({ isYellowTheme }) {
+  const { t } = useTranslation()
   if (isYellowTheme) {
     return (
       <div className="text-center mt-3 flex flex-col items-center [&>p]:m-0 [&>p]:text-[17px]">
-        <p>No bets placed</p>
-        <p>You have no open bets</p>
+        <p>{t('openBets.noBetsPlaced', 'No bets placed')}</p>
+        <p>{t('openBets.youHaveNoOpenBets', 'You have no open bets')}</p>
       </div>
     )
   }
 
   return (
     <p className="text-center mt-3 text-[var(--white)] text-[13px] max-[991px]:text-[12px]">
-      No open bets available.
+      {t('openBets.noOpenBetsAvailable', 'No open bets available.')}
     </p>
   )
 }
 
 function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
+  const { t } = useTranslation()
   const isFancy = openBetsValue?.event?.type === 'Fancy'
   const isSportsBook = openBetsValue?.event?.type === 'Sports Book'
   const backBets = openBetsValue?.bets?.back ?? []
@@ -83,9 +86,11 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
                 colSpan={2}
                 className={`${TH_BASE} text-left w-[45%] max-md:w-[61%] max-md:font-semibold`}
               >
-                Yes
+                {t('odds.yes', 'Yes')}
               </th>
-              <th className={`${TH_BASE} text-center w-[20%]`}>Runs/Odds</th>
+              <th className={`${TH_BASE} text-center w-[20%]`}>
+                {t('common.runsOdds', 'Runs/Odds')}
+              </th>
             </>
           ) : (
             <>
@@ -93,16 +98,22 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
                 colSpan={2}
                 className={`${TH_BASE} text-left w-[45%] max-md:w-[61%] max-md:font-semibold`}
               >
-                Back (Bet For)
+                {t('odds.backBetFor', 'Back (Bet For)')}
               </th>
-              <th className={`${TH_BASE} text-center w-[20%]`}>Odds</th>
+              <th className={`${TH_BASE} text-center w-[20%]`}>
+                {t('common.odds', 'Odds')}
+              </th>
             </>
           )}
-          <th className={`${TH_BASE} text-center w-[20%]`}>Stake</th>
+          <th className={`${TH_BASE} text-center w-[20%]`}>
+            {t('common.stake', 'Stake')}
+          </th>
           <th
             className={`${TH_BASE} text-right w-[20%] whitespace-nowrap overflow-hidden text-ellipsis max-w-[52px]`}
           >
-            {timeOrder ? 'Profit/Liability' : 'Profit'}
+            {timeOrder
+              ? t('common.profitLiability', 'Profit/Liability')
+              : t('common.profit', 'Profit')}
           </th>
         </tr>
       </thead>
@@ -112,7 +123,7 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
             {betInfo && (
               <tr className="bg-[#beddf466]">
                 <td colSpan={5} className={`${TD_BASE} text-left w-[8%] pr-0`}>
-                  <span>Ref: </span>
+                  <span>{t('common.ref', 'Ref')}: </span>
                   <span>{formatDateTime(openBet.betPlacedAt)}</span>
                 </td>
               </tr>
@@ -165,6 +176,7 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
 }
 
 function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
+  const { t } = useTranslation()
   const isFancy = openBetsValue?.event?.type === 'Fancy'
   const isSportsBook = openBetsValue?.event?.type === 'Sports Book'
   const layBets = openBetsValue?.bets?.lay ?? []
@@ -181,9 +193,11 @@ function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
                 colSpan={2}
                 className={`${TH_BASE} text-left w-[45%] max-md:w-[61%] max-md:font-semibold`}
               >
-                No
+                {t('odds.no', 'No')}
               </th>
-              <th className={`${TH_BASE} text-center w-[20%]`}>Runs/Odds</th>
+              <th className={`${TH_BASE} text-center w-[20%]`}>
+                {t('common.runsOdds', 'Runs/Odds')}
+              </th>
             </>
           ) : (
             <>
@@ -191,16 +205,22 @@ function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
                 colSpan={2}
                 className={`${TH_BASE} text-left w-[45%] max-md:w-[61%] max-md:font-semibold`}
               >
-                Lay (Bet Against)
+                {t('odds.layBetAgainst', 'Lay (Bet Against)')}
               </th>
-              <th className={`${TH_BASE} text-center w-[20%]`}>Odds</th>
+              <th className={`${TH_BASE} text-center w-[20%]`}>
+                {t('common.odds', 'Odds')}
+              </th>
             </>
           )}
-          <th className={`${TH_BASE} text-center w-[20%]`}>Stake</th>
+          <th className={`${TH_BASE} text-center w-[20%]`}>
+            {t('common.stake', 'Stake')}
+          </th>
           <th
             className={`${TH_BASE} text-right w-[20%] whitespace-nowrap overflow-hidden text-ellipsis max-w-[52px]`}
           >
-            {timeOrder ? 'Profit/Liability' : 'Liability'}
+            {timeOrder
+              ? t('common.profitLiability', 'Profit/Liability')
+              : t('common.liability', 'Liability')}
           </th>
         </tr>
       </thead>
@@ -210,7 +230,7 @@ function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
             {betInfo && (
               <tr className="bg-[#faeff2]">
                 <td colSpan={5} className={`${TD_BASE} text-left w-[8%] pr-0`}>
-                  <span>Ref: </span>
+                  <span>{t('common.ref', 'Ref')}: </span>
                   <span>{formatDateTime(openBet.betPlacedAt)}</span>
                 </td>
               </tr>
@@ -271,6 +291,7 @@ function OpenBetsListBackLay({
   onBetInfoChange,
   onTimeOrderChange,
 }) {
+  const { t } = useTranslation()
   if (!openBetsValue) return null
 
   // Wrapper class controls scroll behaviour: standalone, with a slip open, or
@@ -282,7 +303,7 @@ function OpenBetsListBackLay({
   return (
     <>
       <h6 className="p-2 m-0 text-[12px] font-bold bg-[var(--xl-th-bg)] max-md:px-[1.86667vw] max-md:bg-[image:linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] max-md:text-[3.73333vw] max-md:leading-[2.2] max-md:text-white max-md:font-semibold">
-        Matched
+        {t('common.matched', 'Matched')}
       </h6>
       <div className={`overflow-x-auto ${wrapperClass}`}>
         <BackBetsTable
@@ -315,7 +336,7 @@ function OpenBetsListBackLay({
                 className="ml-[5px] cursor-pointer"
                 htmlFor="radioDefault1"
               >
-                Bet info
+                {t('common.betInfo', 'Bet info')}
               </label>
             </div>
             <div className="flex items-center ml-2">
@@ -330,7 +351,7 @@ function OpenBetsListBackLay({
                 className="ml-[5px] cursor-pointer"
                 htmlFor="radioDefault2"
               >
-                Time Order
+                {t('common.timeOrder', 'Time Order')}
               </label>
             </div>
           </div>
@@ -347,6 +368,7 @@ function OpenBetsDesktop({
   isYellowTheme,
   onRefresh,
 }) {
+  const { t } = useTranslation()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [betInfo, setBetInfo] = useState(false)
@@ -373,7 +395,7 @@ function OpenBetsDesktop({
                     onRefresh?.()
                   }
                 }}
-                aria-label="Refresh open bets"
+                aria-label={t('openBets.refreshOpenBets', 'Refresh open bets')}
               />
               <h2 className="relative shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] m-0 w-full">
                 <button
@@ -386,7 +408,7 @@ function OpenBetsDesktop({
                   )}
                   onClick={() => setIsCollapsed((prev) => !prev)}
                 >
-                  Open Bets
+                  {t('openBets.title', 'Open Bets')}
                 </button>
               </h2>
             </div>

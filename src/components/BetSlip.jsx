@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Collapse from '../shared/components/primitives/Collapse.jsx'
 import { selectIsYellowTheme } from '../store/slices/commonSlice.js'
@@ -35,13 +36,24 @@ function NoBetSlip({ isShowLoader }) {
   }
 
   return (
+    <NoBetSlipMsg />
+  )
+}
+
+function NoBetSlipMsg() {
+  const { t } = useTranslation()
+  return (
     <p className="text-center mt-3 text-[var(--white)] text-[13px] max-[991px]:text-[12px]">
-      Click on the odds to add selections to the betslip.
+      {t(
+        'common.clickOddsToAdd',
+        'Click on the odds to add selections to the betslip.',
+      )}
     </p>
   )
 }
 
 function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const submitting = useSelector(selectIsPlacingBet)
   const isBack = activeMatchOdd?.betType === 'BACK'
@@ -103,16 +115,20 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
                 <th
                   className="relative shadow-[inset_0_2px_0_rgba(var(--black-rgb),0.1)] bg-[var(--xxs-text-color)] px-1.5 py-[5px] pl-3 font-medium leading-[14px] text-[11px] whitespace-nowrap text-[var(--header-primary)] w-[43.23529%] text-left after:content-[''] after:absolute after:w-px after:h-1/2 after:top-1/2 after:right-0 after:-translate-y-1/2 after:rounded-[1px]"
                 >
-                  {isBack ? 'Back (Bet For)' : 'Lay (Bet Against)'}
+                  {isBack
+                    ? t('odds.backBetFor', 'Back (Bet For)')
+                    : t('odds.layBetAgainst', 'Lay (Bet Against)')}
                 </th>
                 <th className="relative shadow-[inset_0_2px_0_rgba(var(--black-rgb),0.1)] bg-[var(--xxs-text-color)] px-1.5 py-[5px] font-medium leading-[14px] text-[11px] whitespace-nowrap text-[var(--header-primary)] w-[16.70588%] text-center after:content-[''] after:absolute after:w-px after:h-1/2 after:top-1/2 after:right-0 after:-translate-y-1/2 after:rounded-[1px]">
-                  Odds
+                  {t('common.odds', 'Odds')}
                 </th>
                 <th className="relative shadow-[inset_0_2px_0_rgba(var(--black-rgb),0.1)] bg-[var(--xxs-text-color)] px-1.5 py-[5px] font-medium leading-[14px] text-[11px] whitespace-nowrap text-[var(--header-primary)] w-[16.70588%] text-center after:content-[''] after:absolute after:w-px after:h-1/2 after:top-1/2 after:right-0 after:-translate-y-1/2 after:rounded-[1px]">
-                  Stake
+                  {t('common.stake', 'Stake')}
                 </th>
                 <th className="relative shadow-[inset_0_2px_0_rgba(var(--black-rgb),0.1)] bg-[var(--xxs-text-color)] px-1.5 py-[5px] pr-3 font-medium leading-[14px] text-[11px] whitespace-nowrap text-[var(--header-primary)] w-[24.11765%] text-right after:content-[''] after:absolute after:w-px after:h-1/2 after:top-1/2 after:right-0 after:-translate-y-1/2 after:rounded-[1px]">
-                  {isBack ? 'Profit' : 'Liability'}
+                  {isBack
+                    ? t('common.profit', 'Profit')
+                    : t('common.liability', 'Liability')}
                 </th>
               </tr>
             </thead>
@@ -233,7 +249,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
             onClick={onCancelAll}
             disabled={submitting}
           >
-            Cancel All
+            {t('common.cancelAll', 'Cancel All')}
           </button>
           <button
             type="button"
@@ -245,7 +261,9 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
             onClick={onPlaceBet}
             disabled={!stake || submitting}
           >
-            {submitting ? 'Placing…' : 'Place Bet'}
+            {submitting
+              ? t('common.placing', 'Placing…')
+              : t('common.placeBet', 'Place Bet')}
           </button>
         </div>
         <div className="mt-[7px] pt-[3px] border-t border-[#e0e6e6] mb-[10px] pl-[5px]">
@@ -259,7 +277,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
             className="ml-1 inline-block cursor-pointer text-[var(--white)] text-[12px]"
             htmlFor="confirmBets"
           >
-            Please confirm your bets.
+            {t('common.pleaseConfirmBets', 'Please confirm your bets.')}
           </label>
         </div>
       </form>
@@ -268,6 +286,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
 }
 
 export default function BetSlip() {
+  const { t } = useTranslation()
   const activeMatchOdd = useSelector(selectActiveBetSlip)
   const stakesData = useSelector(selectStakesData)
   const isYellowTheme = useSelector(selectIsYellowTheme)
@@ -295,7 +314,7 @@ export default function BetSlip() {
               aria-expanded={!isCollapsed}
               onClick={() => setIsCollapsed((prev) => !prev)}
             >
-              <span>Bet Slip</span>
+              <span>{t('common.betSlip', 'Bet Slip')}</span>
             </button>
           </h2>
           <Collapse in={!isCollapsed}>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '../../hooks/useMediaQuery.js'
 
 const MarketName = {
@@ -168,6 +169,7 @@ export default function InlineBetSlip({
   onPlaceBet,
   isPlacing = false,
 }) {
+  const { t } = useTranslation()
   const isMobile = useIsMobile()
   const [isMatchChecked, setIsMatchChecked] = useState(false)
 
@@ -234,7 +236,7 @@ export default function InlineBetSlip({
                 <div className="text-center flex-1 mr-[1.86667vw] max-md:[&:last-of-type]:mr-0 max-md:flex-[1_1_47.2vw]">
                   {isSportsBook && (
                     <p className="text-[var(--dark-gray)] text-[14px] mb-0 mr-[2vw] max-md:text-[2.93333vw] max-md:text-[#1e1e1e] max-md:leading-[1.3]">
-                      Odds
+                      {t('common.odds', 'Odds')}
                     </p>
                   )}
                   <div className="flex items-center border border-[#4a4a4a] rounded-md max-md:border-[#aaa] max-md:justify-between max-md:bg-white max-md:rounded-[1.6vw]">
@@ -273,7 +275,7 @@ export default function InlineBetSlip({
 
                 <div className="text-center flex-1 mr-[1.86667vw] max-md:[&:last-of-type]:mr-0 max-md:flex-[1_1_47.2vw]">
                   <p className="text-[var(--dark-gray)] text-[14px] mb-0 mr-[2vw] max-md:text-[2.93333vw] max-md:text-[#1e1e1e] max-md:leading-[1.3]">
-                    Min Bet : {betSlipDetails?.min || 1}
+                    {t('common.minBet', 'Min Bet')} : {betSlipDetails?.min || 1}
                   </p>
                   <div className="flex items-center border border-[#4a4a4a] rounded-md max-md:border-[#aaa] max-md:justify-between max-md:bg-white max-md:rounded-[1.6vw]">
                     <button
@@ -331,7 +333,7 @@ export default function InlineBetSlip({
                   onClick={onCancel}
                   disabled={isPlacing}
                 >
-                  Cancel
+                  {t('common.cancel', 'Cancel')}
                 </button>
                 <button
                   type="button"
@@ -349,10 +351,10 @@ export default function InlineBetSlip({
                         role="status"
                         aria-hidden="true"
                       />
-                      Placing…
+                      {t('common.placing', 'Placing…')}
                     </span>
                   ) : (
-                    'Place Bet'
+                    t('common.placeBet', 'Place Bet')
                   )}
                 </button>
               </div>
@@ -395,7 +397,7 @@ export default function InlineBetSlip({
                     className="text-black whitespace-nowrap max-md:ml-[1.86667vw] max-md:text-[#1e1e1e]"
                     htmlFor={marketData}
                   >
-                    Accept Any Odds
+                    {t('common.acceptAnyOdds', 'Accept Any Odds')}
                   </label>
                 </div>
               </td>
@@ -424,7 +426,7 @@ export default function InlineBetSlip({
                     className="ml-1 text-black whitespace-nowrap"
                     htmlFor={marketData}
                   >
-                    Accept Any Odds
+                    {t('common.acceptAnyOdds', 'Accept Any Odds')}
                   </label>
                 </div>
 
@@ -437,7 +439,7 @@ export default function InlineBetSlip({
                   onClick={onCancel}
                   disabled={isPlacing}
                 >
-                  Cancel
+                  {t('common.cancel', 'Cancel')}
                 </button>
 
                 <div className="flex ml-2">
@@ -478,10 +480,10 @@ export default function InlineBetSlip({
                         role="status"
                         aria-hidden="true"
                       />
-                      Placing…
+                      {t('common.placing', 'Placing…')}
                     </span>
                   ) : (
-                    'Place Bet'
+                    t('common.placeBet', 'Place Bet')
                   )}
                 </button>
               </div>

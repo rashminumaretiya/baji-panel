@@ -1,11 +1,14 @@
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { selectIsAuthenticated } from '../store/slices/authSlice.js'
 
+// Translation keys per menu entry — labels resolved inside the component so we
+// can localise without recreating the array on every render.
 const MOBILE_MENUS = [
-  { key: 'inplay', label: 'In-Play', to: '/in-play', icon: '/img/svg/clock-1.svg' },
-  { key: 'sports', label: 'Sports', to: '/soccer', icon: '/img/svg/trophy-cup.svg' },
-  { key: 'multiMarket', label: 'Multi Markets', to: '/multi-markets', icon: '/img/svg/pin.svg' },
+  { key: 'inplay', i18nKey: 'common.inPlay', fallback: 'In-Play', to: '/in-play', icon: '/img/svg/clock-1.svg' },
+  { key: 'sports', i18nKey: 'common.sports', fallback: 'Sports', to: '/soccer', icon: '/img/svg/trophy-cup.svg' },
+  { key: 'multiMarket', i18nKey: 'common.multiMarket', fallback: 'Multi Markets', to: '/multi-markets', icon: '/img/svg/pin.svg' },
 ]
 
 const itemBase =
@@ -18,6 +21,7 @@ const activeBg =
   'bg-gradient-to-t from-[var(--xl-blue-bg)] to-[var(--xsm-blue-bg)]'
 
 export default function MobileNavigation() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const isAuthenticated = useSelector(selectIsAuthenticated)
@@ -52,32 +56,38 @@ export default function MobileNavigation() {
           onClick={redirectToMainSite}
           role="presentation"
         >
-          <img src="/img/svg/home.svg" alt="Home" />
-          <span>Home</span>
+          <img src="/img/svg/home.svg" alt={t('common.home', 'Home')} />
+          <span>{t('common.home', 'Home')}</span>
         </li>
-        {MOBILE_MENUS.map((menu) => (
-          <li key={menu.key} className={itemBase}>
-            <NavLink
-              to={menu.to}
-              end
-              className={({ isActive }) =>
-                isActive
-                  ? `block w-full h-full ${activeBg} -mx-[2.67vw] -mt-[1.87vw] pt-[1.87vw] px-[2.67vw]`
-                  : 'block w-full h-full'
-              }
-            >
-              <img src={menu.icon} alt={menu.label} />
-              <span>{menu.label}</span>
-            </NavLink>
-          </li>
-        ))}
+        {MOBILE_MENUS.map((menu) => {
+          const label = t(menu.i18nKey, menu.fallback)
+          return (
+            <li key={menu.key} className={itemBase}>
+              <NavLink
+                to={menu.to}
+                end
+                className={({ isActive }) =>
+                  isActive
+                    ? `block w-full h-full ${activeBg} -mx-[2.67vw] -mt-[1.87vw] pt-[1.87vw] px-[2.67vw]`
+                    : 'block w-full h-full'
+                }
+              >
+                <img src={menu.icon} alt={label} />
+                <span>{label}</span>
+              </NavLink>
+            </li>
+          )
+        })}
         <li
           className={`${itemBase} ${isAccount ? activeBg : ''}`}
           onClick={goToAccount}
           role="presentation"
         >
-          <img src="/img/svg/user-profile.svg" alt="Account" />
-          <span>Account</span>
+          <img
+            src="/img/svg/user-profile.svg"
+            alt={t('common.account', 'Account')}
+          />
+          <span>{t('common.account', 'Account')}</span>
         </li>
       </ul>
     </div>

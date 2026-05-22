@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
 } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
@@ -322,6 +323,7 @@ const groupSportbookByCategory = (items) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function LiveOdds() {
+  const { t } = useTranslation()
   const { eventId, sport: sportSlug } = useParams()
   const sportId = getSportIdFromSlug(sportSlug)
 
@@ -801,7 +803,7 @@ export default function LiveOdds() {
                 height="100%"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share;"
                 allowFullScreen
-                title="Scoreboard"
+                title={t('common.scoreboard', 'Scoreboard')}
               />
             </div>
           )}
@@ -930,6 +932,7 @@ export default function LiveOdds() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function PinRefresh({ onRefresh }) {
+  const { t } = useTranslation()
   // Each div is a Pin / Refresh pill; the first has a rotated ::before tail,
   // the second a rotated ::after tail to give the angled-pill shape.
   const baseDiv =
@@ -944,11 +947,11 @@ function PinRefresh({ onRefresh }) {
       <div className="inline-flex items-center relative cursor-pointer">
         <div className={firstDiv}>
           <PinIcon />
-          <span>Pin</span>
+          <span>{t('common.pin', 'Pin')}</span>
         </div>
         <div className={secondDiv} onClick={onRefresh} role="button">
           <RefreshIcon />
-          <span>Refresh</span>
+          <span>{t('common.refresh', 'Refresh')}</span>
         </div>
       </div>
     </div>
@@ -963,6 +966,7 @@ function LiveStream({
   hideClose,
   isPip,
 }) {
+  const { t } = useTranslation()
   if (!url) return null
   return (
     <div className="relative max-w-[500px] mx-auto text-center mobile:mb-3 mobile:p-2 pb-0 max-md:max-w-full max-md:overflow-hidden">
@@ -978,7 +982,7 @@ function LiveStream({
         width="100%"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share;"
         allowFullScreen
-        title="Live stream"
+        title={t('common.liveStream', 'Live stream')}
       />
       {!hideClose && (
         <div
@@ -996,7 +1000,7 @@ function LiveStream({
             )}
             onClick={onClose}
             role="button"
-            aria-label="Close"
+            aria-label={t('common.close', 'Close')}
           >
             <CloseIcon />
           </i>
@@ -1007,7 +1011,7 @@ function LiveStream({
           className="absolute right-[18px] bottom-[8px] max-md:right-[16px] cursor-pointer"
           onClick={onFullscreen}
           role="button"
-          aria-label="Fullscreen"
+          aria-label={t('common.fullscreen', 'Fullscreen')}
         >
           <FullscreenIcon />
         </i>
@@ -1035,6 +1039,7 @@ function MatchOddsSection({
   onToggleBetLimit,
   liveStreamSlot,
 }) {
+  const { t } = useTranslation()
   if (!matchOdds) return null
   const totalMatched = num(matchOdds.totalMatched)
   const minMaxStr = `${fmt(marketSetting.min || 1)} / ${fmt(marketSetting.max || 100)}`
@@ -1055,7 +1060,9 @@ function MatchOddsSection({
             )}
           >
             <div>
-              <span className={matchOddsTabClass}>Match Odds</span>
+              <span className={matchOddsTabClass}>
+                {t('odds.matchOdds', 'Match Odds')}
+              </span>
               {!isMobile && (
                 <span
                   className={cx(
@@ -1075,7 +1082,7 @@ function MatchOddsSection({
                   />
                   <span className="inline-block ml-1 align-middle">
                     {matchOdds.inplay
-                      ? 'In-Play'
+                      ? t('common.inPlay', 'In-Play')
                       : fmtDate(matchOdds.marketStartTime)}
                   </span>
                 </span>
@@ -1084,7 +1091,9 @@ function MatchOddsSection({
             {!isMobile && (
               <>
                 <div className="flex text-black absolute top-0 left-1/2 -translate-x-1/2 my-[7px] mx-[5px] bg-[var(--xl-light-bg)] text-[12px] leading-4 rounded-[3px] px-[6px] !text-[var(--sm-xl-dark)]">
-                  <p className="mb-0">Min/ Max</p>
+                  <p className="mb-0">
+                    {t('common.min', 'Min')}/ {t('common.max', 'Max')}
+                  </p>
                   <p className="mb-0 ml-1">
                     <small className="text-[13px] text-[var(--light-navy)]">
                       {minMaxStr}
@@ -1093,7 +1102,7 @@ function MatchOddsSection({
                 </div>
                 <div className="flex">
                   <div className="flex items-center text-[13px] text-[var(--lg-white,#fff)] [&_span]:font-bold">
-                    <p className="m-0">Matched</p>
+                    <p className="m-0">{t('common.matched', 'Matched')}</p>
                     <span className="ml-1">{currency || 'PBU'}</span>
                     <span className="ml-1 mr-2">{fmt(totalMatched)}</span>
                   </div>
@@ -1109,7 +1118,7 @@ function MatchOddsSection({
                         )}
                         onClick={onToggleLive}
                       >
-                        Live
+                        {t('common.live', 'Live')}
                       </button>
                     </div>
                   )}
@@ -1140,7 +1149,7 @@ function MatchOddsSection({
                             )}
                           >
                             <div>
-                              <p>Max</p>
+                              <p>{t('common.max', 'Max')}</p>
                               <span>{fmt(marketSetting.max || 100)}</span>
                             </div>
                             <i
@@ -1155,14 +1164,18 @@ function MatchOddsSection({
                       </div>
                       <i className="[background-image:url('/img/svg/barChart.svg')] bg-contain bg-no-repeat max-md:w-[6.5vw] max-md:h-[6.66667vw]" />
                       <div className="max-md:pl-[1.86667vw] [&_p]:leading-[7px] [&_p]:font-normal [&_p]:mt-1 [&_p]:max-md:text-[2.93333vw] [&_span]:font-bold [&_span]:max-md:text-[2.93333vw]">
-                        <p className="mb-0">Matched</p>
+                        <p className="mb-0">{t('common.matched', 'Matched')}</p>
                         <span>{currency || 'PBU'}</span>{' '}
                         <span>{fmt(totalMatched)}</span>
                       </div>
                     </div>
                   </th>
-                  <th className={cx(TABLE_TH, '!w-[18.66667vw]')}>Back</th>
-                  <th className={cx(TABLE_TH, '!w-[18.66667vw]')}>Lay</th>
+                  <th className={cx(TABLE_TH, '!w-[18.66667vw]')}>
+                    {t('common.back', 'Back')}
+                  </th>
+                  <th className={cx(TABLE_TH, '!w-[18.66667vw]')}>
+                    {t('common.lay', 'Lay')}
+                  </th>
                 </>
               ) : (
                 <>
@@ -1175,7 +1188,7 @@ function MatchOddsSection({
                     {matchOdds.numberOfRunners ??
                       matchOdds.runners?.length ??
                       0}{' '}
-                    Selection
+                    {t('common.selection', 'Selection')}
                   </th>
                   <th colSpan={3} className={cx(TABLE_TH, 'text-start')}>
                     101%
@@ -1363,6 +1376,7 @@ function BookmakerSection({
   onPlaceBet,
   isPlacingActive,
 }) {
+  const { t } = useTranslation()
   // Normalise the React API's flat shape ({sid, nat, s, b1..b3, l1..l3, bs1..bs3, ls1..ls3})
   // into the Angular shape ({selectionId, runnerName, status, back:[…], lay:[…]}) so the
   // JSX below mirrors the Angular template element-for-element.
@@ -1422,21 +1436,23 @@ function BookmakerSection({
             </i>
           </span>
           <span className="text-white font-bold text-[14px] inline-block max-md:ml-[1.86667vw] max-md:text-[3.46667vw] max-md:leading-[8.53333vw]">
-            Bookmaker Market
-            <small className="opacity-70 font-normal">| Zero Commission</small>
+            {t('odds.bookmakerMarket', 'Bookmaker Market')}
+            <small className="opacity-70 font-normal">
+              | {t('odds.zeroCommission', 'Zero Commission')}
+            </small>
           </span>
         </div>
 
         {!isMobile ? (
           <div className="flex items-center justify-center mr-[10px] [&_span]:text-[11px]">
             <span className="rounded-sm px-[16px] py-[1px] bg-[var(--xl-light-bg)] text-[11px]">
-              Min
+              {t('common.min', 'Min')}
             </span>
             <span className="inline-block ml-1 text-white">
               {fmt(setting.min || 1)}
             </span>
             <span className="rounded-sm px-[16px] py-[1px] bg-[var(--xl-light-bg)] text-[11px] ml-2 inline-block">
-              Max
+              {t('common.max', 'Max')}
             </span>
             <span className="inline-block ml-1 text-white">
               {fmt(setting.max || 10000)}
@@ -1444,13 +1460,19 @@ function BookmakerSection({
           </div>
         ) : (
           <span className="bg-gradient-to-br from-[var(--xts-lightest-navy)] to-[var(--mds-lightest-navy)] inline-block rounded-tr-[12px] relative mobile:px-2 mr-[1.86667vw] text-white [&_svg]:max-md:w-[4vw] [&_svg]:max-md:h-[4vw]">
-            <i onClick={onToggleInfo} role="button" aria-label="Info">
+            <i
+              onClick={onToggleInfo}
+              role="button"
+              aria-label={t('common.info', 'Info')}
+            >
               <WarningSvg />
             </i>
             {infoOpen && (
               <div className={FANCY_INFO_POPUP}>
                 <div className="flex-1 flex flex-col">
-                  <p>Min / Max</p>
+                  <p>
+                    {t('common.min', 'Min')} / {t('common.max', 'Max')}
+                  </p>
                   <span>
                     {fmt(setting.min || 1)} / {fmt(setting.max || 1000)}
                   </span>
@@ -1459,7 +1481,7 @@ function BookmakerSection({
                   className={FANCY_INFO_CLOSE_ICON}
                   onClick={onToggleInfo}
                   role="button"
-                  aria-label="Close"
+                  aria-label={t('common.close', 'Close')}
                 >
                   <CloseIcon />
                 </i>
@@ -1627,6 +1649,7 @@ function MatchHeader({ children }) {
 }
 
 function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
+  const { t } = useTranslation()
   const isSportsBookSelected = selectedFancy === MAIN_FANCY.SPORTS_BOOK
 
   return (
@@ -1709,7 +1732,7 @@ function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
           <i>
             <WarningSvg />
           </i>
-          <span>Min</span>
+          <span>{t('common.min', 'Min')}</span>
         </p>
       )}
     </div>
@@ -1785,10 +1808,11 @@ function FancySection({
   onPlaceBet,
   isPlacingActive,
 }) {
+  const { t } = useTranslation()
   if (!items.length) {
     return (
       <div className="text-center p-3 text-[var(--sm-text-color)] text-[12px] bg-white">
-        No fancy markets
+        {t('common.noFancyMarkets', 'No fancy markets')}
       </div>
     )
   }
@@ -1868,14 +1892,17 @@ function FancySection({
                                 setFancyInfoIndex(fancyInfoIndex === i ? -1 : i)
                               }
                               role="button"
-                              aria-label="Info"
+                              aria-label={t('common.info', 'Info')}
                             >
                               <WarningSvg />
                             </i>
                             {fancyInfoIndex === i && (
                               <div className={FANCY_INFO_POPUP}>
                                 <div className="flex-1 flex flex-col">
-                                  <p>Min / Max</p>
+                                  <p>
+                                    {t('common.min', 'Min')} /{' '}
+                                    {t('common.max', 'Max')}
+                                  </p>
                                   <span>
                                     {fmt(item.min || 1)} /{' '}
                                     {fmt(item.max || 1000)}
@@ -1885,7 +1912,7 @@ function FancySection({
                                   className={FANCY_INFO_CLOSE_ICON}
                                   onClick={() => setFancyInfoIndex(-1)}
                                   role="button"
-                                  aria-label="Close"
+                                  aria-label={t('common.close', 'Close')}
                                 >
                                   <CloseIcon />
                                 </i>

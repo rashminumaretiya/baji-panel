@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import {
   selectIsMcvYellowTheme,
@@ -8,6 +9,7 @@ import Modal from '../Modal.jsx'
 // Tailwind-only port of loginModel.scss. Uses the in-house Modal primitive
 // instead of react-bootstrap (matches the project-wide migration).
 export default function LoginModel({ isOpen, onClose }) {
+  const { t } = useTranslation()
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
 
@@ -38,7 +40,7 @@ export default function LoginModel({ isOpen, onClose }) {
       <div className="no-login max-w-[320px] mx-auto text-center">
         {/* SCSS: `h4 { font-size: 15px; font-weight: 700; line-height: 20px }` */}
         <h4 className="pt-1 pb-2 text-[15px] font-bold leading-5">
-          Please login to proceed
+          {t('common.pleaseLogin', 'Please login to proceed')}
         </h4>
         <div>
           <button
@@ -46,7 +48,7 @@ export default function LoginModel({ isOpen, onClose }) {
             className={`${btnBaseClass} ${themeClass}`}
             onClick={onClose}
           >
-            OK
+            {t('common.ok', 'OK')}
           </button>
         </div>
       </div>
