@@ -16,6 +16,14 @@ export const SPORT_ROUTE_BY_ID = Object.freeze({
 
 export const RACING_SPORTS = new Set([SPORT_IDS.HORSE_RACING, SPORT_IDS.GREYHOUND_RACING, '10', '65'])
 
+export const INPLAY_FILTER_SPORTS = [
+  { label: 'titles.games.cricket', value: SPORT_IDS.CRICKET },
+  { label: 'titles.games.soccer', value: SPORT_IDS.SOCCER },
+  { label: 'titles.games.tennis', value: SPORT_IDS.TENNIS },
+  { label: 'titles.games.horseRacing', value: SPORT_IDS.HORSE_RACING },
+  { label: 'titles.games.greyhoundRacing', value: SPORT_IDS.GREYHOUND_RACING },
+]
+
 export const PINNABLE_SPORT_IDS = new Set([SPORT_IDS.SOCCER, SPORT_IDS.CRICKET])
 
 export const GAME_LIST_FILTERS = {

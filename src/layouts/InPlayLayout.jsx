@@ -16,6 +16,7 @@ import {
   setLoginWindow,
 } from '../store/slices/authSlice.js'
 import {
+  selectIsFullScreenLoader,
   selectIsMobile,
   selectIsYellowTheme,
 } from '../store/slices/commonSlice.js'
@@ -28,6 +29,7 @@ export default function InPlayLayout() {
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const isLoginWindow = useSelector(selectIsLoginWindow)
   const isOneClickBet = useSelector(selectIsOneClickBet)
+  const isFullScreenLoader = useSelector(selectIsFullScreenLoader)
 
   const isPlatformPage = useMemo(
     () => pathname.includes('platform'),
@@ -41,9 +43,14 @@ export default function InPlayLayout() {
       <Header />
 
       <div className="relative mx-auto bg-[var(--xs-gray)] w-[calc(100%-40px)] mt-[105px] min-[768px]:max-[1440px]:w-[calc(100%-25px)] max-md:mt-[14.67vw] max-md:w-full">
+        {isFullScreenLoader && (
+          <div className="fixed inset-0 flex items-center justify-center z-[9999]">
+            <Loader show message="common.loader.pleaseWait" />
+          </div>
+        )}
         <div className="relative h-[calc(100svh-105px)] overflow-y-auto ml-0 pl-0 mr-[26.04%] px-[15px] max-md:mr-0 max-md:px-0">
           {showNewsLine && <NewsLine />}
-          <div className="min-h-[calc(100vh-148px)] overflow-y-auto max-md:min-h-[unset] max-md:max-h-[unset] max-md:overflow-y-visible">
+          <div className="min-h-[calc(100vh-148px)] overflow-y-auto max-md:min-h-[unset] max-md:max-h-[unset] max-md:overflow-y-visible pt-[10px]">
             <Suspense fallback={<Loader show variant="wrapper" />}>
               <Outlet />
             </Suspense>
