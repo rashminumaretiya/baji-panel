@@ -32,7 +32,7 @@ export default function InPlayLayout() {
         <Header />
       </div>
 
-      <div className="main-wrapper auth">
+      <div className="main-wrapper">
         <div className="middle-content ms-0 ps-0">
           {showNewsLine && <NewsLine />}
           <div className="scroll-wrap">
