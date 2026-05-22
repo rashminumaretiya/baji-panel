@@ -20,7 +20,7 @@ The companion backends live in the additional working directories under `/Users/
 
 ## Architecture
 
-### Bootstrap order ([src/main.jsx](src/main.jsx))
+### App bootstrap order ([src/main.jsx](src/main.jsx))
 
 The order in `main.jsx` matters and is load-bearing:
 
@@ -61,11 +61,13 @@ Seven slices: `auth`, `betSlip`, `common`, `header`, `layout`, `sport`, `account
 Four layout shells under [src/layouts/](src/layouts/):
 
 - `Layout` — default (header + sports sidebar + bet slip + open bets + mobile nav). Branches on `isMobile`, `isAuthenticated`, `isYellowTheme`, `isOneClickBet`, `isAccountRoute`, `layoutedRoutes`.
-- `InPlayLayout` — `/in-play`, `/result` (no auth class).
+- `InPlayLayout` — `/in-play`, `/result`.
 - `ResultLayout` — `/ipl-winner`.
 - `MyAccountLayout` — wraps `/my-account/*`; `index` redirects to `my-profile`.
 
 All non-Home pages are `React.lazy()` — keep that pattern. A `Suspense` fallback (`<Loader>`) is provided by `Layout`.
+
+Layout sizing rules that used to live in `layout.scss` (`.main-wrapper`, `.left-content`, `.middle-content`, `.right-content`, `.scroll-wrap`, `.no-header-wrapper`) are now top-of-file string constants inside [src/layouts/Layout.jsx](src/layouts/Layout.jsx) and [src/layouts/MyAccountLayout.jsx](src/layouts/MyAccountLayout.jsx). Update those constants if you need to tweak the column widths or top offsets.
 
 ### Theming
 
@@ -81,9 +83,16 @@ The logo and favicon come from the domain-configuration API (`auth/domain-config
 
 Translations are loaded over HTTP from `/i18n/{lng}.json` (files in [public/i18n/](public/i18n/), copied verbatim from the Angular app). Supported languages: `en`, `bn`, `hi`, `ur`. Use the `errors.*` key namespace for messages thrown via the error interceptor — it calls `i18n.t(key, dynamicValue)` directly.
 
-### Styles
+### Styles — Tailwind v4 only
 
-`src/style.scss` is the global stylesheet (imported once in `main.jsx`); `src/variable.scss` holds shared SCSS variables. Bootstrap 5 CSS is imported globally before `style.scss`. Most components have a co-located `.scss` file (`Header.jsx` + `header.scss`) imported by the component. Tailwind v4 is a dependency but is not wired into the Vite config — don't add Tailwind classes without first enabling the plugin.
+The codebase was migrated off Bootstrap + SCSS to **pure Tailwind v4**. The `bootstrap`, `react-bootstrap`, and `sass` packages are removed; no `.scss` files exist anywhere; no component imports a stylesheet of its own. Every component styles itself with Tailwind utility classes inline.
+
+- **Single global stylesheet:** [src/index.css](src/index.css). Contains `@import 'tailwindcss'`, an `@theme` block with curated colour/font/breakpoint tokens, all ~200 `:root` CSS custom properties (consumed via arbitrary values), the two body-class theme override blocks (`.mcv-yellow-theme`, `.yellow-theme`) that JS toggles, `@font-face` rules, body resets, and `@keyframes` (`blinking`, `loadBar`, `sparkBack`, `sparkLay`, `yellow-circle`, `blue-circle`, `ticker-scroll`, `deposit-slide-in`). Animations are referenced from JSX via `animate-[name_0.8s_ease-in-out]` arbitrary values.
+- **Design tokens are CSS custom properties first, Tailwind tokens second.** Most colours (`--xs-blue`, `--md-red-bg`, `--coffee`, etc.) only exist as `:root` vars — use them via arbitrary values: `bg-[var(--xs-blue)]`, `text-[var(--dark)]`, `border-[var(--light-border)]`. A small curated set lives in `@theme` (`primary`, `back-0/1/2`, `lay-0/1/2`, `primary-yellow`, …) and is available as ordinary Tailwind utilities like `bg-primary` / `text-primary-yellow`. When in doubt, prefer the arbitrary `var()` form so you don't have to extend `@theme`.
+- **Mobile responsive uses a custom breakpoint.** `@theme` defines `--breakpoint-mobile: 767px`, so `max-mobile:foo` ≈ `@media (max-width: 766px)` — the convention that replaces the old SCSS `@media (max-width: 767px)` blocks. The original mobile sizing uses `vw` units; keep them as arbitrary values: `max-mobile:text-[3.47vw]`, `max-mobile:py-[1.87vw]`, `max-mobile:h-[14.67vw]`. Off-by-one on the breakpoint vs `767px` is intentional and accepted.
+- **No Bootstrap class names.** `d-flex`, `row`, `col-*`, `btn`, `btn-primary`, `form-control`, `form-label`, `ms-N/me-N/ps-N/pe-N`, `align-items-*`, `justify-content-*`, `nav-tabs`, `nav-link`, `modal-header`, etc. are all dead and must never be reintroduced. Use the Tailwind equivalent.
+- **Hand-rolled drop-ins replace react-bootstrap.** [src/shared/components/primitives/](src/shared/components/primitives/) holds `Modal`, `Accordion`, `Collapse`, `Popover`/`Overlay`, and `ListGroup`. APIs deliberately mirror the react-bootstrap surface used by the codebase (e.g. `<Accordion defaultActiveKey="X"><Accordion.Item eventKey="X"><Accordion.Header>…</Accordion.Header><Accordion.Body>…</Accordion.Body></Accordion.Item></Accordion>`) so call sites read like the originals. The custom `Modal` at [src/shared/components/Modal.jsx](src/shared/components/Modal.jsx) uses `isOpen`/`onClose`/`title`/`size`/`children`/`centered`/`closeOnBackdrop`/`closeOnEscape` — not react-bootstrap's `show`/`onHide`.
+- **Popover placement** in the primitive only supports `top|bottom|left|right` (no `bottom-end` etc.). Anchored popovers may sit centered instead of edge-aligned.
 
 ## Environment
 
