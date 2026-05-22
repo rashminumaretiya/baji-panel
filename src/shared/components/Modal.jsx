@@ -19,6 +19,9 @@ export default function Modal({
   closeOnBackdrop = false,
   closeOnEscape = false,
   centered = false,
+  // Opt-in header variants — defaults keep the existing left-title + close X look.
+  centerTitle = false,
+  hideClose = false,
 }) {
   useEffect(() => {
     if (!isOpen || !closeOnEscape) return
@@ -61,28 +64,32 @@ export default function Modal({
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between border-b border-[#e5e5e5] px-4 py-3">
-            <h4 className="m-0 text-base font-bold text-[#3b5160] font-[Tahoma,Helvetica,sans-serif]">
+            <h4
+              className={`m-0 text-base font-bold text-[#3b5160] font-[Tahoma,Helvetica,sans-serif] ${centerTitle ? 'flex-1 text-center' : ''}`}
+            >
               {title}
             </h4>
-            <span
-              className="cursor-pointer leading-none text-[#3b5160]"
-              onClick={onClose}
-              role="button"
-              aria-label="Close"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
+            {!hideClose && (
+              <span
+                className="cursor-pointer leading-none text-[#3b5160]"
+                onClick={onClose}
+                role="button"
+                aria-label="Close"
               >
-                <path
-                  d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z"
-                  fillRule="evenodd"
-                />
-              </svg>
-            </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z"
+                    fillRule="evenodd"
+                  />
+                </svg>
+              </span>
+            )}
           </div>
           <div className="p-4">{children}</div>
         </div>

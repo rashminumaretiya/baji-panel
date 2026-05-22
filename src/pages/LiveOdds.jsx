@@ -43,6 +43,7 @@ import {
 import InlineBetSlip from '../components/GameDetails/InlineBetSlip.jsx'
 import BetExposureCell from '../components/GameDetails/BetExposureCell.jsx'
 import BookFancyModal from '../components/GameDetails/BookFancyModal.jsx'
+import Modal from '../shared/components/Modal.jsx'
 import { alertService } from '../shared/services/alert.js'
 
 const SPARK_TTL_MS = 750
@@ -349,6 +350,7 @@ export default function LiveOdds() {
   const [betLimitOpen, setBetLimitOpen] = useState(false)
   const [bookmakerInfoOpen, setBookmakerInfoOpen] = useState(false)
   const [fancyInfoIndex, setFancyInfoIndex] = useState(-1)
+  const [isFancyRulesOpen, setIsFancyRulesOpen] = useState(false)
   const [error, setError] = useState(null)
 
   const [activeBookmaker, setActiveBookmaker] = useState(null)
@@ -608,6 +610,13 @@ export default function LiveOdds() {
     }
     return tabs
   }, [fancy.length, premium.length, isAuthenticated])
+
+  // Active chip moves to first position — matches Angular's onChangeMainFancy.
+  const orderedFancyMainTabs = useMemo(() => {
+    const active = fancyMainTabs.find((t) => t.type === selectedFancy)
+    if (!active) return fancyMainTabs
+    return [active, ...fancyMainTabs.filter((t) => t.type !== selectedFancy)]
+  }, [fancyMainTabs, selectedFancy])
 
   useEffect(() => {
     if (
@@ -994,10 +1003,11 @@ export default function LiveOdds() {
           {fancyMainTabs.length > 0 && (
             <div className="mt-4">
               <FancyTabHeader
-                tabs={fancyMainTabs}
+                tabs={orderedFancyMainTabs}
                 selectedFancy={selectedFancy}
                 onSelect={setSelectedFancy}
                 isMobile={isMobile}
+                onInfoClick={() => setIsFancyRulesOpen(true)}
               />
 
               {selectedFancy === MAIN_FANCY.FANCY_BET && (
@@ -1051,6 +1061,160 @@ export default function LiveOdds() {
           onClose={() => setBookFancyTarget(null)}
         />
       )}
+
+      <Modal
+        isOpen={isFancyRulesOpen}
+        onClose={() => setIsFancyRulesOpen(false)}
+        title={t('rules.fancyBets', 'Rules of Fancy Bets')}
+        size="md"
+        centered
+        closeOnBackdrop
+        closeOnEscape
+        centerTitle
+        hideClose
+      >
+        <div className="h-85 overflow-y-auto max-md:h-auto">
+          <div className="text-[12px] leading-3.75 text-[rgba(var(--dark-blue-rgba),0.9)] max-md:text-[3.46667vw] max-md:leading-[5.86667vw] max-md:text-[rgba(var(--dark-wheat-rgba),0.8)] max-md:break-all">
+            <ol className="list-decimal pl-5 m-0 [&>li]:mb-1 [&>li>ul]:list-none [&>li>ul]:p-0 [&>li>ul]:pl-4 [&>li>ul]:mt-1 [&_a]:text-(--blue) max-md:m-0 max-md:ml-[6.66667vw] max-md:p-0">
+              <li>Once all session/fancy bets are completed and settled there will be no reversal even if the Match is Tied or is Abandoned.</li>
+              <li>Advance Session or Player Runs and all Fancy Bets are only valid for 20/50 overs full match each side. (Please Note this condition is applied only in case of Advance Fancy Bets only).</li>
+              <li>All advance fancy bets market will be suspended 60 mins prior to match and will be settled.</li>
+              <li>Under the rules of Session/Fancy Bets if a market gets Suspended for any reason whatsoever and does not resume then all previous Bets will remain Valid and become HAAR/JEET bets.</li>
+              <li>Incomplete Session/Fancy Bet will be cancelled but Complete Session will be settled.</li>
+              <li>In the case of Running Match getting Cancelled/ No Result/ Abandoned but the session is complete it will still be settled. Player runs / fall of wicket will be also settled at the figures where match gets stopped due to rain for the inning (D/L), cancelled, abandoned, no result.</li>
+              <li>If a player gets Retired Hurt and one ball is completed after you place your bets then all the betting till then is and will remain valid.</li>
+              <li>Should a Technical Glitch in Software occur, we will not be held responsible for any losses.</li>
+              <li>Should there be a power failure or a problem with the Internet connection at our end and session/fancy market does not get suspended then our decision on the outcome is final.</li>
+              <li>All decisions relating to settlement of wrong market being offered will be taken by management. Management will consider all actual facts and decision taken will be full in final.</li>
+              <li>Any bets which are deemed of being suspicious, including bets which have been placed from the stadium or from a source at the stadium maybe voided at anytime. The decision of whether to void the particular bet in question or to void the entire market will remain at the discretion of Company. The final decision of whether bets are suspicious will be taken by Company and that decision will be full and final.</li>
+              <li>Any sort of cheating bet, any sort of Matching (Passing of funds), Court Siding (Ghaobaazi on commentary), Sharpening, Commission making is not allowed in Company. If any company User is caught in any of such act then all the funds belonging that account would be seized and confiscated. No argument or claim in that context would be entertained and the decision made by company management will stand as final authority.</li>
+              <li>Fluke hunting/Seeking is prohibited in Company. All the fluke bets will be reversed. Cricket commentary is just an additional feature and facility for company user but company is not responsible for any delay or mistake in commentary.</li>
+              <li>
+                Valid for only 1st inning.
+                <ul>
+                  <li>• Highest Inning Run: This fancy is valid only for first inning of the match.</li>
+                  <li>• Lowest Inning Run: This fancy is valid only for first inning of the match.</li>
+                </ul>
+              </li>
+              <li>
+                If any fancy value gets passed, we will settle that market after that match gets over. For example: If any market value is (22-24) and incase the result is 23 than that market will be continued, but if the result is 24 or above then we will settle that market. This rule is for the following market.
+                <ul>
+                  <li>• Total Sixes In Single Match</li>
+                  <li>• Total Fours In Single Match</li>
+                  <li>• Highest Inning Run</li>
+                  <li>• Highest Over Run In Single Match</li>
+                  <li>• Highest Individual Score By Batsman</li>
+                  <li>• Highest Individual Wickets By Bowler</li>
+                </ul>
+              </li>
+              <li>
+                If any fancy value gets passed, we will settle that market after that match gets over. For example: If any market value is (22-24) and incase the result is 23 than that market will be continued, but if the result is 22 or below then we will settle that market. This rule is for the following market.
+                <ul>
+                  <li>• Lowest Inning Run</li>
+                  <li>• Fastest Fifty</li>
+                  <li>• Fastest Century</li>
+                </ul>
+              </li>
+              <li>If any case wrong rate has been given in fancy, that particular bets will be cancelled (Wrong Commentary).</li>
+              <li>In case customer make bets in wrong fancy we are not liable to delete, no changes will be made and bets will be considered as confirm bet.</li>
+              <li>
+                Dot Ball Market Rules
+                <ul>
+                  <li>Wides Ball - Not Count</li>
+                  <li>No Ball - Not Count</li>
+                  <li>Leg Bye - Not Count as A Dot Ball</li>
+                  <li>Bye Run - Not Count as A Dot Ball</li>
+                  <li>Run Out - On 1st Run Count as A Dot Ball</li>
+                  <li>Run Out - On 2nd n 3rd Run Not Count as a Dot Ball</li>
+                  <li>Out - Catch Out, Bowled, Stumped n LBW Count as A Dot Ball</li>
+                </ul>
+              </li>
+              <li>
+                Bookmaker Rules
+                <ul>
+                  <li>• Due to any reason any team will be getting advantage or disadvantage we are not concerned.</li>
+                  <li>• We will simply compare both teams 25 overs score higher score team will be declared winner in ODI.</li>
+                  <li>• We will simply compare both teams 10 overs higher score team will be declared winner in T20 matches.</li>
+                </ul>
+              </li>
+              <li>Penalty Runs - Any Penalty Runs Awarded in the Match (In Any Running Fancy or ADV Fancy) Will Not be Counted While Settling in our Exchange.</li>
+              <li>
+                LIVE STREAMING OF ALL VIRTUAL CRICKET MATCHES IS AVAILABLE HERE{' '}
+                <a className="underline break-all" href="https://www.youtube.com/channel/UCd837ZyyiO5KAPDXibynq_Q/featured" target="_blank" rel="noreferrer noopener">
+                  https://www.youtube.com/channel/UCd837ZyyiO5KAPDXibynq_Q/featured
+                </a>
+              </li>
+              <li>
+                CHECK SCORE OF VIRTUAL CRICKET ON{' '}
+                <a className="underline break-all" href="https://sportcenter.sir.sportradar.com/simulated-reality/cricket" target="_blank" rel="noreferrer noopener">
+                  https://sportcenter.sir.sportradar.com/simulated-reality/cricket
+                </a>
+              </li>
+              <li>
+                Comparison Market
+                <ul>
+                  <li>In Comparison Market We Don&apos;t Consider Tie or Equal Runs on Both the Innings While Settling. Second Batting Team Must need to Surpass 1st Batting&apos;s team Total to win otherwise on Equal Score or Below We declare 1st Batting Team as Winner.</li>
+                </ul>
+              </li>
+              <li>
+                If match is abandoned or over reduced. This rule is for the following market (ENTIRE IPL 2020)
+                <ul>
+                  <li>• Total Fours: Average 27 fours will be given if the match is abandoned or over reduced.</li>
+                  <li>• Total Sixes: Average 11 sixes will be given if the match is abandoned or over reduced.</li>
+                  <li>• Total Caught &amp; Bowled Out: Average 0 Caught &amp; Bowled Out will be given if the match is abandoned or over reduced.</li>
+                  <li>• Total Wide: Average 8 wides will be given if the match is abandoned or over reduced.</li>
+                  <li>• Total Extra: Average 14 extras will be given if the match is abandoned or over reduced.</li>
+                  <li>• Total No Ball: Average 1 no ball will be given if the match is abandoned or over reduced.</li>
+                  <li>• Total duck: Average 1 duck will be given if the match is abandoned or over reduced.</li>
+                  <li>• Total Fifties: Average 2 fifties will be given if the match is abandoned or over reduced.</li>
+                  <li>• Total Century: Average 0 century will be given if the match is abandoned or over reduced.</li>
+                  <li>• Total Run Out: Average 1 run out will be given if the match is abandoned or over reduced.</li>
+                  <li>• Total Caught out: Average 8 caught out will be given if the match is abandoned or over reduced.</li>
+                  <li>• Total Stump Out: Average 0 stump out will be given if the match is abandoned or over reduced.</li>
+                  <li>• Total Maiden Over: Average 0 maiden over will be given if the match is abandoned or over reduced.</li>
+                  <li>• Total LBW: Average 1 LBW will be given if the match is abandoned or over reduced.</li>
+                  <li>• Total Bowled: Average 2 bowled will be given if the match is abandoned or over reduced.</li>
+                </ul>
+              </li>
+              <li>Player Boundaries Fancy: Both Four and six are valid.</li>
+              <li>
+                BOWLER RUN SESSION RULE:
+                <ul>
+                  <li>IF BOWLER BOWL 1.1 OVER, THEN VALID (FOR BOWLER 2 OVER RUNS SESSION)</li>
+                  <li>IF BOWLER BOWL 2.1 OVER, THEN VALID (FOR BOWLER 3 OVER RUNS SESSION)</li>
+                  <li>IF BOWLER BOWL 3.1 OVER, THEN VALID (FOR BOWLER 4 OVER RUNS SESSION)</li>
+                  <li>IF BOWLER BOWL 4.1 OVER, THEN VALID (FOR BOWLER 5 OVER RUNS SESSION)</li>
+                  <li>IF BOWLER BOWL 9.1 OVER, THEN VALID (FOR BOWLER 10 OVER RUNS SESSION)</li>
+                </ul>
+              </li>
+              <li>
+                Total Match Playing Over ADV: We Will Settle this Market after Whole Match gets Completed
+                <ul>
+                  <li>Criteria: We Will Count Only Round-Off Over For Both the Innings While Settling (For Ex: If 1st Batting team gets all out at 17.3, 18.4 or 19.5 we Will Count Such Overs as 17, 18 and 19 Respectively and if Match gets Ended at 17.2, 18.3 or 19.3 Overs then we will Count that as 17, 18 and 19 Over Respectively, and this Will Remain Same For Both the Innings.</li>
+                  <li>In Case Of Rain or if Over gets Reduced then this Market will get Voided.</li>
+                </ul>
+              </li>
+              <li>
+                3 WKT OR MORE BY BOWLER IN MATCH ADV:
+                <ul>
+                  <li>We Will Settle this Market after Whole Match gets Completed.</li>
+                  <li>In Case Of Rain or if Over Gets Reduced then this Market Will get Voided.</li>
+                </ul>
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <div className="mt-4 max-md:mt-[1.86667vw]">
+          <button
+            type="button"
+            onClick={() => setIsFancyRulesOpen(false)}
+            className="block w-full py-1.5 uppercase font-bold text-(--dark) border border-(--xxl-gray) rounded bg-[linear-gradient(-180deg,var(--white)_0%,var(--xs-gray)_89%)] hover:bg-[linear-gradient(-180deg,var(--xs-gray)_0%,var(--white)_89%)] max-md:rounded-[1.6vw] max-md:text-[4vw] max-md:py-[2.6vw]"
+          >
+            {t('common.ok', 'OK')}
+          </button>
+        </div>
+      </Modal>
     </div>
   )
 }
@@ -1797,6 +1961,7 @@ const FancyTabHeader = memo(function FancyTabHeader({
   selectedFancy,
   onSelect,
   isMobile,
+  onInfoClick,
 }) {
   const { t } = useTranslation()
   const isSportsBookSelected = selectedFancy === MAIN_FANCY.SPORTS_BOOK
@@ -1808,8 +1973,9 @@ const FancyTabHeader = memo(function FancyTabHeader({
         isSportsBookSelected && '!border-b-[var(--orange)]'
       )}
     >
-      {tabs.map((tab) => {
+      {tabs.map((tab, i) => {
         const isActive = tab.type === selectedFancy
+        const isFirst = i === 0
         const isPremium =
           isSportsBookSelected && tab.type === MAIN_FANCY.SPORTS_BOOK
 
@@ -1855,9 +2021,11 @@ const FancyTabHeader = memo(function FancyTabHeader({
                   <PinSvg />
                 </i>
               )}
-              <i className="bg-gradient-to-t from-[var(--xs-green-primary)] via-[var(--xs-green-primary)] to-[var(--xs-shadow-primary)] rounded-[3px] max-md:w-[4vw] max-md:h-[4vw] max-md:text-center [&_svg]:max-md:w-[3.8vw] [&_svg]:max-md:h-[3.8vw] [&_svg]:max-md:leading-[3.8vw]">
-                <TimeSvg />
-              </i>
+              {isFirst && (
+                <i className="bg-gradient-to-t from-[var(--xs-green-primary)] via-[var(--xs-green-primary)] to-[var(--xs-shadow-primary)] rounded-[3px] max-md:w-[4vw] max-md:h-[4vw] max-md:text-center [&_svg]:max-md:w-[3.8vw] [&_svg]:max-md:h-[3.8vw] [&_svg]:max-md:leading-[3.8vw]">
+                  <TimeSvg />
+                </i>
+              )}
               <span
                 className={cx(
                   'inline-block align-middle text-[12px] text-[var(--xts-gray)] max-md:text-[3.73333vw]',
@@ -1868,7 +2036,28 @@ const FancyTabHeader = memo(function FancyTabHeader({
               </span>
             </div>
             {isActive && (
-              <i className="inline-flex text-center relative text-white z-[2] px-1 w-[16px] h-[16px] max-md:w-[4vw] max-md:h-[4.45vw] after:content-[''] after:bg-no-repeat after:absolute after:z-[1] after:bg-center after:left-0 after:top-0 after:bg-contain after:w-[16px] after:h-[16px] after:[background-image:url('/img/svg/info.svg')] max-md:after:w-[5vw] max-md:after:h-[4vw] max-md:after:[background-image:url('/img/svg/questionMarkRounded.svg')] before:content-[''] before:absolute before:rounded-tr-[4px] before:[transform:skew(14deg,0deg)] before:-z-[1] before:left-[-5px] before:w-[28px] before:top-[-7px] before:bottom-[-7px] max-md:before:top-[-1.5vw] max-md:before:bottom-0 max-md:before:w-[7vw] max-md:before:h-[7.6vw] max-md:before:left-[-1vw] before:bg-[linear-gradient(0deg,var(--xl-lightest-navy)_0%,var(--xts-lightest-navy)_100%)]" />
+              <i
+                role="button"
+                aria-label="Fancy bet rules"
+                tabIndex={0}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onInfoClick?.()
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    onInfoClick?.()
+                  }
+                }}
+                className={cx(
+                  "inline-flex text-center relative text-white z-[2] px-1 w-[16px] h-[16px] cursor-pointer max-md:w-[4vw] max-md:h-[4.45vw] after:content-[''] after:bg-no-repeat after:absolute after:z-[1] after:bg-center after:left-0 after:top-0 after:bg-contain after:w-[16px] after:h-[16px] after:[background-image:url('/img/svg/info.svg')] max-md:after:w-[5vw] max-md:after:h-[4vw] max-md:after:[background-image:url('/img/svg/questionMarkRounded.svg')] before:content-[''] before:absolute before:rounded-tr-[4px] before:[transform:skew(14deg,0deg)] before:-z-[1] before:left-[-5px] before:w-[28px] before:top-[-7px] before:bottom-[-7px] max-md:before:top-[-1.6vw] max-md:before:bottom-0 max-md:before:w-[7vw] max-md:before:h-[7.6vw] max-md:before:left-[-1vw]",
+                  isPremium
+                    ? 'before:bg-[linear-gradient(180deg,var(--3sm-orange)_0%,var(--orange)_100%)]'
+                    : 'before:bg-[linear-gradient(0deg,var(--xl-lightest-navy)_0%,var(--xts-lightest-navy)_100%)]'
+                )}
+              />
             )}
           </div>
         )
