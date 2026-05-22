@@ -140,13 +140,31 @@ export const verifySelfDeposit = createAsyncThunk(
 )
 
 // ─── Deposit History ────────────────────────────────────────────────────
+// Row transformer — mirrors sbex-user-fe deposit-history.ts:79-91 (toRow):
+// hoists the nested transactionId and computes per-row action visibility
+// flags from `status`. The Payment Method column reads `gateway` directly,
+// so we don't need a bank-image lookup here.
+function mapDepositHistoryRows(rows) {
+  if (!Array.isArray(rows)) return []
+  return rows.map((row) => {
+    const status = String(row?.status || '').toLowerCase()
+    return {
+      ...row,
+      transactionId: row?.transaction?.transactionId ?? null,
+      isShowComplaint: status === 'pending' && !row?.submittedDone,
+      isShowRepayment: status === 'initiated',
+    }
+  })
+}
+
 // GET /self-payment
 export const fetchDepositHistory = createAsyncThunk(
   'account/fetchDepositHistory',
   async (params, { rejectWithValue }) => {
     try {
       const res = await http.get('self-payment', { params })
-      return pageFromRes(res)
+      const page = pageFromRes(res)
+      return { ...page, data: mapDepositHistoryRows(page.data) }
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }

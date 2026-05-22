@@ -5,7 +5,6 @@ import Table from '../../shared/Table.jsx'
 import {
   fetchDepositHistory,
   selectDepositHistory,
-  sendDepositComplaint,
 } from '../../store/slices/accountSlice.js'
 import { selectCurrency } from '../../store/slices/authSlice.js'
 import { Icon } from './depositIcons.jsx'
@@ -19,22 +18,6 @@ function formatDate(value) {
   if (Number.isNaN(d.getTime())) return value
   const pad = (n) => String(n).padStart(2, '0')
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
-}
-
-// The fetchDepositHistory thunk stamps each row's `paymentMethod` field
-// with a raw `<img class="payment-img" src="…">` HTML string (mirrors
-// Angular's `type: 'template'` column rendering). Wrap it in a span and
-// scope `.payment-img` height/width via a Tailwind `&_img` selector so the
-// original 30px image height survives without the dedicated scss file.
-function PaymentMethodCell({ html }) {
-  if (!html) return null
-  return (
-    <span
-      className="[&_img]:h-[30px] [&_img]:w-auto"
-      // eslint-disable-next-line react/no-danger
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
-  )
 }
 
 // Action button used in the Upload ScreenShot / Repayment cells. Hidden when
@@ -110,46 +93,41 @@ export default function DepositHistory() {
 
   const onRepayment = (row) => {
     if (row?.status === 'completed') return
-    if (row?.payment_url) {
-      window.location.href = row.payment_url
+    // mcv88 API returns the field as `paymentUrl` (camelCase) — sbex-user-fe
+    // deposit-history.ts:175 uses the same key. baji-exchange-frontend's
+    // `payment_url` snake_case is the 1ten365 backend's variant.
+    if (row?.paymentUrl) {
+      window.location.href = row.paymentUrl
     }
-  }
-
-  const onUploadScreenshot = (row) => {
-    // baji-exchange-frontend opens a modal (DepositComplaintComponent) that
-    // POSTs to /self-payment/complaint/:trxId with a screenshot. Until the
-    // modal UI is ported, prompt for the screenshot URL inline so the action
-    // still works end-to-end via the same thunk.
-    const url = window.prompt('Paste screenshot URL or transaction note:')
-    if (!url) return
-    dispatch(sendDepositComplaint({ trxId: row?._id, payload: { url } }))
-      .unwrap()
-      .then(() => {
-        // Refresh history so isShowComplaint flips off (mirrors Angular's
-        // effect() that re-fetches when the modal closes).
-        dispatch(fetchDepositHistory({ page, perPage: PER_PAGE }))
-      })
-      .catch(() => {})
   }
 
   const columns = useMemo(
     () => [
+      // Column order ported from sbex-user-fe deposit-history.ts:93-159. The
+      // mcv88 API returns `gateway`/`paymentType` at the top level + nested
+      // `transaction.{paymentMethod, transactionId}` — `mapDepositHistoryRows`
+      // in accountSlice.js flattens those into the row shape used here.
       {
         key: 'createdAt',
         label: t('myBets.createdOn', 'Created On'),
         render: (value) => formatDate(value),
       },
       {
-        key: 'paymentMethod',
+        key: 'paymentType',
         label: t('myBets.paymentType', 'Payment Type'),
-        render: (value) => <PaymentMethodCell html={value} />,
+        render: (value) => (
+          <span className="capitalize">{value || ''}</span>
+        ),
       },
       {
-        key: 'payment',
+        key: 'gateway',
         label: t('common.paymentMethod', 'Payment Method'),
+        // baji-exchange-frontend reads `resp.payment` here (plain text); the
+        // mcv88 backend exposes the same concept as `gateway` (e.g. "sbkash").
+        render: (value) => <span className="capitalize">{value || ''}</span>,
       },
       {
-        key: 'original_amount',
+        key: 'amount',
         label: `${currency} ${t('myBets.amount', 'Amount')}`,
       },
       {
@@ -160,18 +138,6 @@ export default function DepositHistory() {
         key: 'status',
         label: t('myBets.status', 'Status'),
         render: (value) => <StatusPill value={value} />,
-      },
-      {
-        key: 'uploadScreenshot',
-        label: t('myBets.screenshot', 'Upload ScreenShot'),
-        render: (_, row) => (
-          <ActionButton
-            visible={!!row?.isShowComplaint}
-            icon="uploadSS"
-            title={t('myBets.screenshot', 'Upload Screenshot')}
-            onClick={() => onUploadScreenshot(row)}
-          />
-        ),
       },
       {
         key: 'action',
