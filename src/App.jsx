@@ -17,6 +17,7 @@ const HorseRacing = lazy(() => import('./pages/HorseRacing.jsx'))
 const GreyhoundRacing = lazy(() => import('./pages/GreyhoundRacing.jsx'))
 const MultiMarkets = lazy(() => import('./pages/MultiMarkets.jsx'))
 const LiveOdds = lazy(() => import('./pages/LiveOdds.jsx'))
+const RacingOdds = lazy(() => import('./pages/RacingOdds.jsx'))
 
 const InPlay = lazy(() => import('./pages/InPlay.jsx'))
 const Result = lazy(() => import('./pages/Result.jsx'))
@@ -53,6 +54,10 @@ function App() {
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="odds/:eventId/:sport" element={<LiveOdds />} />
+        <Route
+          path="racing-odds/:eventId/:marketId/:sport"
+          element={<RacingOdds />}
+        />
         <Route path="cricket" element={<Cricket />} />
         <Route path="soccer" element={<Soccer />} />
         <Route path="tennis" element={<Tennis />} />

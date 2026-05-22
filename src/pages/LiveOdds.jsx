@@ -19,6 +19,7 @@ import { useIsMobile } from '../hooks/useMediaQuery.js'
 import {
   selectCurrency,
   selectIsAuthenticated,
+  selectIsOneClickBet,
   setLoginWindow,
 } from '../store/slices/authSlice.js'
 import {
@@ -31,6 +32,7 @@ import {
   placeBet,
   selectActiveBetSlip,
   selectIsPlacingBet,
+  selectOneClickBetStake,
   selectPlacingSelectionId,
   setActiveBetSlip,
 } from '../store/slices/betSlipSlice.js'
@@ -330,6 +332,8 @@ export default function LiveOdds() {
   const dispatch = useDispatch()
   const isMobile = useIsMobile()
   const isAuthenticated = useSelector(selectIsAuthenticated)
+  const isOneClickBet = useSelector(selectIsOneClickBet)
+  const oneClickBetStake = useSelector(selectOneClickBetStake)
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const currency = useSelector(selectCurrency)
   // Match-odds bet slip lives in the right-side <BetSlip /> driven by Redux.
@@ -630,37 +634,80 @@ export default function LiveOdds() {
     else if (node.webkitRequestFullscreen) node.webkitRequestFullscreen()
   }, [])
 
+  // Auto-place via one-click bet when the toggle is on. Returns true if it
+  // handled the click (auto-placed or showed a stake error) — caller should
+  const tryOneClickPlace = useCallback(
+    (slip) => {
+      if (!isOneClickBet) return false
+      const stake = Number(oneClickBetStake)
+      if (!stake || Number.isNaN(stake)) {
+        alertService.error(
+          t('errors.invalidStake', 'Set a one-click stake first')
+        )
+        return true
+      }
+      dispatch(
+        placeBet({
+          slip: { ...slip, stake },
+          context: {
+            sport: sportSlug ?? '',
+            eventId: String(eventId ?? ''),
+            eventTitle: matchOddsArray[0]?.eventName ?? '',
+            runners: matchOddsArray[0]?.runners ?? [],
+          },
+        })
+      )
+        .unwrap()
+        .then(() => alertService.success(t('common.betPlaced', 'Bet placed')))
+        .catch((msg) =>
+          alertService.error(
+            typeof msg === 'string'
+              ? msg
+              : t('errors.placeBetFailed', 'Failed to place bet')
+          )
+        )
+      return true
+    },
+    [
+      isOneClickBet,
+      oneClickBetStake,
+      dispatch,
+      t,
+      sportSlug,
+      eventId,
+      matchOddsArray,
+    ]
+  )
+
   const onMatchOddsClick = (runner, odd, betType) => {
     if (!odd?.price) return
     if (!isAuthenticated) {
       dispatch(setLoginWindow(true))
       return
     }
-    // Match Odds bets are placed in the right-side BetSlip panel (Redux).
-    // Payload shape matches what `src/components/BetSlip.jsx` reads.
     const market =
       matchOddsArray.find((m) => m.marketId === runner._marketId) ??
       matchOddsArray[0]
     const setting = matchOddsSettingFor(runner._marketId)
-    dispatch(
-      setActiveBetSlip({
-        marketId: runner._marketId,
-        marketName: 'MATCH_ODDS',
-        marketDisplayName: runner._marketName || 'Match Odds',
-        eventId: String(eventId ?? ''),
-        eventTitle: runner._eventTitle || '',
-        sport: sportSlug ?? '',
-        runners: market?.runners ?? [],
-        selectionId: runner.selectionId,
-        selectionName: runner.runnerName || runner.runner,
-        betType,
-        odd: odd.price,
-        size: odd.size,
-        stake: 0,
-        min: setting.min,
-        max: setting.max,
-      })
-    )
+    const slip = {
+      marketId: runner._marketId,
+      marketName: 'MATCH_ODDS',
+      marketDisplayName: runner._marketName || 'Match Odds',
+      eventId: String(eventId ?? ''),
+      eventTitle: runner._eventTitle || '',
+      sport: sportSlug ?? '',
+      runners: market?.runners ?? [],
+      selectionId: runner.selectionId,
+      selectionName: runner.runnerName || runner.runner,
+      betType,
+      odd: odd.price,
+      size: odd.size,
+      stake: 0,
+      min: setting.min,
+      max: setting.max,
+    }
+    if (tryOneClickPlace(slip)) return
+    dispatch(setActiveBetSlip(slip))
   }
   const onBookmakerClick = (bookmaker, odd, betType) => {
     if (!odd?.price) return
@@ -669,27 +716,27 @@ export default function LiveOdds() {
       dispatch(setLoginWindow(true))
       return
     }
+    const slip = {
+      marketId: bookmaker.mid ?? bookmaker.marketId,
+      marketName: 'BOOKMAKER',
+      marketDisplayName: 'Bookmaker',
+      eventId: String(eventId ?? ''),
+      eventTitle: matchOddsArray[0]?.eventName || '',
+      sport: sportSlug ?? '',
+      runners: matchOddsArray[0]?.runners ?? [],
+      selectionId: bookmaker.sid ?? bookmaker.selectionId,
+      selectionName: bookmaker.nat ?? bookmaker.runnerName,
+      betType,
+      odd: odd.price,
+      size: odd.size ?? 0,
+      stake: '',
+      min: Number(bookmaker.min ?? bookmakerSetting.min ?? 1),
+      max: Number(bookmaker.max ?? bookmakerSetting.max ?? 10000),
+    }
+    if (tryOneClickPlace(slip)) return
     // Bookmaker bets are placed in the right-side <BetSlip /> panel (Redux).
     // Same shape as match-odds — only `marketName` and `marketDisplayName` differ.
-    dispatch(
-      setActiveBetSlip({
-        marketId: bookmaker.mid ?? bookmaker.marketId,
-        marketName: 'BOOKMAKER',
-        marketDisplayName: 'Bookmaker',
-        eventId: String(eventId ?? ''),
-        eventTitle: matchOddsArray[0]?.eventName || '',
-        sport: sportSlug ?? '',
-        runners: matchOddsArray[0]?.runners ?? [],
-        selectionId: bookmaker.sid ?? bookmaker.selectionId,
-        selectionName: bookmaker.nat ?? bookmaker.runnerName,
-        betType,
-        odd: odd.price,
-        size: odd.size ?? 0,
-        stake: '',
-        min: Number(bookmaker.min ?? bookmakerSetting.min ?? 1),
-        max: Number(bookmaker.max ?? bookmakerSetting.max ?? 10000),
-      })
-    )
+    dispatch(setActiveBetSlip(slip))
   }
   const onFancyClick = (item, betType) => {
     const price = betType === 'NO' ? item.LayPrice1 : item.BackPrice1
@@ -699,10 +746,11 @@ export default function LiveOdds() {
       dispatch(setLoginWindow(true))
       return
     }
-    setActiveFancyBet({
+    const slip = {
       marketId: item.default_marketId,
       marketName: 'FANCY',
       type: betType,
+      eventId: String(eventId ?? ''),
       selectionId: item.SelectionId,
       runnerId: item.SelectionId,
       runnerName: item.RunnerName,
@@ -713,7 +761,9 @@ export default function LiveOdds() {
       min: Number(item.min ?? 1),
       max: Number(item.max ?? 1000),
       gtype: item.gtype,
-    })
+    }
+    if (tryOneClickPlace(slip)) return
+    setActiveFancyBet(slip)
   }
   const onSportbookClick = (market, runner) => {
     if (
@@ -726,19 +776,23 @@ export default function LiveOdds() {
       dispatch(setLoginWindow(true))
       return
     }
-    setActiveSportBook({
+    const slip = {
       marketId: market.marketId,
       marketName: 'SPORTS_BOOK',
       type: 'BACK',
+      eventId: String(eventId ?? ''),
       selectionId: runner.selectionId,
       runnerId: runner.selectionId,
       runnerName: runner.runnerName,
       betType: 'BACK',
       odds: runner.back[0].price,
+      size: runner.back[0].size ?? 0,
       stake: 0,
       min: 1,
       max: 5000,
-    })
+    }
+    if (tryOneClickPlace(slip)) return
+    setActiveSportBook(slip)
   }
 
   // ── Render
@@ -943,7 +997,7 @@ export default function LiveOdds() {
 // Sub-components — flat, file-local, mirror Angular template fragments 1:1
 // ─────────────────────────────────────────────────────────────────────────────
 
-function PinRefresh({ onRefresh }) {
+export function PinRefresh({ onRefresh }) {
   const baseDiv =
     'text-white font-bold z-[1] min-w-[90px] h-[25px] leading-[20px] relative max-md:px-3 max-md:py-[6px] max-md:h-[7.46667vw] max-md:leading-tight max-md:text-[3.2vw] max-md:min-w-[25.5vw] [&_i_svg]:h-[14px] [&_i_svg]:w-[14px] max-md:[&_i_svg]:h-[3.73333vw] max-md:[&_i_svg]:w-[3.73333vw] mobile:[&_span]:hidden'
 
@@ -1070,7 +1124,7 @@ function MatchedLiveBar({
   )
 }
 
-function MatchOddsSection({
+export function MatchOddsSection({
   matchOdds,
   isMobile,
   isAuthenticated,

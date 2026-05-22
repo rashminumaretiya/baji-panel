@@ -144,7 +144,8 @@ export default function InPlay() {
     []
   )
   const [sportSelections, setSportSelections] = useState(defaultSelections)
-  const [originalSelections, setOriginalSelections] = useState(defaultSelections)
+  const [originalSelections, setOriginalSelections] =
+    useState(defaultSelections)
   const [savedSelections, setSavedSelections] = useState(INPLAY_FILTER_SPORTS)
   const [allSelected, setAllSelected] = useState(true)
   const [filterOpen, setFilterOpen] = useState(false)
@@ -285,10 +286,7 @@ export default function InPlay() {
                   checked={allSelected}
                   onChange={toggleAll}
                 />
-                <label
-                  htmlFor="inplay-filter-all"
-                  className="cursor-pointer"
-                >
+                <label htmlFor="inplay-filter-all" className="cursor-pointer">
                   All
                 </label>
               </div>
@@ -351,9 +349,7 @@ export default function InPlay() {
                 <div>
                   <h6
                     className={EVENT_TITLE_H6}
-                    onClick={() =>
-                      navigateToEvent(e, m)
-                    }
+                    onClick={() => navigateToEvent(e, m)}
                   >
                     {m.marketName}
                   </h6>
@@ -373,9 +369,7 @@ export default function InPlay() {
               <div className="mr-2 text-[12px]">{getSportName(sportId)}</div>
               <h6
                 className={EVENT_TITLE_H6}
-                onClick={() =>
-                  navigateToEvent(e, e.markets?.[0])
-                }
+                onClick={() => navigateToEvent(e, e.markets?.[0])}
               >
                 {e.event.name}
               </h6>
@@ -391,9 +385,7 @@ export default function InPlay() {
           <div>
             <h6
               className={EVENT_TITLE_H6}
-              onClick={() =>
-                navigateToEvent(e, e.markets?.[0])
-              }
+              onClick={() => navigateToEvent(e, e.markets?.[0])}
             >
               {e.event.name}
             </h6>

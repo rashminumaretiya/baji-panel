@@ -16,16 +16,22 @@ export const MARKET_NAME = {
 }
 
 export function buildBetPayload(slip, context = {}) {
-  return {
+  const marketName = slip.marketName ?? ''
+  const payload = {
     marketId: String(slip.marketId ?? context.marketId ?? ''),
     selectionId: String(slip.selectionId ?? slip.runnerId ?? ''),
     stake: Number(slip.stake ?? 0),
     odd: Number(slip.odd ?? slip.odds ?? 0),
     size: Number(slip.size ?? 0),
     eventId: String(slip.eventId ?? context.eventId ?? ''),
-    marketName: slip.marketName ?? '',
+    marketName,
     betType: slip.betType ?? slip.type ?? '',
   }
+  // FANCY bets require `gtype`
+  if (marketName === MARKET_NAME.FANCY) {
+    payload.gtype = slip.gtype ?? context.gtype ?? ''
+  }
+  return payload
 }
 
 export async function placeBet(slip, context = {}) {
@@ -35,7 +41,9 @@ export async function placeBet(slip, context = {}) {
     throw new Error('Invalid bet — odds, stake and market name are required.')
   }
   if (!payload.marketId || !payload.selectionId || !payload.eventId) {
-    throw new Error('Invalid bet — marketId, selectionId and eventId are required.')
+    throw new Error(
+      'Invalid bet — marketId, selectionId and eventId are required.'
+    )
   }
 
   const { data } = await http.post('bet/place', payload)

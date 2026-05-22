@@ -148,3 +148,4 @@ export const selectOpenBets = (s) => s.betSlip.openBets
 export const selectOpenBetRefreshTick = (s) => s.betSlip.openBetRefreshTick
 export const selectIsPlacingBet = (s) => s.betSlip.isPlacingBet
 export const selectPlacingSelectionId = (s) => s.betSlip.placingSelectionId
+export const selectOneClickBetStake = (s) => s.betSlip.oneClickBetStake
