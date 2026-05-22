@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Collapse from '../shared/components/primitives/Collapse.jsx'
@@ -10,6 +10,7 @@ import {
   selectIsPlacingBet,
   selectPlacingSelectionId,
   setActiveBetSlip,
+  setPreExposure,
 } from '../store/slices/betSlipSlice.js'
 import { alertService, resolveApiMessage } from '../shared/services/alert.js'
 import Loader from '../shared/components/Loader.jsx'
@@ -65,6 +66,36 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
   const numericStake = Number(stake) || 0
   const profitLiability = (numericOdds - 1) * numericStake
   const liability = isBack ? numericStake : (numericOdds - 1) * numericStake
+
+  const selectionId = activeMatchOdd?.selectionId
+  const betType = activeMatchOdd?.betType
+  const marketName = activeMatchOdd?.marketName ?? 'MATCH_ODDS'
+  useEffect(() => {
+    if (!selectionId || numericStake <= 0 || numericOdds <= 0) {
+      dispatch(setPreExposure(null))
+      return
+    }
+    const pl = Number(((numericOdds - 1) * numericStake).toFixed(2))
+    const profit = pl > 0 ? (isBack ? 1 : -1) * pl : 0
+    const liabilityVal = numericStake > 0 ? (isBack ? -1 : 1) * numericStake : 0
+    dispatch(
+      setPreExposure({
+        selectionId,
+        profit,
+        liability: liabilityVal,
+        betType,
+        marketName,
+      })
+    )
+  }, [
+    dispatch,
+    selectionId,
+    betType,
+    isBack,
+    numericStake,
+    numericOdds,
+    marketName,
+  ])
 
   const onStakeClick = (value) => {
     setStake(String(value))

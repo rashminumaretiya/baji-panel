@@ -34,10 +34,15 @@ import {
   selectActiveBetSlip,
   selectIsPlacingBet,
   selectOneClickBetStake,
+  selectOpenBetRefreshTick,
   selectPlacingSelectionId,
+  selectPreExposureMarketName,
   setActiveBetSlip,
+  setPreExposure,
 } from '../store/slices/betSlipSlice.js'
 import InlineBetSlip from '../components/GameDetails/InlineBetSlip.jsx'
+import BetExposureCell from '../components/GameDetails/BetExposureCell.jsx'
+import BookFancyModal from '../components/GameDetails/BookFancyModal.jsx'
 import { alertService } from '../shared/services/alert.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -354,6 +359,11 @@ export default function LiveOdds() {
   const activeRightSideBet = useSelector(selectActiveBetSlip)
   const isPlacingBet = useSelector(selectIsPlacingBet)
   const placingSelectionId = useSelector(selectPlacingSelectionId)
+  // Only the active-market discriminator is read at this level — the cells
+  // subscribe to the full preExposure object themselves to avoid re-rendering
+  // the whole page on every stake keystroke.
+  const preExposureMarket = useSelector(selectPreExposureMarketName)
+  const openBetRefreshTick = useSelector(selectOpenBetRefreshTick)
 
   const [matchOddsList, setMatchOddsList] = useState([])
   const [bookmakerOdds, setBookmakerOdds] = useState([])
@@ -379,6 +389,15 @@ export default function LiveOdds() {
   const [activeBookmaker, setActiveBookmaker] = useState(null)
   const [activeFancyBet, setActiveFancyBet] = useState(null)
   const [activeSportBook, setActiveSportBook] = useState(null)
+  const [bookFancyTarget, setBookFancyTarget] = useState(null)
+
+  // Persisted per-runner P/L bucketed by marketId. Populated from
+  // `GET bet/post-exposure/${eventId}` (one bulk call per event mirroring
+  // sbex-user-fe). Refreshed whenever a bet is placed (via
+  // `openBetRefreshTick`). Empty when guest or no event id.
+  const [postExposureByMarket, setPostExposureByMarket] = useState(
+    () => new Map()
+  )
 
   const previousMatchOddsRef = useRef(new Map())
   const sparkClearTimerRef = useRef(null)
@@ -534,6 +553,97 @@ export default function LiveOdds() {
     () => matchOddsArray.some((m) => m.inplay),
     [matchOddsArray]
   )
+
+  // ── Persisted bet exposure
+  // One bulk call per event returns all markets' exposures. Each entry is
+  // shaped as { marketId, selections: [{ id, exposure }, ...] }. We bucket
+  // by marketId so MatchOddsSection can look up its own selections in O(1).
+  // The fetch is gated to authenticated users with a known eventId, and
+  // re-runs whenever a bet is placed (openBetRefreshTick increments).
+  useEffect(() => {
+    if (!isAuthenticated || !eventId) return undefined
+    let cancelled = false
+    http
+      .get(`bet/post-exposure/${eventId}`)
+      .then(({ data }) => {
+        if (cancelled) return
+        const entries = Array.isArray(data?.data) ? data.data : []
+        const next = new Map()
+        const fancyBucket = []
+        for (const entry of entries) {
+          if (Array.isArray(entry?.selections) && entry?.marketId) {
+            // Market-level (MATCH_ODDS, BOOKMAKER, SPORTS_BOOK).
+            next.set(String(entry.marketId), entry.selections)
+          } else if (entry?.selectionId != null) {
+            // Fancy: flat single-selection entry. Aggregate under key '0'
+            // mirroring sbex-user-fe's Exposure service.
+            fancyBucket.push({
+              id: String(entry.selectionId),
+              exposure: entry.exposure,
+            })
+          }
+        }
+        if (fancyBucket.length) next.set('0', fancyBucket)
+        setPostExposureByMarket(next)
+      })
+      .catch(() => {
+        if (cancelled) return
+        setPostExposureByMarket(new Map())
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [isAuthenticated, eventId, openBetRefreshTick])
+
+  // Gated read — avoids leaking the previous event's exposure between
+  // navigations and when the user logs out, without an in-effect setState.
+  const visibleExposureByMarket = useMemo(() => {
+    if (!isAuthenticated || !eventId) return new Map()
+    return postExposureByMarket
+  }, [isAuthenticated, eventId, postExposureByMarket])
+
+  // ── Fancy preExposure publication
+  // Fancy bets do not live in the right-side <BetSlip /> (Redux) — they use the
+  // local `activeFancyBet` + inline slip. Mirror the Angular signal here so the
+  // same `BetExposureCell` can render previews for fancy rows.
+  //
+  // Formula (matches sbex-user-fe `calculateRunnerExposure#FANCY`):
+  //   pnl    = (size * stake) / 100
+  //   profit = (type === 'YES' ? +1 : -1) * pnl
+  // Only the matched selectionId shows a preview — fancy markets are single-
+  // selection so the "other runners" liability concept doesn't apply.
+  //
+  // The published preview is owned by this market: when the fancy slip closes
+  // (cancel / place / switch tab) we clear only if the current preview is
+  // still ours — never clobbering a concurrent match-odds preview.
+  const fancySelectionId = activeFancyBet?.selectionId
+  const fancyType = activeFancyBet?.type
+  const fancyStake = Number(activeFancyBet?.stake) || 0
+  const fancySize = Number(activeFancyBet?.size) || 0
+  useEffect(() => {
+    if (fancySelectionId && fancyStake > 0 && fancySize > 0) {
+      const pnl = Number(((fancySize * fancyStake) / 100).toFixed(2))
+      const profit = (fancyType === 'YES' ? 1 : -1) * pnl
+      dispatch(
+        setPreExposure({
+          selectionId: fancySelectionId,
+          profit,
+          liability: 0,
+          betType: fancyType,
+          marketName: 'FANCY',
+        })
+      )
+    } else if (preExposureMarket === 'FANCY') {
+      dispatch(setPreExposure(null))
+    }
+  }, [
+    dispatch,
+    fancySelectionId,
+    fancyType,
+    fancyStake,
+    fancySize,
+    preExposureMarket,
+  ])
   const fancyBuckets = useMemo(() => groupFancyByType(fancy), [fancy])
   const sportbookBuckets = useMemo(
     () => groupSportbookByCategory(premium),
@@ -888,6 +998,9 @@ export default function LiveOdds() {
               isStreamAvailable={hasLiveStream}
               isLiveStreamOn={isLiveStreamOn}
               onToggleLive={toggleLiveStream}
+              exposureData={
+                visibleExposureByMarket.get(String(matchOdds.marketId)) ?? null
+              }
               active={
                 activeRightSideBet?.marketName === 'Match Odds' &&
                 activeRightSideBet?.marketId === matchOdds.marketId
@@ -963,6 +1076,8 @@ export default function LiveOdds() {
                     String(placingSelectionId) ===
                       String(activeFancyBet?.selectionId ?? '')
                   }
+                  exposureData={visibleExposureByMarket.get('0') ?? null}
+                  onBookClick={setBookFancyTarget}
                 />
               )}
 
@@ -986,6 +1101,14 @@ export default function LiveOdds() {
           )}
         </div>
       </div>
+      {bookFancyTarget && (
+        <BookFancyModal
+          eventId={eventId}
+          selectionId={bookFancyTarget.selectionId}
+          runnerName={bookFancyTarget.runnerName}
+          onClose={() => setBookFancyTarget(null)}
+        />
+      )}
     </div>
   )
 }
@@ -1129,6 +1252,7 @@ export function MatchOddsSection({
   isStreamAvailable,
   isLiveStreamOn,
   onToggleLive,
+  exposureData,
   active,
   onPick,
   onCancelMatchOdds,
@@ -1334,7 +1458,11 @@ export function MatchOddsSection({
                           {runner.runnerName || runner.runner}
                         </p>
                         <div className="flex items-center">
-                          {/* bet-exposure slot (Angular: <app-bet-exposure />) */}
+                          <BetExposureCell
+                            selectionId={runner.selectionId}
+                            exposureData={exposureData}
+                            marketName="MATCH_ODDS"
+                          />
                         </div>
                       </div>
                     </td>
@@ -1895,6 +2023,8 @@ function FancySection({
   onPick,
   onPlaceBet,
   isPlacingActive,
+  exposureData,
+  onBookClick,
 }) {
   const { t } = useTranslation()
   if (!items.length) {
@@ -2021,8 +2151,29 @@ function FancySection({
                           </span>
                         </div>
                       )}
-                      <div className="flex justify-between">
-                        {/* bet-exposure slot (Angular: <app-bet-exposure />) */}
+                      <div className="flex justify-between items-center gap-2">
+                        <BetExposureCell
+                          selectionId={item.SelectionId}
+                          exposureData={exposureData}
+                          marketName="FANCY"
+                        />
+                        {Array.isArray(exposureData) &&
+                          exposureData.some(
+                            (e) => String(e?.id) === String(item.SelectionId)
+                          ) && (
+                            <button
+                              type="button"
+                              className="cursor-pointer text-[13px] leading-[1.3] px-1.5 py-[3px] rounded-[4px] bg-[#ffcc51] text-[color:var(--dark)] border border-[#cf9a47] hover:opacity-90 max-md:rounded-[1.33vw] max-md:text-[3.2vw] max-md:p-[1.6vw]"
+                              onClick={() =>
+                                onBookClick?.({
+                                  selectionId: item.SelectionId,
+                                  runnerName: item.RunnerName,
+                                })
+                              }
+                            >
+                              Book
+                            </button>
+                          )}
                       </div>
                     </td>
                     <td colSpan={2} className="p-0 relative">

@@ -59,6 +59,11 @@ const initialState = {
   // without other slips flashing the same state.
   isPlacingBet: false,
   placingSelectionId: null,
+  // Live exposure preview derived from the active bet slip's stake/odds, used
+  // by market pages (LiveOdds, RacingOdds) to show projected P/L under each
+  // runner. Shape: { selectionId, profit, liability, betType } | null.
+  // Cleared whenever activeBetSlip is cleared.
+  preExposure: null,
 }
 
 // Fetch open bets — optional `eventId` param scopes the result to one event
@@ -97,6 +102,10 @@ const betSlipSlice = createSlice({
   reducers: {
     setActiveBetSlip(s, { payload }) {
       s.activeBetSlip = payload
+      if (!payload) s.preExposure = null
+    },
+    setPreExposure(s, { payload }) {
+      s.preExposure = payload
     },
     setOpenBets(s, { payload }) {
       s.openBets = payload || []
@@ -124,6 +133,7 @@ const betSlipSlice = createSlice({
       const activeId = String(s.activeBetSlip?.selectionId ?? '')
       if (placedId && placedId === activeId) {
         s.activeBetSlip = null
+        s.preExposure = null
       }
       s.openBetRefreshTick += 1
     })
@@ -142,10 +152,17 @@ export const {
   setOpenBets,
   openBetRefresh,
   setOneClickBetStake,
+  setPreExposure,
 } = betSlipSlice.actions
 export default betSlipSlice.reducer
 
 export const selectActiveBetSlip = (s) => s.betSlip.activeBetSlip
+export const selectPreExposure = (s) => s.betSlip.preExposure
+// Subscribers that only need the active-market discriminator should use this
+// selector — it returns a primitive string, so per-keystroke changes to the
+// preview's profit/liability won't cause re-renders.
+export const selectPreExposureMarketName = (s) =>
+  s.betSlip.preExposure?.marketName ?? null
 export const selectOpenBets = (s) => s.betSlip.openBets
 export const selectOpenBetRefreshTick = (s) => s.betSlip.openBetRefreshTick
 export const selectIsPlacingBet = (s) => s.betSlip.isPlacingBet
