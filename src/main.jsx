@@ -5,7 +5,6 @@ import { store } from './store/store.js'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './style.scss'
 import './i18n/index.js'
-
 import { autoLoginFromUrlToken } from './store/slices/authSlice.js'
 import {
   setFullScreenLoader,
@@ -13,15 +12,32 @@ import {
 } from './store/slices/commonSlice.js'
 import { bootstrapHttp } from './core/http/bootstrap.js'
 import { bootstrapSocket } from './core/socket/bootstrap.js'
+import {
+  applyCachedThemeBodyClass,
+  cacheTheme,
+} from './shared/services/theme-cache.js'
 import App from './App.jsx'
 
+applyCachedThemeBodyClass()
 bootstrapHttp()
 bootstrapSocket()
 setupMobileBreakpointListener(store)
 
+let prevPanelTheme = store.getState().common.panelTheme
+let prevSelectedTheme = store.getState().common.selectedTheme
+store.subscribe(() => {
+  const { panelTheme, selectedTheme } = store.getState().common
+  if (panelTheme !== prevPanelTheme || selectedTheme !== prevSelectedTheme) {
+    cacheTheme({ panelTheme, selectedTheme })
+    prevPanelTheme = panelTheme
+    prevSelectedTheme = selectedTheme
+  }
+})
 
-// SSO: if the URL carries ?token=..., auto-login that user (mirrors app.ts).
-if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('token')) {
+if (
+  typeof window !== 'undefined' &&
+  new URLSearchParams(window.location.search).get('token')
+) {
   store.dispatch(setFullScreenLoader(true))
   store
     .dispatch(autoLoginFromUrlToken())
@@ -29,11 +45,9 @@ if (typeof window !== 'undefined' && new URLSearchParams(window.location.search)
 }
 
 createRoot(document.getElementById('root')).render(
-
-    <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </Provider>
-
+  <Provider store={store}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </Provider>
 )

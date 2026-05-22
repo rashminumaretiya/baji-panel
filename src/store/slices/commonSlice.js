@@ -2,6 +2,10 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { http } from '../../core/http/client.js'
 import { environment } from '../../environments/environment.js'
 import { PanelTheme } from '../../shared/types/common.js'
+import {
+  getCachedPanelTheme,
+  getCachedSelectedTheme,
+} from '../../shared/services/theme-cache.js'
 
 const DEFAULT_LOGO = '/img/logo.png'
 const DEFAULT_FAVICON = '/favicon.ico'
@@ -44,7 +48,6 @@ export function readIsMobileViewport() {
   return window.matchMedia(MOBILE_MEDIA_QUERY).matches
 }
 
-/** Keeps `common.isMobile` in sync when the viewport crosses the mobile breakpoint. */
 export function setupMobileBreakpointListener(store) {
   if (typeof window === 'undefined' || !window.matchMedia) return () => {}
 
@@ -63,7 +66,7 @@ const initialState = {
   authModalType: null,
   captcha: null,
   captchaRefresh: 0,
-  selectedTheme: 'light',
+  selectedTheme: getCachedSelectedTheme(),
   isShowSabaSportBook: true,
   isShowE1Sport: true,
   isMaintenance: null,
@@ -73,7 +76,7 @@ const initialState = {
   promoCode: '',
   keyword: '',
   currentSiteName: '',
-  panelTheme: null,
+  panelTheme: getCachedPanelTheme() ?? PanelTheme.BAJI,
   serverEnv: environment.server,
   logo: DEFAULT_LOGO,
   favicon: DEFAULT_FAVICON,
@@ -162,7 +165,7 @@ const commonSlice = createSlice({
       s.currentSiteName = payload || ''
     },
     setPanelTheme(s, { payload }) {
-      s.panelTheme = payload
+      s.panelTheme = payload || PanelTheme.BAJI
     },
     setLogo(s, { payload }) {
       s.logo = payload || DEFAULT_LOGO
@@ -196,10 +199,8 @@ const commonSlice = createSlice({
       s.availableCurrencies = Array.isArray(d.currency) ? d.currency : []
       s.news = normalizeNews(d.broadcastMessage)
       s.globalNews = normalizeNews(d.globalBroadcastMessage)
-
-      if (d.panelTheme) s.panelTheme = d.panelTheme
+      s.panelTheme = d.panelTheme || s.panelTheme || PanelTheme.BAJI
       if (d.defaultLanguage) s.defaultLanguage = d.defaultLanguage
-
       s.isSelfSignupAllowed = !!d.isSelfSignupAllowed
       s.isCasinoSuspend = !!d.isCasinoSuspend
       s.redirectUrl = d.redirectUrl || ''
