@@ -157,17 +157,20 @@ export const loadStakes = createAsyncThunk(
 )
 
 // Mirrors updateStakes() — PUT /api/user/stake.
+// The PUT response already includes the updated stake array, so we use it
+// directly instead of firing a follow-up GET.
 export const updateStakes = createAsyncThunk(
   'auth/updateStakes',
-  async (stake, { dispatch, getState, rejectWithValue }) => {
+  async (stake, { getState, rejectWithValue }) => {
     if (!getState().auth.user) return null
     try {
       const res = await http.put('user/stake', { stake })
-      return { key: res.data?.key }
+      return {
+        key: res.data?.key,
+        data: Array.isArray(res.data?.data) ? res.data.data : [],
+      }
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message)
-    } finally {
-      dispatch(loadStakes())
     }
   }
 )
@@ -229,6 +232,9 @@ const authSlice = createSlice({
     })
     b.addCase(loadStakes.fulfilled, (state, { payload }) => {
       state.stakesData = Array.isArray(payload) ? payload : []
+    })
+    b.addCase(updateStakes.fulfilled, (state, { payload }) => {
+      if (payload?.data?.length) state.stakesData = payload.data
     })
   },
 })

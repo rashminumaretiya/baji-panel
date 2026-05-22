@@ -1,10 +1,16 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   selectIsMcvYellowTheme,
   selectIsYellowTheme,
 } from '../store/slices/commonSlice.js'
+import {
+  loadStakes,
+  selectStakesData,
+  updateStakes,
+} from '../store/slices/authSlice.js'
+import { alertService } from '../shared/services/alert.js'
 import SvgIcon from './SvgIcon.jsx'
 
 const QUICK_STAKE_SLOTS = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -47,25 +53,55 @@ export default function Stake({
   isMcwCasinoTheme: isMcwCasinoThemeProp,
 }) {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const stakesData = useSelector(selectStakesData)
   const isYellowThemeFromStore = useSelector(selectIsYellowTheme)
   const isMcwCasinoThemeFromStore = useSelector(selectIsMcvYellowTheme)
   const isYellowTheme = isYellowThemeProp ?? isYellowThemeFromStore
   const isMcwCasinoTheme = isMcwCasinoThemeProp ?? isMcwCasinoThemeFromStore
 
   const [defaultStake, setDefaultStake] = useState(0)
-  const [availableStake, setAvailableStake] = useState(
-    Object.fromEntries(QUICK_STAKE_SLOTS.map((n) => [n, '']))
-  )
+  const [editedStake, setEditedStake] = useState(null)
   const [isHighlighted, setIsHighlighted] = useState(false)
   const [fancyBetAcceptAnyOdds, setFancyBetAcceptAnyOdds] = useState(false)
   const [isStakeEditable, setIsStakeEditable] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   const stakesLocked = !isStakeEditable
+
+  useEffect(() => {
+    if (!stakesData?.length) dispatch(loadStakes())
+  }, [dispatch, stakesData?.length])
+
+  const availableStake =
+    editedStake ??
+    Object.fromEntries(
+      QUICK_STAKE_SLOTS.map((slot, i) => [slot, stakesData?.[i] ?? ''])
+    )
 
   const toggleStakeEdit = () => setIsStakeEditable((prev) => !prev)
 
   const updateQuickStake = (slot, value) => {
-    setAvailableStake((prev) => ({ ...prev, [slot]: value }))
+    setEditedStake((prev) => ({ ...(prev ?? availableStake), [slot]: value }))
+  }
+
+  const handleSave = async () => {
+    const stake = QUICK_STAKE_SLOTS.map((slot) => Number(availableStake[slot]))
+    if (stake.some((n) => Number.isNaN(n))) {
+      alertService.error(t('common.invalidStake', 'Invalid stake value'))
+      return
+    }
+    setIsSaving(true)
+    try {
+      const action = await dispatch(updateStakes(stake)).unwrap()
+      if (action?.key) alertService.success(t(action.key))
+      setEditedStake(null)
+      onCancel?.()
+    } catch {
+      // error toast is handled by the axios error interceptor
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   // Theme-specific overrides for the green "Save" / "OK" buttons.
@@ -285,10 +321,10 @@ export default function Stake({
                 className={cx(
                   FOOTER_BTN_BASE,
                   'md:mr-2 btn btn-white border-[#bbb] text-[#1e1e1e]',
-                  !stakesLocked && 'opacity-60 cursor-not-allowed'
+                  isSaving && 'opacity-60 cursor-not-allowed'
                 )}
                 onClick={onCancel}
-                disabled={!stakesLocked}
+                disabled={isSaving}
               >
                 {t('common.cancel', 'Cancel')}
               </button>
@@ -300,11 +336,14 @@ export default function Stake({
                   FOOTER_BTN_BASE,
                   'btn btn-primary border-[var(--lg-primary)] text-white',
                   themedOkBtn,
-                  !stakesLocked && 'opacity-60 cursor-not-allowed'
+                  (!stakesLocked || isSaving) && 'opacity-60 cursor-not-allowed'
                 )}
-                disabled={!stakesLocked}
+                onClick={handleSave}
+                disabled={!stakesLocked || isSaving}
               >
-                {t('common.save', 'Save')}
+                {isSaving
+                  ? t('common.saving', 'Saving...')
+                  : t('common.save', 'Save')}
               </button>
             </div>
           </div>
