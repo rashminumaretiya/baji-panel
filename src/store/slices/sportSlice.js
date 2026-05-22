@@ -4,13 +4,12 @@ import {
   RACING_SPORTS,
   SPORT_TAB_EXCLUDE,
 } from '../../core/constant/constants.js'
+import { fetchSportLiveCount } from './headerSlice.js'
 
 const SIDEBAR_SPORTS_TTL_MS = 60_000
 
 const initialState = {
   sportTabs: [],
-  tabsStatus: 'idle',
-  tabsError: null,
   activeSportId: null,
   sidebarSports: [],
   sidebarLoading: false,
@@ -47,13 +46,12 @@ export const fetchSidebarSports = createAsyncThunk(
   }
 )
 
-export const loadSportTabs = createAsyncThunk(
-  'sport/loadSportTabs',
-  async () => {
-    const res = await http.get('sport/live-count')
-    return res.data?.data ?? []
-  }
-)
+// NOTE: `sport/live-count` is fetched once by `headerSlice.fetchSportLiveCount`
+// (which has a 60s TTL guard). This slice mirrors the resulting tabs into
+// `sport.sportTabs` via the cross-slice extraReducer below — there is no
+// dedicated `loadSportTabs` thunk any more, so Home / InPlay should dispatch
+// `fetchSportLiveCount` directly.
+export { fetchSportLiveCount }
 
 export const loadGamesForSport = createAsyncThunk(
   'sport/loadGamesForSport',
@@ -146,17 +144,8 @@ const sportSlice = createSlice({
       s.sidebarLoading = false
     })
 
-    b.addCase(loadSportTabs.pending, (s) => {
-      s.tabsStatus = 'loading'
-      s.tabsError = null
-    })
-    b.addCase(loadSportTabs.fulfilled, (s, { payload }) => {
-      s.tabsStatus = 'idle'
-      s.sportTabs = payload
-    })
-    b.addCase(loadSportTabs.rejected, (s, { error }) => {
-      s.tabsStatus = 'error'
-      s.tabsError = error?.message ?? 'Failed to load sports'
+      b.addCase(fetchSportLiveCount.fulfilled, (s, { payload }) => {
+      s.sportTabs = Array.isArray(payload) ? payload : []
     })
 
     b.addCase(loadGamesForSport.pending, (s, { meta }) => {

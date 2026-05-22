@@ -428,7 +428,7 @@ export default function LiveOdds() {
 
   useEffect(() => {
     const controller = new AbortController()
-
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadDefaultOdds(controller.signal)
     return () => controller.abort()
   }, [loadDefaultOdds])
@@ -623,6 +623,7 @@ export default function LiveOdds() {
       fancyMainTabs.length &&
       !fancyMainTabs.some((t) => t.type === selectedFancy)
     ) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedFancy(fancyMainTabs[0].type)
     }
   }, [fancyMainTabs, selectedFancy])
@@ -667,6 +668,12 @@ export default function LiveOdds() {
 
   const cancelMatchOdds = useCallback(
     () => dispatch(setActiveBetSlip(null)),
+    [dispatch]
+  )
+  // Mobile parity with the desktop right-side <BetSlip />: lets the inline
+  // mobile match-odds slip mutate the Redux-backed slip (odds + stake edits).
+  const updateMatchOddsSlip = useCallback(
+    (next) => dispatch(setActiveBetSlip(next)),
     [dispatch]
   )
 
@@ -960,6 +967,7 @@ export default function LiveOdds() {
               }
               onPick={onMatchOddsClick}
               onCancelMatchOdds={cancelMatchOdds}
+              onSlipChange={updateMatchOddsSlip}
               onPlaceBet={handlePlaceBet}
               isPlacingActive={
                 isPlacingBet &&
@@ -1356,6 +1364,7 @@ export function MatchOddsSection({
   active,
   onPick,
   onCancelMatchOdds,
+  onSlipChange,
   onPlaceBet,
   isPlacingActive,
   betLimitOpen,
@@ -1645,15 +1654,28 @@ export function MatchOddsSection({
                         <InlineBetSlip
                           betSlipDetails={{
                             ...active,
+                            // InlineBetSlip reads `type` / `odds` / `runnerId` /
+                            // `runnerName`; mirror our canonical fields onto
+                            // those aliases so the slip controls render right.
                             type: active.betType,
                             runnerId: active.selectionId,
                             runnerName: active.selectionName,
                             odds: active.odd,
-                            min: 1,
-                            max: 100,
-                            stake: 0,
+                            min: active.min ?? marketSetting.min ?? 1,
+                            max: active.max ?? marketSetting.max ?? 100,
+                            stake: active.stake ?? 0,
                           }}
-                          onChange={() => {}}
+                          onChange={(updated) => {
+                            // Reflect odds / stake edits back into the Redux
+                            // slip so the user can change them on mobile, same
+                            // as the right-side <BetSlip /> on desktop.
+                            onSlipChange?.({
+                              ...active,
+                              odd: Number(updated.odds ?? active.odd) || 0,
+                              size: Number(updated.size ?? active.size) || 0,
+                              stake: Number(updated.stake ?? active.stake) || 0,
+                            })
+                          }}
                           onCancel={onCancelMatchOdds}
                           onPlaceBet={onPlaceBet}
                           isPlacing={isPlacingActive}

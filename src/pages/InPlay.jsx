@@ -17,7 +17,7 @@ import {
 } from '../core/constant/constants.js'
 import {
   loadInplayMap,
-  loadSportTabs,
+  fetchSportLiveCount,
   selectInplayMap,
   selectInplayStatus,
   selectSportTabs,
@@ -152,7 +152,7 @@ export default function InPlay() {
   const [filterBtnEl, setFilterBtnEl] = useState(null)
 
   useEffect(() => {
-    if (!sportTabs?.length) dispatch(loadSportTabs())
+    if (!sportTabs?.length) dispatch(fetchSportLiveCount())
   }, [dispatch, sportTabs?.length])
 
   useEffect(() => {

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '../hooks/useMediaQuery.js'
 import {
-  loadSportTabs,
+  fetchSportLiveCount,
   loadGamesForSport,
   setActiveSportId,
   selectSportTabs,
@@ -73,7 +73,7 @@ export default function Home() {
   const [filterType, setFilterType] = useState(GAME_LIST_FILTERS.TIME)
 
   useEffect(() => {
-    dispatch(loadSportTabs())
+    dispatch(fetchSportLiveCount())
   }, [dispatch])
 
   useEffect(() => {

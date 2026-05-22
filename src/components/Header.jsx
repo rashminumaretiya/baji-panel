@@ -18,7 +18,6 @@ import {
   setIsPlayLiveStream,
   selectLogo,
 } from '../store/slices/commonSlice.js'
-import { SITE_LOGO } from './MyAccountPopup.jsx'
 import EventSearch from './EventSearch.jsx'
 import MyAccountPopup from './MyAccountPopup.jsx'
 import OpenBets from './OpenBets.jsx'
@@ -70,7 +69,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   const wallet = walletFromStore ?? user?.wallet ?? DEFAULT_WALLET
   const currency = currencyFromStore ?? user?.currency ?? DEFAULT_CURRENCY
   const logoFromStore = useSelector(selectLogo)
-  const logo = logoProp ?? logoFromStore ?? SITE_LOGO
+   const logo = logoProp ?? logoFromStore ?? null
 
   const [isBalanceRefresh, setIsBalanceRefresh] = useState(false)
   const [showBets, setShowBets] = useState(false)
@@ -153,16 +152,18 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
       <header className={headerClass}>
         {!isMob ? (
           <div className="inline-flex sm:flex-1 items-center">
-            <div className="me-0 sm:me-2 xl:me-3 [&_img]:object-cover [&_img]:h-auto [&_img]:w-auto [&_img]:max-w-[100px] [&_img]:max-h-[50px]">
-              <img
-                src={logo}
-                alt="logo"
-                onClick={navigateToHome}
-                onKeyDown={(e) => e.key === 'Enter' && navigateToHome()}
-                role="button"
-                tabIndex={0}
-              />
-            </div>
+            {logo && (
+              <div className="me-0 sm:me-2 xl:me-3 [&_img]:object-cover [&_img]:h-auto [&_img]:w-auto [&_img]:max-w-[100px] [&_img]:max-h-[50px]">
+                <img
+                  src={logo}
+                  alt="logo"
+                  onClick={navigateToHome}
+                  onKeyDown={(e) => e.key === 'Enter' && navigateToHome()}
+                  role="button"
+                  tabIndex={0}
+                />
+              </div>
+            )}
             {showSearch && <EventSearch />}
           </div>
         ) : (

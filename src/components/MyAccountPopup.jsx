@@ -4,9 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { Overlay, Popover } from '../shared/components/primitives/Popover.jsx'
 import SvgIcon from './SvgIcon.jsx'
 
-const SITE_LOGO =
-  'https://backend-1ten365.s3.ap-south-2.amazonaws.com/admins/6800f38aa57265d98c2a5110/logo/Baji36%202%20copy-1745137890392.png'
-
 // Translation keys per menu entry — labels are resolved at render time so we
 // can keep the array module-level + still localise the labels.
 const MENU_ITEMS = [
@@ -141,5 +138,3 @@ export default function MyAccountPopup({
     </>
   )
 }
-
-export { SITE_LOGO }

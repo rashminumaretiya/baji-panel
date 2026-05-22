@@ -7,7 +7,6 @@ import {
   getCachedSelectedTheme,
 } from '../../shared/services/theme-cache.js'
 
-const DEFAULT_LOGO = '/img/logo.png'
 const DEFAULT_FAVICON = '/favicon.ico'
 const DEFAULT_CURRENCY = 'PBU'
 const DEFAULT_LANGUAGE = 'en'
@@ -20,13 +19,18 @@ function shouldUseNineWicketsLogo() {
   return NINE_WICKETS_HOSTS.some((h) => host.includes(h))
 }
 
+// Resolve the logo URL from the API payload:
+//   - 9wickets host override always wins (legacy domain-specific branding).
+//   - Backend may send a plain string or `{ light, dark }`.
+//   - When nothing usable is supplied (`{ light: null, dark: null }`),
+//     return `null` — the <Header /> hides the <img> entirely in that case.
 function pickLogo(apiLogo, theme = 'light') {
   if (shouldUseNineWicketsLogo()) return NINE_WICKETS_LOGO
-  if (typeof apiLogo === 'string') return apiLogo || DEFAULT_LOGO
+  if (typeof apiLogo === 'string') return apiLogo || null
   if (apiLogo && typeof apiLogo === 'object') {
-    return apiLogo[theme] || apiLogo.light || apiLogo.dark || DEFAULT_LOGO
+    return apiLogo[theme] || apiLogo.light || apiLogo.dark || null
   }
-  return DEFAULT_LOGO
+  return null
 }
 
 function pickFavicon(apiFavicon) {
@@ -78,7 +82,7 @@ const initialState = {
   currentSiteName: '',
   panelTheme: getCachedPanelTheme() ?? PanelTheme.BAJI,
   serverEnv: environment.server,
-  logo: DEFAULT_LOGO,
+  logo: null,
   favicon: DEFAULT_FAVICON,
   domainCurrency: DEFAULT_CURRENCY,
   availableCurrencies: [],
@@ -168,7 +172,8 @@ const commonSlice = createSlice({
       s.panelTheme = payload || PanelTheme.BAJI
     },
     setLogo(s, { payload }) {
-      s.logo = payload || DEFAULT_LOGO
+      // Allow callers to clear the logo by passing `null` / `undefined`.
+      s.logo = payload || null
     },
     setFavicon(s, { payload }) {
       s.favicon = payload || DEFAULT_FAVICON
