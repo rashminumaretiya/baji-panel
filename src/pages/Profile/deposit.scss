@@ -346,3 +346,246 @@
     opacity: 1;
   }
 }
+
+// One-page verify card. Ported from sbex-user-fe deposit.scss:240-347.
+// Background color is set inline by Deposit.jsx based on the picked method
+// (BKASH pink / NAGAD red / ROCKET purple) — keep this rule color-agnostic.
+.verify-payment-card {
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 18px 16px;
+
+  @media screen and (max-width: 767px) {
+    border-radius: 2.326vw;
+    padding: 2.558vw 1.628vw;
+  }
+
+  // `.new-bangla-deposit` is the modern variant — label on the left, input
+  // on the right, copy-icon absolutely positioned inside the input. Matches
+  // sbex-user-fe deposit.scss `.verify-payment-card.new-bangla-deposit`.
+  &.new-bangla-deposit {
+    h6 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #ffffff;
+    }
+
+    hr {
+      opacity: 0.4;
+      margin: 10px 0;
+      border-color: #ffffff;
+    }
+
+    .form-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      gap: 8px;
+
+      label {
+        white-space: nowrap;
+        margin-bottom: 0 !important;
+        font-size: 13px;
+        line-height: 1.2;
+        color: #ffffff;
+      }
+
+      input.form-control {
+        max-width: 180px;
+        height: 32px;
+        padding: 4px 30px 4px 10px;
+        font-size: 13px;
+        color: #364153;
+        border-radius: 6px;
+
+        &::placeholder {
+          font-size: 12px;
+        }
+
+        &.opacity75 {
+          opacity: 0.75;
+        }
+      }
+
+      .input-with-errors {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+        width: 100%;
+        max-width: 180px;
+
+        input.form-control {
+          max-width: 100%;
+          width: 100%;
+          padding-right: 10px;
+        }
+
+        .field-error {
+          font-size: 11px;
+          color: #ffd6d6;
+          text-align: left;
+          line-height: 1.2;
+        }
+      }
+
+      .copy-icon {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #364153;
+        cursor: pointer;
+        line-height: 0;
+        display: inline-flex;
+
+        svg {
+          height: 16px;
+          width: auto;
+        }
+      }
+    }
+  }
+
+  // Fallback (non-new-bangla-deposit) layout — kept for safety though every
+  // current render path enables `.new-bangla-deposit`.
+  > .form-group {
+    label {
+      color: #ffffff;
+    }
+
+    .input-with-errors {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      width: 100%;
+
+      input.form-control {
+        width: 100%;
+        padding-right: 10px;
+      }
+
+      .field-error {
+        font-size: 11px;
+        color: #ffd6d6;
+        text-align: left;
+        line-height: 1.2;
+        align-self: flex-start;
+      }
+    }
+  }
+}
+
+.btn-copy {
+  background-color: #00000040;
+  border: none;
+  color: #ffffff;
+}
+
+// Verify-mode method-box (display locked once submit succeeds).
+.method-box.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+// Step-1 method picker — ported from sbex-user-fe deposit.scss:145-219.
+// The radio input sits behind the label (absolute + transparent) so the
+// whole card is clickable; selected state lights up the border ring.
+.payment-methods-cards {
+  // Spacing below this row is controlled by Step-2's `mt-3` so the two
+  // steps sit on a single ~16px gap. Don't reintroduce a margin-bottom
+  // here or the gap stacks visibly.
+  gap: 10px;
+  flex-wrap: wrap;
+
+  @media screen and (max-width: 767px) {
+    gap: 4px;
+  }
+
+  .form-check {
+    position: relative;
+    margin-bottom: 0;
+    width: 100px;
+    padding-left: 0;
+
+    @media screen and (max-width: 767px) {
+      width: calc(33.33% - 2.666px);
+    }
+
+    input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      margin-left: 0;
+      margin-top: 0;
+      cursor: pointer;
+      background: transparent;
+      border-radius: 5px;
+      border: 1px solid #262626;
+
+      &:checked {
+        border: 1px solid var(--primary-yellow, #f0b90b);
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    }
+
+    .form-check-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0;
+      padding: 8px;
+      border-radius: 5px;
+      pointer-events: none;
+
+      @media screen and (max-width: 767px) {
+        background-color: var(--white);
+        padding: 1.86vw;
+        border-radius: 1.163vw;
+      }
+
+      img {
+        height: 40px;
+        width: auto;
+        margin: 0 auto;
+
+        @media screen and (max-width: 767px) {
+          width: 9.302vw;
+          height: 9.302vw;
+        }
+      }
+
+      span {
+        font-size: 14px;
+        margin-top: 5px;
+        display: block;
+
+        @media screen and (max-width: 767px) {
+          font-size: 3.256vw;
+          margin-top: 1.163vw;
+        }
+      }
+    }
+  }
+}
+
+// Method label under each Step-2 paymentType icon — kept small so the box
+// stays close to the previous icon-only PAYMENT_LIST proportions.
+.method-box .method-label {
+  display: block;
+  text-align: center;
+  margin-top: 4px;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+

@@ -1,23 +1,72 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   fetchDepositPaymentMethods,
+  fetchPaymentMode,
   fetchPromotion,
   resetDepositSubmit,
   selectDepositPaymentMethods,
   selectDepositSubmit,
+  selectPaymentMode,
   selectPromotion,
+  selectSelfDepositSubmit,
+  selectSelfDepositVerify,
   submitDeposit,
+  submitSelfDeposit,
+  verifySelfDeposit,
 } from '../../store/slices/accountSlice.js'
 import { selectCurrency } from '../../store/slices/authSlice.js'
+import { selectIsDepositOnePage } from '../../store/slices/commonSlice.js'
+import { alertService } from '../../shared/services/alert.js'
 import {
   CURRENCY_TYPE,
-  PAYMENT_LIST,
-  PAYMENT_TYPE,
+  WITHDRAW_PAYMENT_METHODS,
   onlyDigitsRegex,
 } from '../../shared/types/common.js'
 import { Icon } from './depositIcons.jsx'
 import './deposit.scss'
+
+// Trx-id regex per payment method, ported from sbex-user-fe types/dw.ts.
+const TRX_VALIDATORS = {
+  ROCKET: /^[a-zA-Z0-9]{8}$|^[a-zA-Z0-9]{10}$/,
+  BKASH: /^[a-zA-Z0-9]{10}$/,
+  NAGAD: /^[a-zA-Z0-9]{8}$/,
+}
+
+// Sender-number regex — ROCKET is 12 digits, BKASH/NAGAD are 11 (sbex parity).
+const senderPattern = (method) =>
+  method === 'ROCKET' ? /^0\d{11}$/ : /^0\d{10}$/
+
+// Background colors used by the verify-payment card, ported verbatim from
+// sbex-user-fe deposit.ts:64-68.
+const PAYMENT_METHOD_COLORS = {
+  BKASH: '#cf2771',
+  NAGAD: '#c90008',
+  ROCKET: '#89288f',
+}
+
+// Logo lookup for the one-page (/self-deposit/payment-methods) response —
+// that endpoint doesn't include logos. BKASH/NAGAD use the dedicated `_icon`
+// assets at /public/img/; ROCKET falls back to the WITHDRAW_PAYMENT_METHODS
+// set (no rocket_icon variant exists in /img/). Order matters: the explicit
+// BKASH/NAGAD overrides come LAST so they win over the WITHDRAW reducer.
+const LOGO_BY_NAME = {
+  ...WITHDRAW_PAYMENT_METHODS.reduce((acc, m) => {
+    acc[m.value] = m.img
+    return acc
+  }, {}),
+  BKASH: '/img/bkash_icon.png',
+  NAGAD: '/img/nagad_icon.png',
+}
+
+// Image lookup for Step-2 paymentType cards (agent / personal / merchant).
+// Re-uses the original PAYMENT_LIST icons from when paymentType was the
+// single-selection grid — keeps the visual consistent with the prior UI.
+const PAYMENT_TYPE_IMAGES = {
+  agent: '/img/payment/agent.png',
+  personal: '/img/payment/personal.png',
+  merchant: '/img/payment/merchant.png',
+}
 
 // Mirrors Angular's `| date : 'YYYY-MM-dd HH:mm:ss'` pipe.
 function formatDate(value) {
@@ -81,29 +130,66 @@ function PromotionListItems({ promotions, activeId, onClick }) {
   )
 }
 
-// Flatten /self-deposit/payment-methods.paymentMethods[].types[] into a
-// lowercase set of usable type slugs (agent / merchant / personal).
-function buildAllowedMethods(paymentMethods) {
-  const set = new Set()
-  ;(paymentMethods || []).forEach((m) => {
-    ;(m.types || []).forEach((t) => {
-      if (t.status === 'Active' && t.is_available) {
-        set.add(String(t.type).toLowerCase())
+// Normalize /self-deposit/payment-methods.paymentMethods[] into the shared
+// shape consumed by the picker UI. Drops methods with no Active+available
+// type (otherwise the card would render but be unselectable) and lowercases
+// type slugs so both branches feed the same comparison logic downstream.
+function normalizeOnePageMethods(paymentMethods) {
+  return (paymentMethods || [])
+    .map((m) => {
+      const types = (m.types || [])
+        .filter((t) => t.status === 'Active' && t.is_available)
+        .map((t) => ({
+          name: String(t.type).toLowerCase(),
+          min: Number(t.min),
+          max: Number(t.max),
+        }))
+      return {
+        methodId: m.method_id,
+        name: m.payment_method,
+        logo: LOGO_BY_NAME[m.payment_method] || '',
+        types,
       }
     })
-  })
-  return set
+    .filter((m) => m.types.length > 0)
+}
+
+// Normalize /self-payment/payment-mode.activePaymentMethods[] — already
+// close to the shared shape; just lowercase types[].name and fall back to
+// the local logo asset if the API omits one.
+function normalizeTwoPageMethods(activePaymentMethods) {
+  return (activePaymentMethods || []).map((m) => ({
+    methodId: m.methodId,
+    name: m.name,
+    // sbex-user-fe parity (deposit.ts:171): two-page uses the API logo
+    // verbatim. Falls back to the local LOGO_BY_NAME entry only when the
+    // backend omits the field for a method.
+    logo: m.logo || LOGO_BY_NAME[m.name] || '',
+    types: (m.types || []).map((t) => ({
+      name: String(t.name).toLowerCase(),
+      min: t.min,
+      max: t.max,
+    })),
+  }))
 }
 
 export default function Deposit({ showTitle = true }) {
   const dispatch = useDispatch()
+  const isDepositOnePage = useSelector(selectIsDepositOnePage)
   const methods = useSelector(selectDepositPaymentMethods)
+  const paymentMode = useSelector(selectPaymentMode)
   const promotion = useSelector(selectPromotion)
-  const submit = useSelector(selectDepositSubmit)
+  // Pick the active submit slot per branch — the slice keeps them separate
+  // so resetting/idle state can't bleed across flows.
+  const twoPageSubmit = useSelector(selectDepositSubmit)
+  const onePageSubmit = useSelector(selectSelfDepositSubmit)
+  const onePageVerify = useSelector(selectSelfDepositVerify)
+  const submit = isDepositOnePage ? onePageSubmit : twoPageSubmit
   const currency = useSelector(selectCurrency) || CURRENCY_TYPE.BDT
 
   const [values, setValues] = useState({
     amount: '',
+    methodId: '',
     paymentType: '',
     promotionId: null,
   })
@@ -113,35 +199,55 @@ export default function Deposit({ showTitle = true }) {
   const [draftPromotion, setDraftPromotion] = useState(null)
   const [showPromotionModal, setShowPromotionModal] = useState(false)
 
-  // useMemo on the raw API field so the empty-fallback array gets a stable
-  // identity across renders — otherwise allowedMethods recomputes every time.
-  const paymentMethods = useMemo(
-    () => methods.data?.paymentMethods || [],
-    [methods.data],
+  // One-page verify-card state. The transaction payload + success flag are
+  // derived from Redux directly (no useState mirror) so we don't trip the
+  // react-hooks/set-state-in-effect rule. selectedMethodName is derived from
+  // the picked method object below — no separate state.
+  const [verifyValues, setVerifyValues] = useState({ trxId: '', senderNumber: '' })
+  const [verifyTouched, setVerifyTouched] = useState({})
+  const verifyCardRef = useRef(null)
+  // Privacy mask flag from /self-deposit/payment-methods response (one-page
+  // only); derived inline — no need to hoist into local state.
+  const privacySettings = !!methods.data?.privacySettings?.privacy_setting
+  const selfDepositTx = isDepositOnePage ? onePageSubmit.data?.data ?? null : null
+  const isDepositSuccess =
+    isDepositOnePage &&
+    onePageSubmit.status === 'succeeded' &&
+    !!selfDepositTx?.transactionId
+
+  // Method-first UI: BKASH / NAGAD / ROCKET cards come from whichever API
+  // shape the current branch returned, normalized into a single internal
+  // form { methodId, name, logo, types: [{ name, min, max }] }.
+  const methodOptions = useMemo(() => {
+    return isDepositOnePage
+      ? normalizeOnePageMethods(methods.data?.paymentMethods)
+      : normalizeTwoPageMethods(paymentMode.data?.activePaymentMethods)
+  }, [isDepositOnePage, methods.data, paymentMode.data])
+
+  // The picked method object (or null). Drives the verify-card color, the
+  // trx-id regex, the available paymentTypes, and the submit payload.
+  const selectedMethod = useMemo(
+    () => methodOptions.find((m) => m.methodId === values.methodId) || null,
+    [methodOptions, values.methodId],
   )
-  const allowedMethods = useMemo(
-    () => buildAllowedMethods(paymentMethods),
-    [paymentMethods],
-  )
-  // Hide merchant if not allowed (mirrors Angular's only specific case).
-  // Other PAYMENT_LIST entries (agent / personal) are always shown.
-  const visiblePaymentList = useMemo(
-    () =>
-      PAYMENT_LIST.filter((item) => {
-        if (item.isHidden) return false
-        if (item.name === 'merchant' && !allowedMethods.has('merchant'))
-          return false
-        return true
-      }),
-    [allowedMethods],
-  )
+
+  const availableTypes = selectedMethod?.types ?? []
+
+  // Gateway name (e.g. "sbkash") — two-page payload requires this. sbex
+  // simply picks gateways[0] (deposit.ts:162); we do the same.
+  const gatewayName = paymentMode.data?.gateways?.[0]?.name ?? null
 
   const promotions = promotion.data || []
   const selectedPromotion =
     promotions.find((p) => p._id === values.promotionId) || null
 
   useEffect(() => {
-    dispatch(fetchDepositPaymentMethods())
+    // sbex-user-fe deposit.ts:106 branch — one fetch per flow, never both.
+    if (isDepositOnePage) {
+      dispatch(fetchDepositPaymentMethods())
+    } else {
+      dispatch(fetchPaymentMode())
+    }
     dispatch(fetchPromotion())
     // Note: /self-payment/PBU isn't available on api.mcv88.live (404 ROUTE_NOT_FOUND).
     // baji-exchange-frontend points at api.1ten365.live where it exists; here we
@@ -150,27 +256,54 @@ export default function Deposit({ showTitle = true }) {
     return () => {
       dispatch(resetDepositSubmit())
     }
-  }, [dispatch])
+  }, [dispatch, isDepositOnePage])
 
-  // Auto-select the only allowed method when exactly one is returned —
-  // derived (not stored) so we don't violate React's "you might not need an
-  // effect" rule. Submit / active-state checks read `effectivePaymentType`.
-  const autoSelectedPaymentType = useMemo(() => {
-    if (allowedMethods.size !== 1) return ''
-    const [only] = [...allowedMethods]
-    return String(only).toUpperCase()
-  }, [allowedMethods])
 
+  // Auto-pick the only available option at each level — derived (not stored)
+  // so we don't violate React's "you might not need an effect" rule.
+  const autoSelectedMethodId =
+    methodOptions.length === 1 ? methodOptions[0].methodId : ''
+  const autoSelectedPaymentType =
+    availableTypes.length === 1 ? availableTypes[0].name : ''
+
+  const effectiveMethodId = values.methodId || autoSelectedMethodId
+  const effectiveMethod =
+    selectedMethod ||
+    methodOptions.find((m) => m.methodId === effectiveMethodId) ||
+    null
   const effectivePaymentType = values.paymentType || autoSelectedPaymentType
+  // BKASH / NAGAD / ROCKET — drives verify-card color + trx-id regex.
+  const selectedMethodName = effectiveMethod?.name ?? ''
 
-  // Redirect to the gateway once the payment URL lands.
+  // Two-page only: redirect to the gateway once the payment URL lands.
+  // sbex-user-fe deposit.ts:306-314 does the same window.location.href hop;
+  // if payment_url is absent the response is treated as a success in-place.
   useEffect(() => {
-    const url = submit.data?.payment_url
-    const status = submit.data?.status
-    if (submit.status === 'succeeded' && status && url) {
+    if (isDepositOnePage) return
+    const url = twoPageSubmit.data?.payment_url
+    const status = twoPageSubmit.data?.status
+    if (twoPageSubmit.status === 'succeeded' && status && url) {
       window.location.href = url
     }
-  }, [submit])
+  }, [isDepositOnePage, twoPageSubmit])
+
+  // One-page only: scroll the verify card into view once it appears.
+  // Pure DOM side effect — no setState — so this stays compatible with the
+  // react-hooks/set-state-in-effect rule. Fires when isDepositSuccess flips.
+  useEffect(() => {
+    if (!isDepositSuccess) return
+    const id = setTimeout(() => {
+      verifyCardRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }, 500)
+    return () => clearTimeout(id)
+  }, [isDepositSuccess])
+
+  // Fire-and-forget success alert when the one-page submit lands.
+  useEffect(() => {
+    if (!isDepositOnePage) return
+    if (onePageSubmit.status !== 'succeeded') return
+    if (onePageSubmit.data?.key) alertService.success(onePageSubmit.data.key)
+  }, [isDepositOnePage, onePageSubmit.status, onePageSubmit.data?.key])
 
   const setField = (key, value) =>
     setValues((prev) => ({ ...prev, [key]: value }))
@@ -231,18 +364,25 @@ export default function Deposit({ showTitle = true }) {
     setDraftPromotion(null)
   }
 
-  const setPaymentMethod = (val) => {
-    setField('paymentType', val)
+  // Picking a method resets paymentType — types are method-scoped and an old
+  // value would silently submit against the new method's types[].
+  const selectMethod = (methodId) => {
+    setValues((prev) => ({ ...prev, methodId, paymentType: '' }))
+    markTouched('methodId')
+  }
+  const selectPaymentType = (typeName) => {
+    setField('paymentType', typeName)
     markTouched('paymentType')
   }
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    setTouched({ amount: true, paymentType: true })
+    setTouched({ amount: true, methodId: true, paymentType: true })
     if (
       amountErrors.required ||
       amountErrors.pattern ||
       amountErrors.min ||
+      !effectiveMethod ||
       !effectivePaymentType ||
       promotionLimitError ||
       submitting
@@ -250,19 +390,123 @@ export default function Deposit({ showTitle = true }) {
       return
     }
 
-    const payload = {
-      amount: Number(values.amount),
-      paymentType: effectivePaymentType,
-      type: CURRENCY_TYPE.BDT,
-      payment: PAYMENT_TYPE.UDDOKTAPAY,
+    const paymentTypeLower = String(effectivePaymentType).toLowerCase()
+
+    if (isDepositOnePage) {
+      // /self-deposit/ uses snake_case `method_id` (sbex SelfDepositPayload).
+      const payload = {
+        amount: Number(values.amount),
+        paymentType: paymentTypeLower,
+        method_id: effectiveMethod.methodId,
+      }
+      if (values.promotionId) payload.promotionId = values.promotionId
+      dispatch(submitSelfDeposit(payload))
+    } else {
+      // /self-payment/payment uses camelCase `methodId` AND requires `gateway`
+      // (validated server-side per the user's report — VALIDATION error
+      // "Payment gateway is required" when absent). Mirrors sbex
+      // SelfPaymentPayload + deposit.ts:162 (controls['gateway'].setValue).
+      const payload = {
+        amount: Number(values.amount),
+        paymentType: paymentTypeLower,
+        methodId: effectiveMethod.methodId,
+      }
+      if (gatewayName) payload.gateway = gatewayName
+      if (values.promotionId) payload.promotionId = values.promotionId
+      dispatch(submitDeposit(payload))
     }
-    if (values.promotionId) payload.promotionId = values.promotionId
-    dispatch(submitDeposit(payload))
   }
+
+  // Verify-payment errors (mirrors Validators.required + pattern in sbex-user-fe).
+  const trxId = String(verifyValues.trxId ?? '').trim()
+  const senderNumber = String(verifyValues.senderNumber ?? '').trim()
+  const trxIdRegex = TRX_VALIDATORS[selectedMethodName]
+  const senderRegex = senderPattern(selectedMethodName)
+  const verifyErrors = {
+    trxIdRequired: !trxId,
+    trxIdPattern: trxId && trxIdRegex && !trxIdRegex.test(trxId),
+    senderRequired: !senderNumber,
+    senderPattern: senderNumber && !senderRegex.test(senderNumber),
+  }
+
+  const setVerifyField = (key, value) =>
+    setVerifyValues((prev) => ({ ...prev, [key]: value }))
+  const markVerifyTouched = (key) =>
+    setVerifyTouched((prev) => ({ ...prev, [key]: true }))
+
+  const handleVerifySubmit = async () => {
+    setVerifyTouched({ trxId: true, senderNumber: true })
+    if (
+      verifyErrors.trxIdRequired ||
+      verifyErrors.trxIdPattern ||
+      verifyErrors.senderRequired ||
+      verifyErrors.senderPattern
+    ) {
+      return
+    }
+    // unwrap() throws on rejected so we only reset on success. Doing the
+    // reset here (rather than in an effect on onePageVerify.status) keeps
+    // setState calls out of effects.
+    try {
+      const result = await dispatch(
+        verifySelfDeposit({
+          transactionId: selfDepositTx?.transactionId ?? '',
+          receiverNumber: selfDepositTx?.receiver_number ?? '',
+          trxId,
+          senderNumber,
+        }),
+      ).unwrap()
+      if (result?.key) alertService.success(result.key)
+      setVerifyValues({ trxId: '', senderNumber: '' })
+      setVerifyTouched({})
+      setValues({ amount: '', methodId: '', paymentType: '', promotionId: null })
+      setTouched({})
+      dispatch(resetDepositSubmit())
+    } catch {
+      // Alert is surfaced via the http interceptor; nothing else to do here.
+    }
+  }
+
+  const copyToClipboard = async (value) => {
+    const text =
+      value != null ? String(value) : selfDepositTx?.receiver_number ?? ''
+    if (!text) return
+    try {
+      await navigator.clipboard.writeText(text)
+      alertService.success('Copied to clipboard')
+    } catch {
+      alertService.error('Copy failed')
+    }
+  }
+
+  const cardColor = PAYMENT_METHOD_COLORS[selectedMethodName] || '#262626'
+
+  // Receiver-number display string, with the same 4+xxxx+2 mask sbex applies
+  // when privacy_setting is on (deposit.html:210-220). Falls back to '00'
+  // until the API responds — matches the empty-state placeholder upstream.
+  const receiverDisplay = (() => {
+    const r = selfDepositTx?.receiver_number
+    if (!r) return '00'
+    if (!privacySettings) return String(r)
+    const s = String(r)
+    return `${s.slice(0, 4)}xxxx${s.slice(-2)}`
+  })()
+
+  // Receiver-number label changes per paymentType, same as sbex deposit.html:
+  // 197-205. Falls back to a generic "Receiver Number" if no type is picked.
+  const receiverLabel =
+    effectivePaymentType === 'personal'
+      ? 'Personal Number'
+      : effectivePaymentType === 'agent'
+        ? 'Agent Number'
+        : effectivePaymentType === 'merchant'
+          ? 'Merchant Number'
+          : 'Receiver Number'
 
   const showRequired = touched.amount && amountErrors.required
   const showMin = touched.amount && amountErrors.min
   const showPattern = touched.amount && amountErrors.pattern
+  const showMethodRequired = touched.methodId && !effectiveMethod
   const showPaymentRequired = touched.paymentType && !effectivePaymentType
 
   return (
@@ -340,6 +584,7 @@ export default function Deposit({ showTitle = true }) {
                   value={values.amount}
                   onChange={(event) => setField('amount', event.target.value)}
                   onBlur={() => markTouched('amount')}
+                  disabled={isDepositSuccess}
                 />
                 {showRequired && (
                   <span className="error">Amount is required</span>
@@ -361,12 +606,68 @@ export default function Deposit({ showTitle = true }) {
               </div>
             </div>
 
-            {(allowedMethods.size > 1 || allowedMethods.size === 0) && (
-              <div className="form-group">
+            {/* Step 1 — Payment Method (BKASH / NAGAD / ROCKET). Markup
+                ported from sbex-user-fe deposit.html:48-82 — radio-card
+                pattern using .payment-methods-cards + .form-check with the
+                radio input overlaying the label so the entire card is the
+                click target. Methods come from whichever API the current
+                branch returned, normalized into methodOptions above. */}
+            {methodOptions.length > 0 && (
+              <div className="payment-card">
+                <div className="form-group">
+                  {showTitle && (
+                    <label htmlFor="paymentMethod" className="mb-1">
+                      Payment Method <span className="astrisk">*</span>
+                    </label>
+                  )}
+                  <div className="d-flex payment-methods-cards">
+                    {methodOptions.map((m) => {
+                      const active = effectiveMethodId === m.methodId
+                      const locked = isDepositSuccess
+                      return (
+                        <div
+                          key={m.methodId}
+                          className="form-check position-relative"
+                        >
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="methodId"
+                            id={`method-${m.methodId}`}
+                            value={m.methodId}
+                            checked={active}
+                            disabled={locked}
+                            onChange={() => selectMethod(m.methodId)}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor={`method-${m.methodId}`}
+                          >
+                            {m.logo && <img src={m.logo} alt={m.name} />}
+                            <span className="text-center">{m.name}</span>
+                          </label>
+                        </div>
+                      )
+                    })}
+                  </div>
+                  {showMethodRequired && (
+                    <span className="error">Payment method is required</span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Step 2 — Payment Type (agent / personal / merchant). Re-uses
+                the original .method-box visual from before the dual-flow
+                refactor so the page keeps a single card style; images come
+                from PAYMENT_TYPE_IMAGES (same assets the old PAYMENT_LIST
+                grid used). Status/is_available is pre-filtered upstream. */}
+            {effectiveMethod && availableTypes.length > 0 && (
+              <div className="form-group mt-3">
                 {showTitle && (
                   <label htmlFor="paymentType" className="asterisk">
                     {' '}
-                    Payment Method{' '}
+                    Payment Type{' '}
                   </label>
                 )}
                 <div
@@ -374,26 +675,32 @@ export default function Deposit({ showTitle = true }) {
                     !showTitle ? ' mt-3' : ''
                   }`}
                 >
-                  {visiblePaymentList.map((m) => {
-                    const active = effectivePaymentType === m.value
+                  {availableTypes.map((t) => {
+                    const active = effectivePaymentType === t.name
+                    const locked = isDepositSuccess
+                    const img = PAYMENT_TYPE_IMAGES[t.name]
                     return (
                       <div
-                        key={m.value}
-                        className={`method-box${active ? ' active' : ''}`}
-                        onClick={() => setPaymentMethod(m.value)}
+                        key={t.name}
+                        className={`method-box${active ? ' active' : ''}${
+                          locked ? ' disabled' : ''
+                        }`}
+                        onClick={() => !locked && selectPaymentType(t.name)}
                         role="button"
-                        tabIndex={0}
+                        tabIndex={locked ? -1 : 0}
                         onKeyDown={(e) =>
-                          e.key === 'Enter' && setPaymentMethod(m.value)
+                          e.key === 'Enter' &&
+                          !locked &&
+                          selectPaymentType(t.name)
                         }
                       >
-                        <img src={m.img} alt="method" />
+                        {img && <img src={img} alt={t.name} />}
                       </div>
                     )
                   })}
                 </div>
                 {showPaymentRequired && (
-                  <span className="error">Payment method is required</span>
+                  <span className="error">Payment type is required</span>
                 )}
               </div>
             )}
@@ -402,17 +709,145 @@ export default function Deposit({ showTitle = true }) {
               <span className="error">{submit.error}</span>
             )}
 
-            <button
-              type="submit"
-              className="btn btn-primary mt-3 make-payment"
-              disabled={!!promotionLimitError || submitting}
-            >
-              <Icon name="bkash" />
-              <Icon name="nagad" />
-              Make Payment
-              <Icon name="rocket" />
-              <Icon name="mobileBanking" />
-            </button>
+            {/* One-page verify card — only renders after submitSelfDeposit
+                resolves. Ported from sbex-user-fe deposit.html:172-286 in
+                its `isOnePageNewDepositUI` branch (the "new-bangla-deposit"
+                layout). Background = picked method's brand color (BKASH pink,
+                NAGAD red, ROCKET purple). */}
+            {isDepositSuccess && isDepositOnePage && (
+              <div
+                ref={verifyCardRef}
+                className="verify-payment-card new-bangla-deposit mt-3"
+                style={{ backgroundColor: cardColor }}
+              >
+                <h6 className="text-center">Keep screenshot</h6>
+
+                {/* Deposit Amount — read-only display + copy icon. */}
+                <div className="form-group mb-2">
+                  <label>Deposit Amount:</label>
+                  <input
+                    type="text"
+                    className="form-control opacity75"
+                    value={`${currency} ${values.amount || ''}`}
+                    disabled
+                    readOnly
+                  />
+                  <span
+                    className="copy-icon"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => copyToClipboard(values.amount)}
+                  >
+                    <Icon name="copyIcon" />
+                  </span>
+                </div>
+
+                {/* Receiver Number — label changes per paymentType; value
+                    is masked when privacy_setting is on. */}
+                <div className="form-group mb-2">
+                  <label>{receiverLabel} :</label>
+                  <input
+                    type="text"
+                    className="form-control opacity75"
+                    value={receiverDisplay}
+                    disabled
+                    readOnly
+                  />
+                  <span
+                    className="copy-icon"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() =>
+                      copyToClipboard(selfDepositTx?.receiver_number)
+                    }
+                  >
+                    <Icon name="copyIcon" />
+                  </span>
+                </div>
+
+                <hr />
+
+                {/* Editable: trxId. */}
+                <div className="form-group mb-2">
+                  <label>Provide transaction ID</label>
+                  <div className="input-with-errors">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Provide transaction ID"
+                      value={verifyValues.trxId}
+                      onChange={(e) => setVerifyField('trxId', e.target.value)}
+                      onBlur={() => markVerifyTouched('trxId')}
+                    />
+                    {verifyTouched.trxId && verifyErrors.trxIdRequired && (
+                      <span className="field-error">
+                        Provide your transaction ID
+                      </span>
+                    )}
+                    {verifyTouched.trxId && verifyErrors.trxIdPattern && (
+                      <span className="field-error">
+                        Invalid transaction ID
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Editable: senderNumber. */}
+                <div className="form-group">
+                  <label>Transaction number</label>
+                  <div className="input-with-errors">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="017XXXXXXXX"
+                      value={verifyValues.senderNumber}
+                      onChange={(e) =>
+                        setVerifyField('senderNumber', e.target.value)
+                      }
+                      onBlur={() => markVerifyTouched('senderNumber')}
+                    />
+                    {verifyTouched.senderNumber &&
+                      verifyErrors.senderRequired && (
+                        <span className="field-error">
+                          Enter your transaction number
+                        </span>
+                      )}
+                    {verifyTouched.senderNumber &&
+                      verifyErrors.senderPattern && (
+                        <span className="field-error">
+                          Kindly enter a valid{' '}
+                          {selectedMethodName === 'ROCKET' ? '12' : '11'} digit
+                          number
+                        </span>
+                      )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isDepositSuccess && isDepositOnePage ? (
+              <button
+                type="button"
+                className="btn make-payment w-100 text-white mt-3"
+                style={{ backgroundColor: cardColor }}
+                onClick={handleVerifySubmit}
+                disabled={onePageVerify.status === 'loading'}
+              >
+                Confirm
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="btn btn-primary mt-3 make-payment"
+                disabled={!!promotionLimitError || submitting}
+              >
+                <Icon name="bkash" />
+                <Icon name="nagad" />
+                Make Payment
+                <Icon name="rocket" />
+                <Icon name="mobileBanking" />
+              </button>
+            )}
           </div>
         </form>
       </div>

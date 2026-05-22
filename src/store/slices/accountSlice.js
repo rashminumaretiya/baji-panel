@@ -53,6 +53,22 @@ export const fetchDepositPaymentMethods = createAsyncThunk(
   },
 )
 
+// GET /self-payment/payment-mode → two-page (gateway-redirect) flow.
+// Used when domain config returns isDepositOnePage = false. Shape:
+//   { gateways, deposit: { minimumAmount, maximumAmount, quickAmounts },
+//     isMadeFirstDeposit, activePaymentMethods: [{ methodId, name, logo, types }] }
+export const fetchPaymentMode = createAsyncThunk(
+  'account/fetchPaymentMode',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await http.get('self-payment/payment-mode')
+      return res.data?.data ?? null
+    } catch (err) {
+      return rejectWithValue(rejectErr(err))
+    }
+  },
+)
+
 // GET /promotion(/list) → only the authed variant when logged in.
 export const fetchPromotion = createAsyncThunk(
   'account/fetchPromotion',
@@ -87,6 +103,36 @@ export const submitDeposit = createAsyncThunk(
     try {
       const res = await http.post('self-payment/payment', payload)
       return res.data?.data ?? null
+    } catch (err) {
+      return rejectWithValue(rejectErr(err))
+    }
+  },
+)
+
+// ─── Deposit (one-page flow, sbex-user-fe parity) ───────────────────────
+// Two new endpoints used when domain config returns isDepositOnePage = true:
+//   POST /self-deposit/                 → create one-page deposit
+//   POST /self-deposit/verify-payment   → confirm trx-id + sender number
+// The one-page branch never redirects to a gateway; instead the response
+// includes { transactionId, receiver_number } that drives the verify card.
+export const submitSelfDeposit = createAsyncThunk(
+  'account/submitSelfDeposit',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const res = await http.post('self-deposit/', payload)
+      return res.data ?? null
+    } catch (err) {
+      return rejectWithValue(rejectErr(err))
+    }
+  },
+)
+
+export const verifySelfDeposit = createAsyncThunk(
+  'account/verifySelfDeposit',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const res = await http.post('self-deposit/verify-payment', payload)
+      return res.data ?? null
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
@@ -257,9 +303,12 @@ const initialState = {
   withdrawalHistory: emptyList(),
 
   depositPaymentMethods: { data: null, status: 'idle', error: null },
+  paymentMode: { data: null, status: 'idle', error: null },
   promotion: { data: [], status: 'idle', error: null },
   amount: { data: null, status: 'idle', error: null },
   depositSubmit: { data: null, status: 'idle', error: null },
+  selfDepositSubmit: { data: null, status: 'idle', error: null },
+  selfDepositVerify: { data: null, status: 'idle', error: null },
 
   withdrawDetails: { data: null, status: 'idle', error: null },
   withdrawRequest: { data: null, status: 'idle', error: null },
@@ -304,6 +353,8 @@ const accountSlice = createSlice({
   reducers: {
     resetDepositSubmit(s) {
       s.depositSubmit = { data: null, status: 'idle', error: null }
+      s.selfDepositSubmit = { data: null, status: 'idle', error: null }
+      s.selfDepositVerify = { data: null, status: 'idle', error: null }
     },
     resetWithdrawRequest(s) {
       s.withdrawRequest = { data: null, status: 'idle', error: null }
@@ -315,8 +366,11 @@ const accountSlice = createSlice({
     applyListCases(b, fetchWithdrawalHistory, 'withdrawalHistory')
 
     applySingleCases(b, fetchDepositPaymentMethods, 'depositPaymentMethods')
+    applySingleCases(b, fetchPaymentMode, 'paymentMode')
     applySingleCases(b, fetchAmount, 'amount')
     applySingleCases(b, submitDeposit, 'depositSubmit')
+    applySingleCases(b, submitSelfDeposit, 'selfDepositSubmit')
+    applySingleCases(b, verifySelfDeposit, 'selfDepositVerify')
     applySingleCases(b, fetchWithdrawDetails, 'withdrawDetails')
 
     // Promotion stores the array directly under .data
@@ -359,8 +413,11 @@ export const selectActivityLogs = (s) => s.account.activityLogs
 export const selectDepositHistory = (s) => s.account.depositHistory
 export const selectWithdrawalHistory = (s) => s.account.withdrawalHistory
 export const selectDepositPaymentMethods = (s) => s.account.depositPaymentMethods
+export const selectPaymentMode = (s) => s.account.paymentMode
 export const selectPromotion = (s) => s.account.promotion
 export const selectAmount = (s) => s.account.amount
 export const selectDepositSubmit = (s) => s.account.depositSubmit
+export const selectSelfDepositSubmit = (s) => s.account.selfDepositSubmit
+export const selectSelfDepositVerify = (s) => s.account.selfDepositVerify
 export const selectWithdrawDetails = (s) => s.account.withdrawDetails
 export const selectWithdrawRequest = (s) => s.account.withdrawRequest
