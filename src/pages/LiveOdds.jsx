@@ -359,9 +359,6 @@ export default function LiveOdds() {
   const [fancyInfoIndex, setFancyInfoIndex] = useState(-1)
   const [error, setError] = useState(null)
 
-  // Inline bet-slip pointers for bookmaker / fancy / sportbook.
-  // Match odds routes to the right-side BetSlip via Redux (see selectActiveBetSlip).
-  const [activeBookmaker, setActiveBookmaker] = useState(null)
   const [activeFancyBet, setActiveFancyBet] = useState(null)
   const [activeSportBook, setActiveSportBook] = useState(null)
 
@@ -641,17 +638,27 @@ export default function LiveOdds() {
     }
     // Match Odds bets are placed in the right-side BetSlip panel (Redux).
     // Payload shape matches what `src/components/BetSlip.jsx` reads.
+    const market =
+      matchOddsArray.find((m) => m.marketId === runner._marketId) ??
+      matchOddsArray[0]
+    const setting = matchOddsSettingFor(runner._marketId)
     dispatch(
       setActiveBetSlip({
         marketId: runner._marketId,
-        marketName: runner._marketName || 'Match Odds',
+        marketName: 'MATCH_ODDS',
+        marketDisplayName: runner._marketName || 'Match Odds',
+        eventId: String(eventId ?? ''),
         eventTitle: runner._eventTitle || '',
+        sport: sportSlug ?? '',
+        runners: market?.runners ?? [],
         selectionId: runner.selectionId,
         selectionName: runner.runnerName || runner.runner,
         betType,
         odd: odd.price,
         size: odd.size,
-        stake: '',
+        stake: 0,
+        min: setting.min,
+        max: setting.max,
       })
     )
   }
@@ -662,19 +669,27 @@ export default function LiveOdds() {
       dispatch(setLoginWindow(true))
       return
     }
-    setActiveBookmaker({
-      marketId: bookmaker.mid ?? bookmaker.marketId,
-      marketName: 'BOOKMAKER',
-      type: betType,
-      selectionId: bookmaker.sid ?? bookmaker.selectionId,
-      runnerId: bookmaker.sid ?? bookmaker.selectionId,
-      runnerName: bookmaker.nat ?? bookmaker.runnerName,
-      betType,
-      odds: odd.price,
-      stake: 0,
-      min: Number(bookmaker.min ?? 1),
-      max: Number(bookmaker.max ?? 10000),
-    })
+    // Bookmaker bets are placed in the right-side <BetSlip /> panel (Redux).
+    // Same shape as match-odds — only `marketName` and `marketDisplayName` differ.
+    dispatch(
+      setActiveBetSlip({
+        marketId: bookmaker.mid ?? bookmaker.marketId,
+        marketName: 'BOOKMAKER',
+        marketDisplayName: 'Bookmaker',
+        eventId: String(eventId ?? ''),
+        eventTitle: matchOddsArray[0]?.eventName || '',
+        sport: sportSlug ?? '',
+        runners: matchOddsArray[0]?.runners ?? [],
+        selectionId: bookmaker.sid ?? bookmaker.selectionId,
+        selectionName: bookmaker.nat ?? bookmaker.runnerName,
+        betType,
+        odd: odd.price,
+        size: odd.size ?? 0,
+        stake: '',
+        min: Number(bookmaker.min ?? bookmakerSetting.min ?? 1),
+        max: Number(bookmaker.max ?? bookmakerSetting.max ?? 10000),
+      })
+    )
   }
   const onFancyClick = (item, betType) => {
     const price = betType === 'NO' ? item.LayPrice1 : item.BackPrice1
@@ -751,7 +766,7 @@ export default function LiveOdds() {
 
   return (
     <div>
-      <div className={cx('mobile:mt-1', isYellowTheme && 'yellow-theme')}>
+      <div className={cx('md:mt-1', isYellowTheme && 'yellow-theme')}>
         {isMobile && showStream && (
           <>
             {showPip && (
@@ -861,15 +876,12 @@ export default function LiveOdds() {
               isMobile={isMobile}
               infoOpen={bookmakerInfoOpen}
               onToggleInfo={() => setBookmakerInfoOpen((v) => !v)}
-              active={activeBookmaker}
-              onActiveChange={setActiveBookmaker}
-              onPick={onBookmakerClick}
-              onPlaceBet={handlePlaceBet}
-              isPlacingActive={
-                isPlacingBet &&
-                String(placingSelectionId) ===
-                  String(activeBookmaker?.selectionId ?? '')
+              active={
+                activeRightSideBet?.marketName === 'BOOKMAKER'
+                  ? activeRightSideBet
+                  : null
               }
+              onPick={onBookmakerClick}
             />
           )}
 
@@ -932,9 +944,6 @@ export default function LiveOdds() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function PinRefresh({ onRefresh }) {
-  const { t } = useTranslation()
-  // Each div is a Pin / Refresh pill; the first has a rotated ::before tail,
-  // the second a rotated ::after tail to give the angled-pill shape.
   const baseDiv =
     'text-white font-bold z-[1] min-w-[90px] h-[25px] leading-[20px] relative max-md:px-3 max-md:py-[6px] max-md:h-[7.46667vw] max-md:leading-tight max-md:text-[3.2vw] max-md:min-w-[25.5vw] [&_i_svg]:h-[14px] [&_i_svg]:w-[14px] max-md:[&_i_svg]:h-[3.73333vw] max-md:[&_i_svg]:w-[3.73333vw] mobile:[&_span]:hidden'
 
@@ -943,15 +952,13 @@ function PinRefresh({ onRefresh }) {
   const secondDiv = `${baseDiv} bg-[var(--text-xl-color)] shadow-[1px_0_0_0_rgba(255,255,255,0.3)_inset] rounded-br-[10px] max-md:bg-gradient-to-t max-md:from-[var(--xls-navy)] max-md:to-[var(--xts-light-bg)] max-md:rounded-br-[3vw] max-md:border-l-[0.53333vw] max-md:border-l-[rgba(22,40,49,0.9)] after:content-[''] after:absolute after:right-[-3px] after:w-[19px] after:bg-[var(--text-xl-color)] after:top-[-4px] after:bottom-[1px] after:-z-[1] after:rounded-br-[10px] after:[transform:rotate(22deg)] max-md:after:[transform:rotate(16deg)] max-md:after:bg-gradient-to-t max-md:after:from-[var(--xs-navy)] max-md:after:to-[var(--xts-md-bg)] max-md:after:rounded-br-[3vw]`
 
   return (
-    <div className="text-center overflow-hidden bg-white mt-px max-md:bg-[var(--light-bg)] max-md:mt-0">
+    <div className="text-center overflow-hidden bg-white mt-px max-md:bg-(--light-bg) max-md:mt-0">
       <div className="inline-flex items-center relative cursor-pointer">
         <div className={firstDiv}>
           <PinIcon />
-          <span>{t('common.pin', 'Pin')}</span>
         </div>
         <div className={secondDiv} onClick={onRefresh} role="button">
           <RefreshIcon />
-          <span>{t('common.refresh', 'Refresh')}</span>
         </div>
       </div>
     </div>
@@ -969,7 +976,7 @@ function LiveStream({
   const { t } = useTranslation()
   if (!url) return null
   return (
-    <div className="relative max-w-[500px] mx-auto text-center mobile:mb-3 mobile:p-2 pb-0 max-md:max-w-full max-md:overflow-hidden">
+    <div className="relative max-w-[500px] mx-auto text-center md:mb-3 md:p-2 pb-0 max-md:max-w-full max-md:overflow-hidden">
       <iframe
         ref={iframeRef}
         className={cx(
@@ -1020,6 +1027,49 @@ function LiveStream({
   )
 }
 
+// Matched-amount + Live toggle bar — mirrors Angular's `.d-flex > .matched + .btn-live`.
+// Live button colour flips: on = cool blue (stream visible), off = orange (closed).
+function MatchedLiveBar({
+  currency,
+  totalMatched,
+  showLiveButton,
+  isLiveStreamOn,
+  onToggleLive,
+}) {
+  const { t } = useTranslation()
+
+  const LIVE_BTN_BASE =
+    'relative h-[23px] leading-[19px] rounded-[3px] text-white px-[7px] my-[3px] mx-[5px] text-[13px] ' +
+    "before:content-[''] before:inline-block before:align-middle before:mr-[5px] before:h-[15px] before:w-[18px]"
+  const LIVE_ON =
+    'bg-gradient-to-b from-[var(--md-cloud)] to-[var(--lg-cloud)] ' +
+    'before:[background-image:url(/img/live-icons.png)] before:[background-position:-396px_-2453px]'
+  const LIVE_OFF =
+    'bg-gradient-to-b from-[var(--mds-orange)] to-[var(--lg-orange)] ' +
+    'before:[background-image:url(/img/close-live.png)] before:[background-position:center]'
+
+  return (
+    <div className="flex">
+      <div className="flex items-center text-[13px] [&_span]:font-bold">
+        <p className="m-0">{t('common.matched', 'Matched')}</p>
+        <span className="ml-1">{currency || 'PBU'}</span>
+        <span className="ml-1 mr-2">{fmt(totalMatched)}</span>
+      </div>
+      {showLiveButton && (
+        <div>
+          <button
+            type="button"
+            className={cx(LIVE_BTN_BASE, isLiveStreamOn ? LIVE_ON : LIVE_OFF)}
+            onClick={onToggleLive}
+          >
+            {t('common.live', 'Live')}
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function MatchOddsSection({
   matchOdds,
   isMobile,
@@ -1046,11 +1096,11 @@ function MatchOddsSection({
 
   const matchOddsTabClass = isYellowTheme
     ? // mobile yellow theme: gradient + coffee border + dark text
-      'inline-block relative font-bold mr-0 max-md:!bg-gradient-to-t max-md:!from-[#ffa10c] max-md:!to-[var(--md-primary-yellow)] max-md:border max-md:!border-[var(--coffee)] max-md:!text-[var(--dark)] max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] mobile:bg-[var(--sm-white)] mobile:text-[var(--xxl-blue)] mobile:px-[2px] mobile:py-[8px_2px_7px_10px] mobile:py-2 mobile:pl-[10px] mobile:pr-[2px] mobile:text-[13px] mobile:mr-5 mobile:after:content-[""] mobile:after:absolute mobile:after:[background-image:url(/img/main-s1aea395e8c.png)] mobile:after:z-[1] mobile:after:bottom-0 mobile:after:top-0 mobile:after:-right-5 mobile:after:h-[30px] mobile:after:[background-position:432px_1725px] mobile:after:w-5'
-    : 'inline-block relative font-bold mr-0 max-md:text-white max-md:border max-md:border-[rgba(var(--md-dark-rgb),0.3)] max-md:bg-gradient-to-b max-md:from-[var(--xs-primary)] max-md:to-[var(--xxs-primary)] max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] mobile:bg-[var(--sm-white)] mobile:text-[var(--xxl-blue)] mobile:pl-[10px] mobile:pr-[2px] mobile:py-2 mobile:text-[13px] mobile:mr-5 mobile:after:content-[""] mobile:after:absolute mobile:after:[background-image:url(/img/main-s1aea395e8c.png)] mobile:after:z-[1] mobile:after:bottom-0 mobile:after:top-0 mobile:after:-right-5 mobile:after:h-[30px] mobile:after:[background-position:432px_1725px] mobile:after:w-5'
+      'inline-block relative font-bold mr-0 max-md:!bg-gradient-to-t max-md:!from-[#ffa10c] max-md:!to-[var(--md-primary-yellow)] max-md:border max-md:!border-[var(--coffee)] max-md:!text-[var(--dark)] max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-[var(--sm-white)] md:text-[var(--xxl-blue)] md:px-[2px] md:py-[8px_2px_7px_10px] md:py-2 md:pl-[10px] md:pr-[2px] md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.png)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
+    : 'inline-block relative font-bold mr-0 max-md:text-white max-md:border max-md:border-[rgba(var(--md-dark-rgb),0.3)] max-md:bg-gradient-to-b max-md:from-[var(--xs-primary)] max-md:to-[var(--xxs-primary)] max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-[var(--sm-white)] md:text-[var(--xxl-blue)] md:pl-[10px] md:pr-[2px] md:pb-[7px] md:pt-2 md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.png)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
 
   return (
-    <div className="mobile:mb-[30px]">
+    <div className="md:mb-[30px]">
       <div className="flex flex-wrap justify-between items-center relative">
         <div className="w-full">
           <div
@@ -1100,29 +1150,13 @@ function MatchOddsSection({
                     </small>
                   </p>
                 </div>
-                <div className="flex">
-                  <div className="flex items-center text-[13px] text-[var(--lg-white,#fff)] [&_span]:font-bold">
-                    <p className="m-0">{t('common.matched', 'Matched')}</p>
-                    <span className="ml-1">{currency || 'PBU'}</span>
-                    <span className="ml-1 mr-2">{fmt(totalMatched)}</span>
-                  </div>
-                  {isAuthenticated && isStreamAvailable && (
-                    <div>
-                      <button
-                        type="button"
-                        className={cx(
-                          'relative h-[23px] leading-[19px] rounded-[3px] text-white px-[7px] my-[3px_4px_3px_5px] mx-[5px] text-[13px] before:content-[""] before:inline-block before:[background-image:url(/img/live-icons.png)] before:align-middle before:mr-[5px] before:[background-position:-396px_-2453px] before:h-[15px] before:w-[18px]',
-                          isLiveStreamOn
-                            ? 'bg-gradient-to-b from-[var(--md-cloud)] to-[var(--lg-cloud)]'
-                            : 'bg-gradient-to-b from-[var(--mds-orange)] to-[var(--lg-orange)] before:[background-image:url(/img/close-live.png)] before:[background-position:center]'
-                        )}
-                        onClick={onToggleLive}
-                      >
-                        {t('common.live', 'Live')}
-                      </button>
-                    </div>
-                  )}
-                </div>
+                <MatchedLiveBar
+                  currency={currency}
+                  totalMatched={totalMatched}
+                  showLiveButton={isAuthenticated && isStreamAvailable}
+                  isLiveStreamOn={isLiveStreamOn}
+                  onToggleLive={onToggleLive}
+                />
               </>
             )}
           </div>
@@ -1328,7 +1362,7 @@ function MatchOddsSection({
                       )
                     })}
                   </tr>
-                  {/* Mobile: inline bet slip below the active runner — Angular parity.
+                  {/* md: inline bet slip below the active runner — Angular parity.
                       Desktop: bet slip lives in the right-side <BetSlip /> panel via Redux. */}
                   {isMobile && active?.selectionId === runner.selectionId && (
                     <tr>
@@ -1371,10 +1405,7 @@ function BookmakerSection({
   infoOpen,
   onToggleInfo,
   active,
-  onActiveChange,
   onPick,
-  onPlaceBet,
-  isPlacingActive,
 }) {
   const { t } = useTranslation()
   // Normalise the React API's flat shape ({sid, nat, s, b1..b3, l1..l3, bs1..bs3, ls1..ls3})
@@ -1429,7 +1460,7 @@ function BookmakerSection({
   return (
     <div>
       <MatchHeader>
-        <div className="flex items-center justify-center [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center [&_.icon-wrapper]:max-md:pl-[1.86667vw] mobile:[&_.icon-wrapper_i]:bg-no-repeat mobile:[&_.icon-wrapper_i]:[background-image:url('/img/main-s1aea395e8c.png')] mobile:[&_.icon-wrapper_i]:[background-position:-385px_-833px] mobile:[&_.icon-wrapper_i]:h-[28px] mobile:[&_.icon-wrapper_i]:w-[29px] mobile:[&_.icon-wrapper_i]:mr-[6px] mobile:[&_.icon-wrapper_svg]:hidden max-md:[&_.icon-wrapper_svg]:block max-md:[&_.icon-wrapper_svg]:w-[6.66667vw] max-md:[&_.icon-wrapper_svg]:h-[6.66667vw]">
+        <div className="flex items-center justify-center [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center [&_.icon-wrapper]:max-md:pl-[1.86667vw] md:[&_.icon-wrapper_i]:bg-no-repeat md:[&_.icon-wrapper_i]:[background-image:url('/img/main-s1aea395e8c.png')] md:[&_.icon-wrapper_i]:[background-position:-385px_-833px] md:[&_.icon-wrapper_i]:h-[28px] md:[&_.icon-wrapper_i]:w-[29px] md:[&_.icon-wrapper_i]:mr-[6px] md:[&_.icon-wrapper_svg]:hidden max-md:[&_.icon-wrapper_svg]:block max-md:[&_.icon-wrapper_svg]:w-[6.66667vw] max-md:[&_.icon-wrapper_svg]:h-[6.66667vw]">
           <span className="icon-wrapper">
             <i>
               <PinSvg />
@@ -1459,7 +1490,7 @@ function BookmakerSection({
             </span>
           </div>
         ) : (
-          <span className="bg-gradient-to-br from-[var(--xts-lightest-navy)] to-[var(--mds-lightest-navy)] inline-block rounded-tr-[12px] relative mobile:px-2 mr-[1.86667vw] text-white [&_svg]:max-md:w-[4vw] [&_svg]:max-md:h-[4vw]">
+          <span className="bg-gradient-to-br from-[var(--xts-lightest-navy)] to-[var(--mds-lightest-navy)] inline-block rounded-tr-[12px] relative md:px-2 mr-[1.86667vw] text-white [&_svg]:max-md:w-[4vw] [&_svg]:max-md:h-[4vw]">
             <i
               onClick={onToggleInfo}
               role="button"
@@ -1512,7 +1543,7 @@ function BookmakerSection({
             {normalized.map((bookmaker, rowIdx) => {
               const isStatusBlocked = isBookmakerStatusBlocked(bookmaker.status)
               const isSuspended = setting.isSuspended || isStatusBlocked
-              const isInlineBookmaker =
+              const isActiveBookmaker =
                 active?.selectionId === bookmaker.selectionId && !isSuspended
               const statusLabel = titleCase(
                 setting.isSuspended ? 'Suspended' : bookmaker.status || ''
@@ -1538,7 +1569,7 @@ function BookmakerSection({
                     >
                       <table
                         align="right"
-                        className="border-collapse relative mobile:w-full mobile:max-w-[76%] before:content-[''] before:bg-gradient-to-r before:from-[rgba(130,183,221,0.15)] before:to-[rgba(130,183,221,0.8)] before:absolute before:left-0 before:right-0 before:top-0 before:bottom-0 before:w-1/2 before:z-0 after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-1/2 after:bg-gradient-to-l after:from-[rgba(231,170,184,0.8)] after:to-[rgba(231,170,184,0.15)] after:z-0 after:top-0"
+                        className="border-collapse relative md:w-full md:max-w-[76%] before:content-[''] before:bg-gradient-to-r before:from-[rgba(130,183,221,0.15)] before:to-[rgba(130,183,221,0.8)] before:absolute before:left-0 before:right-0 before:top-0 before:bottom-0 before:w-1/2 before:z-0 after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-1/2 after:bg-gradient-to-l after:from-[rgba(231,170,184,0.8)] after:to-[rgba(231,170,184,0.15)] after:z-0 after:top-0"
                       >
                         <tbody>
                           <tr>
@@ -1551,12 +1582,12 @@ function BookmakerSection({
                                 <td
                                   key={`back-${i}`}
                                   className={cx(
-                                    backCellCls(i, isInlineBookmaker),
+                                    backCellCls(i, isActiveBookmaker),
                                     showBackHeader &&
                                       "relative max-md:bg-gradient-to-r max-md:from-[rgba(151,199,234,0.7)] max-md:to-[var(--xs-lightest-navy)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Back'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-md:before:text-[3.46667vw]",
                                     // chip styling: rounded outer cell — handled by ::after layer
                                     "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-blue)] after:-z-[1] max-md:after:inset-[1vw]",
-                                    isInlineBookmaker &&
+                                    isActiveBookmaker &&
                                       active?.betType === 'BACK' &&
                                       isBestBack &&
                                       '!bg-[var(--xs-blue)] !shadow-none'
@@ -1580,11 +1611,11 @@ function BookmakerSection({
                                 <td
                                   key={`lay-${i}`}
                                   className={cx(
-                                    layCellCls(i, isInlineBookmaker),
+                                    layCellCls(i, isActiveBookmaker),
                                     showLayHeader &&
                                       "relative !bg-transparent max-md:bg-gradient-to-l max-md:from-[var(--xts-red)] max-md:to-[rgba(247,205,214,0.75)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Lay'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-md:before:text-[3.46667vw]",
                                     "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-red)] after:-z-[1] max-md:after:inset-[5px]",
-                                    isInlineBookmaker &&
+                                    isActiveBookmaker &&
                                       active?.betType === 'LAY' &&
                                       isBestLay &&
                                       '!bg-[var(--xs-red)] !shadow-none'
@@ -1613,22 +1644,6 @@ function BookmakerSection({
                       </table>
                     </td>
                   </tr>
-                  {/* INLINE BET SLIP — separate <tr> below the runner row, matches Angular */}
-                  {isInlineBookmaker && (
-                    <tr>
-                      <td colSpan={7} className="p-0">
-                        <InlineBetSlip
-                          betSlipDetails={active}
-                          onChange={onActiveChange}
-                          onCancel={() => onActiveChange(null)}
-                          onPlaceBet={(slip) =>
-                            onPlaceBet?.(slip, () => onActiveChange(null))
-                          }
-                          isPlacing={isPlacingActive}
-                        />
-                      </td>
-                    </tr>
-                  )}
                 </Fragment>
               )
             })}
@@ -1834,7 +1849,7 @@ function FancySection({
 
       {!isMobile && (
         <MatchHeader>
-          <div className="flex items-center justify-center pr-3 [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center mobile:[&_.icon-wrapper_i]:bg-no-repeat mobile:[&_.icon-wrapper_i]:[background-image:url('/img/main-s1aea395e8c.png')] mobile:[&_.icon-wrapper_i]:[background-position:-385px_-833px] mobile:[&_.icon-wrapper_i]:h-[28px] mobile:[&_.icon-wrapper_i]:w-[29px] mobile:[&_.icon-wrapper_i]:mr-[6px] mobile:[&_.icon-wrapper_svg]:hidden">
+          <div className="flex items-center justify-center pr-3 [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center md:[&_.icon-wrapper_i]:bg-no-repeat md:[&_.icon-wrapper_i]:[background-image:url('/img/main-s1aea395e8c.png')] md:[&_.icon-wrapper_i]:[background-position:-385px_-833px] md:[&_.icon-wrapper_i]:h-[28px] md:[&_.icon-wrapper_i]:w-[29px] md:[&_.icon-wrapper_i]:mr-[6px] md:[&_.icon-wrapper_svg]:hidden">
             <span className="icon-wrapper">
               <i>
                 <PinSvg />
@@ -2063,14 +2078,14 @@ function SportbookSection({
           const isCollapsed =
             collapsed[id] === undefined ? i > 5 : collapsed[id]
           return (
-            <div key={id} className="mobile:mb-1 mb-0">
+            <div key={id} className="md:mb-1 mb-0">
               <h2>
                 <button
                   type="button"
                   className="pl-0 flex items-center w-full text-left max-md:bg-[var(--text-color)] max-md:px-0 max-md:pl-[1.8666666667vw] max-md:leading-[8.6vw] max-md:border-b max-md:border-b-[var(--sm-text-color)] max-md:text-white"
                   onClick={() => toggle(id)}
                 >
-                  <i className="mobile:mr-1 inline-flex items-center justify-center bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xs-black)] h-[25px] w-[25px] text-center leading-[22px] text-[var(--sm-white)] hover:bg-gradient-to-b hover:from-[var(--xs-black)] hover:to-[var(--xl-blue)] hover:text-[var(--xs-shadow-primary)] [&_svg]:h-[16px] [&_svg]:w-[18px] max-md:rounded-full max-md:h-[6.6666666667vw] max-md:w-[6.6666666667vw] max-md:leading-normal max-md:bg-[var(--xs-dark)] max-md:mr-[1.4vw] max-md:[&_svg]:w-[4.6666666667vw] max-md:[&_svg]:h-[4.6666666667vw]">
+                  <i className="md:mr-1 inline-flex items-center justify-center bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xs-black)] h-[25px] w-[25px] text-center leading-[22px] text-[var(--sm-white)] hover:bg-gradient-to-b hover:from-[var(--xs-black)] hover:to-[var(--xl-blue)] hover:text-[var(--xs-shadow-primary)] [&_svg]:h-[16px] [&_svg]:w-[18px] max-md:rounded-full max-md:h-[6.6666666667vw] max-md:w-[6.6666666667vw] max-md:leading-normal max-md:bg-[var(--xs-dark)] max-md:mr-[1.4vw] max-md:[&_svg]:w-[4.6666666667vw] max-md:[&_svg]:h-[4.6666666667vw]">
                     <PinSvg />
                   </i>
                   <span className="text-[14px] font-bold max-md:text-[3.4666666667vw] max-md:leading-[1.5] max-md:flex-1">
@@ -2117,7 +2132,7 @@ function SportbookSection({
                               )}
                               <b>{runner.back?.[0]?.price || ''}</b>
                             </span>
-                            <span className="mobile:inline-block max-md:hidden" />
+                            <span className="md:inline-block max-md:hidden" />
                           </div>
                         </div>
                         {isActive && (

@@ -29,6 +29,11 @@ function formatNumber(value) {
   }).format(value ?? 0)
 }
 
+function titleCaseBetType(t) {
+  if (!t) return ''
+  return t.charAt(0).toUpperCase() + t.slice(1).toLowerCase()
+}
+
 function formatDateTime(value) {
   if (!value) return ''
   const date = new Date(value)
@@ -50,6 +55,17 @@ const TH_BASE =
 const TD_BASE =
   'font-medium px-1.5 py-2 text-[11px] align-middle overflow-hidden text-center bg-transparent border-b border-white max-md:py-[1.33333vw] max-md:px-[1.86667vw] max-md:[&_p]:text-[3.46667vw] max-md:[&_p]:leading-[1.3]'
 
+// Bet-type chip ("Back" / "Lay"). Mirrors Angular's `.odd-type.dark-back` /
+// `.odd-type.dark-lay` — darker blue/red badge with the text centred.
+const ODD_TYPE_CHIP =
+  'm-0 px-1 py-[3px] rounded text-[var(--dark)] w-8 text-center odd-type max-md:rounded-[1.06667vw] max-md:text-[3.46667vw] max-md:leading-[7vw] max-md:w-[12vw] max-md:p-0'
+
+// Row backgrounds — Angular `.light-back` (light blue) / `.light-lay` (light red).
+const ROW_LIGHT_BACK =
+  'bg-[var(--md-blue-bg)] [&_.odd-type]:bg-[var(--xs-blue)] max-md:[&_td]:border-b max-md:[&_td]:border-[var(--xs-blue)]'
+const ROW_LIGHT_LAY =
+  'bg-[var(--md-red-bg)] [&_.odd-type]:bg-[var(--xs-red)] max-md:[&_td]:border-b max-md:[&_td]:border-[var(--xs-red)]'
+
 function NoOpenBets({ isYellowTheme }) {
   const { t } = useTranslation()
   if (isYellowTheme) {
@@ -62,7 +78,7 @@ function NoOpenBets({ isYellowTheme }) {
   }
 
   return (
-    <p className="text-center my-4 text-[13px] max-[991px]:text-[12px]">
+    <p className="text-center my-4 text-xs max-[991px]:text-[12px]">
       {t('openBets.noOpenBetsAvailable', 'No open bets available.')}
     </p>
   )
@@ -128,16 +144,16 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
                 </td>
               </tr>
             )}
-            <tr className="max-md:[&_td]:border-b max-md:[&_td]:border-[var(--md-blue-border)] max-md:[&_.odd-type]:bg-[var(--xs-blue)]">
+            <tr className={ROW_LIGHT_BACK}>
               <td
                 className={`${TD_BASE} w-[8%] pr-0 max-md:[&:first-of-type]:pr-[1.86667vw]`}
               >
                 <div>
-                  <div className="m-0 px-1 py-[3px] rounded text-[var(--dark)] w-8 odd-type max-md:rounded-[1.06667vw] max-md:text-[3.46667vw] max-md:leading-[7vw] max-md:w-[12vw] max-md:p-0 max-md:text-[var(--dark)]">
+                  <div className={ODD_TYPE_CHIP}>
                     <span>
                       {isSportsBook
                         ? openBet.selectedRunnerName
-                        : openBet.betType}
+                        : titleCaseBetType(openBet.betType)}
                     </span>
                   </div>
                 </div>
@@ -147,9 +163,6 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
                   <span className="m-0 w-[100px] [-webkit-line-clamp:2] [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden text-ellipsis font-semibold text-[12px] text-[var(--lg-blue)] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:block max-md:text-[var(--dark)] max-md:w-[19.038vw]">
                     {openBet?.selection?.name}
                   </span>
-                  <p className="m-0 text-[var(--xls-black)] opacity-50">
-                    {openBet?.event?.type}
-                  </p>
                 </div>
               </td>
               <td className={TD_BASE}>
@@ -235,16 +248,16 @@ function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
                 </td>
               </tr>
             )}
-            <tr className="max-md:[&_td]:border-b max-md:[&_td]:border-[var(--xts-red)] max-md:[&_.odd-type]:bg-[var(--xs-red)]">
+            <tr className={ROW_LIGHT_LAY}>
               <td
                 className={`${TD_BASE} w-[8%] pr-0 max-md:[&:first-of-type]:pr-[1.86667vw]`}
               >
                 <div>
-                  <div className="m-0 px-1 py-[3px] rounded text-[var(--dark)] w-8 odd-type max-md:rounded-[1.06667vw] max-md:text-[3.46667vw] max-md:leading-[7vw] max-md:w-[12vw] max-md:p-0 max-md:text-[var(--dark)]">
+                  <div className={ODD_TYPE_CHIP}>
                     <span>
                       {isSportsBook
                         ? openBet.selectedRunnerName
-                        : openBet.betType}
+                        : titleCaseBetType(openBet.betType)}
                     </span>
                   </div>
                 </div>
@@ -254,9 +267,6 @@ function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
                   <span className="m-0 w-[100px] [-webkit-line-clamp:2] [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden text-ellipsis font-semibold text-[12px] text-[var(--lg-blue)] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:block max-md:text-[var(--dark)] max-md:w-[19.038vw]">
                     {openBet?.selection?.name}
                   </span>
-                  <p className="m-0 text-[var(--xls-black)] opacity-50">
-                    {openBet?.event?.type}
-                  </p>
                 </div>
               </td>
               <td className={TD_BASE}>

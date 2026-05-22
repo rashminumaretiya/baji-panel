@@ -4,32 +4,49 @@ import { http } from '../../core/http/client.js'
 import { placeBet as placeBetApi } from '../../shared/services/place-bet.js'
 import { fetchBalance } from './authSlice.js'
 
-// Mirrors Angular's open-bets transformation in
-// `open-bets.component.ts > getOpenBetsList()` — split each event's flat `bets`
-// array into back/lay buckets, joining sport-book multi-runner selections.
+const BACK_TYPES = new Set(['BACK', 'YES', 'Back', 'Yes'])
+const LAY_TYPES = new Set(['LAY', 'NO', 'Lay', 'No'])
+
+function deriveSelection(b) {
+  if (Array.isArray(b.selection)) {
+    return {
+      name: b.selection
+        .map((e) => e?.name)
+        .filter(Boolean)
+        .join(' | '),
+      id: '',
+    }
+  }
+  return {
+    name: b.selectionName ?? b.selection?.name ?? '',
+    id: String(b.selectionId ?? b.selection?.id ?? ''),
+  }
+}
+
 function normalizeOpenBets(list) {
   if (!Array.isArray(list)) return []
-  return list.map((bet) => ({
-    ...bet,
-    bets: {
-      back: (bet.bets ?? [])
-        .filter((b) => b.betType === 'Back' || b.betType === 'Yes')
-        .map((b) =>
-          Array.isArray(b.selection)
-            ? {
-                ...b,
-                selection: {
-                  name: b.selection.map((e) => e?.name).join(' | '),
-                  id: '',
-                },
-              }
-            : b,
-        ),
-      lay: (bet.bets ?? []).filter(
-        (b) => b.betType === 'Lay' || b.betType === 'No',
-      ),
-    },
-  }))
+  return list.map((wrapper) => {
+    const wrapperEventType =
+      wrapper.eventType ?? wrapper.marketName ?? wrapper.gtype ?? ''
+    const normalizedBets = (wrapper.bets ?? []).map((b) => ({
+      ...b,
+      selection: deriveSelection(b),
+      event: { type: b.gtype ?? wrapperEventType },
+      profitLoss: b.profitLoss ?? b.profit ?? 0,
+    }))
+    return {
+      ...wrapper,
+      event: {
+        type: wrapperEventType,
+        name: wrapper.eventTitle ?? wrapper.event?.name ?? '',
+        id: String(wrapper.eventId ?? wrapper.event?.id ?? ''),
+      },
+      bets: {
+        back: normalizedBets.filter((b) => BACK_TYPES.has(b.betType)),
+        lay: normalizedBets.filter((b) => LAY_TYPES.has(b.betType)),
+      },
+    }
+  })
 }
 
 const initialState = {
@@ -59,16 +76,11 @@ export const fetchOpenBets = createAsyncThunk(
   },
 )
 
-// Place-bet thunk: encrypts the payload, POSTs to `user/bet/`, refreshes the
-// wallet balance, and clears the right-side slip on success. Inline slip cleanup
-// (the `activeBookmaker` / `activeFancyBet` / `activeSportBook` state in LiveOdds)
-// happens in the dispatcher's `.then(...)` chain since that state isn't in Redux.
 export const placeBet = createAsyncThunk(
   'betSlip/placeBet',
   async ({ slip, context } = {}, { dispatch, rejectWithValue }) => {
     try {
       const data = await placeBetApi(slip, context ?? {})
-      // Refresh wallet immediately so the user sees the deducted stake.
       dispatch(fetchBalance())
       return { data, slip }
     } catch (err) {

@@ -201,7 +201,6 @@ export default function MobileSearchEvent() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   autoFocus={open}
-                  // SCSS reset on mobile: `padding-left: 0; height: 100%;`
                   className={
                     'h-[46px] max-md:h-full max-md:pl-0 w-full outline-none border-0 ' +
                     'font-normal placeholder:text-[#9b9b9b] placeholder:font-normal placeholder:ml-0'

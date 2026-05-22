@@ -209,8 +209,6 @@ const OUTER_SELECT =
 
 const OUTER_SELECT_YELLOW = 'max-md:[&_select]:text-[4.1vw]'
 
-// `.matched-select` ─ the <select> itself. Desktop: tight 180px pill. Mobile:
-// full-width capsule with appearance:none so our ::after triangle is visible.
 const MATCHED_SELECT =
   'w-[180px] text-[14px] p-0.5 leading-[29px] h-[29px] ' +
   'max-md:appearance-none max-md:w-full max-md:text-[3.73vw] ' +

@@ -11,6 +11,7 @@ import {
   setActiveBetSlip,
 } from '../store/slices/betSlipSlice.js'
 import { alertService } from '../shared/services/alert.js'
+import Loader from '../shared/components/Loader.jsx'
 import SvgIcon from './SvgIcon.jsx'
 
 const DEFAULT_AVAILABLE_STAKE = [100, 200, 500, 1000, 2000, 5000]
@@ -58,9 +59,11 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
   const [odds, setOdds] = useState(activeMatchOdd?.odd ?? '')
   const [stake, setStake] = useState('')
   const [confirmBets, setConfirmBets] = useState(false)
-  const [preExposureLiability, setPreExposureLiability] = useState(0)
 
-  const profitLiability = Number(stake) * Number(odds) - Number(stake) || 0
+  const numericOdds = Number(odds) || 0
+  const numericStake = Number(stake) || 0
+  const profitLiability = (numericOdds - 1) * numericStake
+  const liability = isBack ? numericStake : (numericOdds - 1) * numericStake
 
   const onStakeClick = (value) => {
     setStake(String(value))
@@ -68,8 +71,6 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
 
   const onPlaceBet = async () => {
     if (submitting) return
-    const numericOdds = Number(odds)
-    const numericStake = Number(stake)
     if (!numericOdds || !numericStake) {
       alertService.error('Please enter odds and stake')
       return
@@ -80,10 +81,15 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
       odds: numericOdds,
       stake: numericStake,
     }
+    const context = {
+      sport: activeMatchOdd?.sport ?? '',
+      eventId: String(activeMatchOdd?.eventId ?? ''),
+      eventTitle: activeMatchOdd?.eventTitle ?? '',
+      runners: activeMatchOdd?.runners ?? [],
+    }
     try {
-      await dispatch(placeBet({ slip })).unwrap()
+      await dispatch(placeBet({ slip, context })).unwrap()
       alertService.success('Bet placed successfully')
-      setPreExposureLiability(0)
     } catch (msg) {
       alertService.error(typeof msg === 'string' ? msg : 'Failed to place bet')
     }
@@ -147,12 +153,13 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
                       name="cross"
                       className="mr-1 h-[15px] flex items-center [&_svg]:h-2.5 [&_svg]:w-2.5 [&_svg]:bg-red-600 [&_svg]:text-[var(--white)] [&_svg]:p-0.5 [&_svg]:rounded-[3px]"
                     />
-                    <div className="flex flex-wrap ml-1">
+                    <div className="flex flex-col ml-1">
                       <span className="m-0 whitespace-nowrap inline-block pr-1">
                         {activeMatchOdd?.selectionName}
                       </span>
                       <p className="opacity-50 mb-0 text-[11px]">
-                        {activeMatchOdd?.marketName}
+                        {activeMatchOdd?.marketDisplayName ||
+                          activeMatchOdd?.marketName}
                       </p>
                     </div>
                   </div>
@@ -197,7 +204,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
                       <button
                         key={stakeValue}
                         type="button"
-                        className="w-1/6 bg-gradient-to-t from-[#f3f3f3] to-[#fbfbfb] p-0 mx-0.5 mb-[1px] mt-0.5 border border-[#bbb] rounded text-[#1e1e1e] text-[11px] leading-[18px] font-normal min-[768px]:max-[1199px]:w-auto min-[768px]:max-[1199px]:px-2 min-[768px]:max-[1199px]:py-0.5"
+                        className="w-1/6 cursor-pointer bg-gradient-to-t from-[#f3f3f3] to-[#fbfbfb] p-0 mx-0.5 mb-[1px] mt-0.5 border border-[#bbb] rounded text-[#1e1e1e] text-[11px] leading-[18px] font-normal min-[768px]:max-[1199px]:w-auto min-[768px]:max-[1199px]:px-2 min-[768px]:max-[1199px]:py-0.5"
                         onClick={() => onStakeClick(stakeValue)}
                       >
                         {stakeValue}
@@ -222,13 +229,9 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
                   className="font-medium px-1.5 py-1 text-[12px] align-middle overflow-hidden bg-white"
                 >
                   <p className="text-right text-[#777] text-[12px] my-[5px]">
-                    Liability{' '}
-                    <span className="text-[var(--red)]">
-                      {formatNumber(
-                        preExposureLiability > 0
-                          ? preExposureLiability
-                          : preExposureLiability * -1
-                      )}
+                    {t('common.liability', 'Liability')}{' '}
+                    <span className="text-[var(--red)] text-[11px]">
+                      {formatNumber(Math.abs(liability))}
                     </span>
                   </p>
                 </td>
@@ -240,7 +243,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
           <button
             type="button"
             className={cx(
-              'max-w-[200px] w-full text-[12px] rounded text-[#1e1e1e] font-bold leading-[23px] p-0 mr-2 bg-white border border-[#bbb]',
+              'btn btn-white max-w-[200px] cursor-pointer mr-2 w-full',
               submitting && 'opacity-60 cursor-not-allowed'
             )}
             onClick={onCancelAll}
@@ -251,13 +254,13 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
           <button
             type="button"
             className={cx(
-              'max-w-[200px] w-full text-[12px] rounded font-bold leading-[23px] p-0 bg-[var(--primary)] border border-[var(--lg-primary)]',
+              'btn btn-primary max-w-[200px] w-full cursor-pointer',
               isYellowTheme &&
                 '!text-[var(--dark)] !bg-[image:linear-gradient(0deg,var(--md-primary-yellow)_0%,#ffa10c_100%)] !border-[var(--coffee)]',
-              (!stake || submitting) && 'cursor-not-allowed'
+              submitting && 'cursor-not-allowed'
             )}
             onClick={onPlaceBet}
-            disabled={!stake || submitting}
+            disabled={submitting}
           >
             {submitting
               ? t('common.placing', 'Placing…')
@@ -288,53 +291,60 @@ export default function BetSlip() {
   const activeMatchOdd = useSelector(selectActiveBetSlip)
   const stakesData = useSelector(selectStakesData)
   const isYellowTheme = useSelector(selectIsYellowTheme)
+  const isPlacing = useSelector(selectIsPlacingBet)
 
   const [isCollapsed, setIsCollapsed] = useState(false)
-  const [isShowLoader] = useState(false)
 
   const isOpen = !!activeMatchOdd
   const availableStake =
     stakesData?.length > 0 ? stakesData : DEFAULT_AVAILABLE_STAKE
 
   return (
-    <div>
-      <div>
-        <div className="mb-0">
-          <h2 className="relative bg-gradient-to-b from-[var(--xts-blue)] to-[var(--xts-blue)] shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] m-0">
-            <button
-              type="button"
-              className={cx(
-                'w-full text-left px-2.5 text-white text-xs leading-[25px] shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] transition-[background-image] duration-200 bg-no-repeat bg-right bg-[length:auto_100%] relative flex items-center justify-between',
-                isCollapsed
-                  ? 'bg-[url(/img/grediant-slip-plus.png)]'
-                  : 'bg-[url(/img/grediant-slip-minus.png)]'
-              )}
-              aria-expanded={!isCollapsed}
-              onClick={() => setIsCollapsed((prev) => !prev)}
+    <div className="mb-0">
+      <h2 className="relative bg-linear-to-b from-(--xts-blue) to-(--xts-blue) shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] m-0">
+        <button
+          type="button"
+          className={cx(
+            'w-full text-left px-2.5 text-white text-xs leading-[25px] shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] transition-[background-image] duration-200 bg-no-repeat bg-right bg-[length:auto_100%] relative flex items-center justify-between',
+            isCollapsed
+              ? 'bg-[url(/img/grediant-slip-plus.png)]'
+              : 'bg-[url(/img/grediant-slip-minus.png)]'
+          )}
+          aria-expanded={!isCollapsed}
+          onClick={() => setIsCollapsed((prev) => !prev)}
+        >
+          <span>{t('common.betSlip', 'Bet Slip')}</span>
+        </button>
+      </h2>
+      <Collapse in={!isCollapsed}>
+        <div className="relative">
+          {isPlacing && (
+            <div
+              className="absolute inset-0 z-10 flex items-center justify-center bg-white/70 backdrop-blur-[1px] cursor-wait"
+              aria-busy="true"
+              aria-live="polite"
             >
-              <span>{t('common.betSlip', 'Bet Slip')}</span>
-            </button>
-          </h2>
-          <Collapse in={!isCollapsed}>
-            <div>
-              <div>
-                {isOpen ? (
-                  <BetSlipForm
-                    // Key remounts the form whenever the active selection / betType
-                    // changes so the controlled `odds` and `stake` inputs reset.
-                    key={`${activeMatchOdd?.marketId ?? ''}-${activeMatchOdd?.selectionId ?? ''}-${activeMatchOdd?.betType ?? ''}`}
-                    activeMatchOdd={activeMatchOdd}
-                    availableStake={availableStake}
-                    isYellowTheme={isYellowTheme}
-                  />
-                ) : (
-                  <NoBetSlip isShowLoader={isShowLoader} />
-                )}
-              </div>
+              <Loader
+                show
+                message="common.placingBet"
+                fallback="Placing bet please wait..."
+              />
             </div>
-          </Collapse>
+          )}
+          <div>
+            {isOpen ? (
+              <BetSlipForm
+                key={`${activeMatchOdd?.marketId ?? ''}-${activeMatchOdd?.selectionId ?? ''}-${activeMatchOdd?.betType ?? ''}`}
+                activeMatchOdd={activeMatchOdd}
+                availableStake={availableStake}
+                isYellowTheme={isYellowTheme}
+              />
+            ) : (
+              <NoBetSlip />
+            )}
+          </div>
         </div>
-      </div>
+      </Collapse>
     </div>
   )
 }
