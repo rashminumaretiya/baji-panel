@@ -1221,7 +1221,7 @@ export default function LiveOdds() {
 
 export const PinRefresh = memo(function PinRefresh({ onRefresh }) {
   const baseDiv =
-    'text-white font-bold z-[1] min-w-[90px] flex justify-center h-[25px] leading-[20px] relative max-md:px-3 max-md:py-[6px] max-md:h-[7.46667vw] max-md:leading-tight max-md:text-[3.2vw] max-md:min-w-[25.5vw] [&_i_svg]:h-[14px] [&_i_svg]:w-[14px] max-md:[&_i_svg]:h-[3.73333vw] max-md:[&_i_svg]:w-[3.73333vw] mobile:[&_span]:hidden'
+    'text-white font-bold z-[1] min-w-[90px] flex justify-center items-center h-[25px] leading-[20px] relative max-md:px-3 max-md:py-[6px] max-md:h-[7.46667vw] max-md:leading-tight max-md:text-[3.2vw] max-md:min-w-[25.5vw] [&_i_svg]:h-[14px] [&_i_svg]:w-[14px] max-md:[&_i_svg]:h-[3.73333vw] max-md:[&_i_svg]:w-[3.73333vw] mobile:[&_span]:hidden'
 
   const firstDiv = `${baseDiv} bg-[var(--text-xl-color)] rounded-bl-[10px] max-md:bg-gradient-to-t max-md:from-[var(--xls-navy)] max-md:to-[var(--xts-light-bg)] max-md:w-[25.5vw] max-md:rounded-bl-[3vw] before:content-[''] before:absolute before:left-[-3px] before:w-[19px] before:bg-[var(--text-xl-color)] before:top-[-4px] before:bottom-[1px] before:-z-[1] before:[transform:rotate(-22deg)] before:rounded-bl-[10px] max-md:before:[transform:rotate(-16deg)] max-md:before:bg-gradient-to-t max-md:before:from-[var(--xs-navy)] max-md:before:to-[var(--xts-md-bg)] max-md:before:rounded-bl-[3vw]`
 
@@ -1797,7 +1797,7 @@ function BookmakerSection({
       </MatchHeader>
 
       <div className="mb-4">
-        <table className="w-full border-collapse bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)]">
+        <table className="w-full border-collapse bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)]  [&_td]:border-t [&_td]:border-[var(--tbl-border-color)]">
           <thead className="bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)]">
             <tr>
               <th className="h-[22px] p-[5px] max-md:h-[8vw]" />
@@ -1826,7 +1826,7 @@ function BookmakerSection({
 
               return (
                 <Fragment key={bookmaker.selectionId}>
-                  <tr className="bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)] hover:[&_td]:bg-white/40 hover:[&_td:first-child]:bg-white/40">
+                  <tr className="bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)] hover:[&_td]:bg-white/40">
                     <td className="px-[10px] pt-[4px] !align-top bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)] max-md:px-[1.8666666667vw] max-md:py-0 max-md:!align-middle max-md:text-[4vw] min-w-[170px]">
                       <div className="flex flex-col">
                         <span className="font-bold">
@@ -1843,7 +1843,7 @@ function BookmakerSection({
                     >
                       <table
                         align="right"
-                        className="border-collapse relative md:w-full md:max-w-[76%] before:content-[''] before:bg-gradient-to-r before:from-[rgba(130,183,221,0.15)] before:to-[rgba(130,183,221,0.8)] before:absolute before:left-0 before:right-0 before:top-0 before:bottom-0 before:w-1/2 before:z-0 after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-1/2 after:bg-gradient-to-r after:from-[rgba(231,170,184,0.8)] after:to-[rgba(231,170,184,0.15)] after:z-0 after:top-0"
+                        className="border-collapse relative md:w-full md:max-w-[76%] before:content-[''] before:bg-[linear-gradient(90deg,rgba(130,183,221,0.15)_0%,rgba(130,183,221,0.8)_65%)] before:absolute before:left-0 before:right-0 before:top-0 before:bottom-0 before:w-1/2 before:z-0 after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-1/2 after:bg-[linear-gradient(270deg,rgba(231,170,184,0.15)_5%,rgba(231,170,184,0.8)_60%)] after:z-0 after:top-0 after:z-1 before:z-1 after:w-[50%+1px]"
                       >
                         <tbody className="relative">
                           {isSuspended && (
@@ -1851,7 +1851,7 @@ function BookmakerSection({
                               Suspended
                             </div>
                           )}
-                          <tr>
+                          <tr className="bg-[var(--light-xs-yellow)]">
                             {bookmaker.back.map((backCell, i) => {
                               if (isMobile && i !== 2) return null
                               const isBestBack = i === 2
@@ -1864,7 +1864,7 @@ function BookmakerSection({
                                     showBackHeader &&
                                       "relative max-md:bg-gradient-to-r max-md:from-[rgba(151,199,234,0.7)] max-md:to-[var(--xs-lightest-navy)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Back'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-md:before:text-[3.46667vw]",
 
-                                    "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-blue)] after:-z-[1] max-md:after:inset-[1vw]",
+                                    "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-blue)] after:-z-[1] max-md:after:inset-[1vw] first-of-type:after:hidden [&:nth-of-type(2)]:after:hidden",
                                     isInlineBookmaker &&
                                       active?.betType === 'BACK' &&
                                       isBestBack &&
@@ -1892,7 +1892,7 @@ function BookmakerSection({
                                     layCellCls(i, isInlineBookmaker),
                                     showLayHeader &&
                                       "relative !bg-transparent max-md:bg-gradient-to-l max-md:from-[var(--xts-red)] max-md:to-[rgba(247,205,214,0.75)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Lay'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-md:before:text-[3.46667vw]",
-                                    "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-red)] after:-z-[1] max-md:after:inset-[5px]",
+                                    "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-red)] after:-z-[1] max-md:after:inset-[5px] last-of-type:after:hidden [&:nth-last-of-type(2)]:after:hidden",
                                     isInlineBookmaker &&
                                       active?.betType === 'LAY' &&
                                       isBestLay &&
