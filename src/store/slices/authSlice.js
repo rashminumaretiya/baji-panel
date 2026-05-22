@@ -215,6 +215,7 @@ export const selectToken = (s) => s.auth.user?.token
 export const selectCurrency = (s) => s.auth.user?.currency
 export const selectWallet = (s) => s.auth.wallet
 export const selectIsOneClickBet = (s) => s.auth.isOneClickBet
+export const selectIsLoginWindow = (s) => s.auth.isLoginWindow
 export const selectSelectedLanguage = (s) => s.auth.selectedLanguage
 export const selectIsUserNameWithHash = (s) =>
   s.auth.user?.profileDetails?.userName?.startsWith('#') ?? false

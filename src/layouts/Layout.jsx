@@ -1,9 +1,11 @@
 import { Suspense, useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation } from 'react-router-dom'
 import {
   selectIsAuthenticated,
+  selectIsLoginWindow,
   selectIsOneClickBet,
+  setLoginWindow,
 } from '../store/slices/authSlice'
 import {
   selectIsFullScreenLoader,
@@ -21,6 +23,7 @@ import MobileNavigation from '../components/MobileNavigation.jsx'
 import OneClickBet from '../components/OneClickBet.jsx'
 import NewsLine from '../components/NewsLine'
 import Loader from '../shared/components/Loader.jsx'
+import LoginModel from '../shared/components/loginModel/LoginModel.jsx'
 import SportsSidebar from '../shared/components/sports-sidebar/SportsSidebar'
 
 const cx = (...classes) => classes.filter(Boolean).join(' ')
@@ -63,12 +66,14 @@ const HEADER_WRAPPER = 'fixed top-0 left-0 right-0 z-[1000]'
 
 export default function Layout() {
   const { pathname } = useLocation()
+  const dispatch = useDispatch()
 
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const isMobile = useSelector(selectIsMobile)
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
   const isOneClickBet = useSelector(selectIsOneClickBet)
+  const isLoginWindow = useSelector(selectIsLoginWindow)
   const layoutedRoutes = useSelector(selectLayoutedRoutes)
   const isMainScreenLoader = useSelector(selectIsMainScreenLoader)
   const isFullScreenLoader = useSelector(selectIsFullScreenLoader)
@@ -159,6 +164,11 @@ export default function Layout() {
           </div>
         )}
       </div>
+
+      <LoginModel
+        isOpen={isLoginWindow}
+        onClose={() => dispatch(setLoginWindow(false))}
+      />
     </div>
   )
 }
