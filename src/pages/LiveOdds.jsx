@@ -363,6 +363,7 @@ export default function LiveOdds() {
   const [fancyInfoIndex, setFancyInfoIndex] = useState(-1)
   const [error, setError] = useState(null)
 
+  const [activeBookmaker, setActiveBookmaker] = useState(null)
   const [activeFancyBet, setActiveFancyBet] = useState(null)
   const [activeSportBook, setActiveSportBook] = useState(null)
 
@@ -602,11 +603,8 @@ export default function LiveOdds() {
   const toggleLiveStream = useCallback(() => setIsLiveStreamOn((on) => !on), [])
   const closeLiveStream = useCallback(() => setIsLiveStreamOn(false), [])
 
-  // Inline bookmaker / fancy / sportsbook slips. Dispatches the Redux thunk so
-  // the loading flag (`isPlacingBet` + `placingSelectionId`) propagates to the
-  // <InlineBetSlip /> button disabled state across the page.
   const handlePlaceBet = useCallback(
-    async (slip, onDone) => {
+    (slip) => {
       const context = {
         sport: sportSlug ?? '',
         eventId: String(eventId ?? ''),
@@ -614,15 +612,7 @@ export default function LiveOdds() {
           matchOddsList?.[0]?.eventName || matchOddsList?.[0]?.eventTitle || '',
         runners: matchOddsList?.[0]?.runners ?? [],
       }
-      try {
-        await dispatch(placeBet({ slip, context })).unwrap()
-        alertService.success('Bet placed successfully')
-        onDone?.()
-      } catch (msg) {
-        alertService.error(
-          typeof msg === 'string' ? msg : 'Failed to place bet'
-        )
-      }
+      return dispatch(placeBet({ slip, context })).unwrap()
     },
     [dispatch, sportSlug, eventId, matchOddsList]
   )
@@ -734,8 +724,6 @@ export default function LiveOdds() {
       max: Number(bookmaker.max ?? bookmakerSetting.max ?? 10000),
     }
     if (tryOneClickPlace(slip)) return
-    // Bookmaker bets are placed in the right-side <BetSlip /> panel (Redux).
-    // Same shape as match-odds — only `marketName` and `marketDisplayName` differ.
     dispatch(setActiveBetSlip(slip))
   }
   const onFancyClick = (item, betType) => {
@@ -932,12 +920,15 @@ export default function LiveOdds() {
               isMobile={isMobile}
               infoOpen={bookmakerInfoOpen}
               onToggleInfo={() => setBookmakerInfoOpen((v) => !v)}
-              active={
-                activeRightSideBet?.marketName === 'BOOKMAKER'
-                  ? activeRightSideBet
-                  : null
-              }
+              active={activeBookmaker}
+              onActiveChange={setActiveBookmaker}
               onPick={onBookmakerClick}
+              onPlaceBet={handlePlaceBet}
+              isPlacingActive={
+                isPlacingBet &&
+                String(placingSelectionId) ===
+                  String(activeBookmaker?.selectionId ?? '')
+              }
             />
           )}
 
@@ -1436,9 +1427,7 @@ export function MatchOddsSection({
                           }}
                           onChange={() => {}}
                           onCancel={onCancelMatchOdds}
-                          onPlaceBet={(slip) =>
-                            onPlaceBet?.(slip, onCancelMatchOdds)
-                          }
+                          onPlaceBet={onPlaceBet}
                           isPlacing={isPlacingActive}
                         />
                       </td>
@@ -1461,7 +1450,10 @@ function BookmakerSection({
   infoOpen,
   onToggleInfo,
   active,
+  onActiveChange,
   onPick,
+  onPlaceBet,
+  isPlacingActive,
 }) {
   const { t } = useTranslation()
   // Normalise the React API's flat shape ({sid, nat, s, b1..b3, l1..l3, bs1..bs3, ls1..ls3})
@@ -1599,7 +1591,7 @@ function BookmakerSection({
             {normalized.map((bookmaker, rowIdx) => {
               const isStatusBlocked = isBookmakerStatusBlocked(bookmaker.status)
               const isSuspended = setting.isSuspended || isStatusBlocked
-              const isActiveBookmaker =
+              const isInlineBookmaker =
                 active?.selectionId === bookmaker.selectionId && !isSuspended
               const statusLabel = titleCase(
                 setting.isSuspended ? 'Suspended' : bookmaker.status || ''
@@ -1634,7 +1626,6 @@ function BookmakerSection({
                             </div>
                           )}
                           <tr>
-                            {/* BACK — iterates bookmaker.back; mobile shows only $index === 2 */}
                             {bookmaker.back.map((backCell, i) => {
                               if (isMobile && i !== 2) return null
                               const isBestBack = i === 2
@@ -1643,12 +1634,12 @@ function BookmakerSection({
                                 <td
                                   key={`back-${i}`}
                                   className={cx(
-                                    backCellCls(i, isActiveBookmaker),
+                                    backCellCls(i, isInlineBookmaker),
                                     showBackHeader &&
                                       "relative max-md:bg-gradient-to-r max-md:from-[rgba(151,199,234,0.7)] max-md:to-[var(--xs-lightest-navy)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Back'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-md:before:text-[3.46667vw]",
                                     // chip styling: rounded outer cell — handled by ::after layer
                                     "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-blue)] after:-z-[1] max-md:after:inset-[1vw]",
-                                    isActiveBookmaker &&
+                                    isInlineBookmaker &&
                                       active?.betType === 'BACK' &&
                                       isBestBack &&
                                       '!bg-[var(--xs-blue)] !shadow-none'
@@ -1672,11 +1663,11 @@ function BookmakerSection({
                                 <td
                                   key={`lay-${i}`}
                                   className={cx(
-                                    layCellCls(i, isActiveBookmaker),
+                                    layCellCls(i, isInlineBookmaker),
                                     showLayHeader &&
                                       "relative !bg-transparent max-md:bg-gradient-to-l max-md:from-[var(--xts-red)] max-md:to-[rgba(247,205,214,0.75)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Lay'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-md:before:text-[3.46667vw]",
                                     "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-red)] after:-z-[1] max-md:after:inset-[5px]",
-                                    isActiveBookmaker &&
+                                    isInlineBookmaker &&
                                       active?.betType === 'LAY' &&
                                       isBestLay &&
                                       '!bg-[var(--xs-red)] !shadow-none'
@@ -1705,6 +1696,22 @@ function BookmakerSection({
                       </table>
                     </td>
                   </tr>
+                  {/* Inline bet slip + strip loader below the active runner —
+                      same pattern as fancy / sportsbook. */}
+                  {isInlineBookmaker && (
+                    <tr>
+                      <td colSpan={7} className="p-0">
+                        <InlineBetSlip
+                          betSlipDetails={active}
+                          onChange={onActiveChange}
+                          onCancel={() => onActiveChange(null)}
+                          onPlaceBet={onPlaceBet}
+                          isPlacing={isPlacingActive}
+                        />
+                        {isPlacingActive && <PlacingBetStrip />}
+                      </td>
+                    </tr>
+                  )}
                 </Fragment>
               )
             })}
@@ -2084,11 +2091,10 @@ function FancySection({
                           betSlipDetails={active}
                           onChange={onActiveChange}
                           onCancel={() => onActiveChange(null)}
-                          onPlaceBet={(slip) =>
-                            onPlaceBet?.(slip, () => onActiveChange(null))
-                          }
+                          onPlaceBet={onPlaceBet}
                           isPlacing={isPlacingActive}
                         />
+                        {isPlacingActive && <PlacingBetStrip />}
                       </td>
                     </tr>
                   )}
@@ -2099,6 +2105,44 @@ function FancySection({
         </table>
       </div>
     </>
+  )
+}
+
+
+function PlacingBetStrip({ durationMs = 5000 }) {
+  const [elapsedMs, setElapsedMs] = useState(0)
+
+  useEffect(() => {
+    const start = Date.now()
+    const id = setInterval(() => {
+      const e = Date.now() - start
+      setElapsedMs(e)
+      if (e >= durationMs) clearInterval(id)
+    }, 100)
+    return () => clearInterval(id)
+  }, [durationMs])
+
+  const progress = Math.min((elapsedMs / durationMs) * 100, 100)
+  const remainingSec = Math.max((durationMs - elapsedMs) / 1000, 0).toFixed(1)
+
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className="relative overflow-hidden flex items-center justify-between h-7 px-3 bg-[var(--xl-light-bg)] text-[var(--dark)]"
+    >
+      <span
+        aria-hidden="true"
+        className="absolute left-0 top-0 bottom-0 bg-[var(--xs-green-primary)] transition-[width] duration-100 ease-linear"
+        style={{ width: `${progress}%` }}
+      />
+      <span className="relative z-[1] text-[12px] font-medium">
+        Placing bet please wait...
+      </span>
+      <span className="relative z-[1] text-[12px] font-medium tabular-nums">
+        {remainingSec} sec remaining
+      </span>
+    </div>
   )
 }
 

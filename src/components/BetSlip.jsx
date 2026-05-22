@@ -8,9 +8,10 @@ import {
   placeBet,
   selectActiveBetSlip,
   selectIsPlacingBet,
+  selectPlacingSelectionId,
   setActiveBetSlip,
 } from '../store/slices/betSlipSlice.js'
-import { alertService } from '../shared/services/alert.js'
+import { alertService, resolveApiMessage } from '../shared/services/alert.js'
 import Loader from '../shared/components/Loader.jsx'
 import SvgIcon from './SvgIcon.jsx'
 
@@ -88,16 +89,17 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
       runners: activeMatchOdd?.runners ?? [],
     }
     try {
-      await dispatch(placeBet({ slip, context })).unwrap()
-      alertService.success('Bet placed successfully')
-    } catch (msg) {
-      alertService.error(typeof msg === 'string' ? msg : 'Failed to place bet')
+      const result = await dispatch(placeBet({ slip, context })).unwrap()
+      alertService.success(
+        resolveApiMessage(t, result?.data, 'Bet placed successfully')
+      )
+    } catch (err) {
+      alertService.error(resolveApiMessage(t, err, 'Failed to place bet'))
     }
   }
 
   const onCancelAll = () => dispatch(setActiveBetSlip(null))
 
-  // Selection background colours for the back/lay rows.
   const rowBg = isBack ? 'bg-[var(--md-blue-bg)]' : 'bg-[var(--md-red-bg)]'
   const stakeRowBg = isBack
     ? 'bg-[var(--xs-blue-bg)] [&_td]:border-t [&_td]:border-[#7dbbe9]'
@@ -291,13 +293,19 @@ export default function BetSlip() {
   const activeMatchOdd = useSelector(selectActiveBetSlip)
   const stakesData = useSelector(selectStakesData)
   const isYellowTheme = useSelector(selectIsYellowTheme)
-  const isPlacing = useSelector(selectIsPlacingBet)
+  const isPlacingBet = useSelector(selectIsPlacingBet)
+  const placingSelectionId = useSelector(selectPlacingSelectionId)
 
   const [isCollapsed, setIsCollapsed] = useState(false)
 
   const isOpen = !!activeMatchOdd
   const availableStake =
     stakesData?.length > 0 ? stakesData : DEFAULT_AVAILABLE_STAKE
+  const isPlacingThisSlip =
+    isPlacingBet &&
+    !!activeMatchOdd &&
+    String(placingSelectionId ?? '') ===
+      String(activeMatchOdd?.selectionId ?? '')
 
   return (
     <div className="mb-0">
@@ -318,7 +326,7 @@ export default function BetSlip() {
       </h2>
       <Collapse in={!isCollapsed}>
         <div className="relative">
-          {isPlacing && (
+          {isPlacingThisSlip && (
             <div
               className="absolute inset-0 z-10 flex items-center justify-center bg-white/70 backdrop-blur-[1px] cursor-wait"
               aria-busy="true"

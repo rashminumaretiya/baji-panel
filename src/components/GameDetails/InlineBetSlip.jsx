@@ -1,6 +1,55 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '../../hooks/useMediaQuery.js'
+import { resolveApiMessage } from '../../shared/services/alert.js'
+
+// Auto-dismiss delay for the inline feedback banner.
+const FEEDBACK_AUTOCLOSE_MS = {
+  success: 2500,
+  warning: 3500,
+  error: 4500,
+}
+
+const CloseIconSvg = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    width="12"
+    height="12"
+    aria-hidden="true"
+  >
+    <path d="M20,2H4C2.9,2,2,2.9,2,4v16c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2z M16.9,15.6L15.5,17l-3.5-3.5L8.4,17 L7,15.6l3.5-3.5L7,8.5l1.4-1.4l3.5,3.5l3.5-3.5l1.4,1.4L13.4,12L16.9,15.6z" />
+  </svg>
+)
+
+// Angular `.fancy-warning` banner — colour flips on `type`. Sits across the
+// full width of the bet slip with a close icon on the right.
+function FancyWarning({ type = 'warning', message, onClose }) {
+  const variantBg = {
+    warning: 'bg-[#fff3cd] text-[#856404] border-y border-[#ffeeba]',
+    success: 'bg-[#d4edda] text-[#155724] border-y border-[#c3e6cb]',
+    error: 'bg-[#f8d7da] text-[#721c24] border-y border-[#f5c6cb]',
+  }[type]
+
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className={`relative text-center px-8 py-2 text-[12px] font-medium ${variantBg}`}
+    >
+      <p className="mb-0">{message}</p>
+      <button
+        type="button"
+        aria-label="Close"
+        className="absolute right-2 top-1/2 -translate-y-1/2 text-current cursor-pointer p-1 leading-none [&_svg]:w-3 [&_svg]:h-3"
+        onClick={onClose}
+      >
+        {CloseIconSvg}
+      </button>
+    </div>
+  )
+}
 
 const MarketName = {
   MATCH_ODDS: 'MATCH_ODDS',
@@ -172,6 +221,79 @@ export default function InlineBetSlip({
   const { t } = useTranslation()
   const isMobile = useIsMobile()
   const [isMatchChecked, setIsMatchChecked] = useState(false)
+  // Inline feedback banner (Angular `.fancy-warning`). One of:
+  //   { type: 'warning'|'success'|'error', message: string }
+  const [feedback, setFeedback] = useState(null)
+  const feedbackTimerRef = useRef(null)
+
+  // Cleanup the auto-close timer on unmount so a late tick doesn't try to
+  // setFeedback on an unmounted slip.
+  useEffect(
+    () => () => {
+      if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current)
+    },
+    []
+  )
+
+  const clearFeedback = () => {
+    if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current)
+    setFeedback(null)
+  }
+
+  // `closeSlipAfter` — when truthy, runs `onCancel()` once the auto-close
+  // timer fires. Used for the success case so the slip clears itself.
+  const showFeedback = ({ type, message, closeSlipAfter = false }) => {
+    if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current)
+    setFeedback({ type, message })
+    feedbackTimerRef.current = setTimeout(() => {
+      setFeedback(null)
+      if (closeSlipAfter) onCancel?.()
+    }, FEEDBACK_AUTOCLOSE_MS[type] ?? 3500)
+  }
+
+  const handlePlace = async () => {
+    if (isPlacing) return
+    const stake = Number(betSlipDetails?.stake) || 0
+    const min = Number(betSlipDetails?.min) || 0
+    if (!stake) {
+      showFeedback({
+        type: 'warning',
+        message: t(
+          'betSlip.enterStake',
+          'Please enter a stake to place the bet.'
+        ),
+      })
+      return
+    }
+    if (min && stake < min) {
+      showFeedback({
+        type: 'warning',
+        message: t(
+          'betSlip.belowMinimum',
+          'The stake you have entered are below the minimum.'
+        ),
+      })
+      return
+    }
+    try {
+      const result = await onPlaceBet?.(betSlipDetails)
+      // result = { data: { key, message, data }, slip } from the placeBet thunk.
+      const message = resolveApiMessage(
+        t,
+        result?.data,
+        t('betSlip.betPlaced', 'Bet placed successfully.')
+      )
+      showFeedback({ type: 'success', message, closeSlipAfter: true })
+    } catch (err) {
+      // err is the rejectWithValue body — { key, message } or { message }.
+      const message = resolveApiMessage(
+        t,
+        err,
+        t('betSlip.placeFailed', 'Failed to place bet.')
+      )
+      showFeedback({ type: 'error', message })
+    }
+  }
 
   const marketData = `acceptOdds-${betSlipDetails?.marketName || 'MARKET'}-${
     betSlipDetails?.runnerId ?? ''
@@ -214,6 +336,22 @@ export default function InlineBetSlip({
       current = current + value
     }
     onChange?.({ ...betSlipDetails, stake: Number(current) || 0 })
+  }
+
+  // Single-state UX: render exactly one thing at a time.
+  //   1. Placing  → render nothing (parent shows <PlacingBetStrip />).
+  //   2. Feedback → render only the <FancyWarning /> banner.
+  //   3. Idle     → render the full bet-slip controls.
+  if (isPlacing) return null
+
+  if (feedback) {
+    return (
+      <FancyWarning
+        type={feedback.type}
+        message={feedback.message}
+        onClose={clearFeedback}
+      />
+    )
   }
 
   if (isMobile) {
@@ -341,7 +479,7 @@ export default function InlineBetSlip({
                     'text-[4vw] font-bold leading-[2.6] !text-white !p-0 !max-w-none rounded-[1.6vw] bg-[var(--primary)] border border-[var(--lg-primary)] w-1/2 py-2 max-w-[120px]',
                     isPlacing && 'opacity-60 cursor-not-allowed'
                   )}
-                  onClick={() => !isPlacing && onPlaceBet?.(betSlipDetails)}
+                  onClick={handlePlace}
                   disabled={isPlacing}
                 >
                   {isPlacing ? (
@@ -467,10 +605,10 @@ export default function InlineBetSlip({
                 <button
                   type="button"
                   className={cx(
-                    'rounded min-w-[154px] !p-0 leading-[33px] bg-[var(--primary)] text-white font-semibold border-0 text-[12px]',
+                    'min-w-[182px] h-[31px] btn btn-primary',
                     isPlacing && 'opacity-60 cursor-not-allowed'
                   )}
-                  onClick={() => !isPlacing && onPlaceBet?.(betSlipDetails)}
+                  onClick={handlePlace}
                   disabled={isPlacing}
                 >
                   {isPlacing ? (

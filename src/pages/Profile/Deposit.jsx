@@ -18,7 +18,7 @@ import {
 } from '../../store/slices/accountSlice.js'
 import { selectCurrency } from '../../store/slices/authSlice.js'
 import { selectIsDepositOnePage } from '../../store/slices/commonSlice.js'
-import { alertService } from '../../shared/services/alert.js'
+import { alertService, resolveApiMessage } from '../../shared/services/alert.js'
 import {
   CURRENCY_TYPE,
   WITHDRAW_PAYMENT_METHODS,
@@ -347,8 +347,9 @@ export default function Deposit({ showTitle = true }) {
   useEffect(() => {
     if (!isDepositOnePage) return
     if (onePageSubmit.status !== 'succeeded') return
-    if (onePageSubmit.data?.key) alertService.success(onePageSubmit.data.key)
-  }, [isDepositOnePage, onePageSubmit.status, onePageSubmit.data?.key])
+    const msg = resolveApiMessage(t, onePageSubmit.data, '')
+    if (msg) alertService.success(msg)
+  }, [isDepositOnePage, onePageSubmit.status, onePageSubmit.data, t])
 
   const setField = (key, value) =>
     setValues((prev) => ({ ...prev, [key]: value }))
@@ -506,7 +507,8 @@ export default function Deposit({ showTitle = true }) {
           senderNumber,
         })
       ).unwrap()
-      if (result?.key) alertService.success(result.key)
+      const msg = resolveApiMessage(t, result, '')
+      if (msg) alertService.success(msg)
       setVerifyValues({ trxId: '', senderNumber: '' })
       setVerifyTouched({})
       setValues({

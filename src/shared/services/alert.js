@@ -19,3 +19,19 @@ export const alertService = {
   info: (msg) => toast('info', msg),
   warning: (msg) => toast('warning', msg),
 }
+
+
+export function resolveApiMessage(t, source, fallback = '') {
+  if (!source) return fallback
+  if (typeof source === 'string') return source
+
+  const body = source.response?.data ?? source.data ?? source
+  const key = body?.key
+  const message = body?.message
+
+  if (key && typeof t === 'function') {
+    const translated = t(key, body?.dynamicValue ?? {})
+    if (translated && translated !== key) return translated
+  }
+  return message || source.message || fallback
+}

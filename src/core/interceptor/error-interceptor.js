@@ -28,6 +28,12 @@ export function attachErrorInterceptor(client, { onClearAuth, onIpBanned, onLoad
         return Promise.reject(error)
       }
 
+      // Per-call opt-out for error toasts (`meta: { silent: true }` /
+      // `meta: { silentError: true }` on the axios config). 401/499 still
+      // run the auth-clear side-effects below; we only skip the toast.
+      const silent =
+        error.config?.meta?.silent || error.config?.meta?.silentError
+
       if (error.config?.url?.includes('bet/place')) {
         return Promise.reject(error)
       }
@@ -40,12 +46,14 @@ export function attachErrorInterceptor(client, { onClearAuth, onIpBanned, onLoad
       if (!finalMsg) return Promise.reject(error)
 
       if ([401, 499].includes(status)) {
-        if (!err?.key || !IGNORE_KEYS.has(err.key)) alertService.error(finalMsg)
+        if (!silent && (!err?.key || !IGNORE_KEYS.has(err.key))) {
+          alertService.error(finalMsg)
+        }
         onClearAuth?.()
         return Promise.reject(error)
       }
 
-      alertService.error(finalMsg || fallbackKey(status))
+      if (!silent) alertService.error(finalMsg || fallbackKey(status))
       return Promise.reject(error)
     },
   )

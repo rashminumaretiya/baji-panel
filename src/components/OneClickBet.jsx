@@ -15,7 +15,7 @@ import {
 import { setOneClickBetStake } from '../store/slices/betSlipSlice.js'
 import { LOCALSTORAGE } from '../shared/types/common.js'
 import { localStorageService } from '../shared/services/local-storage.js'
-import { alertService } from '../shared/services/alert.js'
+import { alertService, resolveApiMessage } from '../shared/services/alert.js'
 import SvgIcon from './SvgIcon.jsx'
 
 const STAKE_SLOTS = [1, 2, 3, 4]
@@ -78,7 +78,10 @@ export default function OneClickBet() {
     const rest = (stakesData ?? []).slice(4)
     try {
       const action = await dispatch(updateStakes([...first4, ...rest])).unwrap()
-      if (action?.key) alertService.success(t(action.key))
+      // Show whatever success message the server returned, translated if
+      // the i18n bundle has the key.
+      const msg = resolveApiMessage(t, action, '')
+      if (msg) alertService.success(msg)
     } finally {
       setIsEdit(false)
       setEditStakes(null)

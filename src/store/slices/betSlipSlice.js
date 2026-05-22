@@ -82,13 +82,11 @@ export const placeBet = createAsyncThunk(
     try {
       const data = await placeBetApi(slip, context ?? {})
       dispatch(fetchBalance())
-      return { data, slip }
+       return { data, slip }
     } catch (err) {
-      return rejectWithValue(
-        err?.response?.data?.message ||
-          err?.message ||
-          'Failed to place bet',
-      )
+       const body = err?.response?.data
+      if (body && (body.key || body.message)) return rejectWithValue(body)
+      return rejectWithValue({ message: err?.message || 'Failed to place bet' })
     }
   },
 )
