@@ -1,5 +1,5 @@
 // Mirrors sbex-user-fe/src/app/features/services/auth.ts state surface + login flow.
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { http } from '../../core/http/client.js'
 import { setCaptcha } from './commonSlice.js'
 import { localStorageService } from '../../shared/services/local-storage.js'
@@ -258,10 +258,10 @@ export const selectIsUserNameWithHash = (s) =>
   s.auth.user?.profileDetails?.userName?.startsWith('#') ?? false
 export const selectIsSelfSignUp = (s) => !!s.auth.user?.isSelfSignUp
 export const selectStakesData = (s) => s.auth.stakesData
-export const selectOneClickBetStakes = (s) => {
-  const d = s.auth.stakesData
-  return { 1: d[0] || 10, 2: d[1] || 20, 3: d[2] || 50, 4: d[3] || 100 }
-}
+export const selectOneClickBetStakes = createSelector(
+  [selectStakesData],
+  (d) => ({ 1: d[0] || 10, 2: d[1] || 20, 3: d[2] || 50, 4: d[3] || 100 }),
+)
 // isShowHeader: authed OR development server (mirrors Angular).
 export const selectIsShowHeader = (s) =>
   !!s.auth.user || s.common?.serverEnv === 'development'

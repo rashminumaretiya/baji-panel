@@ -136,11 +136,7 @@ export default function InPlay() {
 
   const visibleGames = useMemo(() => {
     return sportTabs
-      .filter(
-        (sport) =>
-          sport.route === `sports/${sport.id}` &&
-          !!sportsEventMap[sport.id]?.length
-      )
+      .filter((sport) => !!sportsEventMap[sport.id]?.length)
       .map((sport) => ({
         ...sport,
         sport: sport.id,

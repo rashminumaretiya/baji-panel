@@ -21,7 +21,7 @@ import { GAME_LIST_FILTERS, getSportName } from '../core/constant/constants.js'
 const LANDING_IMG_CLASS = 'h-[194px] w-full object-cover mt-px mb-4'
 
 const GAME_TITLE_CLASS =
-  'flex items-center justify-between bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xxl-blue)] text-white text-[12px] p-2 mb-2 max-md:text-center max-md:font-semibold max-md:text-[3.73vw] max-md:leading-[1.05] max-md:p-[2.043vw]'
+  'flex items-center justify-between bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xxl-blue)] text-white text-[12px] font-bold p-2 mb-2 max-md:text-center max-md:font-semibold max-md:text-[3.73vw] max-md:leading-[1.05] max-md:p-[2.043vw]'
 
 // Mirrors Angular's per-sport components (cricket/soccer/tennis/horse-racing/
 // greyhound-racing). Non-racing sports show the View By filter; racing sports

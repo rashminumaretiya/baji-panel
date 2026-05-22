@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -114,10 +114,22 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
     return () => clearInterval(intervalId)
   }, [isAuth, dispatch])
 
+  const refreshTimerRef = useRef(null)
+  useEffect(
+    () => () => {
+      if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current)
+    },
+    [],
+  )
+
   const balanceRefresh = () => {
     setIsBalanceRefresh(true)
     dispatch(fetchBalance()).finally(() => {
-      setTimeout(() => setIsBalanceRefresh(false), 2000)
+      if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current)
+      refreshTimerRef.current = setTimeout(
+        () => setIsBalanceRefresh(false),
+        2000,
+      )
     })
   }
 

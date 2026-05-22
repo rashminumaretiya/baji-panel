@@ -220,29 +220,29 @@ const MATCH_TITLE_NOT_IN_PLAY = 'before:!bg-[var(--sm-white)]'
 
 const INPLAY_LABEL =
   'inline-block ml-1 text-[var(--dark-green)] font-bold text-[12px]'
-const TIME_LABEL = 'inline-block ml-1 text-[var(--lg-black)] text-[12px]'
+const TIME_LABEL = 'inline-block ml-1 text-[var(--lg-dark-gray)] text-[12px]'
 
 // ─── Desktop row (`.games-detail`) ─────────────────────────────────────────
 const GAMES_DETAIL_BASE =
-  'flex border-b border-[var(--light-bg)] last:border-b-[var(--sm-text-color)] ' +
-  'max-md:last:border-b-[0.8vw] max-md:last:border-[var(--light-bg)] ' +
+  'flex border-b border-[color:var(--light-bg)] last:border-b-[color:var(--sm-text-color)] ' +
+  'max-md:last:border-b-[0.8vw] max-md:last:border-[color:var(--light-bg)] ' +
   'hover:bg-[var(--hover-bg)]'
 
 const GAME_NAME_PART =
-  'flex-1 flex items-center justify-between border-r border-[var(--light-bg)]'
+  'flex-1 flex items-center justify-between border-r border-[color:var(--light-bg)]'
 
 const GAME_SCORE_PART =
   'basis-2/5 grow-0 shrink-0 flex items-center justify-end max-w-[41%] w-full ' +
   // Per-cell border/padding mirrors the original :nth-child(2..5) rules.
-  '[&>div:nth-child(3)]:border-l [&>div:nth-child(3)]:border-r-0 [&>div:nth-child(3)]:border-[var(--light-bg)] [&>div:nth-child(3)]:pl-1 ' +
-  '[&>div:nth-child(4)]:border-r [&>div:nth-child(4)]:border-[var(--light-bg)] [&>div:nth-child(4)]:pr-1 ' +
+  '[&>div:nth-child(3)]:border-l [&>div:nth-child(3)]:border-r-0 [&>div:nth-child(3)]:border-[color:var(--light-bg)] [&>div:nth-child(3)]:pl-1 ' +
+  '[&>div:nth-child(4)]:border-r [&>div:nth-child(4)]:border-[color:var(--light-bg)] [&>div:nth-child(4)]:pr-1 ' +
   '[&>div:nth-child(2)]:pr-1 [&>div:nth-child(5)]:pl-1'
 
 const TOTAL_MATCHED_CLASS =
   'text-[11px] text-[var(--dark-gray)] whitespace-nowrap pr-1 flex-shrink-0'
 
 const PIN_CHIP_CLASS =
-  'min-w-[6%] w-auto text-center justify-center flex items-center'
+  'h-full cursor-pointer min-w-[6%] w-auto text-center justify-center flex items-center'
 const PIN_ICON_CLASS =
   'h-[21px] w-4 inline-block bg-[url(/img/pin-icon.png)] bg-no-repeat bg-center ' +
   'cursor-pointer hover:bg-[url(/img/pin-icon-hover.png)]'
@@ -311,7 +311,7 @@ const DesktopGameRow = memo(function DesktopGameRow({
             />
           )
         })}
-        <span className={`${DATA_CHIP_BASE} ${PIN_CHIP_CLASS}`}>
+        <span className={`${PIN_CHIP_CLASS}`}>
           <span className={PIN_ICON_CLASS} />
         </span>
       </div>
@@ -422,6 +422,7 @@ const RacingMarketRow = memo(function RacingMarketRow({
             role="button"
             tabIndex={0}
           >
+            {' '}
             {market.marketName}
             {market.isInPlay ? (
               <span className={INPLAY_LABEL}>{t('common.inPlay')}</span>
@@ -437,8 +438,6 @@ const RacingMarketRow = memo(function RacingMarketRow({
   )
 })
 
-const RACING_EVENT_NAME_CLASS = 'font-semibold'
-
 const RacingGameItem = memo(function RacingGameItem({
   game,
   isMobile,
@@ -452,7 +451,7 @@ const RacingGameItem = memo(function RacingGameItem({
   return (
     <Accordion.Item eventKey={eventId}>
       <Accordion.Header>
-        <span className={RACING_EVENT_NAME_CLASS}>{name}</span>
+        <span>{name}</span>
       </Accordion.Header>
       <Accordion.Body>
         {markets.length ? (
@@ -595,7 +594,7 @@ export default function GameList({
               eventKey={group.competitionId}
               key={group.competitionId}
             >
-              <Accordion.Header>{group.competitionName}</Accordion.Header>
+              <Accordion.Header variant="light">{group.competitionName}</Accordion.Header>
               <Accordion.Body>
                 {group.games.map((game) => (
                   <MobileGameCard
@@ -654,7 +653,7 @@ export default function GameList({
                   eventKey={group.competitionId}
                   key={group.competitionId}
                 >
-                  <Accordion.Header>{group.competitionName}</Accordion.Header>
+                  <Accordion.Header variant="light">{group.competitionName}</Accordion.Header>
                   <Accordion.Body>
                     {group.games.map((game) => (
                       <DesktopGameRow

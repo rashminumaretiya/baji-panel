@@ -43,13 +43,16 @@ const TAB_LIST_CLASS =
 const TAB_ITEM_CLASS = 'flex-none ml-0'
 
 const TAB_LINK_BASE =
-  'block bg-[var(--xts-light-bg)] border border-[var(--xxl-blue)] rounded-t-[4px] rounded-b-none w-[130px] text-[12px] text-white leading-[21px] font-normal p-0 shadow-[inset_0_7px_2px_-7px_var(--xts-gray)]'
+  'block border rounded-t-[4px] rounded-b-none w-[130px] text-[12px] leading-[21px] font-normal p-0 -mb-px'
+
+const TAB_LINK_INACTIVE =
+  'bg-[var(--xts-light-bg)] border-[var(--xxl-blue)] text-white shadow-[inset_0_7px_2px_-7px_var(--xts-gray)]'
 
 const TAB_LINK_ACTIVE =
-  'bg-[var(--xl-th-bg)] text-black border-[var(--xl-th-bg)] shadow-[inset_0_7px_2px_-7px_var(--white)]'
+  'bg-[var(--xl-th-bg)] border-[var(--xl-th-bg)] text-black shadow-[inset_0_7px_2px_-7px_var(--white)]'
 
 const GAME_TITLE_CLASS =
-  'flex items-center justify-between bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xxl-blue)] text-white text-[12px] p-2 mb-2 max-md:text-center max-md:font-semibold max-md:text-[3.73vw] max-md:leading-[1.05] max-md:p-[2.043vw]'
+  'flex items-center justify-between bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xxl-blue)] text-white text-[12px] font-bold p-2 mb-2 max-md:text-center max-md:font-semibold max-md:text-[3.73vw] max-md:leading-[1.05] max-md:p-[2.043vw]'
 
 export default function Home() {
   const { t } = useTranslation()
@@ -117,7 +120,7 @@ export default function Home() {
                   >
                     <button
                       type="button"
-                      className={`${TAB_LINK_BASE} ${isActive ? TAB_LINK_ACTIVE : ''}`}
+                      className={`${TAB_LINK_BASE} ${isActive ? TAB_LINK_ACTIVE : TAB_LINK_INACTIVE}`}
                       id={navId}
                       role="tab"
                       aria-selected={isActive}

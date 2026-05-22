@@ -25,16 +25,15 @@ const MOBILE_OPTIONS = [
 export function DesktopGameFilter({ value, onChange }) {
   const { t } = useTranslation()
   return (
-    <div className="mx-0">
-      <div className="w-full flex items-center justify-between">
-        <div>{t('titles.sportHighLights')}</div>
-        <div className="inline-flex items-center gap-1.5 font-normal">
-          <label
-            htmlFor="viewType"
-            className="text-[12px] text-white whitespace-nowrap mb-0 cursor-default"
-          >
-            {t('common.viewBy')}
-          </label>
+    <div className="flex items-center justify-between bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xxl-blue)] text-white text-[12px] font-bold leading-[25px] pt-[3px] pb-[3px] pl-[10px] pr-[2px]">
+      <div>{t('titles.sportHighLights')}</div>
+      <div className="inline-flex items-center gap-1.5 font-normal">
+        <label
+          htmlFor="viewType"
+          className="text-[12px] text-white whitespace-nowrap mb-0 cursor-default"
+        >
+          {t('common.viewBy')}
+        </label>
           <div
             className={
               'relative ' +
@@ -67,7 +66,6 @@ export function DesktopGameFilter({ value, onChange }) {
           </div>
         </div>
       </div>
-    </div>
   )
 }
 

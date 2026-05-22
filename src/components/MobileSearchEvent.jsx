@@ -95,6 +95,7 @@ export default function MobileSearchEvent() {
           signal: controller.signal,
         })
         .then((res) => {
+          if (controller.signal?.aborted) return
           setResults(Array.isArray(res?.data?.data) ? res.data.data : [])
         })
         .catch((err) => {

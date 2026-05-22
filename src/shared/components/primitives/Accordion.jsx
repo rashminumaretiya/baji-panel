@@ -1,8 +1,5 @@
 import {
-  Children,
-  cloneElement,
   createContext,
-  isValidElement,
   useContext,
   useMemo,
   useState,
@@ -72,23 +69,46 @@ function Item({ eventKey, className = '', children }) {
   )
 }
 
-function Header({ className = '', children, as: As = 'h2' }) {
+const HEADER_VARIANTS = {
+  dark: {
+    header: 'bg-[var(--xts-blue)]',
+    headerCollapsedShadow: '',
+    button: 'text-white px-2.5 font-medium bg-no-repeat bg-right',
+    iconOpen: 'bg-[url(/img/square-remove.png)]',
+    iconClosed: 'bg-[url(/img/square-add.png)]',
+  },
+  light: {
+    header: 'bg-[var(--xxs-text-color)] pl-[7px]',
+    headerCollapsedShadow:
+      'shadow-[inset_0_2px_0_0_rgba(var(--black-rgb),0.1)]',
+    button:
+      'text-black pl-[14px] pr-2.5 font-semibold bg-no-repeat bg-left shadow-[0_2px_0_rgba(var(--white-rgb),0.1)]',
+    iconOpen: 'bg-[url(/img/collapse_icon.png)]',
+    iconClosed: 'bg-[url(/img/expand_icon.png)]',
+  },
+}
+
+function Header({
+  className = '',
+  children,
+  as: As = 'h2',
+  variant = 'dark',
+}) {
   const { eventKey } = useContext(ItemContext)
   const { activeKeys, toggle } = useContext(AccordionContext)
   const isOpen = activeKeys.includes(eventKey)
+  const v = HEADER_VARIANTS[variant] ?? HEADER_VARIANTS.dark
+  const headerShadow = !isOpen ? v.headerCollapsedShadow : ''
+  const iconUrl = isOpen ? v.iconOpen : v.iconClosed
   return (
     <As
-      className={`accordion-header relative bg-[var(--light-navy)] ${className}`}
+      className={`accordion-header relative ${v.header} ${headerShadow} ${className}`}
     >
       <button
         type="button"
         onClick={() => toggle(eventKey)}
         aria-expanded={isOpen}
-        className={`w-full text-left text-white px-2.5 py-0 leading-[25px] text-[12px] font-medium bg-no-repeat bg-right ${
-          isOpen
-            ? 'bg-[url(/img/square-remove.png)]'
-            : 'bg-[url(/img/square-add.png)]'
-        }`}
+        className={`w-full text-left py-0 leading-[25px] text-[12px] ${v.button} ${iconUrl}`}
       >
         {children}
       </button>
@@ -101,7 +121,7 @@ function Body({ className = '', children }) {
   const { activeKeys } = useContext(AccordionContext)
   const isOpen = activeKeys.includes(eventKey)
   if (!isOpen) return null
-  return <div className={`accordion-body p-0 ${className}`}>{children}</div>
+  return <div className={`accordion-body p-0 bg-white ${className}`}>{children}</div>
 }
 
 // Static composition (react-bootstrap parity).
