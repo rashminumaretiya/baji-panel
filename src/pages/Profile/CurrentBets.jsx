@@ -99,12 +99,25 @@ export default function CurrentBets() {
       {
         key: 'market',
         label: t('myBets.market', 'Market'),
-        render: (_v, row) => row?.marketName ?? row?.market ?? '--',
+        render: (_v, row) =>
+          row?.marketName ??
+          (typeof row?.market === 'object'
+            ? (row.market?.name ?? '--')
+            : (row?.market ?? '--')),
       },
       {
         key: 'selection',
         label: t('markets.selection', 'Selection'),
-        render: (_v, row) => row?.selectionName ?? row?.selection ?? '--',
+        render: (_v, row) =>
+          row?.selectionName ??
+          (typeof row?.selection === 'object'
+            ? (Array.isArray(row.selection)
+                ? row.selection
+                    .map((s) => s?.name)
+                    .filter(Boolean)
+                    .join(' | ')
+                : (row.selection?.name ?? '--'))
+            : (row?.selection ?? '--')),
       },
       {
         key: 'type',
