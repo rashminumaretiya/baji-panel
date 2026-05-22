@@ -173,7 +173,7 @@ export default function OneClickBet() {
     <>
       <div
         className={
-          attentionOpen ? 'fixed inset-0 w-full h-full bg-black/30 z-[9]' : ''
+          attentionOpen ? 'fixed inset-0 w-full h-full bg-black/30 z-9' : ''
         }
       ></div>
       <div className={wrapperClass}>

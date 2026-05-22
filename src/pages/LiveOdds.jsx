@@ -107,7 +107,7 @@ const TABLE_TH =
 
 // ── Price cell base (back/lay)
 const PRICE_CELL_BASE =
-  'text-center border-t border-[var(--tbl-border-color)] text-[var(--header-primary)] relative text-[12px] cursor-pointer w-[10.9%] h-[40px] max-md:text-[4vw] max-md:w-[70px] max-md:h-[11.51vw] max-md:px-[1.8666666667vw] py-1 max-md:py-[0.6vw] max-md:min-w-[18.66667vw] hover:opacity-80 [&_p]:font-bold [&_p]:leading-none [&_p]:text-[12px] max-md:[&_p]:text-[3.46667vw] max-md:[&_p]:leading-normal [&_span]:leading-none [&_span]:text-[12px] max-md:[&_span]:text-[2.93333vw]'
+  'text-center text-[var(--header-primary)] relative text-[12px] cursor-pointer w-[10.9%] h-[40px] max-md:text-[4vw] max-md:w-[70px] max-md:h-[11.51vw] max-md:px-[1.8666666667vw] py-1 max-md:py-[0.6vw] max-md:min-w-[18.66667vw] hover:opacity-80 [&_p]:font-bold [&_p]:leading-none [&_p]:text-[12px] max-md:[&_p]:text-[3.46667vw] max-md:[&_p]:leading-normal [&_span]:leading-none [&_span]:text-[12px] max-md:[&_span]:text-[2.93333vw]'
 
 // ── Back (blue) tones
 const BLUE_XS = 'bg-[var(--back-0)] hover:bg-[var(--back-0-hover)]'
@@ -1933,7 +1933,7 @@ const FancyTabHeader = memo(function FancyTabHeader({
               </span>
             </div>
             {isActive && (
-              <i className="inline-flex text-center relative text-white z-[2] px-1 w-[16px] h-[16px] max-md:w-[4vw] max-md:h-[4.45vw] after:content-[''] after:bg-no-repeat after:absolute after:z-[1] after:bg-center after:left-0 after:top-0 after:bg-contain after:w-[16px] after:h-[16px] after:[background-image:url('/img/svg/info.svg')] max-md:after:w-[5vw] max-md:after:h-[4vw] max-md:after:[background-image:url('/img/svg/questionMarkRounded.svg')] before:content-[''] before:absolute before:rounded-tr-[4px] before:[transform:skew(14deg,0deg)] before:-z-[1] before:left-[-5px] before:w-[28px] before:top-[-7px] before:bottom-[-7px] max-md:before:top-[-1.6vw] max-md:before:bottom-0 max-md:before:w-[7vw] max-md:before:h-[7.6vw] max-md:before:left-[-1vw] before:bg-[linear-gradient(0deg,var(--xl-lightest-navy)_0%,var(--xts-lightest-navy)_100%)]" />
+              <i className="inline-flex text-center relative text-white z-[2] px-1 w-[16px] h-[16px] max-md:w-[4vw] max-md:h-[4.45vw] after:content-[''] after:bg-no-repeat after:absolute after:z-[1] after:bg-center after:left-0 after:top-0 after:bg-contain after:w-[16px] after:h-[16px] after:[background-image:url('/img/svg/info.svg')] max-md:after:w-[5vw] max-md:after:h-[4vw] max-md:after:[background-image:url('/img/svg/questionMarkRounded.svg')] before:content-[''] before:absolute before:rounded-tr-[4px] before:[transform:skew(14deg,0deg)] before:-z-[1] before:left-[-5px] before:w-[28px] before:top-[-7px] before:bottom-[-7px] max-md:before:top-[-1.5vw] max-md:before:bottom-0 max-md:before:w-[7vw] max-md:before:h-[7.6vw] max-md:before:left-[-1vw] before:bg-[linear-gradient(0deg,var(--xl-lightest-navy)_0%,var(--xts-lightest-navy)_100%)]" />
             )}
           </div>
         )
@@ -2067,19 +2067,19 @@ function FancySection({
 
       <div className="overflow-auto">
         <table className="w-full border-collapse max-md:bg-white">
-          <thead className="bg-white">
+          <thead>
             <tr>
-              <th className="px-[10px] py-1 font-bold text-[12px] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]" />
-              <th className="px-[10px] py-1 font-bold text-[12px] max-md:w-[18.66667vw] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
+              <th className="bg-white px-[10px] py-1 font-bold text-[12px] max-md:text-[var(--lg-white,#fff)] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]" />
+              <th className="bg-white px-[10px] py-1 font-bold text-[12px] max-md:text-[var(--lg-white,#fff)] max-md:text-[3.46667vw] max-md:w-[18.66667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
                 No
               </th>
-              <th className="px-[10px] py-1 font-bold text-[12px] max-md:w-[18.66667vw] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
+              <th className="bg-white px-[10px] py-1 font-bold text-[12px] max-md:text-[var(--lg-white,#fff)] max-md:text-[3.46667vw] max-md:w-[18.66667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
                 Yes
               </th>
               {!isMobile && (
                 <>
-                  <th className="px-[10px] py-1 font-bold text-[12px]" />
-                  <th className="px-[10px] py-1 font-bold text-[12px] max-[1199px]:hidden" />
+                  <th className="bg-white px-[10px] py-1 font-bold text-[12px]" />
+                  <th className="bg-white px-[10px] py-1 font-bold text-[12px] max-[1199px]:hidden" />
                 </>
               )}
             </tr>
@@ -2142,8 +2142,8 @@ function FancySection({
                       </td>
                     </tr>
                   )}
-                  <tr className="hover:bg-[var(--hover-bg)] hover:[&>td]:bg-[var(--hover-bg)] hover:[&>td:last-child]:border-l-[var(--hover-bg)]">
-                    <td className="px-[10px] py-[5px] relative min-w-[100px] max-md:min-w-[70px]">
+                  <tr className="[&_>td]:bg-white hover:bg-[var(--hover-bg)] hover:[&>td]:bg-[var(--hover-bg)] hover:[&_td:last-child]:border-l-[var(--hover-bg)]">
+                    <td className="px-[10px] py-[5px] relative min-w-[100px] max-md:min-w-[70px] border-t border-t-[var(--tbl-border-color)] h-[42px] max-md:h-[11.51vw]">
                       {!isMobile && (
                         <div>
                           <span className="block w-full max-w-[90%] overflow-hidden text-ellipsis whitespace-nowrap font-bold min-w-[50px]">
@@ -2176,9 +2176,14 @@ function FancySection({
                           )}
                       </div>
                     </td>
-                    <td colSpan={2} className="p-0 relative">
+                    <td
+                      colSpan={2}
+                      className="p-0 relative border-t border-t-[var(--tbl-border-color)] h-[42px] max-md:h-[11.51vw] w-[10.9%] min-w-[100px]"
+                    >
                       {isSuspended && (
-                        <div className={GAME_STATUS_OVERLAY}>{statusLabel}</div>
+                        <div className="absolute inset-0 bg-[rgba(36,58,72,0.4)] z-[9] flex items-center justify-center text-white/80 font-bold [text-shadow:0_1px_4px_rgba(0,0,0,0.5)] text-[13px] cursor-default max-md:text-[3.46667vw]">
+                          {statusLabel}
+                        </div>
                       )}
                       <table className="w-full border-collapse">
                         <tbody>
@@ -2187,7 +2192,7 @@ function FancySection({
                               className={cx(
                                 PRICE_CELL_BASE,
                                 RED_XS,
-                                'h-[42px] !w-[100px] !min-w-[53px] !px-[5px] max-md:!h-[11.51vw]',
+                                'h-[42px] min-w-[100px] !px-[5px] max-md:!h-[11.51vw]',
                                 isInline &&
                                   active?.betType === 'NO' &&
                                   RED_XS_ACTIVE
@@ -2205,7 +2210,7 @@ function FancySection({
                               className={cx(
                                 PRICE_CELL_BASE,
                                 BLUE_XS,
-                                'h-[42px] !w-[100px] !min-w-[53px] !px-[5px] max-md:!h-[11.51vw]',
+                                'h-[42px] min-w-[100px] !px-[5px] max-md:!h-[11.51vw]',
                                 isInline &&
                                   active?.betType === 'YES' &&
                                   BLUE_XS_ACTIVE
@@ -2225,7 +2230,7 @@ function FancySection({
                     </td>
                     {!isMobile && (
                       <>
-                        <td className="px-[10px] py-[5px] relative border-l border-white">
+                        <td className="px-[10px] py-[5px] relative border-white border-t border-t-[var(--tbl-border-color)] h-[42px] max-md:h-[11.51vw] w-[10.9%]">
                           <p className="mb-0 text-[var(--sm-text-color)] min-h-[32px] text-left text-[11px]">
                             Min/Max
                             <span className="block whitespace-nowrap !text-[12px] text-[var(--dark)]">
@@ -2233,7 +2238,7 @@ function FancySection({
                             </span>
                           </p>
                         </td>
-                        <td className="max-[1199px]:hidden" />
+                        <td className="w-[10.9%] border-t border-t-[var(--tbl-border-color)]" />
                       </>
                     )}
                   </tr>

@@ -371,7 +371,7 @@ export default function InlineBetSlip({
               className="bg-transparent max-md:pt-[10px] max-md:px-[1.86667vw] max-md:pb-[1.86667vw]"
             >
               <div className="flex items-end justify-around">
-                <div className="text-center flex-1 mr-[1.86667vw] max-md:[&:last-of-type]:mr-0 max-md:flex-[1_1_47.2vw]">
+                <div className="text-center md:flex-1 mr-[1.86667vw] max-md:[&:last-of-type]:mr-0 max-md:flex-[1_1_47.2vw]">
                   {isSportsBook && (
                     <p className="text-[var(--dark-gray)] text-[14px] mb-0 mr-[2vw] max-md:text-[2.93333vw] max-md:text-[#1e1e1e] max-md:leading-[1.3]">
                       {t('common.odds', 'Odds')}
@@ -411,7 +411,7 @@ export default function InlineBetSlip({
                   </div>
                 </div>
 
-                <div className="text-center flex-1 mr-[1.86667vw] max-md:[&:last-of-type]:mr-0 max-md:flex-[1_1_47.2vw]">
+                <div className="text-center md:flex-1 mr-[1.86667vw] max-md:[&:last-of-type]:mr-0 max-md:flex-[1_1_47.2vw]">
                   <p className="text-[var(--dark-gray)] text-[14px] mb-0 mr-[2vw] max-md:text-[2.93333vw] max-md:text-[#1e1e1e] max-md:leading-[1.3]">
                     {t('common.minBet', 'Min Bet')} : {betSlipDetails?.min || 1}
                   </p>
