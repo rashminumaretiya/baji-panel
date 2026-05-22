@@ -34,7 +34,7 @@ export default function BetsComplaints() {
   }, [token])
 
   return (
-    <div className="inner-outer-wrapper">
+    <div className="max-h-[calc(100svh-240px)] overflow-y-auto overflow-x-hidden">
       <Table
         title="Bet Complaints"
         columns={columns}

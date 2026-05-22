@@ -1,32 +1,21 @@
 import { useSelector } from 'react-redux'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { selectIsAuthenticated } from '../store/slices/authSlice.js'
-import './mobileNavigation.scss'
 
 const MOBILE_MENUS = [
-  {
-    key: 'inplay',
-    label: 'In-Play',
-    to: '/in-play',
-    icon: '/img/svg/clock-1.svg',
-  },
-  {
-    key: 'sports',
-    label: 'Sports',
-    to: '/soccer',
-    icon: '/img/svg/trophy-cup.svg',
-  },
-  {
-    key: 'multiMarket',
-    label: 'Multi Markets',
-    to: '/multi-markets',
-    icon: '/img/svg/pin.svg',
-  },
+  { key: 'inplay', label: 'In-Play', to: '/in-play', icon: '/img/svg/clock-1.svg' },
+  { key: 'sports', label: 'Sports', to: '/soccer', icon: '/img/svg/trophy-cup.svg' },
+  { key: 'multiMarket', label: 'Multi Markets', to: '/multi-markets', icon: '/img/svg/pin.svg' },
 ]
 
-function cx(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
+const itemBase =
+  "cursor-pointer text-center text-white block w-[16.15vw] relative h-[13.33vw] pt-[1.87vw] pr-[2.67vw] pl-[2.67vw] [&_a]:text-white [&_a]:no-underline [&_img]:w-auto [&_img]:mx-auto [&_img]:mb-[0.03vw] [&_img]:h-[5.33vw] [&_span]:block [&_span]:whitespace-nowrap [&_span]:overflow-hidden [&_span]:text-ellipsis [&_span]:w-full [&_span]:text-[3.2vw] [&_span]:leading-[1.5]"
+
+const promoteItem =
+  "cursor-pointer text-center text-white block w-[16.15vw] relative h-[13.33vw] pt-[1.87vw] before:content-[''] before:absolute before:-top-[4.27vw] before:left-[1vw] before:w-full before:h-[4.53vw] before:bg-[url(/img/svg/home-shape.svg)] before:bg-no-repeat before:bg-[size:100%_100%] before:pointer-events-none before:-z-[1] [&_img.icon-promote]:w-[15.53vw] [&_img.icon-promote]:h-auto [&_img.icon-promote]:-mt-[4.53vw] [&_img.icon-promote]:mb-[1vw] [&_img.icon-promote]:ml-[1vw]"
+
+const activeBg =
+  'bg-gradient-to-t from-[var(--xl-blue-bg)] to-[var(--xsm-blue-bg)]'
 
 export default function MobileNavigation() {
   const navigate = useNavigate()
@@ -37,29 +26,29 @@ export default function MobileNavigation() {
     const url = window.location.origin.replace('panel.', '')
     window.open(url, '_blank')
   }
-
   const showCasino = () => {
     if (!isAuthenticated) return
     navigate('/platform')
   }
-
   const goToAccount = () => {
     if (!isAuthenticated) return
     navigate('/my-account')
   }
 
+  const isHome = pathname === '/'
+  const isAccount = pathname.startsWith('/my-account')
+
   return (
-    <div className="mobile-footer" id="mobile-navigation">
-      <ul className="mb-0 mobile-menu-tabs">
-        <li className="icon-promote" onClick={showCasino} role="presentation">
-          <img
-            src="/img/svg/game-card.svg"
-            className="icon-promote"
-            alt="Casino"
-          />
+    <div
+      className="fixed z-[99] -bottom-px left-0 right-0 pt-[4vw]"
+      id="mobile-navigation"
+    >
+      <ul className="m-0 flex justify-between p-0 bg-gradient-to-t from-[var(--xsm-blue)] to-[var(--xxl-blue)]">
+        <li className={promoteItem} onClick={showCasino} role="presentation">
+          <img src="/img/svg/game-card.svg" className="icon-promote" alt="Casino" />
         </li>
         <li
-          className={cx('home', pathname === '/' && 'active')}
+          className={`${itemBase} ${isHome ? `${activeBg} before:bg-[url(/img/svg/home-shape-active.svg)]` : ''}`}
           onClick={redirectToMainSite}
           role="presentation"
         >
@@ -67,11 +56,15 @@ export default function MobileNavigation() {
           <span>Home</span>
         </li>
         {MOBILE_MENUS.map((menu) => (
-          <li key={menu.key}>
+          <li key={menu.key} className={itemBase}>
             <NavLink
               to={menu.to}
               end
-              className={({ isActive }) => cx(isActive && 'active')}
+              className={({ isActive }) =>
+                isActive
+                  ? `block w-full h-full ${activeBg} -mx-[2.67vw] -mt-[1.87vw] pt-[1.87vw] px-[2.67vw]`
+                  : 'block w-full h-full'
+              }
             >
               <img src={menu.icon} alt={menu.label} />
               <span>{menu.label}</span>
@@ -79,7 +72,7 @@ export default function MobileNavigation() {
           </li>
         ))}
         <li
-          className={cx(pathname.startsWith('/my-account') && 'active')}
+          className={`${itemBase} ${isAccount ? activeBg : ''}`}
           onClick={goToAccount}
           role="presentation"
         >

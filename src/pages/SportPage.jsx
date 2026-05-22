@@ -17,7 +17,12 @@ import {
 import Footer from '../components/Footer.jsx'
 import Loader from '../shared/components/Loader.jsx'
 import { GAME_LIST_FILTERS, getSportName } from '../core/constant/constants.js'
-import '../components/home/home.scss'
+
+const LANDING_IMG_CLASS =
+  'h-[194px] w-full object-cover mt-px mb-4'
+
+const GAME_TITLE_CLASS =
+  'flex items-center justify-between bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xxl-blue)] text-white text-[12px] p-2 mb-2 max-mobile:text-center max-mobile:font-semibold max-mobile:text-[3.73vw] max-mobile:leading-[1.05] max-mobile:p-[2.043vw]'
 
 // Mirrors Angular's per-sport components (cricket/soccer/tennis/horse-racing/
 // greyhound-racing). Non-racing sports show the View By filter; racing sports
@@ -49,11 +54,11 @@ export default function SportPage({ sportId, bannerSrc, isRacing = false }) {
 
   return (
     <>
-      <div className="sports-landing">
+      <div className="relative">
         <Loader show={loading} variant="wrapper" />
         {!isMobile && bannerSrc && (
           <img
-            className="landing-img"
+            className={LANDING_IMG_CLASS}
             src={bannerSrc}
             alt={`${sportName} Landing Image`}
           />
@@ -61,8 +66,8 @@ export default function SportPage({ sportId, bannerSrc, isRacing = false }) {
 
         {isRacing ? (
           <>
-            <div className="row mx-0 mt-2">
-              <div className="col-12 game-title mb-2">
+            <div className="mx-0 mt-2">
+              <div className={GAME_TITLE_CLASS}>
                 {t('titles.highLights')}
               </div>
             </div>
@@ -78,7 +83,7 @@ export default function SportPage({ sportId, bannerSrc, isRacing = false }) {
             {!isMobile && (
               <DesktopGameFilter value={filterType} onChange={setFilterType} />
             )}
-            <div className="game-list">
+            <div className="mt-0">
               {isMobile && (
                 <MobileGameFilter value={filterType} onChange={setFilterType} />
               )}

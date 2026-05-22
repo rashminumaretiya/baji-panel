@@ -14,9 +14,39 @@ import {
   WITHDRAW_PAYMENT_METHODS,
   onlyDigitsRegex,
 } from '../../shared/types/common.js'
-import './withdraw.scss'
 
 const DEFAULT_LIMITS = { withdrawMinLimit: 300, withdrawMaxLimit: 25000 }
+
+// Tailwind class strings ported from withdraw.scss.
+// `.form-group label` — 14px / 3px gap.
+const formLabelClass = 'block text-[14px] mb-[3px]'
+const formLabelRequiredClass = `${formLabelClass} after:content-['*'] after:text-red-500 after:ml-1`
+const formControlClass =
+  'block w-full px-3 py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded focus:outline-none focus:border-[var(--light-gray)]'
+// `.form-select` — padding 4 12 / 14px font.
+const formSelectClass =
+  'block w-full px-3 py-[4px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded focus:outline-none focus:border-[var(--light-gray)] appearance-none bg-no-repeat bg-[position:right_0.75rem_center] bg-[length:16px_12px] bg-[url("data:image/svg+xml,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3e%3cpath%20fill=%27none%27%20stroke=%27%23343a40%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20stroke-width=%272%27%20d=%27M2%205l6%206%206-6%27/%3e%3c/svg%3e")] pr-9'
+const errorTextClass = 'block text-[12px] text-[var(--red)] mt-1'
+
+// `.payment-methods-cards` — flex w/ 10px gap (4px on mobile).
+const paymentMethodsCardsClass = 'flex gap-[10px] max-mobile:gap-[4px]'
+
+// `.form-check` — relative 100px box (33.33%-2.666 on mobile), absolute
+// invisible <input>, padded <label> with column flex layout.
+const formCheckClass =
+  'relative mb-0 w-[100px] pl-0 max-mobile:w-[calc(33.33%-2.666px)]'
+const formCheckInputClass =
+  'absolute top-0 left-0 w-full h-full m-0 cursor-pointer bg-transparent rounded-[5px] border border-[#262626] shadow-none appearance-none checked:border-[var(--primary-yellow)]'
+const formCheckLabelClass =
+  'flex flex-col justify-center mb-0 p-2 rounded-[5px] whitespace-nowrap max-mobile:bg-[#262626] max-mobile:p-[1.86vw] max-mobile:rounded-[1.163vw]'
+const formCheckImgClass =
+  'h-10 w-10 mx-auto max-mobile:w-[9.302vw] max-mobile:h-[9.302vw]'
+const formCheckSpanClass =
+  'text-[14px] mt-[5px] block max-mobile:text-[3.256vw] max-mobile:mt-[1.163vw]'
+
+// Make Payment / Withdraw submit button (matches Deposit's `.make-payment`).
+const withdrawBtnClass =
+  'mt-3 px-3 py-[6px] text-white bg-[var(--primary)] hover:bg-[var(--lg-primary)] rounded text-[14px] font-medium disabled:opacity-65 disabled:cursor-not-allowed'
 
 function validate(values, limits) {
   const errors = {}
@@ -145,48 +175,50 @@ export default function Withdraw({ showTitle = true }) {
   return (
     <>
       {showTitle && (
-        <div className="page-title d-flex justify-content-between align-items-center">
-          <p className="m-0">Withdraw</p>
+        <div className="flex justify-between items-center">
+          <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
+            Withdraw
+          </p>
         </div>
       )}
 
-      <div className="card rounded p-3">
+      <div className="bg-white border border-[rgba(0,0,0,0.125)] rounded p-3">
         <form onSubmit={handleSubmit} noValidate>
-          <div className="d-flex flex-column">
-            <div className="form-group mb-3">
-              <label htmlFor="pbu" className="asterisk">
+          <div className="flex flex-col">
+            <div className="mb-3">
+              <label htmlFor="pbu" className={formLabelRequiredClass}>
                 {values.currency} amount
               </label>
               <div>
                 <input
                   id="pbu"
                   type="text"
-                  className="form-control"
+                  className={formControlClass}
                   placeholder="Enter amount"
                   value={values.pbu}
                   onChange={(event) => setField('pbu', event.target.value)}
                   onBlur={() => markTouched('pbu')}
                 />
                 {showError('pbu') && (
-                  <span className="error">{errors.pbu}</span>
+                  <span className={errorTextClass}>{errors.pbu}</span>
                 )}
               </div>
             </div>
 
-            <div className="form-group mb-3">
-              <label htmlFor="paymentMethod" className="asterisk">
+            <div className="mb-3">
+              <label htmlFor="paymentMethod" className={formLabelRequiredClass}>
                 Payment Method
               </label>
-              <div className="d-flex payment-methods-cards">
+              <div className={paymentMethodsCardsClass}>
                 {paymentMethods.map((method) => {
                   const id = method.value ?? method.id
                   const providerName = method.name ?? method.providerName ?? id
                   const icon = method.img ?? method.icon
                   const checked = values.paymentType === id
                   return (
-                    <div className="form-check position-relative" key={id}>
+                    <div className={formCheckClass} key={id}>
                       <input
-                        className="form-check-input"
+                        className={formCheckInputClass}
                         type="radio"
                         name="paymentType"
                         id={providerName}
@@ -198,27 +230,37 @@ export default function Withdraw({ showTitle = true }) {
                         }}
                       />
                       <label
-                        className="form-check-label"
+                        className={formCheckLabelClass}
                         htmlFor={providerName}
                       >
-                        {icon && <img src={icon} alt="method" />}
-                        <span className="text-center">{providerName}</span>
+                        {icon && (
+                          <img
+                            src={icon}
+                            alt="method"
+                            className={formCheckImgClass}
+                          />
+                        )}
+                        <span
+                          className={`${formCheckSpanClass} text-center`}
+                        >
+                          {providerName}
+                        </span>
                       </label>
                     </div>
                   )
                 })}
               </div>
               {showError('paymentType') && (
-                <span className="error">{errors.paymentType}</span>
+                <span className={errorTextClass}>{errors.paymentType}</span>
               )}
             </div>
 
-            <div className="form-group mb-3">
-              <label htmlFor="paymentType" className="asterisk">
+            <div className="mb-3">
+              <label htmlFor="paymentType" className={formLabelRequiredClass}>
                 Currency
               </label>
               <select
-                className="form-select"
+                className={formSelectClass}
                 value={values.currency}
                 onChange={(event) => setField('currency', event.target.value)}
                 onBlur={() => markTouched('currency')}
@@ -233,18 +275,18 @@ export default function Withdraw({ showTitle = true }) {
                 ))}
               </select>
               {showError('currency') && (
-                <span className="error">{errors.currency}</span>
+                <span className={errorTextClass}>{errors.currency}</span>
               )}
             </div>
 
-            <div className="form-group mb-3">
-              <label htmlFor="AccountNo" className="asterisk">
+            <div className="mb-3">
+              <label htmlFor="AccountNo" className={formLabelRequiredClass}>
                 Account No.{' '}
               </label>
-              <div className="">
+              <div>
                 {details.data?.accountNumbers?.length ? (
                   <select
-                    className="form-select"
+                    className={formSelectClass}
                     value={effectiveAccountNumber}
                     onChange={(event) =>
                       setField('accountNumber', event.target.value)
@@ -261,7 +303,7 @@ export default function Withdraw({ showTitle = true }) {
                   <input
                     id="accountNumber"
                     type="text"
-                    className="form-control"
+                    className={formControlClass}
                     placeholder="Enter account no."
                     value={effectiveAccountNumber}
                     onChange={(event) =>
@@ -271,14 +313,14 @@ export default function Withdraw({ showTitle = true }) {
                   />
                 )}
                 {showError('accountNumber') && (
-                  <span className="error">{errors.accountNumber}</span>
+                  <span className={errorTextClass}>{errors.accountNumber}</span>
                 )}
               </div>
             </div>
 
             <button
               type="submit"
-              className="btn btn-primary make-payment"
+              className={withdrawBtnClass}
               disabled={submitting}
             >
               Withdraw

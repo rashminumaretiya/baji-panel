@@ -8,7 +8,6 @@ import {
 } from '../../store/slices/accountSlice.js'
 import { selectCurrency } from '../../store/slices/authSlice.js'
 import { Icon } from './depositIcons.jsx'
-import './deposit-history.scss'
 
 const PER_PAGE = 10
 
@@ -21,13 +20,16 @@ function formatDate(value) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
 }
 
-// Renders the `<img class="payment-img" src="…">` HTML string that the
-// fetchDepositHistory thunk attaches to each row's `paymentMethod` field
-// (mirrors Angular's `type: 'template'` column rendering).
+// The fetchDepositHistory thunk stamps each row's `paymentMethod` field
+// with a raw `<img class="payment-img" src="…">` HTML string (mirrors
+// Angular's `type: 'template'` column rendering). Wrap it in a span and
+// scope `.payment-img` height/width via a Tailwind `&_img` selector so the
+// original 30px image height survives without the dedicated scss file.
 function PaymentMethodCell({ html }) {
   if (!html) return null
   return (
     <span
+      className="[&_img]:h-[30px] [&_img]:w-auto"
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: html }}
     />
@@ -40,9 +42,11 @@ function PaymentMethodCell({ html }) {
 function ActionButton({ visible, icon, title, label, onClick }) {
   if (!visible) return null
   return (
+    // .deposit-action-btn: transparent bg, primary text, 4/6 padding,
+    // 18px svg sizing scoped via [&_i_svg].
     <button
       type="button"
-      className="deposit-action-btn"
+      className="bg-transparent border-0 px-[6px] py-[4px] cursor-pointer inline-flex items-center gap-1 text-[var(--primary)] hover:text-[var(--lg-primary)] [&_i]:inline-flex [&_i]:leading-none [&_i_svg]:w-[18px] [&_i_svg]:h-[18px]"
       onClick={onClick}
       title={title}
       aria-label={title}
@@ -51,6 +55,21 @@ function ActionButton({ visible, icon, title, label, onClick }) {
       {label && <span>{label}</span>}
     </button>
   )
+}
+
+// Maps an API status string to a Tailwind colour class. The original SCSS
+// referenced a global `src/shared/table.scss` that was deleted, so each
+// status colour is wired up inline instead.
+function getStatusCellClass(value) {
+  if (!value) return ''
+  const slug = String(value).toLowerCase().trim()
+  if (slug.includes('complete') || slug.includes('approve') || slug.includes('success'))
+    return 'text-[var(--avocado-green)] font-bold'
+  if (slug.includes('fail') || slug.includes('reject') || slug.includes('decline'))
+    return 'text-[var(--failed-status)] font-bold'
+  if (slug.includes('pending') || slug.includes('process'))
+    return 'text-[var(--orange-dark)] font-bold'
+  return ''
 }
 
 export default function DepositHistory() {
@@ -117,11 +136,7 @@ export default function DepositHistory() {
       {
         key: 'status',
         label: 'Status',
-        cellClassName: (value) => {
-          if (!value) return ''
-          const slug = String(value).toLowerCase().replace(/\s+/g, '-')
-          return `status-${slug}`
-        },
+        cellClassName: getStatusCellClass,
         render: (value) => <span>{value}</span>,
       },
       {
@@ -155,8 +170,10 @@ export default function DepositHistory() {
 
   return (
     <>
-      <div className="page-title d-flex justify-content-between align-items-center">
-        <p className="m-0">Deposit History</p>
+      <div className="flex justify-between items-center">
+        <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
+          Deposit History
+        </p>
       </div>
 
       <Table

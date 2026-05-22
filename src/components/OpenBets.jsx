@@ -14,8 +14,6 @@ import {
 } from '../store/slices/betSlipSlice.js'
 import { selectIsAuthenticated } from '../store/slices/authSlice.js'
 import SvgIcon from './SvgIcon.jsx'
-import './betSlip.scss'
-import './openBets.scss'
 
 const OPEN_BETS_POLL_MS = 15000
 
@@ -43,10 +41,18 @@ function formatDateTime(value) {
   return `${y}-${m}-${d} ${h}:${min}:${s} `
 }
 
+// Shared classes for the open-bets table header cells.
+const TH_BASE =
+  'relative px-1.5 py-2 font-medium leading-[14px] text-[11px] whitespace-nowrap border-b border-white text-[var(--dark)] max-mobile:text-[2.93333vw] max-mobile:leading-[1.3] max-mobile:py-[1.8vw] max-mobile:px-[1.86667vw] max-mobile:text-[var(--dark)] after:content-[""] after:absolute after:w-px after:h-1/2 after:top-1/2 after:right-0 after:-translate-y-1/2 after:rounded-[1px]'
+
+// Shared classes for table body cells.
+const TD_BASE =
+  'font-medium px-1.5 py-2 text-[11px] align-middle overflow-hidden text-center bg-transparent border-b border-white max-mobile:py-[1.33333vw] max-mobile:px-[1.86667vw] max-mobile:[&_p]:text-[3.46667vw] max-mobile:[&_p]:leading-[1.3]'
+
 function NoOpenBets({ isYellowTheme }) {
   if (isYellowTheme) {
     return (
-      <div className="text-center mt-3 no-open-bets yellow-theme d-flex flex-column align-items-center">
+      <div className="text-center mt-3 flex flex-col items-center [&>p]:m-0 [&>p]:text-[17px]">
         <p>No bets placed</p>
         <p>You have no open bets</p>
       </div>
@@ -54,7 +60,9 @@ function NoOpenBets({ isYellowTheme }) {
   }
 
   return (
-    <p className="text-center mt-3 no-open-bets">No open bets available.</p>
+    <p className="text-center mt-3 text-[var(--white)] text-[13px] max-[991px]:text-[12px]">
+      No open bets available.
+    </p>
   )
 }
 
@@ -66,22 +74,28 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
   if (!backBets.length) return null
 
   return (
-    <table className="table mb-0">
+    <table className="w-full mb-0">
       <thead>
         <tr>
           {isFancy ? (
             <>
-              <th colSpan={2}>Yes</th>
-              <th className="text-center">Runs/Odds</th>
+              <th colSpan={2} className={`${TH_BASE} text-left w-[45%] max-mobile:w-[61%] max-mobile:font-semibold`}>
+                Yes
+              </th>
+              <th className={`${TH_BASE} text-center w-[20%]`}>Runs/Odds</th>
             </>
           ) : (
             <>
-              <th colSpan={2}>Back (Bet For)</th>
-              <th className="text-center">Odds</th>
+              <th colSpan={2} className={`${TH_BASE} text-left w-[45%] max-mobile:w-[61%] max-mobile:font-semibold`}>
+                Back (Bet For)
+              </th>
+              <th className={`${TH_BASE} text-center w-[20%]`}>Odds</th>
             </>
           )}
-          <th className="text-center">Stake</th>
-          <th className="text-end truncate">
+          <th className={`${TH_BASE} text-center w-[20%]`}>Stake</th>
+          <th
+            className={`${TH_BASE} text-right w-[20%] whitespace-nowrap overflow-hidden text-ellipsis max-w-[52px]`}
+          >
             {timeOrder ? 'Profit/Liability' : 'Profit'}
           </th>
         </tr>
@@ -90,17 +104,17 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
         {backBets.map((openBet, index) => (
           <Fragment key={`back-group-${index}`}>
             {betInfo && (
-              <tr className="bet-blue-xxs">
-                <td colSpan={5} className="text-start">
+              <tr className="bg-[#beddf466]">
+                <td colSpan={5} className={`${TD_BASE} text-left w-[8%] pr-0`}>
                   <span>Ref: </span>
                   <span>{formatDateTime(openBet.betPlacedAt)}</span>
                 </td>
               </tr>
             )}
-            <tr className="bet-blue-xs">
-              <td>
+            <tr className="max-mobile:[&_td]:border-b max-mobile:[&_td]:border-[var(--md-blue-border)] max-mobile:[&_.odd-type]:bg-[var(--xs-blue)]">
+              <td className={`${TD_BASE} w-[8%] pr-0 max-mobile:[&:first-of-type]:pr-[1.86667vw]`}>
                 <div>
-                  <div className="odd-type m-0 blue-td">
+                  <div className="m-0 px-1 py-[3px] rounded text-[var(--dark)] w-8 odd-type max-mobile:rounded-[1.06667vw] max-mobile:text-[3.46667vw] max-mobile:leading-[7vw] max-mobile:w-[12vw] max-mobile:p-0 max-mobile:text-[var(--dark)]">
                     <span>
                       {isSportsBook
                         ? openBet.selectedRunnerName
@@ -109,26 +123,28 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
                   </div>
                 </div>
               </td>
-              <td>
-                <div className="d-flex flex-column align-items-start text-start">
-                  <span className="m-0 open-bet-selection-name">
+              <td className={TD_BASE}>
+                <div className="flex flex-col items-start text-left">
+                  <span className="m-0 w-[100px] [-webkit-line-clamp:2] [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden text-ellipsis font-semibold text-[12px] text-[var(--lg-blue)] max-mobile:text-[3.46667vw] max-mobile:leading-[1.3] max-mobile:whitespace-nowrap max-mobile:block max-mobile:text-[var(--dark)] max-mobile:w-[19.038vw]">
                     {openBet?.selection?.name}
                   </span>
-                  <p className="m-0">{openBet?.event?.type}</p>
+                  <p className="m-0 text-[var(--xls-black)] opacity-50">
+                    {openBet?.event?.type}
+                  </p>
                 </div>
               </td>
-              <td>
+              <td className={TD_BASE}>
                 <p className="m-0">
                   {isFancy
                     ? `${openBet.odd}/${openBet.size}`
                     : formatNumber(openBet.odd)}
                 </p>
               </td>
-              <td>
+              <td className={TD_BASE}>
                 <p className="m-0">{formatNumber(openBet.stake)}</p>
               </td>
-              <td>
-                <p className="m-0 text-end">
+              <td className={TD_BASE}>
+                <p className="m-0 text-right">
                   {formatNumber(openBet.profitLoss)}
                 </p>
               </td>
@@ -148,22 +164,28 @@ function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
   if (!layBets.length) return null
 
   return (
-    <table className="table mb-0">
+    <table className="w-full mb-0">
       <thead>
         <tr>
           {isFancy ? (
             <>
-              <th colSpan={2}>No</th>
-              <th className="text-center">Runs/Odds</th>
+              <th colSpan={2} className={`${TH_BASE} text-left w-[45%] max-mobile:w-[61%] max-mobile:font-semibold`}>
+                No
+              </th>
+              <th className={`${TH_BASE} text-center w-[20%]`}>Runs/Odds</th>
             </>
           ) : (
             <>
-              <th colSpan={2}>Lay (Bet Against)</th>
-              <th className="text-center">Odds</th>
+              <th colSpan={2} className={`${TH_BASE} text-left w-[45%] max-mobile:w-[61%] max-mobile:font-semibold`}>
+                Lay (Bet Against)
+              </th>
+              <th className={`${TH_BASE} text-center w-[20%]`}>Odds</th>
             </>
           )}
-          <th className="text-center">Stake</th>
-          <th className="text-end truncate">
+          <th className={`${TH_BASE} text-center w-[20%]`}>Stake</th>
+          <th
+            className={`${TH_BASE} text-right w-[20%] whitespace-nowrap overflow-hidden text-ellipsis max-w-[52px]`}
+          >
             {timeOrder ? 'Profit/Liability' : 'Liability'}
           </th>
         </tr>
@@ -172,17 +194,17 @@ function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
         {layBets.map((openBet, index) => (
           <Fragment key={`lay-group-${index}`}>
             {betInfo && (
-              <tr className="bet-red-xxs">
-                <td colSpan={5} className="text-start">
+              <tr className="bg-[#faeff2]">
+                <td colSpan={5} className={`${TD_BASE} text-left w-[8%] pr-0`}>
                   <span>Ref: </span>
                   <span>{formatDateTime(openBet.betPlacedAt)}</span>
                 </td>
               </tr>
             )}
-            <tr className="bet-red-xs">
-              <td>
+            <tr className="max-mobile:[&_td]:border-b max-mobile:[&_td]:border-[var(--xts-red)] max-mobile:[&_.odd-type]:bg-[var(--xs-red)]">
+              <td className={`${TD_BASE} w-[8%] pr-0 max-mobile:[&:first-of-type]:pr-[1.86667vw]`}>
                 <div>
-                  <div className="odd-type m-0 light-red">
+                  <div className="m-0 px-1 py-[3px] rounded text-[var(--dark)] w-8 odd-type max-mobile:rounded-[1.06667vw] max-mobile:text-[3.46667vw] max-mobile:leading-[7vw] max-mobile:w-[12vw] max-mobile:p-0 max-mobile:text-[var(--dark)]">
                     <span>
                       {isSportsBook
                         ? openBet.selectedRunnerName
@@ -191,26 +213,28 @@ function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
                   </div>
                 </div>
               </td>
-              <td>
-                <div className="d-flex flex-column align-items-start text-start">
-                  <span className="m-0 open-bet-selection-name">
+              <td className={TD_BASE}>
+                <div className="flex flex-col items-start text-left">
+                  <span className="m-0 w-[100px] [-webkit-line-clamp:2] [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden text-ellipsis font-semibold text-[12px] text-[var(--lg-blue)] max-mobile:text-[3.46667vw] max-mobile:leading-[1.3] max-mobile:whitespace-nowrap max-mobile:block max-mobile:text-[var(--dark)] max-mobile:w-[19.038vw]">
                     {openBet?.selection?.name}
                   </span>
-                  <p className="m-0">{openBet?.event?.type}</p>
+                  <p className="m-0 text-[var(--xls-black)] opacity-50">
+                    {openBet?.event?.type}
+                  </p>
                 </div>
               </td>
-              <td>
+              <td className={TD_BASE}>
                 <p className="m-0">
                   {isFancy
                     ? `${openBet.odd}/${openBet.size}`
                     : formatNumber(openBet.odd)}
                 </p>
               </td>
-              <td>
+              <td className={TD_BASE}>
                 <p className="m-0">{formatNumber(openBet.stake)}</p>
               </td>
-              <td>
-                <p className="m-0 text-end">
+              <td className={TD_BASE}>
+                <p className="m-0 text-right">
                   {formatNumber(openBet.liability)}
                 </p>
               </td>
@@ -233,15 +257,18 @@ function OpenBetsListBackLay({
 }) {
   if (!openBetsValue) return null
 
+  // Wrapper class controls scroll behaviour: standalone, with a slip open, or
+  // with both slip + multi-market.
+  const wrapperClass = isOpen
+    ? 'max-h-[200px] overflow-y-auto max-mobile:max-h-none max-mobile:overflow-visible'
+    : 'max-h-[calc(100vh-360px)] overflow-y-auto max-mobile:max-h-[calc(100vh-81px)]'
+
   return (
     <>
-      <h6 className="p-2 m-0">Matched</h6>
-      <div
-        className={cx(
-          'table-responsive',
-          isOpen ? 'open-bets-table' : 'with-slip with-multimarket-slip'
-        )}
-      >
+      <h6 className="p-2 m-0 text-[12px] font-bold bg-[var(--xl-th-bg)] max-mobile:px-[1.86667vw] max-mobile:bg-[image:linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] max-mobile:text-[3.73333vw] max-mobile:leading-[2.2] max-mobile:text-white max-mobile:font-semibold">
+        Matched
+      </h6>
+      <div className={`overflow-x-auto ${wrapperClass}`}>
         <BackBetsTable
           openBetsValue={openBetsValue}
           betInfo={betInfo}
@@ -259,28 +286,28 @@ function OpenBetsListBackLay({
             e.preventDefault()
           }}
         >
-          <div className="ms-2 d-flex">
-            <div className="form-check">
+          <div className="ml-2 flex">
+            <div className="flex items-center">
               <input
-                className="form-check-input"
+                className="h-5 w-5 border border-[#2789ce] shadow-[inset_0_3px_#00000040] rounded-full appearance-none cursor-pointer checked:bg-[#2789ce] checked:shadow-none"
                 type="checkbox"
                 id="radioDefault1"
                 checked={betInfo}
                 onChange={(e) => onBetInfoChange(e.target.checked)}
               />
-              <label className="form-check-label" htmlFor="radioDefault1">
+              <label className="ml-[5px] cursor-pointer" htmlFor="radioDefault1">
                 Bet info
               </label>
             </div>
-            <div className="form-check ms-2">
+            <div className="flex items-center ml-2">
               <input
-                className="form-check-input"
+                className="h-5 w-5 border border-[#2789ce] shadow-[inset_0_3px_#00000040] rounded-full appearance-none cursor-pointer checked:bg-[#2789ce] checked:shadow-none"
                 type="checkbox"
                 id="radioDefault2"
                 checked={timeOrder}
                 onChange={(e) => onTimeOrderChange(e.target.checked)}
               />
-              <label className="form-check-label" htmlFor="radioDefault2">
+              <label className="ml-[5px] cursor-pointer" htmlFor="radioDefault2">
                 Time Order
               </label>
             </div>
@@ -307,14 +334,14 @@ function OpenBetsDesktop({
   const hasList = openBetsList.length > 0
 
   return (
-    <div className="bet-slip-accordion-container">
-      <div className="open-bets-accordion">
-        <div className="accordion ">
-          <div className="mb-0 accordion-item">
-            <div className="d-flex align-items-center open-bets">
+    <div>
+      <div>
+        <div>
+          <div className="mb-0">
+            <div className="flex items-center bg-gradient-to-b from-[var(--xts-blue)] to-[var(--xts-blue)] [&_i]:h-[25px] [&_i]:w-[25px] [&_i]:leading-[20px] [&_i]:text-white [&_i]:text-center [&_i]:border-r [&_i]:border-[var(--tbl-border-color)] [&_i_svg]:h-4 [&_i_svg]:w-4">
               <SvgIcon
                 name="refreshIcon"
-                className="cursor-pointer"
+                className="cursor-pointer text-white p-1 [&_svg]:h-4 [&_svg]:w-4 [&_svg]:text-white"
                 role="button"
                 tabIndex={0}
                 onClick={onRefresh}
@@ -326,32 +353,28 @@ function OpenBetsDesktop({
                 }}
                 aria-label="Refresh open bets"
               />
-              <h2
-                className={cx(
-                  'accordion-header w-100',
-                  isCollapsed && 'collapsed'
-                )}
-              >
+              <h2 className="relative shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] m-0 w-full">
                 <button
                   type="button"
-                  className="accordion-button"
+                  className={cx(
+                    'w-full text-left px-4 py-3 text-white text-[14px] font-semibold shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] bg-no-repeat bg-right bg-[length:auto_100%]',
+                    isCollapsed
+                      ? 'bg-[url(/img/grediant-slip-plus.png)]'
+                      : 'bg-[url(/img/grediant-slip-minus.png)]'
+                  )}
                   onClick={() => setIsCollapsed((prev) => !prev)}
                 >
                   Open Bets
                 </button>
               </h2>
             </div>
-            <div
-              className={cx(
-                'accordion-collapse collapse',
-                !isCollapsed && 'show'
-              )}
-            >
-              <div className="accordion-body p-0">
+            <div className={cx(isCollapsed && 'hidden')}>
+              <div className="p-0">
                 {hasList ? (
-                  <div className="open-bets-wrapper">
+                  <div>
                     <div className="py-2 px-1">
                       <select
+                        className="p-1 w-full"
                         value={selectedIndex}
                         onChange={(e) =>
                           setSelectedIndex(Number(e.target.value))
@@ -398,9 +421,9 @@ function OpenBetsMobile({ openBetsList, isOpen, isMobile }) {
 
   if (detailsOpenBets && openBetsValue) {
     return (
-      <div className="open-bets-wrapper">
-        <div className="d-flex details-open-bets">
-          <span className="back-arrow">
+      <div>
+        <div className="flex bg-[var(--dark)]">
+          <span className="py-[13px] pl-[9px] pr-[13px] pb-[15px] border-r border-[var(--md-black)] text-white max-mobile:p-0 max-mobile:flex max-mobile:justify-center max-mobile:items-center max-mobile:min-w-[10.66667vw] max-mobile:border-r max-mobile:border-[var(--sm-black)] [&_svg]:max-mobile:h-[5vw] [&_svg]:max-mobile:w-[5vw]">
             <SvgIcon
               name="backfilledArrow"
               role="button"
@@ -408,7 +431,9 @@ function OpenBetsMobile({ openBetsList, isOpen, isMobile }) {
               onClick={() => setDetailsOpenBets(false)}
             />
           </span>
-          <p className="m-0">{openBetsValue.displayTitle}</p>
+          <p className="m-0 py-[14px] px-[7px] whitespace-nowrap overflow-hidden text-ellipsis text-white max-mobile:py-0 max-mobile:pl-[1.86667vw] max-mobile:pr-[1.06667vw] max-mobile:leading-[10.66667vw]">
+            {openBetsValue.displayTitle}
+          </p>
         </div>
         <OpenBetsListBackLay
           openBetsValue={openBetsValue}
@@ -425,19 +450,21 @@ function OpenBetsMobile({ openBetsList, isOpen, isMobile }) {
 
   if (hasList) {
     return (
-      <div className="mobile-open-bet-list">
+      <div className="overflow-y-auto max-h-[calc(100vh-50px)]">
         {openBetsList.map((item, index) => (
           <li
             key={index}
-            className="d-flex open-bets-list"
+            className="flex relative border-b border-[var(--lg-gray)]"
             onClick={() => {
               setSelectedIndex(index)
               setDetailsOpenBets(true)
             }}
             role="presentation"
           >
-            <p className="m-0">{item.displayTitle}</p>
-            <span className="right-arrow d-flex justify-content-center align-items-center">
+            <p className="m-0 pt-[17px] pb-[20px] pl-[33px] whitespace-nowrap overflow-hidden text-ellipsis max-w-[calc(100%-50px)] text-[var(--blue)] relative before:content-[''] before:absolute before:w-[15px] before:h-[15px] before:bg-[var(--xl-th-bg)] before:rounded-full before:border-[var(--black)] before:left-[9px] before:top-1/2 before:-translate-y-1/2 max-mobile:py-[2.13333vw] max-mobile:pl-[6.66667vw] max-mobile:pr-[9.06667vw] max-mobile:max-w-full max-mobile:leading-[1.6] max-mobile:text-[4vw] max-mobile:font-semibold max-mobile:before:w-[2.66667vw] max-mobile:before:h-[2.66667vw] max-mobile:before:border max-mobile:before:border-[rgba(var(--md-dark-rgb),0.4)]">
+              {item.displayTitle}
+            </p>
+            <span className="flex justify-center items-center w-[30px] h-[30px] border border-[var(--light-bg)] rounded-[2px] absolute right-[12px] top-1/2 -translate-y-1/2 [&_i]:leading-[0] max-mobile:h-[6.4vw] max-mobile:w-[6.4vw] max-mobile:rounded-[1.06667vw] [&_svg]:max-mobile:h-[6.4vw] [&_svg]:max-mobile:w-[6.4vw]">
               <SvgIcon name="chevronRightArrow" />
             </span>
           </li>

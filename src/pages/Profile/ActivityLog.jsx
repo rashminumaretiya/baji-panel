@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
 import Table from '../../shared/Table.jsx'
-import './activityLog.scss'
 
 const PER_PAGE = 10
 
@@ -42,6 +41,21 @@ function titleCase(value) {
   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
 }
 
+// Login-status pill colours used to live in the global table.scss as
+// `.logInStatus-login-success`, `.logInStatus-login-failed`, etc. That file
+// has been deleted, so we map the API status string to inline Tailwind
+// utility classes here. Anything not matched falls back to the default cell
+// styling (no extra colour).
+function getLoginStatusCellClass(value) {
+  if (typeof value !== 'string' || !value) return ''
+  const slug = value.toLowerCase().trim()
+  if (slug.includes('success'))
+    return 'text-[var(--avocado-green)] font-bold'
+  if (slug.includes('fail') || slug.includes('error'))
+    return 'text-[var(--failed-status)] font-bold'
+  return ''
+}
+
 // Columns wired to api.mcv88.live's actual response shape:
 // { _id, ip, isp, address: {city, state, country}, status, activity, activityAt }
 // `address` is flattened into a combined `country` string by
@@ -56,11 +70,7 @@ const columns = [
   {
     key: 'status',
     label: 'Login Status',
-    cellClassName: (value) => {
-      if (typeof value !== 'string' || !value) return ''
-      const slug = value.toLowerCase().trim().replace(/\s+/g, '-')
-      return `logInStatus-${slug}`
-    },
+    cellClassName: getLoginStatusCellClass,
     render: (value) => <span>{titleCase(value)}</span>,
   },
   { key: 'ip', label: 'IP Address', render: wrapSpan },
@@ -97,7 +107,10 @@ export default function ActivityLog() {
   const totalPages = Math.max(1, Math.ceil((totalCount || 0) / PER_PAGE))
 
   return (
-    <div className="inner-outer-wrapper">
+    // Fixed column widths (18/12/14/22/17/17%) ported from activityLog.scss
+    // via [&_thead>tr>th]/[&_tbody>tr>td] selectors. table-fixed enforces the
+    // declared widths instead of letting cells size to content.
+    <div className="max-h-[calc(100svh-240px)] overflow-y-auto overflow-x-hidden [&_table]:table-fixed [&_table]:w-full [&_thead>tr>th:nth-child(1)]:w-[18%] [&_thead>tr>th:nth-child(2)]:w-[12%] [&_thead>tr>th:nth-child(3)]:w-[14%] [&_thead>tr>th:nth-child(4)]:w-[22%] [&_thead>tr>th:nth-child(5)]:w-[17%] [&_thead>tr>th:nth-child(6)]:w-[17%] [&_tbody>tr>td:nth-child(1)]:w-[18%] [&_tbody>tr>td:nth-child(2)]:w-[12%] [&_tbody>tr>td:nth-child(3)]:w-[14%] [&_tbody>tr>td:nth-child(4)]:w-[22%] [&_tbody>tr>td:nth-child(5)]:w-[17%] [&_tbody>tr>td:nth-child(6)]:w-[17%]">
       <Table
         title="Activity Log"
         columns={columns}

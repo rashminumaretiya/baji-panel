@@ -17,7 +17,6 @@ import {
   onlyDigitsRegex,
 } from '../../shared/types/common.js'
 import { Icon } from './depositIcons.jsx'
-import './deposit.scss'
 
 // Mirrors Angular's `| date : 'YYYY-MM-dd HH:mm:ss'` pipe.
 function formatDate(value) {
@@ -38,21 +37,32 @@ function titleCase(value) {
     .join(' ')
 }
 
+// ─── Tailwind class strings ported from deposit.scss ─────────────────────────
+// Promotion-item container (used both inline and in the modal list).
+// `.promotion-item` from deposit.scss: bg sm-dark, padding 16, gap row, etc.
+const promoItemBase =
+  'bg-[var(--sm-dark)] rounded-lg p-4 flex justify-between items-center cursor-pointer transition-colors duration-200 border-[3px] border-transparent min-w-[calc(33.33%-7px)] max-mobile:max-w-full max-mobile:py-[25px] max-mobile:px-[15px]'
+const promoItemActive =
+  'border-[var(--primary)] [&_.radio-button]:border-[5px] [&_.radio-button]:border-[var(--primary)] [&_.radio-button]:bg-white'
+const promoItemDisabled = 'opacity-70 pointer-events-none'
+
 // Stable component reference — defined at module scope so React reuses the
 // same `<div class="promotion-list">` DOM node across re-renders. If this
 // were declared inside Deposit(), every state change would unmount/remount
 // the list and reset its horizontal scrollLeft to 0.
 function PromotionListItems({ promotions, activeId, onClick }) {
   return (
-    <div className="promotion-list">
+    // .promotion-list: row flex with horizontal scroll on desktop,
+    // column with vertical scroll on mobile (max-h calc(100vh-145px)).
+    <div className="flex flex-row gap-[10px] overflow-auto max-mobile:max-h-[calc(100vh-145px)] max-mobile:flex-col max-mobile:gap-4 max-mobile:my-0 max-mobile:mx-4 max-mobile:mb-4">
       {promotions.map((p) => {
         const isDisabled = p.promotionType === 'deposit_refund_interval_bonus'
         const active = activeId === p._id
         return (
           <div
             key={p._id}
-            className={`promotion-item${active ? ' active' : ''}${
-              isDisabled ? ' disabled' : ''
+            className={`${promoItemBase}${active ? ` ${promoItemActive}` : ''}${
+              isDisabled ? ` ${promoItemDisabled}` : ''
             }`}
             onClick={() => !isDisabled && onClick(p)}
             role="button"
@@ -61,18 +71,23 @@ function PromotionListItems({ promotions, activeId, onClick }) {
               e.key === 'Enter' && !isDisabled && onClick(p)
             }
           >
-            <div className="promotion-content">
-              <h3 className="title">{p.title}</h3>
-              <p className="subtitle">{titleCase(p.category)}</p>
+            <div className="flex-1">
+              <h3 className="mb-2 text-[var(--sm-gray-30)] font-semibold text-[16px] max-mobile:text-[20px] max-mobile:mb-[10px]">
+                {p.title}
+              </h3>
+              <p className="text-[var(--sm-gray-30)] mb-[13px] text-[14px] max-mobile:text-[16px] max-mobile:mb-[10px]">
+                {titleCase(p.category)}
+              </p>
               {p.promotionTimeline && (
-                <p className="date-range">
+                <p className="text-[14px] text-[var(--sm-gray-30)] mb-0 font-semibold">
                   {formatDate(p.promotionTimeline.startDate)}~
                   {formatDate(p.promotionTimeline.endDate)}
                 </p>
               )}
             </div>
-            <div className="radio-button">
-              <div className="radio-inner" />
+            {/* .radio-button — width/height 18px, border 2 #918e8e, rounded full */}
+            <div className="radio-button w-[18px] h-[18px] bg-black border-2 border-[#918e8e] rounded-full flex items-center justify-center mt-1 box-border">
+              <div className="w-[10px] h-[10px] rounded-full" />
             </div>
           </div>
         )
@@ -94,6 +109,32 @@ function buildAllowedMethods(paymentMethods) {
   })
   return set
 }
+
+// Inputs/labels reused inside the deposit form (mirrors deposit.scss
+// `.form-group label / .form-control`).
+const formLabelClass = 'block text-[14px] mb-[3px]'
+const formLabelRequiredClass = `${formLabelClass} after:content-['*'] after:text-red-500 after:ml-1`
+const formControlClass =
+  'block w-full px-3 py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded focus:outline-none focus:border-[var(--light-gray)]'
+const errorTextClass = 'block text-[12px] text-[var(--red)] mt-1'
+
+// `.conversation-text` block.
+const conversationTextClass =
+  'text-center mb-3 p-2 bg-[var(--dark-green)] text-white text-[16px] rounded-md border-2 border-white shadow-[0_10px_10px_var(--xs-gray)]'
+
+// `.method-box` payment thumbnail tile.
+const methodBoxBase =
+  'rounded-lg m-[5px] cursor-pointer border-2 border-transparent box-border'
+const methodBoxActive = 'border-[var(--primary-yellow)]'
+
+// Make Payment submit button.
+const makePaymentBtnClass =
+  'inline-flex items-center gap-1 mt-3 px-3 py-[6px] text-white bg-[var(--primary)] hover:bg-[var(--lg-primary)] rounded text-[14px] font-medium [&_i_svg]:h-[18px] [&_i_svg]:w-[18px] [&_i]:mr-[2px] disabled:opacity-65 disabled:cursor-not-allowed'
+
+// Promotion-card (small inline summary that opens the modal).
+const promotionCardBase =
+  'flex items-center bg-[var(--sm-dark)] border-2 border-transparent rounded-[5px] px-[15px] py-[23px] mb-[7px] cursor-pointer transition-colors duration-200'
+const promotionCardActive = 'border-[var(--primary-yellow)]'
 
 export default function Deposit({ showTitle = true }) {
   const dispatch = useDispatch()
@@ -268,56 +309,67 @@ export default function Deposit({ showTitle = true }) {
   return (
     <>
       {showTitle && (
-        <div className="page-title d-flex justify-content-between align-items-center">
-          <p className="m-0">Deposit</p>
+        <div className="flex justify-between items-center">
+          <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
+            Deposit
+          </p>
         </div>
       )}
 
-      <div className="card rounded p-3">
-        <div className="text-center mb-3 p-2 conversation-text">
+      {/* .card rounded p-3 — Bootstrap card emulated with bg white + border */}
+      <div className="bg-white border border-[rgba(0,0,0,0.125)] rounded p-3">
+        <div className={conversationTextClass}>
           {currency === CURRENCY_TYPE.BDT ? '1 BDT = 1 BDT' : `1 PBU = 1 BDT`}
         </div>
 
         {promotions.length > 0 &&
           (!showTitle ? (
-            <div className="promotion-container">
-              <h3 className="promotion-header">Select Your Promotion</h3>
+            <div className="w-full max-w-[400px]">
+              <h3 className="text-[14px] font-medium mb-3 max-mobile:mb-[10px]">
+                Select Your Promotion
+              </h3>
               <div
-                className={`promotion-card${
-                  values.promotionId ? ' active' : ''
+                className={`${promotionCardBase}${
+                  values.promotionId ? ` ${promotionCardActive}` : ''
                 }`}
                 onClick={openPromotionModal}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && openPromotionModal()}
               >
-                <div className="promotion-icon">
+                <div className="flex justify-center items-center w-[24px] h-[24px] mr-[12px] [&_i]:text-[18px]">
                   <Icon name="giftBox" />
                 </div>
-                <div className="promotion-content">
-                  <div className="promotion-title">Promotion</div>
-                  {selectedPromotion && (
-                    <div className="promotion-description">
-                      {selectedPromotion.title}
+                <div className="flex-1 flex justify-between items-center">
+                  <div>
+                    <div className="text-[16px] font-medium mb-[2px] text-white">
+                      Promotion
                     </div>
-                  )}
+                    {selectedPromotion && (
+                      <div className="text-[14px] text-white">
+                        {selectedPromotion.title}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="promotion-arrow">
+                <div className="text-white text-[14px]">
                   <Icon name="rightArrowIcon" />
                 </div>
               </div>
             </div>
           ) : (
             <div className="mb-2">
-              <div className="form-group">
-                <label className="mb-1">Select Your Promotion</label>
+              <div>
+                <label className="block mb-1 text-[14px]">
+                  Select Your Promotion
+                </label>
               </div>
               <PromotionListItems
                 promotions={promotions}
                 activeId={values.promotionId}
                 onClick={onPromotionItemClick}
               />
-              <span className="error fw-bold">
+              <span className="block text-[12px] text-[var(--red)] mt-1 font-bold">
                 {values.promotionId
                   ? 'Promotion is selected'
                   : 'Promotion is not selected'}
@@ -325,33 +377,35 @@ export default function Deposit({ showTitle = true }) {
             </div>
           ))}
 
-        <form className="payment-form" onSubmit={handleSubmit} noValidate>
-          <div className="d-flex flex-column">
-            <div className="form-group mb-2">
-              <label htmlFor="amount" className="asterisk">
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="flex flex-col">
+            <div className="mb-2">
+              <label htmlFor="amount" className={formLabelRequiredClass}>
                 {currency} amount
               </label>
               <div>
                 <input
                   id="amount"
                   type="number"
-                  className="form-control"
+                  className={formControlClass}
                   placeholder="Enter amount"
                   value={values.amount}
                   onChange={(event) => setField('amount', event.target.value)}
                   onBlur={() => markTouched('amount')}
                 />
                 {showRequired && (
-                  <span className="error">Amount is required</span>
+                  <span className={errorTextClass}>Amount is required</span>
                 )}
                 {showMin && (
-                  <span className="error">Amount must be greater than 0</span>
+                  <span className={errorTextClass}>
+                    Amount must be greater than 0
+                  </span>
                 )}
                 {showPattern && (
-                  <span className="error">Enter valid amount</span>
+                  <span className={errorTextClass}>Enter valid amount</span>
                 )}
                 {values.promotionId && promotionLimitError && (
-                  <p className="error mb-0">
+                  <p className={`${errorTextClass} mb-0`}>
                     {currency} must be between{' '}
                     {promotionLimitError.depositLimit?.min} and{' '}
                     {promotionLimitError.depositLimit?.max} for selected
@@ -362,15 +416,18 @@ export default function Deposit({ showTitle = true }) {
             </div>
 
             {(allowedMethods.size > 1 || allowedMethods.size === 0) && (
-              <div className="form-group">
+              <div>
                 {showTitle && (
-                  <label htmlFor="paymentType" className="asterisk">
+                  <label
+                    htmlFor="paymentType"
+                    className={formLabelRequiredClass}
+                  >
                     {' '}
                     Payment Method{' '}
                   </label>
                 )}
                 <div
-                  className={`d-flex overflow-x-auto gap-2${
+                  className={`flex overflow-x-auto gap-2${
                     !showTitle ? ' mt-3' : ''
                   }`}
                 >
@@ -379,7 +436,7 @@ export default function Deposit({ showTitle = true }) {
                     return (
                       <div
                         key={m.value}
-                        className={`method-box${active ? ' active' : ''}`}
+                        className={`${methodBoxBase}${active ? ` ${methodBoxActive}` : ''}`}
                         onClick={() => setPaymentMethod(m.value)}
                         role="button"
                         tabIndex={0}
@@ -387,24 +444,30 @@ export default function Deposit({ showTitle = true }) {
                           e.key === 'Enter' && setPaymentMethod(m.value)
                         }
                       >
-                        <img src={m.img} alt="method" />
+                        <img
+                          src={m.img}
+                          alt="method"
+                          className="h-[70px] w-auto"
+                        />
                       </div>
                     )
                   })}
                 </div>
                 {showPaymentRequired && (
-                  <span className="error">Payment method is required</span>
+                  <span className={errorTextClass}>
+                    Payment method is required
+                  </span>
                 )}
               </div>
             )}
 
             {submit.status === 'failed' && submit.error && (
-              <span className="error">{submit.error}</span>
+              <span className={errorTextClass}>{submit.error}</span>
             )}
 
             <button
               type="submit"
-              className="btn btn-primary mt-3 make-payment"
+              className={makePaymentBtnClass}
               disabled={!!promotionLimitError || submitting}
             >
               <Icon name="bkash" />
@@ -418,13 +481,20 @@ export default function Deposit({ showTitle = true }) {
       </div>
 
       {showPromotionModal && (
-        <div className="promotion-list-wrapper">
-          <div className="promotion-modal">
-            <div className="promotion-modal-header">
-              <h2>Select Promotion</h2>
+        // .promotion-list-wrapper: fixed full screen, sm-gray-20 bg, z-1000,
+        // slide-in animation from the right.
+        <div
+          className="fixed inset-0 bg-[#d4d4d4] flex items-center justify-center z-[1000] animate-[deposit-slide-in_300ms_ease-out]"
+        >
+          {/* .promotion-modal — flexible column on mobile, full svh */}
+          <div className="w-full bg-[var(--dark)] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.5)] min-h-[100svh] max-mobile:flex max-mobile:flex-col">
+            <div className="flex justify-between items-center p-4">
+              <h2 className="text-[20px] font-semibold mb-0 text-white">
+                Select Promotion
+              </h2>
               <button
                 type="button"
-                className="close-button"
+                className="bg-transparent border-0 text-white cursor-pointer w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 [&_i]:text-[16px]"
                 onClick={closePromotionModal}
                 aria-label="Close promotions"
               >
@@ -438,7 +508,7 @@ export default function Deposit({ showTitle = true }) {
             />
             <button
               type="button"
-              className="confirm-button"
+              className="w-[calc(100%-32px)] mx-4 mb-4 py-[14px] bg-[var(--orange-dark)] text-white border-0 rounded-md text-[16px] font-medium cursor-pointer transition-colors duration-200 max-mobile:mt-auto"
               onClick={savePromotion}
             >
               Confirm

@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Overlay, Popover } from 'react-bootstrap'
-import './header.scss'
+import { Overlay, Popover } from '../shared/components/primitives/Popover.jsx'
 import { useIsMobile } from '../hooks/useMediaQuery.js'
 import {
   fetchBalance,
@@ -41,17 +40,17 @@ function formatBalance(value) {
   }).format(value)
 }
 
-function formatExposureValue(value) {
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value)
-}
-
 function getDisplayAmount(wallet) {
   const raw = wallet?.amount ?? wallet?.balance ?? 0
   return raw > 0 ? Math.floor(raw * 10) / 10 : 0
 }
+
+const HEADER_BASE =
+  'flex items-center px-5 pr-[25px] py-2 h-[74px] bg-[var(--primary)] min-w-[1350px] max-mobile:px-0 max-mobile:pr-[1.87vw] max-mobile:py-[2.67vw] max-mobile:h-[14.67vw] max-mobile:min-w-0'
+
+const HEADER_YELLOW = 'bg-gradient-to-b from-[#ffcb2e] to-[#ffb80c]'
+const HEADER_MCW = 'bg-gradient-to-b from-[#2f2f2f] to-[#010101]'
+
 export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -88,18 +87,18 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   const amount = getDisplayAmount(wallet)
 
   const balanceLabel = !isMob && !isYellowTheme ? 'Main Balance' : 'Main'
-  const exposureLabel = 'Exposure'
 
   const headerClass = cx(
-    'header',
-    isYellowTheme && 'yellow-theme',
-    isMcwCasinoTheme && 'mcw-casino-theme'
+    HEADER_BASE,
+    isYellowTheme && HEADER_YELLOW,
+    isMcwCasinoTheme && HEADER_MCW
   )
 
+  // Mobile stake popup header (used inside the open-bets drawer).
   const stakeHeaderClass = cx(
-    'stake-mobile-header',
-    isYellowTheme && 'yellow-theme',
-    isMcwCasinoTheme && 'mcw-casino-theme'
+    'flex items-center justify-between bg-[var(--primary)]',
+    isYellowTheme && 'bg-gradient-to-b from-[var(--sm-primary-yellow)] to-[var(--md-primary-yellow)]',
+    isMcwCasinoTheme && 'bg-gradient-to-b from-[#2f2f2f] to-[#010101]'
   )
 
   useEffect(() => {
@@ -118,8 +117,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
 
   const navigateToHome = () => navigate('/')
   const openBetsClick = () => setShowBets(true)
-  const toggleLiveStream = () =>
-    dispatch(setIsPlayLiveStream(!isPlayLiveStream))
+  const toggleLiveStream = () => dispatch(setIsPlayLiveStream(!isPlayLiveStream))
   const openMobileStake = (e) => {
     setStakeTarget(e.currentTarget)
     setStakeOpen(true)
@@ -132,14 +130,13 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   }
 
   return (
-    <div className="header-wrapper">
+    <div>
       <header className={headerClass}>
         {!isMob ? (
-          <div className="d-inline-flex flex-sm-fill align-items-center">
-            <div className="logo-wrapper me-0 me-sm-2 me-xl-3">
+          <div className="inline-flex sm:flex-1 items-center">
+            <div className="me-0 sm:me-2 xl:me-3 [&_img]:object-cover [&_img]:h-auto [&_img]:w-auto [&_img]:max-w-[100px] [&_img]:max-h-[50px]">
               <img
                 src={logo}
-                className="site-logo"
                 alt="logo"
                 onClick={navigateToHome}
                 onKeyDown={(e) => e.key === 'Enter' && navigateToHome()}
@@ -147,7 +144,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                 tabIndex={0}
               />
             </div>
-            {showSearch && <EventSearch isYellowTheme={isYellowTheme} />}
+            {showSearch && <EventSearch />}
           </div>
         ) : (
           <>
@@ -155,9 +152,9 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
               <button
                 type="button"
                 className={cx(
-                  'btn btn-live',
-                  isPlayLiveStream && 'btn-live-close',
-                  isYellowTheme && 'yellow-theme'
+                  'relative bg-[#beaf0d] text-white border border-[#948800] px-[1.87vw] py-[1.87vw] pb-[1.33vw] w-[11.2vw] rounded-none shadow-[inset_0_0.27vw_0_0_rgba(255,255,255,0.4)] before:inline-block before:content-[""] before:bg-[url(/img/svg/mobile-live-icon.svg)] before:bg-contain before:bg-center before:h-[5.27vw] before:w-[5.6vw] before:align-middle',
+                  isPlayLiveStream &&
+                    'bg-[var(--lg-orange)] border-[var(--mds-orange)] before:bg-[url(/img/svg/mobile-close-icon.svg)]'
                 )}
                 onClick={toggleLiveStream}
               />
@@ -166,10 +163,14 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
               <>
                 <span
                   className={cx(
-                    'btn-bet btn-dull',
-                    isStreamAvailable && 'small',
-                    isYellowTheme && 'yellow-btn',
-                    isMcwCasinoTheme && 'mcw-btn'
+                    'flex items-center justify-center max-mobile:px-0 max-mobile:pt-[1.87vw] max-mobile:pb-[1.33vw] max-mobile:rounded-r-[1.07vw] max-mobile:min-w-[29.33vw] max-mobile:max-w-[31.2vw] max-mobile:text-[3.47vw] max-mobile:font-bold max-mobile:border-l-0 max-mobile:w-auto max-mobile:text-white text-base max-w-fit min-w-0',
+                    isStreamAvailable &&
+                      'max-mobile:min-w-[18.03vw] max-mobile:max-w-[21.2vw]',
+                    !isYellowTheme &&
+                      !isMcwCasinoTheme &&
+                      'max-mobile:bg-black/10 max-mobile:border max-mobile:border-black/40 max-mobile:shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.3)]',
+                    isYellowTheme && 'max-mobile:!text-[var(--dark)] max-mobile:!bg-transparent',
+                    isMcwCasinoTheme && 'max-mobile:!bg-white/10 max-mobile:!text-[#ffd45f]'
                   )}
                   onClick={openBetsClick}
                   role="button"
@@ -177,19 +178,24 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                   onKeyDown={(e) => e.key === 'Enter' && openBetsClick()}
                 >
                   <SvgIcon name="dollarCoin" />
-                  <p className="mb-0 ms-lg-2">Bets</p>
+                  <p className="mb-0 ms-lg-2 max-mobile:ml-[1.33vw]">Bets</p>
                 </span>
                 <div
-                  className={cx('custom-modal open-bets', showBets && 'show')}
+                  className={cx(
+                    'fixed inset-0 transition-all duration-100 bg-white',
+                    showBets
+                      ? 'opacity-100 visible z-[999]'
+                      : 'opacity-0 invisible -z-[999]'
+                  )}
                 >
                   <div className={stakeHeaderClass}>
-                    <div className="d-flex align-items-center text-white setting">
-                      <SvgIcon name="dollarCoin" className="bet-icon" />
-                      <span> Open Bets</span>
+                    <div className="flex items-center text-white flex-1 max-mobile:px-[1.87vw] max-mobile:leading-[2.6] max-mobile:border-r max-mobile:border-white/30 [&_svg]:max-mobile:w-[6.33vw] [&_svg]:max-mobile:h-[6.33vw] [&_svg]:mr-[1.33vw]">
+                      <SvgIcon name="dollarCoin" />
+                      <span>Open Bets</span>
                     </div>
                     <SvgIcon
                       name="closePopover"
-                      className="close"
+                      className="px-[3vw] leading-[2.2] cursor-pointer [&_svg]:h-[3.8vw] [&_svg]:w-[3.8vw] [&_svg_path]:fill-white"
                       role="button"
                       tabIndex={0}
                       onClick={() => setShowBets(false)}
@@ -203,39 +209,45 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
           </>
         )}
 
-        <div className="d-flex align-items-center justify-content-end balance-wrapper ms-auto ms-md-0">
-          <div className={cx('balance-outer', isYellowTheme && 'dark-text')}>
-            <div className="d-flex align-items-center justify-content-between counter">
+        <div className="flex items-center justify-end ms-auto md:ms-0">
+          <div
+            className={cx(
+              'flex items-center text-white',
+              isYellowTheme && '[&_a]:!text-[var(--dark)] [&_.value]:!text-[var(--dark)]',
+              isMcwCasinoTheme && '[&_.label]:!text-[#ffd45f] [&_.value]:!text-[#ffd45f]'
+            )}
+          >
+            <div className="flex items-center justify-between">
               {isBalanceRefresh ? (
-                <div className="loading-bar me-2">
+                <div className="me-2 [&_span]:inline-block [&_span]:w-1 [&_span]:h-1 [&_span]:rounded-full [&_span]:bg-white [&_span]:opacity-0 [&_span]:mr-1.5 [&_span]:animate-[loadBar_0.8s_ease_infinite] max-mobile:[&_span]:bg-black">
                   {LOADING_BAR_ITEMS.map((n) => (
-                    <span key={n} />
+                    <span key={n} style={{ animationDelay: `${(n - 1) * 0.1}s` }} />
                   ))}
                 </div>
               ) : (
                 <a
-                  className="d-md-flex align-items-center balance-main"
+                  className="md:flex items-center pr-3.5 max-mobile:pr-[2.13vw] max-mobile:text-right max-mobile:text-[3.2vw] text-white no-underline [&_span]:opacity-70 [&_.value]:!opacity-100 [&_.value]:font-bold"
                   href="#"
                   onClick={(e) => e.preventDefault()}
                 >
-                  <p>
+                  <p className="mb-0">
                     <span className="label">{balanceLabel} </span>
-                    <span className="pe-md-1 value">
+                    <span className="md:pr-1 value">
                       {currency} {formatBalance(amount)}
                     </span>
                   </p>
-                  <p className="exposure">
-                    <span className="label">{exposureLabel}</span>
+                  <p className="mb-0">
+                    <span className="label">Exposure</span>
                     <span
                       className={cx(
-                        'value',
-                        !isYellowTheme && 'sm-red',
-                        isExposure && 'red-exposure'
+                        'value text-white px-1.5 py-px',
+                        isExposure && 'text-[#d0021b] !important rounded-md',
+                        !isYellowTheme && isExposure && 'text-[#ff4040]'
                       )}
                     >
                       {isExposure
-                        ? `( ${formatExposureValue(exposure)} )`
-                        : formatExposureValue(exposure)}
+                        ? `( ${formatBalance(exposure)} )`
+                        : formatBalance(exposure)}
                     </span>
                   </p>
                 </a>
@@ -244,8 +256,8 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
             <button
               type="button"
               className={cx(
-                'btn btn-primary refresh-btn',
-                isYellowTheme && 'yellow-btn'
+                'h-[26px] w-[28px] flex items-center justify-center px-1.5 bg-black/30 border border-black/30 shadow-[inset_0_1px_0_0_rgba(var(--white-rgb),0.5)] rounded-[3px] hover:underline max-mobile:h-[9.47vw] max-mobile:w-auto max-mobile:px-[1.87vw] max-mobile:py-[1.7vw] max-mobile:bg-black/10 max-mobile:border max-mobile:border-black/40 max-mobile:shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.5)] [&_svg]:h-[14px] [&_svg]:w-[14px] max-mobile:[&_svg]:h-[5.07vw] max-mobile:[&_svg]:w-[5.07vw]',
+                isYellowTheme && '!bg-transparent [&_svg]:brightness-0'
               )}
               onClick={balanceRefresh}
             >
@@ -263,9 +275,9 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
         {showMobileStake && (
           <div
             className={cx(
-              'btn-dull setting-icon',
-              isYellowTheme && 'yellow-btn',
-              isMcwCasinoTheme && 'mcw-btn'
+              'flex items-center h-[9.47vw] w-auto px-[1.27vw] py-[1.7vw] rounded-[1.07vw] ml-[2.13vw] bg-black/10 border border-black/40 shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.3)] [&_svg]:text-white max-mobile:[&_svg]:w-[6.07vw] max-mobile:[&_svg]:h-[6.07vw]',
+              isYellowTheme && '!bg-transparent [&_svg]:brightness-0',
+              isMcwCasinoTheme && '!bg-white/10 [&_svg]:!text-[#ffd45f]'
             )}
             onClick={openMobileStake}
             role="button"
@@ -280,11 +292,11 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
       <Overlay
         show={stakeOpen}
         target={stakeTarget}
-        placement="bottom-end"
+        placement="bottom"
         rootClose={false}
         onHide={() => setStakeOpen(false)}
       >
-        <Popover className="stake-popup-container">
+        <Popover className="max-mobile:fixed max-mobile:inset-0 max-mobile:!max-w-full max-mobile:!mt-0 max-mobile:rounded-none max-mobile:overflow-y-auto max-mobile:pb-[16.33vw]">
           <Popover.Body className="p-0">
             <Stake isMobile onCancel={() => setStakeOpen(false)} />
           </Popover.Body>

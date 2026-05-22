@@ -22,9 +22,44 @@ import OneClickBet from '../components/OneClickBet.jsx'
 import NewsLine from '../components/NewsLine'
 import Loader from '../shared/components/Loader.jsx'
 import SportsSidebar from '../shared/components/sports-sidebar/SportsSidebar'
-import './layout.scss'
 
 const cx = (...classes) => classes.filter(Boolean).join(' ')
+
+// Ported from the original layout.scss .main-wrapper / .left-content /
+// .middle-content / .right-content / .scroll-wrap rules.
+const MAIN_WRAPPER_BASE =
+  'relative mx-auto bg-[var(--xs-gray)] w-[calc(100%-40px)] mt-[105px] min-[768px]:max-[1440px]:w-[calc(100%-25px)] max-mobile:mt-[14.67vw] max-mobile:w-full'
+
+const MAIN_WRAPPER_NO_HEADER =
+  'relative mx-auto bg-[var(--xs-gray)] w-[calc(100%-40px)] mt-[31px] max-mobile:mt-0 max-mobile:w-full'
+
+const LEFT_CONTENT_BASE =
+  'absolute left-0 top-0 w-[17.36%] h-[calc(100vh-105px)] max-mobile:h-[calc(100vh-14.67vw)] bg-[var(--xl-black)]'
+
+const LEFT_CONTENT_LIGHT =
+  'absolute left-0 top-0 w-[17.36%] h-[calc(100vh-105px)] max-mobile:h-[calc(100vh-14.67vw)] bg-white md:w-[16.33%]'
+
+const LEFT_CONTENT_MCW =
+  'absolute left-0 top-0 w-[17.36%] h-[calc(100vh-105px)] max-mobile:h-[calc(100vh-14.67vw)] bg-white'
+
+const MIDDLE_CONTENT_BASE =
+  'relative ml-[17.36%] mr-[26.04%] px-[15px] h-[calc(100svh-105px)] overflow-y-auto max-mobile:ml-0 max-mobile:mr-0 max-mobile:px-0'
+
+const MIDDLE_CONTENT_YELLOW =
+  'relative md:ml-[16.36%] ml-[17.36%] mr-[26.04%] px-[15px] h-[calc(100svh-105px)] overflow-y-auto max-mobile:ml-0 max-mobile:mr-0 max-mobile:px-0'
+
+const MIDDLE_CONTENT_MOBILE_ROUTER = 'max-mobile:pb-[18vw]'
+
+const SCROLL_WRAP_BASE =
+  'min-h-[calc(100vh-148px)] overflow-y-auto max-mobile:min-h-[unset] max-mobile:max-h-[unset] max-mobile:overflow-y-visible'
+
+const SCROLL_WRAP_ONE_CLICK = 'h-[calc(100vh-161px)]'
+const SCROLL_WRAP_YELLOW = 'h-auto max-mobile:max-h-[unset]'
+
+const RIGHT_CONTENT =
+  'absolute w-[26.04%] z-[8] right-0 top-0 bottom-0 bg-white'
+
+const HEADER_WRAPPER = 'fixed top-0 left-0 right-0 z-[1000]'
 
 export default function Layout() {
   const { pathname } = useLocation()
@@ -35,8 +70,6 @@ export default function Layout() {
   const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
   const isOneClickBet = useSelector(selectIsOneClickBet)
   const layoutedRoutes = useSelector(selectLayoutedRoutes)
-  // Loader flags — mirror Angular's `commonService.isMainScreenLoader` /
-  // `isFullShowLoader`. Pages dispatch these to overlay middle-content / viewport.
   const isMainScreenLoader = useSelector(selectIsMainScreenLoader)
   const isFullScreenLoader = useSelector(selectIsFullScreenLoader)
 
@@ -59,32 +92,32 @@ export default function Layout() {
   const showRightContent = !isMobile && !isAccountRoute
   const showMobileNavigation = isMobile && !isPlatformPage
 
-  const mainWrapperClass = cx(
-    'main-wrapper',
-    isAuthenticated && 'auth',
-    !isAuthenticated && 'no-header-wrapper'
-  )
-  const leftContentClass = cx(
-    'left-content',
-    isYellowTheme && 'light-sidebar',
-    isMcwCasinoTheme && 'mcw-casino-sidebar'
-  )
+  const mainWrapperClass = isAuthenticated
+    ? MAIN_WRAPPER_BASE
+    : MAIN_WRAPPER_NO_HEADER
+
+  const leftContentClass = isYellowTheme
+    ? LEFT_CONTENT_LIGHT
+    : isMcwCasinoTheme
+      ? LEFT_CONTENT_MCW
+      : LEFT_CONTENT_BASE
+
   const middleContentClass = cx(
-    'middle-content',
-    isYellowTheme && 'yellow-theme',
-    isMobile && 'mobile-router-outlet'
+    isYellowTheme ? MIDDLE_CONTENT_YELLOW : MIDDLE_CONTENT_BASE,
+    isMobile && MIDDLE_CONTENT_MOBILE_ROUTER
   )
+
   const scrollWrapClass = cx(
-    'scroll-wrap',
-    isOneClickBet && 'show-one-click',
-    isYellowTheme && 'yellow-theme'
+    SCROLL_WRAP_BASE,
+    isOneClickBet && SCROLL_WRAP_ONE_CLICK,
+    isYellowTheme && SCROLL_WRAP_YELLOW
   )
 
   return (
-    <div className="app-layout">
+    <div>
       <DevAuthToggle />
 
-      <div className="header-wrapper">
+      <div className={HEADER_WRAPPER}>
         <Header />
       </div>
 
@@ -97,12 +130,12 @@ export default function Layout() {
 
         <div className={middleContentClass}>
           {isFullScreenLoader && (
-            <div className="fullscreen-loader">
+            <div className="fixed inset-0 flex items-center justify-center z-[9999]">
               <Loader show message="common.loader.pleaseWait" />
             </div>
           )}
           {isMainScreenLoader && (
-            <div className="loader-wrapper">
+            <div className="absolute inset-0 flex items-center justify-center z-[999]">
               <Loader show message="common.loader.loading" />
             </div>
           )}
@@ -117,12 +150,10 @@ export default function Layout() {
           {isOneClickBet && <OneClickBet />}
         </div>
 
-
         {showMobileNavigation && <MobileNavigation />}
 
-
         {showRightContent && (
-          <div className="right-content">
+          <div className={RIGHT_CONTENT}>
             <BetSlip />
             {isAuthenticated && <OpenBets />}
           </div>

@@ -6,9 +6,6 @@ import {
   selectWithdrawalHistory,
 } from '../../store/slices/accountSlice.js'
 import { selectCurrency } from '../../store/slices/authSlice.js'
-// Reuse the .payment-img + status- class colors already defined for the
-// Deposit History page (same selectors used by the shared Table component).
-import './deposit-history.scss'
 
 const PER_PAGE = 10
 
@@ -21,12 +18,14 @@ function formatDate(value) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
 }
 
-// Renders the `<img class="payment-img">` HTML string that the thunk stamps
-// onto each row's `paymentType` field (mirrors Angular's `type: 'template'`).
+// The thunk attaches a `<img class="payment-img">` HTML string to each
+// row's `paymentType` field (mirrors Angular's `type: 'template'`).
+// Scope the image sizing inline so we don't need a dedicated scss file.
 function PaymentTypeCell({ html }) {
   if (!html) return null
   return (
     <span
+      className="[&_img]:h-[30px] [&_img]:w-auto"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   )
@@ -34,7 +33,8 @@ function PaymentTypeCell({ html }) {
 
 // `<a class="rejected-reason">View Note</a>` link cell. Clickable when the
 // row has a `reason`; opens the Decline Reason modal (mirrors Angular's
-// modalService.setContent(declineReason)).
+// modalService.setContent(declineReason)). The injected HTML inherits the
+// blue/underlined link colours via Tailwind selectors scoped to this span.
 function ReasonCell({ html, onClick }) {
   if (!html) return null
   return (
@@ -43,9 +43,23 @@ function ReasonCell({ html, onClick }) {
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => e.key === 'Enter' && onClick()}
+      className="[&_a]:text-[var(--cyanBlue)] [&_a]:underline [&_a]:cursor-pointer [&_a]:text-[12px]"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   )
+}
+
+// Status colour mapping shared with DepositHistory.
+function getStatusCellClass(value) {
+  if (!value) return ''
+  const slug = String(value).toLowerCase().trim()
+  if (slug.includes('complete') || slug.includes('approve') || slug.includes('success'))
+    return 'text-[var(--avocado-green)] font-bold'
+  if (slug.includes('fail') || slug.includes('reject') || slug.includes('decline'))
+    return 'text-[var(--failed-status)] font-bold'
+  if (slug.includes('pending') || slug.includes('process'))
+    return 'text-[var(--orange-dark)] font-bold'
+  return ''
 }
 
 export default function WithdrawHistory() {
@@ -81,7 +95,7 @@ export default function WithdrawHistory() {
       {
         key: 'remainingAmount',
         label: 'Remaining amount',
-        cellClassName: 'w-nowrap',
+        cellClassName: 'whitespace-nowrap',
       },
       { key: 'transactionId', label: 'Transaction Id' },
       {
@@ -99,11 +113,7 @@ export default function WithdrawHistory() {
       {
         key: 'status',
         label: 'Status',
-        cellClassName: (value) => {
-          if (!value) return ''
-          const slug = String(value).toLowerCase().replace(/\s+/g, '-')
-          return `status-${slug}`
-        },
+        cellClassName: getStatusCellClass,
         render: (value) => <span>{value}</span>,
       },
     ],
@@ -112,8 +122,10 @@ export default function WithdrawHistory() {
 
   return (
     <>
-      <div className="page-title d-flex justify-content-between align-items-center">
-        <p className="m-0">Withdraw History</p>
+      <div className="flex justify-between items-center">
+        <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
+          Withdraw History
+        </p>
       </div>
 
       <Table
@@ -123,25 +135,31 @@ export default function WithdrawHistory() {
       />
 
       {reasonModal.open && (
-        <div className="reason-modal-backdrop" onClick={closeReason}>
+        // .reason-modal-backdrop + .reason-modal — fixed full-screen overlay
+        // with a centred 420px-wide white card; the deposit-history.scss copy
+        // is preserved verbatim here in utility form.
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1050]"
+          onClick={closeReason}
+        >
           <div
-            className="reason-modal"
+            className="bg-white rounded-md w-[90%] max-w-[420px] shadow-[0_4px_20px_rgba(0,0,0,0.25)] overflow-hidden"
             role="dialog"
             aria-modal="true"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="reason-modal-header">
-              <h5 className="m-0">Decline Reason</h5>
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--light-gray)]">
+              <h5 className="m-0 text-[16px] font-semibold">Decline Reason</h5>
               <button
                 type="button"
-                className="btn-close"
+                className="bg-transparent border-0 cursor-pointer text-[18px] text-[var(--dark-md-gray)] hover:text-black"
                 aria-label="Close"
                 onClick={closeReason}
               >
                 ✕
               </button>
             </div>
-            <div className="reason-modal-body">
+            <div className="p-4 text-[14px] text-[var(--dark-md-gray)] break-words">
               {reasonModal.reason || '—'}
             </div>
           </div>

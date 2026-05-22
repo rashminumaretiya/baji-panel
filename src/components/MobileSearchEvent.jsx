@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { http } from '../core/http/client.js'
 import { getSportSlug } from '../core/constant/constants.js'
 import SvgIcon from './SvgIcon.jsx'
-import './mobileSearchEvent.scss'
 
 const SEARCH_DEBOUNCE_MS = 250
 
@@ -17,8 +16,7 @@ function formatEventTime(iso) {
   return `${h}:${m}`
 }
 
-// SVGs ported verbatim from the live mobile `search-event` component so the
-// existing SCSS selectors that target the icon paths/wrappers still match.
+// SVGs ported verbatim from the live mobile `search-event` component.
 const LeftArrowSvg = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -56,9 +54,6 @@ const SearchSvg = (
 
 // Collapsed search trigger for mobile views. Tap the icon to open a fullscreen
 // overlay with the search input; tap the dim background or back arrow to close.
-// Markup mirrors the live `search-event` component (including the ng-select
-// inner DOM) so the SCSS hooks (.ng-select-container, .ng-value-container,
-// .ng-placeholder, .ng-input, .ng-arrow-wrapper, .search-overlay) all match.
 export default function MobileSearchEvent() {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -87,11 +82,7 @@ export default function MobileSearchEvent() {
     }
   }, [open, close])
 
-  // Debounced search against /sport/search. Cancels in-flight requests when
-  // the user keeps typing so we never paint stale results on top of fresh ones.
-  // An empty / whitespace query short-circuits with no setState — that's
-  // handled by the derived `effectiveResults` below to keep this effect from
-  // doing a sync setState (which the React 19 lint flags as cascading).
+  // Debounced search against /sport/search.
   useEffect(() => {
     const text = query.trim()
     if (!text) return undefined
@@ -122,8 +113,6 @@ export default function MobileSearchEvent() {
     }
   }, [query])
 
-  // Derived results — when the query is empty there's nothing to show no
-  // matter what's still in `results`. Avoids a syncing-setState in the effect.
   const trimmedQuery = query.trim()
   const effectiveResults = trimmedQuery ? results : []
   const isSearching = !!trimmedQuery && loading
@@ -149,9 +138,14 @@ export default function MobileSearchEvent() {
   const placeholder = t('header.searchEvents', 'Search Events')
 
   return (
-    <div className="search-collapse">
+    <div className="relative">
+      {/* `.search-out` ─ collapsed icon button */}
       <span
-        className="search-out"
+        className={
+          'w-[12.8vw] flex items-center h-[12.45vw] justify-center text-white ' +
+          'bg-gradient-to-b from-[#525252] to-[#2d2d2d] ' +
+          '[&_i_svg]:w-[5.87vw] [&_i_svg]:h-full'
+        }
         onClick={toggle}
         role="button"
         tabIndex={0}
@@ -161,10 +155,24 @@ export default function MobileSearchEvent() {
         <SvgIcon name="searchIcon" />
       </span>
 
-      <div className={`search-events${open ? ' open' : ''}`}>
-        <div className="search-events-inner">
+      {/* `.search-events` ─ fullscreen overlay */}
+      <div
+        className={
+          'fixed inset-0 z-[99999] transition-all duration-700 ease-in-out ' +
+          (open
+            ? 'opacity-100 pointer-events-auto'
+            : 'opacity-0 pointer-events-none')
+        }
+      >
+        {/* `.search-events-inner` ─ search bar row */}
+        <div className="flex bg-white items-center">
+          {/* `.left-arrow` ─ back button */}
           <i
-            className="left-arrow"
+            className={
+              'inline-flex items-center justify-center ' +
+              '[&_svg]:scale-80 max-mobile:[&_svg]:scale-100 ' +
+              'max-mobile:[&_svg]:w-[10.67vw] max-mobile:[&_svg]:h-[10.07vw]'
+            }
             onClick={close}
             role="button"
             tabIndex={0}
@@ -174,9 +182,12 @@ export default function MobileSearchEvent() {
             {LeftArrowSvg}
           </i>
 
-          <div className="ng-select-container">
-            <div className="ng-value-container">
-              <div className="ng-input">
+          {/* `.ng-select-container` ─ input + clear */}
+          <div className="flex flex-1 items-center rounded-none border-0">
+            {/* `.ng-value-container` */}
+            <div className="flex items-center h-full flex-1">
+              {/* `.ng-input` */}
+              <div className="h-full">
                 <input
                   aria-autocomplete="list"
                   role="combobox"
@@ -189,12 +200,18 @@ export default function MobileSearchEvent() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   autoFocus={open}
+                  className={
+                    'h-[46px] max-mobile:h-full w-full outline-none border-0 ' +
+                    'font-normal placeholder:text-[#9b9b9b] placeholder:font-normal placeholder:ml-0'
+                  }
                 />
               </div>
             </div>
             {query && (
               <span
-                className="ng-clear-wrapper"
+                className={
+                  'w-[22px] flex items-center font-thin max-mobile:w-[6.07vw]'
+                }
                 role="button"
                 tabIndex={0}
                 onClick={() => setQuery('')}
@@ -203,23 +220,57 @@ export default function MobileSearchEvent() {
                 }
                 aria-label="Clear search"
               >
-                <span className="ng-clear">×</span>
+                <span
+                  className={
+                    'text-[26px] leading-[20px] text-[var(--lg-black)] ' +
+                    'max-mobile:text-[var(--xxl-black)] max-mobile:text-[7vw] max-mobile:leading-normal'
+                  }
+                >
+                  ×
+                </span>
               </span>
             )}
-            <span className="ng-arrow-wrapper">
-              <span className="ng-arrow" />
+            {/* `.ng-arrow-wrapper` ─ hidden in original */}
+            <span className="hidden">
+              <span />
             </span>
           </div>
 
-          <i className="search-icon">{SearchSvg}</i>
+          {/* `.search-icon` */}
+          <i
+            className={
+              'p-2.5 leading-[45px] ' +
+              '[&_svg]:w-[5.67vw] [&_svg]:h-[5.07vw] ' +
+              '[&_svg_path]:fill-[var(--lg-black)] max-mobile:[&_svg_path]:fill-[var(--xxl-black)]'
+            }
+          >
+            {SearchSvg}
+          </i>
         </div>
 
         {(effectiveResults.length > 0 || isSearching || showEmpty) && (
-          <div className="ng-select">
-            <div className="ng-dropdown-panel">
-              <div className="ng-dropdown-panel-items">
+          // `.ng-select` ─ dropdown results panel
+          <div
+            className={
+              'bg-white flex items-center w-full overflow-y-auto max-mobile:h-[16vw]'
+            }
+          >
+            {/* `.ng-dropdown-panel` */}
+            <div
+              className={
+                'max-mobile:fixed max-mobile:left-0 max-mobile:right-0 ' +
+                'max-mobile:top-[16vw] max-mobile:border-t max-mobile:border-[var(--xxl-gray)]'
+              }
+            >
+              {/* `.ng-dropdown-panel-items` */}
+              <div className="max-mobile:max-h-[46.67vw]">
                 {isSearching && effectiveResults.length === 0 && (
-                  <div className="ng-option ng-option-loading">
+                  <div
+                    className={
+                      'px-1 bg-white text-[var(--text-color)] text-[14px] ' +
+                      'max-mobile:px-[2vw] max-mobile:text-[4vw] max-mobile:text-[var(--blue)]'
+                    }
+                  >
                     {t('common.loading', 'Searching…')}
                   </div>
                 )}
@@ -227,7 +278,14 @@ export default function MobileSearchEvent() {
                   <div
                     type="button"
                     key={`${item.sportId}-${item.eventId}`}
-                    className="ng-option"
+                    className={
+                      'px-1 bg-white text-[var(--text-color)] text-[14px] cursor-pointer ' +
+                      'max-mobile:px-[2vw] max-mobile:text-[4vw] max-mobile:text-[var(--blue)] ' +
+                      'max-mobile:[&_.item]:overflow-hidden max-mobile:[&_.item]:text-ellipsis ' +
+                      'max-mobile:[&_.item]:leading-[11.68vw] ' +
+                      'max-mobile:[&_.time]:mr-[1.87vw] max-mobile:[&_.time]:font-normal ' +
+                      'max-mobile:[&_.time]:text-[var(--lg-black)]'
+                    }
                     onClick={() => onResultClick(item)}
                   >
                     <div title={item.eventName} className="item">
@@ -242,7 +300,12 @@ export default function MobileSearchEvent() {
                   </div>
                 ))}
                 {showEmpty && (
-                  <div className="ng-option ng-option-empty">
+                  <div
+                    className={
+                      'px-1 bg-white text-[var(--text-color)] text-[14px] ' +
+                      'max-mobile:px-[2vw] max-mobile:text-[4vw] max-mobile:text-[var(--blue)]'
+                    }
+                  >
                     {t('common.noEventsFound', 'No events found')}
                   </div>
                 )}
@@ -251,7 +314,12 @@ export default function MobileSearchEvent() {
           </div>
         )}
 
-        <div className="search-overlay" onClick={close} aria-hidden="true" />
+        {/* `.search-overlay` ─ dim backdrop */}
+        <div
+          className="fixed top-0 left-0 w-screen h-full bg-black/70 -z-[1]"
+          onClick={close}
+          aria-hidden="true"
+        />
       </div>
     </div>
   )

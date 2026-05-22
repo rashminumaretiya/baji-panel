@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { Overlay, Popover } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
+import { Overlay, Popover } from '../shared/components/primitives/Popover.jsx'
 import SvgIcon from './SvgIcon.jsx'
-import './myAccountPopup.scss'
 
 const SITE_LOGO =
   'https://backend-1ten365.s3.ap-south-2.amazonaws.com/admins/6800f38aa57265d98c2a5110/logo/Baji36%202%20copy-1745137890392.png'
@@ -38,58 +37,51 @@ export default function MyAccountPopup({
     navigate(path)
   }
 
-  const popoverContent = (
-    <div className="my-account-popover">
-      <div className="title d-flex justify-content-between">
-        <p className="mb-0">{userName}</p>
-        <p className="timezone mb-0">GMT +5:30</p>
-      </div>
-      <ul className="list-unstyled mb-0">
-        <li className="d-flex flex-row align-items-center social-icons">
-          <span className="w-nowrap">Upline Contact:</span>
-          <div className="d-flex ms-2 overflow-x-auto" />
-        </li>
-        {MENU_ITEMS.map((item) => (
-          <li
-            key={item.path}
-            role="button"
-            tabIndex={0}
-            onClick={() => handleMenuClick(item.path)}
-            onKeyDown={(e) => e.key === 'Enter' && handleMenuClick(item.path)}
-          >
-            {item.label}
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-
   return (
     <>
       <div
-        className="d-flex btn btn-primary align-items-center justify-content-center cursor-pointer ms-lg-3 ms-sm-2"
+        className="flex items-center justify-center cursor-pointer ms-lg-3 sm:ms-2 text-[var(--header-balance-color)] h-[26px] px-1.5 bg-black/30 border border-black/40 shadow-[inset_0_1px_0_0_rgba(var(--dark-alpha),0.5)] font-normal text-[12px] rounded-[3px] whitespace-nowrap max-mobile:h-[9.6vw] max-mobile:w-[9.6vw] [&_.user-icon_svg]:h-[18px] [&_.user-icon_svg]:w-[18px] [&_.dropdown-icon_svg]:w-[9px] [&_.dropdown-icon_svg]:ml-2"
         onClick={handleToggle}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => e.key === 'Enter' && handleToggle(e)}
       >
         <SvgIcon name="userIcon" className="user-icon" />
-        <span className="d-inline-block mx-1">My Account</span>
+        <span className="inline-block mx-1 max-mobile:hidden">My Account</span>
         {!isMobile && <SvgIcon name="dropdown" className="dropdown-icon" />}
       </div>
       <Overlay
         show={show}
         target={target}
-        placement="bottom-end"
+        placement="bottom"
         rootClose
         onHide={() => setShow(false)}
       >
-        <Popover
-          id="my-account-popover"
-          className="my-account-popup"
-          arrowProps={{ style: { display: 'none' } }}
-        >
-          <Popover.Body>{popoverContent}</Popover.Body>
+        <Popover className="border-0 w-[230px]">
+          <Popover.Body className="p-0 text-[12px] font-[Tahoma,Helvetica,sans-serif] text-[var(--popover)]">
+            <div className="flex justify-between font-bold text-[12px] border-b border-[var(--sm-text-color)] pl-2.5">
+              <p className="mb-0 leading-[26px] font-semibold flex-1 pr-1.5 border-r border-[#c5d0d7]">{userName}</p>
+              <p className="mb-0 text-[11px] px-1 py-[5px]">GMT +5:30</p>
+            </div>
+            <ul className="m-0 p-0">
+              <li className="flex flex-row items-center px-2.5 leading-[25px] border-b border-[var(--light-bg)] text-[#1e1e1e]">
+                <span className="whitespace-nowrap">Upline Contact:</span>
+                <div className="flex ml-2 overflow-x-auto" />
+              </li>
+              {MENU_ITEMS.map((item) => (
+                <li
+                  key={item.path}
+                  role="button"
+                  tabIndex={0}
+                  className="px-2.5 leading-[25px] border-b last:border-b-0 border-[var(--light-bg)] text-[#1e1e1e] cursor-pointer hover:bg-[var(--xxs-gray)]"
+                  onClick={() => handleMenuClick(item.path)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleMenuClick(item.path)}
+                >
+                  {item.label}
+                </li>
+              ))}
+            </ul>
+          </Popover.Body>
         </Popover>
       </Overlay>
     </>

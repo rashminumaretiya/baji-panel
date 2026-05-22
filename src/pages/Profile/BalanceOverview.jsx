@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
 import Table from '../../shared/Table.jsx'
-import './balanceOverview.scss'
 
 const summaryCards = [
   {
@@ -70,22 +69,35 @@ export default function BalanceOverview() {
 
   return (
     <>
-      <p className="page-title">Summary</p>
+      <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
+        Summary
+      </p>
 
       {summaryCards.map((card) => {
         const value = summary[card.key] || {}
         return (
-          <div className="card" key={card.key}>
-            <div className="card-body">
-              <div className="account-balance-wrapper">
-                <p className="balance-header">{card.title}</p>
-                <p className="balance mb-0">
-                  <span>{value.amount ?? 0}</span> {value.currency || 'BDT'}
+          <div className="mb-[15px]" key={card.key}>
+            <div className="flex bg-white py-[7px] px-[10px] border-b border-[var(--dark-gray)]">
+              {/* account-balance-wrapper: flex: 0 0 31.37255% / pr-4 */}
+              <div className="pr-4 basis-[31.37255%] shrink-0 grow-0">
+                <p className="text-[15px] font-bold mb-[7px] text-[#3b5160]">
+                  {card.title}
+                </p>
+                <p className="mb-0 text-[12px] text-[#7e97a7]">
+                  <span className="text-[30px] leading-9 font-bold text-[#2789ce]">
+                    {value.amount ?? 0}
+                  </span>{' '}
+                  {value.currency || 'BDT'}
                 </p>
               </div>
-              <div className="welcome-section">
-                <h4 className="balance-header">{card.heading}</h4>
-                <p className="mb-0">{card.description}</p>
+              {/* welcome-section: left border, padding 0 10px 3px */}
+              <div className="px-[10px] pb-[3px] relative border-l border-[var(--xs-lightGray)]">
+                <h4 className="text-[15px] font-bold mb-[7px] text-[#3b5160]">
+                  {card.heading}
+                </h4>
+                <p className="mb-0 text-[#3b5160] text-[13px] leading-[18px] max-w-[570px]">
+                  {card.description}
+                </p>
               </div>
             </div>
           </div>

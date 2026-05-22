@@ -77,6 +77,7 @@ function UserIcon() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
+      className="shrink-0"
     >
       <mask
         id="user-icon-mask"
@@ -109,6 +110,7 @@ function ClockIcon() {
       stroke="currentColor"
       strokeWidth="2"
       aria-hidden="true"
+      className="shrink-0"
     >
       <circle cx="12" cy="12" r="9" />
       <polyline
@@ -124,6 +126,30 @@ function nowLabel() {
   const d = new Date()
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
+
+// Tailwind class strings ported from myBets.scss `.pl-card` + `.bet-history-filter`.
+const plCardClass =
+  'bg-white mt-2 px-[10px] py-2 border-b border-[#7e97a7] [&_.user-table]:mt-0'
+const plHeaderClass = 'mb-[10px]'
+const plTitleClass = 'text-[15px] font-semibold mb-[6px] text-[#3b5160] mt-0'
+const plMetaClass =
+  'flex items-center flex-wrap gap-[14px] text-[12px] text-[#1e1e1e]'
+const plMetaItemClass = 'inline-flex items-center gap-[6px] text-[#555]'
+
+const filterContainerClass =
+  'bg-[var(--platinum-grey)] border-b border-[#d0d0d0] px-[10px] py-[8px] text-[12px] text-[#1e1e1e]'
+const filterRowClass = 'flex items-center flex-wrap gap-[6px] mb-4'
+const actionRowClass = 'flex items-center gap-[6px] mt-2'
+const filterLabelClass = 'text-[#1e1e1e] whitespace-nowrap m-0'
+const dateInputClass =
+  'h-6 px-[6px] py-0 text-[12px] leading-[22px] rounded-[3px] border border-[#aaa] bg-white w-[130px]'
+const timeInputClass =
+  'h-6 px-[6px] py-0 text-[12px] leading-[22px] rounded-[3px] border border-[#aaa] w-[60px] text-center bg-[#ececec] text-[#666]'
+const periodSepClass = 'px-1'
+const btnLightClass =
+  'h-[26px] px-[10px] text-[12px] rounded-[3px] bg-[#f8f9fa] border border-[#f8f9fa] text-[#212529] hover:bg-[#e2e6ea] hover:border-[#dae0e5]'
+const getHistoryBtnClass =
+  'h-[26px] px-[10px] text-[12px] rounded-[3px] bg-[#0A876D] border border-[#0A876D] text-white hover:bg-[#0A876D] focus:bg-[#0A876D]'
 
 export default function ProfitLoss() {
   const token = useSelector(selectToken)
@@ -177,15 +203,15 @@ export default function ProfitLoss() {
   }, [fetchPnl, refreshKey])
 
   return (
-    <div className="pl-card">
-      <div className="pl-header">
-        <h4 className="pl-title">Profit &amp; Loss - Main wallet</h4>
-        <div className="pl-meta">
-          <span className="pl-meta-item">
+    <div className={plCardClass}>
+      <div className={plHeaderClass}>
+        <h4 className={plTitleClass}>Profit &amp; Loss - Main wallet</h4>
+        <div className={plMetaClass}>
+          <span className={plMetaItemClass}>
             <UserIcon />
             <span>{userName}</span>
           </span>
-          <span className="pl-meta-item">
+          <span className={plMetaItemClass}>
             <ClockIcon />
             <span>{generatedAt}</span>
           </span>
@@ -198,54 +224,54 @@ export default function ProfitLoss() {
         onChange={setMarketCategory}
       />
 
-      <div className="bet-history-filter">
-        <div className="filter-row">
-          <label className="filter-label">Period</label>
+      <div className={filterContainerClass}>
+        <div className={filterRowClass}>
+          <label className={filterLabelClass}>Period</label>
           <input
             type="date"
-            className="form-control form-control-sm date-input"
+            className={dateInputClass}
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
           />
           <input
             type="text"
-            className="form-control form-control-sm time-input"
+            className={timeInputClass}
             value="09 : 00"
             readOnly
           />
-          <span className="period-sep">to</span>
+          <span className={periodSepClass}>to</span>
           <input
             type="date"
-            className="form-control form-control-sm date-input"
+            className={dateInputClass}
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
           />
           <input
             type="text"
-            className="form-control form-control-sm time-input"
+            className={timeInputClass}
             value="08 : 59"
             readOnly
           />
         </div>
 
-        <div className="action-row">
+        <div className={actionRowClass}>
           <button
             type="button"
-            className="btn btn-light btn-sm"
+            className={btnLightClass}
             onClick={setJustForToday}
           >
             Just For Today
           </button>
           <button
             type="button"
-            className="btn btn-light btn-sm"
+            className={btnLightClass}
             onClick={setFromYesterday}
           >
             From Yesterday
           </button>
           <button
             type="button"
-            className="btn btn-sm get-history"
+            className={getHistoryBtnClass}
             onClick={fetchPnl}
           >
             Get P &amp; L

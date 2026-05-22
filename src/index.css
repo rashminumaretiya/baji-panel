@@ -1,3 +1,38 @@
+@import 'tailwindcss';
+@import '../public/fonts/product-sans/fonts.css';
+
+/* ─── Tailwind v4 design tokens ─────────────────────────────────────────────
+ * Adds utilities like bg-primary, text-primary-yellow, etc. Anything not
+ * listed here is still available via the :root vars below as arbitrary
+ * values, e.g. bg-[var(--xs-blue)].
+ */
+@theme {
+  --color-primary: #15805e;
+  --color-primary-yellow: #ffb427;
+  --color-primary-yellow-md: #ffb80c;
+  --color-primary-yellow-sm: #ffcb2e;
+  --color-back-2: #d7e8f4;
+  --color-back-1: #b7d5eb;
+  --color-back-0: #72bbef;
+  --color-lay-2: #f6e6ea;
+  --color-lay-1: #efd3d9;
+  --color-lay-0: #faa9ba;
+  --color-light-navy: #243a48;
+  --color-dark-navy: #172732;
+  --color-suspend: #ff0000;
+  --color-profit: #508d0e;
+  --color-liability: #d0021b;
+
+  --font-product-sans: 'Product Sans Regular', Tahoma, Helvetica, sans-serif;
+  --font-product-sans-bold: 'Product Sans Bold', Tahoma, Helvetica, sans-serif;
+
+  /* Custom breakpoint matching the original mobile media query
+     (max-width: 767px). Use as `max-mobile:foo` for mobile styles
+     and `mobile:foo` for desktop (min-width: 767px). */
+  --breakpoint-mobile: 767px;
+}
+
+/* ─── :root CSS variables (ported from variable.scss) ──────────────────────── */
 :root {
   --primary: #15805e;
   --lg-primary: #00682b;
@@ -19,7 +54,7 @@
   --xl-black: #333333;
   --md-black: #434343;
   --sm-black: #4b4b4b;
-  --lg-black: #777777;
+  --lg-black: #0e0e0e;
   --xxl-black: #4c4c4c;
   --xts-black: #121212;
   --xmd-black: #464646;
@@ -50,38 +85,32 @@
   --dark-gray: #999999;
   --md-gray: #d0d0d0;
   --dark-md-gray: #666666;
-  --xl-gray: #d8d8d8;
-  --xxl-gray: #bbbbbb;
   --dark-grey: #172832;
   --dark-xl-gray: #414345;
   --md-primary-black: #444;
   --sm-md-black: #1b1b1b;
-
-  --sm-black: #4b4b4b;
-  --white: #ffffff;
   --white-rgb: 255, 255, 255;
   --black-rgb: 0, 0, 0;
   --black: #000000;
   --xs-black: #111a22;
-  --xl-black: #333333;
   --black-to-black: #222;
   --body-color: #f0ece1;
   --xs-lightGray: #d8d8d8;
   --light-gray: #e4e4e4;
   --input-group-border: #dee2e6;
   --border-light-color: #eeeeee;
-  --red: #ff0000;
+  --red: #fb3434;
   --suspend-status: #f00;
   --failed-status: #f00;
   --failed-status-bg: #ff000033;
   --light-red: 250, 169, 186;
-  --text-color: #ccc;
+  --text-color: #3b5160;
   --nav-tab-bg: #3b5160;
   --orange-dark: #ffa600;
   --spanish-yellow: #ffb80c;
-  --light-yellow: #ffe1a9;
+  --light-yellow: #f3dda7;
   --cyanBlue: #2789ce;
-  --blue-dark: #286baa;
+  --blue-dark: #226bc3;
   --orange-darkest: #e4550f;
   --mds-orange: #df4000;
   --lg-orange: #cd3a00;
@@ -101,11 +130,8 @@
   --md-parrot: #2e730d;
   --xls-black: #222222;
   --blue: #2789ce;
-  --blue-dark: #226bc3;
   --sm-xl-dark: #315195;
   --xxl-blue-dark: #130cb7;
-  --md-cloud: #1e5f89;
-  --lg-cloud: #194f72;
   --sm-blue: #6ac2ff;
   --xs-blue: #72bbef;
   --md-blue-border: #7dbbe9;
@@ -120,7 +146,6 @@
   --xsm-blue-bg: #32617f;
   --xl-blue-bg: #1f4258;
   --xxs-blue: #d7e8f4;
-  --text-color: #3b5160;
   --text-xl-color: #3b515f;
   --sm-text-color: #7e97a7;
   --sxl-text-color: #577c94;
@@ -135,12 +160,9 @@
   --xts-md-bg: #384d5c;
   --dark: #1e1e1e;
   --xs-dark: #062237;
-  --red: #fb3434;
-  --mds-orange: #df4000;
   --xs-orange: #f26d1c;
   --sm-orange: #ef6c2c;
   --md-orange: #d14100;
-  --lg-orange: #cd3a00;
   --3sm-orange: #f69b41;
   --lg-red: #e80505;
   --xsm-red: #d0051a;
@@ -160,7 +182,6 @@
   --light-border: #dddddd;
   --xxs-light-bg: #f0f0f0;
   --mds-light-bg: #f2f2f2;
-  --light-yellow: #f3dda7;
   --light-xs-yellow: #faf8d8;
   --light-xts-yellow: #f8f6e1;
   --light-xxl-yellow: #fff0ca;
@@ -193,8 +214,6 @@
   --sky-sm-blue-light: #52e5e7;
   --primary-rgb: 21, 128, 94;
   --blue-rgb: 114, 187, 239;
-  --black-rgb: 0, 0, 0;
-  --white-rgb: 255, 255, 255;
   --md-dark-rgb: 51, 51, 51;
   --orange-rgba: 163, 64, 5;
   --dark-blue-rgba: 36, 58, 72;
@@ -205,7 +224,6 @@
   --xs-green-rgb: 114, 227, 160;
   --avocado-green: #508d0e;
   --success-status-bg: #2ad61533;
-  --lg-black: #0e0e0e;
   --charcoal-1: #3f3f3f;
   --border-secondary: rgba(69, 82, 116, 0.4);
   --header-bg: #15805e;
@@ -215,55 +233,32 @@
   --sub-header-active-sport-bg: #15805e;
   --sub-header-active-sport-color: #ffffff;
   --sub-header-active-menu-bg: rgba(255, 255, 255, 0.2);
-  --one-click-btn-check: linear-gradient(
-    180deg,
-    var(--md-primary-black) 13%,
-    var(--sm-md-black) 81%
-  );
+  --one-click-btn-check: linear-gradient(180deg, var(--md-primary-black) 13%, var(--sm-md-black) 81%);
   --yellow-rgb: 255, 180, 39;
   --dark-alpha: 255, 255, 255;
   --dark-black-lg: 0, 0, 0;
-  --failed-status: #f00;
-  --failed-status-bg: #ff000033;
   --sm-dark: #151515;
-
-  /* BACK COLORS */
-  --back-2: #d7e8f4;
   --back-2-hover: #e3eff7;
-
-  --back-1: #b7d5eb;
   --back-1-hover: #c3dcee;
-
-  --back-0: #72bbef;
   --back-0-hover: #8dc5ec;
-
-  /* LAY COLORS */
   --lay-0: rgba(var(--light-red));
   --lay-0-hover: rgba(var(--light-red), 0.8);
-
   --lay-1: #efd3d9;
   --lay-1-hover: #f3dee3;
-
   --lay-2: #f6e6ea;
   --lay-2-hover: #faf1f3;
-
+  --back-2: #d7e8f4;
+  --back-1: #b7d5eb;
+  --back-0: #72bbef;
   --light-back: 190, 221, 244;
   --light-lay: #f3dce2;
-  --tbl-border-color: #8b999f;
-
   --liability-color: #d0021b;
   --profit-color: #508d0e;
-
   --coffie: #663333;
   --coffie-xs: #9a734b;
   --coffie-md: #64401d;
   --coffie-lg: #b16c28;
   --gray-text-2: #9e9e9e;
-
-  --xl-blue: #2e4b5e;
-  --xxl-blue: #243a48;
-  --blue: #2789ce;
-  --blue-dark: #226bc3;
   --nav-tab-primary-bg: #14805e;
   --header-balance-color: #ffffff;
   --sport-events-bg: #333333;
@@ -274,11 +269,7 @@
   --color-bet-check-accent: #f0db55;
   --color-bet-check-active-start: #387a6a;
   --color-bet-check-active-end: #469986;
-  --oneclick-bet-bg: linear-gradient(
-    180deg,
-    var(--xts-primary) 0%,
-    var(--mdx-primary) 100%
-  );
+  --oneclick-bet-bg: linear-gradient(180deg, var(--xts-primary) 0%, var(--mdx-primary) 100%);
   --oneclick-bet-color: #1e1e1e;
   --oneclick-bet-bg-position: 0 -3590px;
   --account-menu-active-bg: #ffe1a9;
@@ -287,138 +278,12 @@
   --mobile-sport-active-menu-bg: #f8e71c;
   --mobile-sport-menu-color: #ffffff;
   --mobile-sport-active-menu-color: #000000;
-  --mobile-sport-search-bg: linear-gradient(
-    -180deg,
-    rgba(var(--white-rgb), 0.15),
-    rgba(var(--black-rgb), 0.15)
-  );
-  --sm-text-color: #7e97a7;
-  --light-bg: #e0e6e6;
-
-  /* ─── Ported from baji-exchange-frontend/src/variable.scss ─────────────── */
-  --md-primary: #469986;
-  --sm-primary: #387a6a;
-  --shadow-primary: #166144;
-  --xs-shadow-primary: #8eea2a;
-  --xs-green-primary: #69bb12;
-  --md-green-primary: #449520;
-  --md-black: #434343;
-  --lg-black: #777777;
-  --xxl-black: #4c4c4c;
-  --xts-black: #121212;
-  --xmd-black: #464646;
-  --xls-black: #222222;
-  --sm-white: #c5d0d7;
-  --md-white: #edeced;
-  --xts-gray: #cccccc;
-  --xxs-gray: #e2e8ed;
-  --lg-gray: #bbbbbb;
-  --bg-xs-light: #dcdcdc;
-  --sm-yellow: #f0db55;
-  --daisy-yellow: #ffff3f;
-  --md-yellow: #f3de00;
-  --lg-yellow: #f8e71c;
-  --md-primary-yellow: #ffb80c;
-  --sm-primary-yellow: #ffcb2e;
-  --lg-blue: #2f424d;
-  --xts-blue: #2d4a5c;
-  --mts-blue: #1f3440;
-  --xsm-blue: #172732;
-  --xs-black: #111a22;
-  --xxl-blue-dark: #130cb7;
-  --sm-xl-dark: #315195;
-  --sm-blue: #6ac2ff;
-  --xs-blue: #72bbef;
-  --md-blue-border: #7dbbe9;
-  --md-blue-bg: #beddf4;
-  --lg-blue-bg: #2395e6;
-  --xs-blue-bg: #d4e8f8;
-  --xsl-blue-bg: #e4f1f9;
-  --md-blue: #b7d5eb;
-  --vivid-cyan: #01e7ff;
-  --active-blue: #0074c4;
-  --xsm-blue-bg: #32617f;
-  --xl-blue-bg: #1f4258;
-  --xxs-blue: #d7e8f4;
-  --text-xl-color: #3b515f;
-  --sxl-text-color: #577c94;
-  --smd-text-color: #087989;
-  --xxs-text-color: #ced5da;
-  --xs-text-color: #666666;
-  --light-xl-bg: #e3e3e3;
-  --xl-light-bg: #bed5d8;
-  --sm-light-bg: #3b5161;
-  --xts-light-bg: #3a4f5f;
-  --xts-md-bg: #384d5c;
-  --dark: #1e1e1e;
-  --xs-dark: #062237;
-  --mds-orange: #df4000;
-  --xs-orange: #f26d1c;
-  --sm-orange: #ef6c2c;
-  --md-orange: #d14100;
-  --lg-orange: #cd3a00;
-  --3sm-orange: #f69b41;
-  --lg-red: #e80505;
-  --xsm-red: #d0051a;
-  --xs-red: #faa9ba;
-  --xts-red: #f0c0cb;
-  --md-red: #efd3d9;
-  --xxs-red: #f6e6ea;
-  --md-red-border: #dfa3b3;
-  --lg-red-bg: #f4496d;
-  --xs-red-bg: #faeff2;
-  --md-red-bg: #f3dce2;
-  --chip-xl-color: #a2b1ba;
-  --chip-sm-color: #cad5d5;
-  --th-bg: #e4e4e4;
-  --xl-th-bg: #dddcd6;
-  --light-border: #dddddd;
-  --xxs-light-bg: #f0f0f0;
-  --mds-light-bg: #f2f2f2;
-  --light-xs-yellow: #faf8d8;
-  --light-xts-yellow: #f8f6e1;
-  --light-xxl-yellow: #fff0ca;
-  --coffee: #be7809;
-  --light-navy: #243a48;
-  --xls-navy: #212d34;
-  --xs-navy: #27363e;
-  --xxl-navy: #182833;
-  --lightest-navy: #0086ae;
-  --md-lightest-navy: #0a92a5;
-  --xl-lightest-navy: #2a8a98;
-  --mds-lightest-navy: #17557c;
-  --xts-lightest-navy: #3ab6b8;
-  --lg-lightest-navy: #076875;
-  --xs-lightest-navy: #97c7ea;
-  --dark-green: #508d0e;
-  --xl-dark-green: #14805e;
-  --light-xs-green: #2ad615;
-  --xs-green: #72e3a0;
-  --md-green-bg: #d2eccf;
-  --xs-green-bg: #e4f4e2;
-  --lg-green-bg: #16a660;
-  --md-green-border: #aedda9;
-  --hover-bg: #eff2f2;
-  --orange: #e4550f;
-  --pagination-bg: #dfdfdf;
-  --pagination-color: #999999;
-  --sky-blue-light: #2aa8a8;
-  --sky-sm-blue-light: #52e5e7;
-  --blue-rgb: 114, 187, 239;
-  --md-dark-rgb: 51, 51, 51;
-  --orange-rgba: 163, 64, 5;
-  --dark-blue-rgba: 36, 58, 72;
-  --dark-wheat-rgba: 30, 30, 30;
-  --xss-green-primary: 20, 128, 94;
-  --xss-yellow: 161, 128, 45;
-  --xss-darkest: 197, 208, 215;
-  --xs-green-rgb: 114, 227, 160;
+  --mobile-sport-search-bg: linear-gradient(-180deg, rgba(var(--white-rgb), 0.15), rgba(var(--black-rgb), 0.15));
   --sm-gray-30: #d4d4d4;
   --red-text: #d92626;
 }
 
-$primary: #222;
-
+/* ─── Theme overrides (selected via body class in useTheme.js) ─────────────── */
 .mcv-yellow-theme {
   --body-color: #eeeeee;
   --header-bg: linear-gradient(180deg, #2f2f2f, #010101);
@@ -441,7 +306,6 @@ $primary: #222;
   --color-bet-check-active-start: #b43807;
   --color-bet-check-active-end: #912b06;
   --oneclick-bet-bg: linear-gradient(180deg, #b43807, #912b06);
-  // --oneclick-bet-color: #ffffff;
   --oneclick-bet-color: #1e1e1e;
   --oneclick-bet-bg-position: 0 -3498px;
   --account-menu-active-bg: #e5ca3a;
@@ -452,11 +316,7 @@ $primary: #222;
   --mobile-sport-active-menu-bg: linear-gradient(180deg, #474747, #070707);
   --mobile-sport-menu-color: #1e1e1e;
   --mobile-sport-active-menu-color: #f2d65e;
-  --mobile-sport-search-bg: linear-gradient(
-    -180deg,
-    rgba(var(--white-rgb), 0.15),
-    rgba(var(--black-rgb), 0.15)
-  );
+  --mobile-sport-search-bg: linear-gradient(-180deg, rgba(var(--white-rgb), 0.15), rgba(var(--black-rgb), 0.15));
   --sm-text-color: #7e97a7;
   --light-bg: #e0e6e6;
 }
@@ -465,35 +325,15 @@ $primary: #222;
   --primary: linear-gradient(180deg, #ffcb2e, #ffb80c);
   --dark: #1e1e1e;
   --light-green: #6bbd11;
-  --menu-oneclick-btn-bg--select--hover: linear-gradient(
-    180deg,
-    rgb(56, 106, 2) 0%,
-    rgb(78, 150, 0) 100%
-  );
-  --menu-oneclick-btn-bg--select: linear-gradient(
-    180deg,
-    rgb(78, 150, 0) 0%,
-    rgb(56, 106, 2) 100%
-  );
-  --menu-oneclick-btn-bg: linear-gradient(
-    180deg,
-    rgb(77, 77, 77) 0%,
-    rgb(30, 30, 30) 100%
-  );
-  --menu-oneclick-btn-bg--hover: linear-gradient(
-    180deg,
-    rgb(30, 30, 30) 0%,
-    rgb(77, 77, 77) 100%
-  );
+  --menu-oneclick-btn-bg--select--hover: linear-gradient(180deg, rgb(56, 106, 2) 0%, rgb(78, 150, 0) 100%);
+  --menu-oneclick-btn-bg--select: linear-gradient(180deg, rgb(78, 150, 0) 0%, rgb(56, 106, 2) 100%);
+  --menu-oneclick-btn-bg: linear-gradient(180deg, rgb(77, 77, 77) 0%, rgb(30, 30, 30) 100%);
+  --menu-oneclick-btn-bg--hover: linear-gradient(180deg, rgb(30, 30, 30) 0%, rgb(77, 77, 77) 100%);
   --menu-oneclick-btn-click-border--select: rgba(255, 255, 255, 0.4);
   --menu-oneclick-btn-click-box--select: rgba(255, 255, 255, 0.15);
   --menu-oneclick-btn-click-border: rgba(255, 255, 255, 0);
   --menu-oneclick-btn-click-box: rgba(255, 255, 255, 0.15);
-  --menu-oneclick-setting-bg: linear-gradient(
-    180deg,
-    rgb(78, 150, 0) 0%,
-    rgb(56, 106, 2) 100%
-  );
+  --menu-oneclick-setting-bg: linear-gradient(180deg, rgb(78, 150, 0) 0%, rgb(56, 106, 2) 100%);
   --menu-oneclick-setting-border: rgb(57, 111, 0);
   --menu-oneclick-stake-select-bg: rgb(255, 210, 0);
   --menu-oneclick-stake-select-border: rgb(106, 61, 12);
@@ -503,4 +343,96 @@ $primary: #222;
   --menu-path-bg: #3b5160;
   --menu-list-group-bg: #ced5da;
   --menu-list-head-bg: #3b5160;
+}
+
+/* ─── Global resets + body (mirrors the original style.scss base) ──────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: Tahoma, Helvetica, sans-serif;
+  color: var(--dark);
+  font-size: 12px;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
+  line-height: 15px;
+  background-color: var(--xs-gray);
+}
+
+@media screen and (max-width: 767px) {
+  body {
+    font-size: 3.4666666667vw;
+    line-height: 1.5;
+    font-family: Helvetica, Tahoma, sans-serif;
+  }
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  cursor: pointer;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+/* ─── @keyframes only (referenced via Tailwind animate-[name_...] utilities) ── */
+@keyframes blinking {
+  0% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+@keyframes loadBar {
+  0% { opacity: 0.1; }
+  50% { opacity: 1; transform: scale(1.4); }
+  100% { opacity: 0.1; }
+}
+
+@keyframes sparkBack {
+  50% { background-color: var(--daisy-yellow); }
+}
+
+@keyframes sparkLay {
+  50% { background-color: var(--vivid-cyan); }
+}
+
+@keyframes yellow-circle {
+  0% { left: 0; }
+  50% { left: 50%; }
+  100% { left: 0; }
+}
+
+@keyframes blue-circle {
+  0% { left: 50%; z-index: 1; }
+  49% { z-index: 1; }
+  50% { left: 0; z-index: 10; }
+  100% { left: 50%; z-index: 10; }
+}
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes deposit-slide-in {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }

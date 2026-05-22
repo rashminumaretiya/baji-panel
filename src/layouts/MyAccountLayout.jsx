@@ -9,7 +9,6 @@ import {
   selectIsMcvYellowTheme,
   selectIsYellowTheme,
 } from '../store/slices/commonSlice.js'
-import './myAccountLayout.scss'
 import { selectIsAuthenticated } from '../store/slices/authSlice.js'
 
 function cx(...cs) {
@@ -29,6 +28,17 @@ const tabs = [
   { path: '/my-account/withdraw-history', label: 'Withdraw History' },
 ]
 
+// Ported from layout.scss .main-wrapper auth / no-header-wrapper.
+const MAIN_WRAPPER_AUTH =
+  'relative mx-auto bg-[var(--xs-gray)] w-[calc(100%-40px)] mt-[105px] min-[768px]:max-[1440px]:w-[calc(100%-25px)] max-mobile:mt-[14.67vw] max-mobile:w-full'
+const MAIN_WRAPPER_NO_HEADER =
+  'relative mx-auto bg-[var(--xs-gray)] w-[calc(100%-40px)] mt-[31px] max-mobile:mt-0 max-mobile:w-full'
+
+const sidebarLiBase =
+  'list-none py-[5.5px] pl-2.5 pr-1.5 text-[12px] text-[var(--xl-gray)] cursor-pointer border-b border-[rgba(var(--white-rgb),0.1)] bg-[var(--xl-black)]'
+const sidebarLiFirst =
+  'list-none py-[5.5px] pl-2.5 pr-1.5 text-[12px] cursor-pointer text-white border-b-0 text-right relative bg-[var(--primary)]'
+
 export default function MyAccountLayout() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -40,47 +50,53 @@ export default function MyAccountLayout() {
   const activeTab = tabs.find((tab) => tab.path === location.pathname)
   const showSidebar = !isMobile
 
-  const sideLeftClass = cx(
-    'side-left',
-    isYellowTheme && 'yellow-theme',
-    isMcwCasinoTheme && 'mcw-theme'
-  )
-  const sidebarUlClass = cx(
-    'mb-0 ps-0 sidebar',
-    isYellowTheme && 'light-sidebar',
-    isMcwCasinoTheme && 'mcw-sidebar'
-  )
-
   const handleSelect = (path) => {
     if (location.pathname !== path) navigate(path)
   }
-
   const goToAccountMobile = () => navigate('/my-account')
 
-  const mainWrapperClass = cx(
-    'main-wrapper',
-    isAuthenticated && 'auth',
-    !isAuthenticated && 'no-header-wrapper'
-  )
+  const mainWrapperClass = isAuthenticated
+    ? MAIN_WRAPPER_AUTH
+    : MAIN_WRAPPER_NO_HEADER
+
+  // Sidebar item active background varies by theme.
+  const activeBg = isYellowTheme
+    ? 'bg-gradient-to-b from-[#546d7d] to-[var(--text-color)] text-white'
+    : isMcwCasinoTheme
+      ? 'bg-[#e5ca3a] text-[#222222]'
+      : 'bg-[rgba(var(--primary-rgb),0.6)] text-white'
+  const sidebarBg = isYellowTheme
+    ? 'bg-transparent'
+    : isMcwCasinoTheme
+      ? 'bg-transparent'
+      : 'bg-[var(--xl-black)]'
 
   return (
     <>
       <Header isAuthenticated />
       <div className={mainWrapperClass}>
-        <div className="my-account-wrap">
+        <div className="max-w-[1349px] w-full mx-auto bg-[var(--xs-gray)] md:w-[calc(100%-40px)]">
           <NewsLine />
-          <div className="position-relative outlet-wrap">
+          <div className="relative w-full h-full pl-[15px] max-mobile:pl-0">
             {showSidebar && (
-              <div className={sideLeftClass}>
-                <ul className={sidebarUlClass}>
-                  <li>My Account</li>
-                  {tabs.map((tab) => {
+              <div className="absolute top-0 left-0 w-[17.36%]">
+                <ul
+                  className={`mb-0 pl-0 ${sidebarBg} overflow-y-auto max-h-[calc(100svh-106px)] [scrollbar-width:none]`}
+                >
+                  <li className={sidebarLiFirst}>My Account</li>
+                  {tabs.map((tab, idx) => {
                     const isActive = location.pathname === tab.path
+                    const isLast = idx === tabs.length - 1
                     return (
                       <li
                         key={tab.path}
                         tabIndex={0}
-                        className={isActive ? 'active' : ''}
+                        className={cx(
+                          sidebarLiBase,
+                          isActive && activeBg,
+                          !isActive && 'hover:bg-[rgba(var(--white-rgb),0.1)]',
+                          isLast && 'border-b-[#7e97a7]'
+                        )}
                         onClick={() => handleSelect(tab.path)}
                         onKeyDown={(event) => {
                           if (event.key === 'Enter' || event.key === ' ') {
@@ -96,23 +112,25 @@ export default function MyAccountLayout() {
                 </ul>
               </div>
             )}
-            <div className="content-wrap">
+            <div className="ml-[17.36%] h-full w-[calc(100%-17.36%)] overflow-y-auto max-h-[calc(100svh-106px)] max-mobile:ml-0 max-mobile:w-auto max-mobile:max-h-none">
               {isMobile && activeTab && (
-                <div className="header-breadcumb">
+                <div className="flex items-center bg-gradient-to-t from-[#141e21] to-[#2f424d] border-t border-white">
                   <i
-                    className="play"
+                    className="w-[10.67vw] h-[10.67vw] border-r border-[#4b4b4b] text-white bg-[url(/img/svg/play-icon.svg)] bg-no-repeat bg-center bg-contain shrink-0"
                     role="button"
                     aria-label="Back to account"
                     onClick={goToAccountMobile}
                   />
-                  <ul className="ps-2 d-flex align-items-center mb-0 overflow-x-auto">
+                  <ul className="pl-2 flex items-center mb-0 overflow-x-auto leading-[10.4vw]">
                     <li
-                      className="text-nowrap cursor-pointer"
+                      className="whitespace-nowrap cursor-pointer text-white relative mr-[1.87vw] pr-[3.47vw] text-[3.47vw] after:absolute after:top-1/2 after:right-0 after:content-[''] after:w-[1.6vw] after:h-[2.67vw] after:bg-[url(/img/svg/next-arrow.svg)] after:bg-no-repeat after:bg-contain after:-mt-[1.33vw]"
                       onClick={goToAccountMobile}
                     >
                       My Account
                     </li>
-                    <li className="text-nowrap">{activeTab.label}</li>
+                    <li className="whitespace-nowrap text-white text-[3.47vw]">
+                      {activeTab.label}
+                    </li>
                   </ul>
                 </div>
               )}

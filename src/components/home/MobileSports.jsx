@@ -12,7 +12,6 @@ import {
 } from '../../store/slices/commonSlice.js'
 import MobileSearchEvent from '../MobileSearchEvent.jsx'
 import SvgIcon from '../SvgIcon.jsx'
-import './mobile-sports.scss'
 
 // Maps sport ID → registry key for the larger, sport-specific SVG used by the
 // mobile-sport-header tab strip in the live project. Falls back to the API's
@@ -48,6 +47,63 @@ function isBabu365Host() {
   return window.location.hostname.includes('babu365')
 }
 
+// ─── Tab strip class builders (port of mobile-sports.scss) ─────────────────
+// Each builder returns a sequence of Tailwind utilities matching the same set
+// of declarations the original SCSS produced. Themes are mutually exclusive,
+// so only one builder runs per render.
+
+// `.tabs-wrapper` base — outer flex shell with inset top shadow.
+const TABS_WRAPPER_BASE =
+  'flex items-center shadow-[inset_0_1px_0_0_rgba(var(--black-rgb),0.2)] ' +
+  'bg-[var(--md-black)] border-b-[0.7vw] border-[var(--lg-yellow)]'
+
+// Theme overrides — colour-swap the wrapper border + background.
+const TABS_WRAPPER_YELLOW =
+  'max-mobile:border-b-[0.1875rem] max-mobile:border-[rgb(255,161,12)]'
+const TABS_WRAPPER_BABU =
+  'max-mobile:border-b-[0.1875rem] max-mobile:border-[#550b0b]'
+const TABS_WRAPPER_MCW =
+  'max-mobile:border-[#0d0d0d] max-mobile:bg-gradient-to-b max-mobile:from-[#e8d877] max-mobile:to-[#c9a43e]'
+
+// `.sport-header-tabs` ─ horizontally scrolling row.
+const SPORT_HEADER_TABS_BASE =
+  'bg-[var(--md-black)] flex mr-auto pr-[4vw] flex-nowrap [scroll-behavior:smooth] ' +
+  '[&::-webkit-scrollbar]:hidden'
+const SPORT_HEADER_TABS_YELLOW =
+  'max-mobile:bg-gradient-to-b max-mobile:from-black max-mobile:to-black max-mobile:text-white'
+const SPORT_HEADER_TABS_BABU =
+  'max-mobile:bg-gradient-to-b max-mobile:from-black max-mobile:to-black max-mobile:text-white'
+const SPORT_HEADER_TABS_MCW =
+  'max-mobile:bg-gradient-to-b max-mobile:from-[#e8d877] max-mobile:to-[#c9a43e]'
+
+// `.sport-header-tabs li button` ─ the tab pill itself.
+const TAB_BUTTON_BASE =
+  'relative ml-[1.87vw] h-[9.79vw] font-bold text-white leading-[2.6] ' +
+  'px-[1.87vw] py-0 mt-[2.67vw] rounded-t-[1.6vw] ' +
+  '[&_i]:text-white [&_i]:m-[2.13vw_1.6vw_0_0] ' +
+  '[&_svg]:w-[5.33vw] [&_svg]:h-[5.33vw]'
+const TAB_BUTTON_ACTIVE_DEFAULT =
+  '!bg-[var(--lg-yellow)] !text-black [&_i]:!text-black'
+const TAB_BUTTON_ACTIVE_YELLOW =
+  'max-mobile:!bg-gradient-to-b max-mobile:!from-[var(--md-primary-yellow)] max-mobile:!to-[#ffa10c]'
+const TAB_BUTTON_ACTIVE_BABU =
+  'max-mobile:!bg-gradient-to-b max-mobile:!from-[#0e0e0e] max-mobile:!to-[#fd1111] max-mobile:!text-white ' +
+  'max-mobile:[&_i]:!text-white'
+const TAB_BUTTON_MCW =
+  'max-mobile:!text-[#1e1e1e] max-mobile:[&_svg]:!text-[#1e1e1e]'
+const TAB_BUTTON_ACTIVE_MCW =
+  'max-mobile:!bg-gradient-to-b max-mobile:!from-[#474747] max-mobile:!to-[#070707] ' +
+  'max-mobile:!text-[#f2d65e] max-mobile:[&_svg]:!text-[#f2d65e]'
+
+// `.live-chip` ─ small floating count pill above each tab.
+const LIVE_CHIP_CLASS =
+  'absolute h-[3.2vw] top-[-1.97vw] right-[1.33vw] min-w-[9.33vw] ' +
+  'shadow-[0_0.27vw_0.8vw_0_rgba(var(--black-rgb),0.5)] rounded-[0.8vw] ' +
+  'flex items-center'
+const LIVE_CHIP_ICON =
+  'h-[3.2vw] w-[5vw] [&_i]:m-0 [&_svg]:w-[3.53vw] [&_svg]:h-[3.13vw]'
+const LIVE_CHIP_NUMBER = 'text-[2.5vw] font-normal px-[1.33vw] mb-0'
+
 export default function MobileSports() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -82,7 +138,7 @@ export default function MobileSports() {
   useEffect(() => {
     const node = tabsRef.current
     if (!node || !activeId) return
-    const active = node.querySelector('li.active, .nav-link.active')
+    const active = node.querySelector('[data-active="true"]')
     if (!active) return
     try {
       active.scrollIntoView({
@@ -103,37 +159,47 @@ export default function MobileSports() {
   }
 
   const wrapperClass = cx(
-    'overflow-x-auto tabs-wrapper',
-    isYellowTheme && 'yellow-theme',
-    isMcwCasinoTheme && 'mcw-side-header',
-    isBabuTheme && 'babu-theme'
+    'overflow-x-auto',
+    TABS_WRAPPER_BASE,
+    isYellowTheme && TABS_WRAPPER_YELLOW,
+    isMcwCasinoTheme && TABS_WRAPPER_MCW,
+    isBabuTheme && TABS_WRAPPER_BABU
+  )
+
+  const headerTabsClass = cx(
+    'pl-0 mb-0 overflow-x-auto',
+    SPORT_HEADER_TABS_BASE,
+    isYellowTheme && SPORT_HEADER_TABS_YELLOW,
+    isMcwCasinoTheme && SPORT_HEADER_TABS_MCW,
+    isBabuTheme && SPORT_HEADER_TABS_BABU
   )
 
   return (
-    <div className="mobile-sports-container">
-      <div className="games-tab">
+    <div>
+      <div>
         <div className={wrapperClass}>
-          <ul
-            ref={tabsRef}
-            className="nav tabs sport-header-tabs ps-0 mb-0 overflow-x-auto"
-            role="tablist"
-          >
+          <ul ref={tabsRef} className={headerTabsClass} role="tablist">
             {tabs.map((tab) => {
               const isActive = String(tab.id) === activeId
               const iconKey = resolveTabIcon(tab)
+              const buttonClass = cx(
+                TAB_BUTTON_BASE,
+                isMcwCasinoTheme && TAB_BUTTON_MCW,
+                isActive && TAB_BUTTON_ACTIVE_DEFAULT,
+                isActive && isYellowTheme && TAB_BUTTON_ACTIVE_YELLOW,
+                isActive && isBabuTheme && TAB_BUTTON_ACTIVE_BABU,
+                isActive && isMcwCasinoTheme && TAB_BUTTON_ACTIVE_MCW
+              )
               return (
                 <li
                   key={tab.id}
-                  className={cx(
-                    'nav-item',
-                    tab.classList,
-                    isActive && 'active'
-                  )}
+                  data-active={isActive ? 'true' : 'false'}
+                  className="flex-none"
                   role="presentation"
                 >
                   <button
                     type="button"
-                    className={cx('nav-link', isActive && 'active')}
+                    className={buttonClass}
                     role="tab"
                     aria-selected={isActive}
                     onClick={() => handleTabClick(tab)}
@@ -142,11 +208,11 @@ export default function MobileSports() {
                     {iconKey && <SvgIcon name={iconKey} />}
                     <span>{tab.label ? t(tab.label, tab.name) : tab.name}</span>
                     {tab.count != null && (
-                      <div className="live-chip">
-                        <div className="icon-out">
+                      <div className={LIVE_CHIP_CLASS}>
+                        <div className={LIVE_CHIP_ICON}>
                           <SvgIcon name="liveChipIcon" />
                         </div>
-                        <p className="number">{tab.count}</p>
+                        <p className={LIVE_CHIP_NUMBER}>{tab.count}</p>
                       </div>
                     )}
                   </button>
@@ -154,7 +220,19 @@ export default function MobileSports() {
               )
             })}
           </ul>
-          <MobileSearchEvent />
+          {/* `.search-collapse` ─ search opener with gradient pseudo-element.
+              MobileSearchEvent already paints the icon trigger; we just wrap
+              it with the left border + the gradient-before fade. */}
+          <div
+            className={
+              'relative border-l border-white/10 ' +
+              "before:content-[''] before:absolute before:right-[12.8vw] " +
+              'before:w-[8.27vw] before:h-[12.27vw] ' +
+              'before:bg-[linear-gradient(90deg,rgba(var(--black-rgb),0)_0%,var(--black)_110%)]'
+            }
+          >
+            <MobileSearchEvent />
+          </div>
         </div>
       </div>
     </div>

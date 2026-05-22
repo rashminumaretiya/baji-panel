@@ -3,9 +3,18 @@ import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
 import Modal from '../../shared/components/Modal.jsx'
-import './addWhatsAppModal.scss'
 
 const RESEND_SECONDS = 60
+
+// Same shared Tailwind class strings used by AddWhatsAppModal /
+// AddBackupNumberModal — duplicated here so this modal is standalone.
+const labelClass = 'block text-[13px] text-[#1e1e1e] mb-[6px]'
+const inputBaseClass =
+  'block w-full px-3 py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded focus:outline-none focus:border-[var(--light-gray)]'
+const addNumberBtnClass =
+  'inline-block px-[18px] py-[6px] font-semibold text-white border border-[var(--lg-primary)] rounded bg-gradient-to-b from-[var(--xs-primary)] to-[var(--xxs-primary)] hover:from-[var(--xxs-primary)] hover:to-[var(--xs-primary)] hover:brightness-95 focus:from-[var(--xxs-primary)] focus:to-[var(--xs-primary)] focus:brightness-95 disabled:opacity-65 disabled:cursor-not-allowed'
+const resendLinkClass = 'text-[#1e6fff] underline text-[13px]'
+const otpErrorClass = 'block text-[#d33] text-[12px] mt-[4px]'
 
 export default function VerifyPrimaryNumberModal({ isOpen, onClose, onSuccess }) {
   const token = useSelector(selectToken)
@@ -93,12 +102,12 @@ export default function VerifyPrimaryNumberModal({ isOpen, onClose, onSuccess })
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Verify Primary Number" size="md">
-      <form onSubmit={handleVerify} className="whatsapp-form">
-        <div className="form-group mb-2">
-          <label className="form-label">Enter Otp :</label>
+      <form onSubmit={handleVerify}>
+        <div className="mb-2">
+          <label className={labelClass}>Enter Otp :</label>
           <input
             type="text"
-            className="form-control"
+            className={inputBaseClass}
             placeholder="Enter Otp"
             maxLength={6}
             value={otp}
@@ -106,14 +115,17 @@ export default function VerifyPrimaryNumberModal({ isOpen, onClose, onSuccess })
             onBlur={() => setTouched(true)}
           />
           {showRequiredError && (
-            <span className="otp-error">Otp is required</span>
+            <span className={otpErrorClass}>Otp is required</span>
           )}
         </div>
-        <div className="text-end mb-2">
+        <div className="text-right mb-2">
           {timer > 0 ? (
-            <a className="resend-otp">Resend otp in {timer} Seconds</a>
+            <a className={resendLinkClass}>Resend otp in {timer} Seconds</a>
           ) : (
-            <a className="cursor-pointer resend-now" onClick={handleResend}>
+            <a
+              className={`${resendLinkClass} cursor-pointer`}
+              onClick={handleResend}
+            >
               Resend Now
             </a>
           )}
@@ -121,7 +133,7 @@ export default function VerifyPrimaryNumberModal({ isOpen, onClose, onSuccess })
         <div className="text-center">
           <button
             type="submit"
-            className="btn btn-add-number"
+            className={addNumberBtnClass}
             disabled={submitting}
           >
             Verify

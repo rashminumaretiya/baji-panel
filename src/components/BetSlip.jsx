@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import Collapse from 'react-bootstrap/Collapse'
 import { useDispatch, useSelector } from 'react-redux'
+import Collapse from '../shared/components/primitives/Collapse.jsx'
 import { selectIsYellowTheme } from '../store/slices/commonSlice.js'
 import { selectStakesData } from '../store/slices/authSlice.js'
 import {
@@ -11,7 +11,6 @@ import {
 } from '../store/slices/betSlipSlice.js'
 import { alertService } from '../shared/services/alert.js'
 import SvgIcon from './SvgIcon.jsx'
-import './betSlip.scss'
 
 const DEFAULT_AVAILABLE_STAKE = [100, 200, 500, 1000, 2000, 5000]
 
@@ -36,7 +35,7 @@ function NoBetSlip({ isShowLoader }) {
   }
 
   return (
-    <p className="text-center mt-3 no-betslip">
+    <p className="text-center mt-3 text-[var(--white)] text-[13px] max-[991px]:text-[12px]">
       Click on the odds to add selections to the betslip.
     </p>
   )
@@ -82,51 +81,74 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
 
   const onCancelAll = () => dispatch(setActiveBetSlip(null))
 
+  // Selection background colours for the back/lay rows.
+  const stakeRowBg = isBack
+    ? 'bg-[var(--xs-blue-bg)] [&_td]:border-t [&_td]:border-[#7dbbe9]'
+    : 'bg-[var(--xs-red-bg)] [&_td]:border-t [&_td]:border-[#dfa3b3]'
+  const keepRowBg = isBack
+    ? 'bg-[var(--xs-blue-bg)] [&_td]:border-t [&_td]:border-b [&_td]:border-[#7dbbe9]'
+    : 'bg-[var(--xs-red-bg)] [&_td]:border-t [&_td]:border-b [&_td]:border-[#dfa3b3]'
+
   return (
-    <div className="bet-slip-wrapper">
+    <div>
       <form
         onSubmit={(e) => {
           e.preventDefault()
         }}
       >
-        <div className="table-responsive">
-          <table className="table">
+        <div className="overflow-x-auto">
+          <table className="w-full mb-0">
             <thead>
               <tr>
-                <th>{isBack ? 'Back (Bet For)' : 'Lay (Bet Against)'}</th>
-                <th className="text-center">Odds</th>
-                <th className="text-center">Stake</th>
-                <th className="text-end">{isBack ? 'Profit' : 'Liability'}</th>
+                <th
+                  className="relative shadow-[inset_0_2px_0_rgba(var(--black-rgb),0.1)] bg-[var(--xxs-text-color)] px-1.5 py-[5px] pl-3 font-medium leading-[14px] text-[11px] whitespace-nowrap text-[var(--header-primary)] w-[43.23529%] text-left after:content-[''] after:absolute after:w-px after:h-1/2 after:top-1/2 after:right-0 after:-translate-y-1/2 after:rounded-[1px]"
+                >
+                  {isBack ? 'Back (Bet For)' : 'Lay (Bet Against)'}
+                </th>
+                <th className="relative shadow-[inset_0_2px_0_rgba(var(--black-rgb),0.1)] bg-[var(--xxs-text-color)] px-1.5 py-[5px] font-medium leading-[14px] text-[11px] whitespace-nowrap text-[var(--header-primary)] w-[16.70588%] text-center after:content-[''] after:absolute after:w-px after:h-1/2 after:top-1/2 after:right-0 after:-translate-y-1/2 after:rounded-[1px]">
+                  Odds
+                </th>
+                <th className="relative shadow-[inset_0_2px_0_rgba(var(--black-rgb),0.1)] bg-[var(--xxs-text-color)] px-1.5 py-[5px] font-medium leading-[14px] text-[11px] whitespace-nowrap text-[var(--header-primary)] w-[16.70588%] text-center after:content-[''] after:absolute after:w-px after:h-1/2 after:top-1/2 after:right-0 after:-translate-y-1/2 after:rounded-[1px]">
+                  Stake
+                </th>
+                <th className="relative shadow-[inset_0_2px_0_rgba(var(--black-rgb),0.1)] bg-[var(--xxs-text-color)] px-1.5 py-[5px] pr-3 font-medium leading-[14px] text-[11px] whitespace-nowrap text-[var(--header-primary)] w-[24.11765%] text-right after:content-[''] after:absolute after:w-px after:h-1/2 after:top-1/2 after:right-0 after:-translate-y-1/2 after:rounded-[1px]">
+                  {isBack ? 'Profit' : 'Liability'}
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td colSpan={4}>
-                  <h6>{activeMatchOdd?.eventTitle}</h6>
+                <td
+                  colSpan={4}
+                  className="font-medium px-1.5 py-1 text-[12px] align-middle overflow-hidden bg-transparent"
+                >
+                  <h6 className="text-[11px] mb-0 pl-4 relative text-[var(--white)] before:absolute before:content-[''] before:text-[44px] before:bg-[var(--pagination-color)] before:h-2.5 before:w-2.5 before:rounded-full before:left-0.5 before:top-0.5 after:absolute after:content-[''] after:text-[44px] after:bg-[var(--light-xs-green)] after:h-1.5 after:w-1.5 after:rounded-full after:left-1 after:top-1">
+                    {activeMatchOdd?.eventTitle}
+                  </h6>
                 </td>
               </tr>
-              <tr
-                className={cx(
-                  'match-odds',
-                  isBack ? 'bet-blue-md' : 'bet-red-md'
-                )}
-              >
-                <td>
-                  <div className="d-flex align-items-center">
-                    <SvgIcon name="cross" className="me-md-1" />
-                    <div className="d-flex flex-wrap ms-1">
-                      <span className="m-0 w-nowrap d-inline-block pe-1">
+              <tr>
+                <td className="font-medium px-1.5 py-1 text-[12px] align-middle overflow-hidden bg-transparent w-[43.23529%]">
+                  <div className="flex items-center">
+                    <SvgIcon
+                      name="cross"
+                      className="mr-1 [&_svg]:h-2.5 [&_svg]:w-2.5 [&_svg]:bg-red-600 [&_svg]:text-[var(--white)] [&_svg]:p-0.5 [&_svg]:rounded-[3px]"
+                    />
+                    <div className="flex flex-wrap ml-1">
+                      <span className="m-0 whitespace-nowrap inline-block pr-1">
                         {activeMatchOdd?.selectionName}
                       </span>
-                      <p className="mt-ods">{activeMatchOdd?.marketName}</p>
+                      <p className="opacity-50 mb-0 text-[11px]">
+                        {activeMatchOdd?.marketName}
+                      </p>
                     </div>
                   </div>
                 </td>
-                <td>
-                  <div className="d-flex justify-content-end">
+                <td className="font-medium px-1.5 py-1 text-[12px] align-middle overflow-hidden bg-transparent w-[14.70588%]">
+                  <div className="flex justify-end">
                     <input
                       type="number"
-                      className="form-control"
+                      className="w-full h-[22px] text-right border-0 pr-0 text-[12px] shadow-[inset_0_1px_0_rgba(0,0,0,0.5)] rounded [&::-webkit-inner-spin-button]:opacity-100 [&::-webkit-inner-spin-button]:mr-0 [&::-webkit-inner-spin-button]:ml-[5px]"
                       step="0.01"
                       min={0}
                       value={odds}
@@ -135,34 +157,34 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
                     />
                   </div>
                 </td>
-                <td>
-                  <div className="d-flex justify-content-end">
+                <td className="font-medium px-1.5 py-1 text-[12px] align-middle overflow-hidden bg-transparent w-[14.70588%]">
+                  <div className="flex justify-end">
                     <input
                       type="number"
-                      className="form-control"
+                      className="w-full h-[22px] text-right border-0 pr-0 text-[12px] shadow-[inset_0_1px_0_rgba(0,0,0,0.5)] rounded [&::-webkit-inner-spin-button]:opacity-100 [&::-webkit-inner-spin-button]:mr-0 [&::-webkit-inner-spin-button]:ml-[5px]"
                       min={0}
                       value={stake}
                       onChange={(e) => setStake(e.target.value)}
                     />
                   </div>
                 </td>
-                <td>
-                  <p className="text-end">{formatNumber(profitLiability)}</p>
+                <td className="font-medium px-1.5 py-1 pr-3 text-[12px] align-middle overflow-hidden bg-transparent w-[24.11765%]">
+                  <p className="text-right mb-0 text-[11px]">
+                    {formatNumber(profitLiability)}
+                  </p>
                 </td>
               </tr>
-              <tr
-                className={cx(
-                  'col-stake_list',
-                  isBack ? 'lightest-blue' : 'light-pink'
-                )}
-              >
-                <td colSpan={4}>
-                  <div className="d-flex stake justify-content-between">
+              <tr className={stakeRowBg}>
+                <td
+                  colSpan={4}
+                  className="font-medium px-1.5 py-1 text-[12px] align-middle overflow-hidden"
+                >
+                  <div className="flex justify-between">
                     {availableStake.map((stakeValue) => (
                       <button
                         key={stakeValue}
                         type="button"
-                        className="btn"
+                        className="w-1/6 bg-gradient-to-t from-[#f3f3f3] to-[#fbfbfb] p-0 mx-0.5 mb-[1px] mt-0.5 border border-[#bbb] rounded text-[#1e1e1e] text-[11px] leading-[18px] font-normal min-[768px]:max-[1199px]:w-auto min-[768px]:max-[1199px]:px-2 min-[768px]:max-[1199px]:py-0.5"
                         onClick={() => onStakeClick(stakeValue)}
                       >
                         {stakeValue}
@@ -171,23 +193,24 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
                   </div>
                 </td>
               </tr>
-              <tr
-                className={cx(
-                  'keep-option',
-                  isBack ? 'lightest-blue' : 'light-pink'
-                )}
-              >
-                <td colSpan={4}>
-                  <p className="text-end">
+              <tr className={keepRowBg}>
+                <td
+                  colSpan={4}
+                  className="font-medium px-1.5 py-1 pr-3 text-[12px] align-middle overflow-hidden"
+                >
+                  <p className="text-right mb-0 text-[11px]">
                     Min Bet : <b>1</b>
                   </p>
                 </td>
               </tr>
               <tr>
-                <td colSpan={4} className="bg-white">
-                  <p className="text-end liability">
+                <td
+                  colSpan={4}
+                  className="font-medium px-1.5 py-1 pr-3 text-[12px] align-middle overflow-hidden bg-white"
+                >
+                  <p className="text-right text-[#777] text-[12px] my-[5px]">
                     Liability{' '}
-                    <span className="text-danger">
+                    <span className="text-[var(--red)]">
                       {formatNumber(
                         preExposureLiability > 0
                           ? preExposureLiability
@@ -200,10 +223,13 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
             </tbody>
           </table>
         </div>
-        <div className="d-flex justify-content-between button-wrapper mx-2">
+        <div className="flex justify-between mx-2">
           <button
             type="button"
-            className="btn btn-white me-2"
+            className={cx(
+              'max-w-[200px] w-full text-[12px] rounded text-[#1e1e1e] font-bold leading-[23px] p-0 mr-2 bg-white border border-[#bbb]',
+              submitting && 'opacity-60 cursor-not-allowed'
+            )}
             onClick={onCancelAll}
             disabled={submitting}
           >
@@ -212,9 +238,9 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
           <button
             type="button"
             className={cx(
-              'btn btn-primary',
-              isYellowTheme && 'yellow-btn',
-              (!stake || submitting) && 'disabled',
+              'max-w-[200px] w-full text-[12px] rounded text-white font-bold leading-[23px] p-0 bg-[var(--primary)] border border-[var(--lg-primary)]',
+              isYellowTheme && '!text-[var(--dark)] !bg-[image:linear-gradient(0deg,var(--md-primary-yellow)_0%,#ffa10c_100%)] !border-[var(--coffee)]',
+              (!stake || submitting) && 'opacity-40 cursor-not-allowed'
             )}
             onClick={onPlaceBet}
             disabled={!stake || submitting}
@@ -222,7 +248,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
             {submitting ? 'Placing…' : 'Place Bet'}
           </button>
         </div>
-        <div className="confirm-bets-checkbox">
+        <div className="mt-[7px] pt-[3px] border-t border-[#e0e6e6] mb-[10px] pl-[5px]">
           <input
             id="confirmBets"
             type="checkbox"
@@ -230,7 +256,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
             onChange={(e) => setConfirmBets(e.target.checked)}
           />
           <label
-            className="confirm-bets ms-1 d-inline-block cursor-pointer"
+            className="ml-1 inline-block cursor-pointer text-[var(--white)] text-[12px]"
             htmlFor="confirmBets"
           >
             Please confirm your bets.
@@ -254,22 +280,27 @@ export default function BetSlip() {
     stakesData?.length > 0 ? stakesData : DEFAULT_AVAILABLE_STAKE
 
   return (
-    <div className="bet-slip-accordion-container">
-      <div className="accordion">
-        <div className="accordion-item mb-0">
-          <h2 className="accordion-header">
+    <div>
+      <div>
+        <div className="mb-0">
+          <h2 className="relative bg-gradient-to-b from-[var(--xts-blue)] to-[var(--xts-blue)] shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] m-0">
             <button
               type="button"
-              className={cx('accordion-button', isCollapsed && 'collapsed')}
+              className={cx(
+                'w-full text-left px-4 py-3 text-white text-[14px] font-semibold shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] transition-[background-image] duration-200 bg-no-repeat bg-right bg-[length:auto_100%] relative flex items-center justify-between',
+                isCollapsed
+                  ? 'bg-[url(/img/grediant-slip-plus.png)]'
+                  : 'bg-[url(/img/grediant-slip-minus.png)]'
+              )}
               aria-expanded={!isCollapsed}
               onClick={() => setIsCollapsed((prev) => !prev)}
             >
-              Bet Slip
+              <span>Bet Slip</span>
             </button>
           </h2>
           <Collapse in={!isCollapsed}>
-            <div className="accordion-collapse">
-              <div className="accordion-body">
+            <div>
+              <div>
                 {isOpen ? (
                   <BetSlipForm
                     // Key remounts the form whenever the active selection / betType

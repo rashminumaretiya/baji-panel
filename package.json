@@ -15,17 +15,14 @@
     "@reduxjs/toolkit": "^2.12.0",
     "@tailwindcss/vite": "^4.3.0",
     "axios": "^1.16.1",
-    "bootstrap": "^5.3.3",
     "crypto-js": "^4.2.0",
     "i18next": "^23.16.0",
     "i18next-http-backend": "^2.6.2",
     "react": "^19.2.6",
-    "react-bootstrap": "^2.10.5",
     "react-dom": "^19.2.6",
     "react-i18next": "^15.0.3",
     "react-redux": "^9.3.0",
     "react-router-dom": "^7.15.1",
-    "sass": "^1.99.0",
     "socket.io-client": "^4.8.0",
     "sweetalert2": "^11.14.4",
     "tailwindcss": "^4.3.0"
@@ -40,7 +37,6 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
     "prettier": "^3.8.3",
-    "sass": "^1.79.4",
     "vite": "^8.0.12"
   }
 }

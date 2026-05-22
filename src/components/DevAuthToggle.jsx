@@ -12,45 +12,18 @@ import {
   selectUser,
 } from '../store/slices/authSlice.js'
 
-const panelStyle = {
-  position: 'fixed',
-  bottom: 12,
-  right: 12,
-  zIndex: 9999,
-  background: 'rgba(15, 23, 42, 0.92)',
-  color: '#fff',
-  padding: '8px 10px',
-  borderRadius: 6,
-  fontSize: 12,
-  fontFamily: 'system-ui, sans-serif',
-  boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 6,
-  minWidth: 200,
-}
-
-const rowStyle = { display: 'flex', alignItems: 'center', gap: 6 }
-const inputStyle = {
-  flex: 1,
-  padding: '3px 6px',
-  borderRadius: 3,
-  border: '1px solid #475569',
-  background: '#0f172a',
-  color: '#fff',
-  fontSize: 12,
-}
-const btnStyle = {
-  background: '#22c55e',
-  border: 'none',
-  color: '#0f172a',
-  padding: '4px 10px',
-  borderRadius: 4,
-  fontWeight: 600,
-  cursor: 'pointer',
-  fontSize: 12,
-}
-const btnDanger = { ...btnStyle, background: '#ef4444', color: '#fff' }
+// Reusable Tailwind class strings (kept here so each variant stays readable).
+const panelClass =
+  'fixed bottom-3 right-3 z-[9999] bg-[rgba(15,23,42,0.92)] text-white px-2.5 py-2 rounded-md text-[12px] font-[system-ui,sans-serif] shadow-[0_4px_14px_rgba(0,0,0,0.25)] flex flex-col gap-1.5 min-w-[200px]'
+const rowClass = 'flex items-center gap-1.5'
+const inputClass =
+  'flex-1 py-[3px] px-1.5 rounded-[3px] border border-[#475569] bg-[#0f172a] text-white text-[12px]'
+const btnPrimary =
+  'bg-[#22c55e] border-0 text-[#0f172a] py-1 px-2.5 rounded-[4px] font-semibold cursor-pointer text-[12px]'
+const btnDanger =
+  'bg-[#ef4444] border-0 text-white py-1 px-2.5 rounded-[4px] font-semibold cursor-pointer text-[12px]'
+const btnGrey =
+  'bg-[#475569] border-0 text-white py-1 px-2.5 rounded-[4px] font-semibold cursor-pointer text-[12px]'
 
 export default function DevAuthToggle() {
   if (environment.server !== 'development') return null
@@ -108,13 +81,13 @@ function DevAuthPanel() {
 
   if (isAuthenticated) {
     return (
-      <div style={panelStyle} aria-label="dev auth toggle">
-        <div style={rowStyle}>
+      <div className={panelClass} aria-label="dev auth toggle">
+        <div className={rowClass}>
           <span>dev:</span>
-          <strong style={{ flex: 1 }}>{user?.userName ?? 'user'}</strong>
+          <strong className="flex-1">{user?.userName ?? 'user'}</strong>
           <button
             type="button"
-            style={btnDanger}
+            className={btnDanger}
             onClick={handleLogout}
             disabled={busy}
           >
@@ -126,42 +99,42 @@ function DevAuthPanel() {
   }
 
   return (
-    <div style={panelStyle} aria-label="dev auth toggle">
-      <div style={{ ...rowStyle, fontWeight: 600 }}>dev login</div>
-      <div style={rowStyle}>
+    <div className={panelClass} aria-label="dev auth toggle">
+      <div className={`${rowClass} font-semibold`}>dev login</div>
+      <div className={rowClass}>
         <input
-          style={inputStyle}
+          className={inputClass}
           placeholder="username"
           value={form.userName}
           onChange={(e) => setForm((f) => ({ ...f, userName: e.target.value }))}
         />
       </div>
-      <div style={rowStyle}>
+      <div className={rowClass}>
         <input
-          style={inputStyle}
+          className={inputClass}
           type="password"
           placeholder="password"
           value={form.password}
           onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
         />
       </div>
-      <div style={rowStyle}>
+      <div className={rowClass}>
         <input
-          style={inputStyle}
+          className={inputClass}
           placeholder="captcha"
           value={form.code}
           maxLength={4}
           onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))}
         />
-        <span style={{ color: '#fbbf24', fontWeight: 700 }}>
+        <span className="text-[#fbbf24] font-bold">
           {captcha?.code ?? '…'}
         </span>
       </div>
-      {error && <div style={{ color: '#fca5a5' }}>{error}</div>}
-      <div style={rowStyle}>
+      {error && <div className="text-[#fca5a5]">{error}</div>}
+      <div className={rowClass}>
         <button
           type="button"
-          style={btnStyle}
+          className={btnPrimary}
           onClick={handleLogin}
           disabled={busy}
         >
@@ -169,7 +142,7 @@ function DevAuthPanel() {
         </button>
         <button
           type="button"
-          style={{ ...btnStyle, background: '#475569', color: '#fff' }}
+          className={btnGrey}
           onClick={() => dispatch(getValidationCode())}
           disabled={busy}
           title="Refresh captcha"

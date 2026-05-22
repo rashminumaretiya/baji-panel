@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import Table from '../../shared/Table.jsx'
 import { useIsMobile } from '../../hooks/useMediaQuery.js'
 import { selectIsYellowTheme } from '../../store/slices/commonSlice.js'
-import './result.scss'
 
 const EventTime = {
   TODAY: 'TODAY',
@@ -124,28 +123,96 @@ const RESULT_DATA = [
   },
 ]
 
+// ─── Mobile result row class strings ───────────────────────────────────────
+// Ports of `.mobile-table-stake-wrapper` / `.mobile-table-stake` / `.match-td`
+// from the original result.scss. The grid is a flex column-strip where each
+// "cell" reserves space for a floating label above the value.
+const MOBILE_STAKE_WRAPPER = 'mb-[2.5vw]'
+
+const MOBILE_STAKE_ROW =
+  'flex items-stretch bg-white border-b border-[var(--sm-text-color)]'
+
+// `.match-td` ─ each cell. `:first-child` doubles in width and left-aligns
+// its `p`/`label`; we model that via [&:first-child:..] arbitrary selectors.
+const MATCH_TD =
+  'flex flex-col justify-center items-center flex-1 text-black ' +
+  'pt-[6.67vw] pr-[1.6vw] pb-[1.6vw] pl-[1.6vw] text-center ' +
+  'text-[5.33vw] border-l border-[var(--light-bg)] relative ' +
+  // first-child overrides — wider lane + left aligned text.
+  'first:flex-[2] first:[&_p]:text-[4.27vw] first:[&_p]:leading-[5.33vw] ' +
+  'first:[&_p]:text-[var(--xs-text-color)] first:[&_p]:text-start ' +
+  'first:[&_label]:text-start first:[&_label]:left-[1.6vw]'
+
+const MATCH_LABEL =
+  'absolute left-0 right-0 top-[1.7vw] text-center text-[2.93vw] ' +
+  'leading-[3.73vw] text-[var(--xs-text-color)]'
+
+const MATCH_P = 'mb-0 font-bold'
+
 function MobileResultTable({ data }) {
   return (
-    <div className="mobile-table-stake-wrapper">
+    <div className={MOBILE_STAKE_WRAPPER}>
       {data.map((row, idx) => (
-        <div className="mobile-table-stake" key={`${row.eventDate}-${idx}`}>
-          <div className="match-td">
-            <label className="match-label">{row.eventDate}</label>
-            <p className="match-name">{row.eventName}</p>
+        <div className={MOBILE_STAKE_ROW} key={`${row.eventDate}-${idx}`}>
+          <div className={MATCH_TD}>
+            <label className={MATCH_LABEL}>{row.eventDate}</label>
+            <p className={`${MATCH_P} text-[4.27vw] leading-[5.33vw] text-[var(--xs-text-color)] text-start w-full`}>
+              {row.eventName}
+            </p>
           </div>
-          <div className="match-td">
-            <label className="match-label">Home</label>
-            <p>{row.resultItem1}</p>
+          <div className={MATCH_TD}>
+            <label className={MATCH_LABEL}>Home</label>
+            <p className={MATCH_P}>{row.resultItem1}</p>
           </div>
-          <div className="match-td">
-            <label className="match-label">Away</label>
-            <p>{row.resultItem2}</p>
+          <div className={MATCH_TD}>
+            <label className={MATCH_LABEL}>Away</label>
+            <p className={MATCH_P}>{row.resultItem2}</p>
           </div>
         </div>
       ))}
     </div>
   )
 }
+
+// ─── Tab styles (port of `.nav-tabs`, `.nav-link.active`) ──────────────────
+// The original result.scss only declared widths; the actual pill/tab look is
+// driven by inplay.scss further up the cascade. To stay self-contained we
+// reproduce the Bootstrap-ish active tab here in pure Tailwind.
+const TABS_ROW =
+  'flex w-2/5 pl-0 mb-0 list-none ' +
+  'max-mobile:w-full max-mobile:border-b-0 max-mobile:pb-[1.6vw]'
+
+const TAB_BTN_BASE =
+  'block px-3 py-1.5 text-[12px] text-[var(--text-color)] bg-transparent border-0 ' +
+  'border-b-2 border-transparent cursor-pointer hover:text-[var(--primary)]'
+const TAB_BTN_ACTIVE =
+  '!text-[var(--primary)] !border-[var(--primary)] font-semibold'
+
+// `.result-tabs-wrapper` — outer flex strip; on mobile becomes a column with
+// blue background + extra padding (per the @media (max-width: 767px) block).
+const RESULT_TABS_WRAPPER =
+  'overflow-x-auto pb-2 flex justify-between ' +
+  'max-mobile:flex-col max-mobile:py-[1.6vw] max-mobile:px-[1.87vw] ' +
+  'max-mobile:bg-[var(--mts-blue)]'
+
+// `.outer-select` — relative wrapper with the mobile-only chevron via ::after.
+const OUTER_SELECT =
+  'relative ' +
+  "max-mobile:after:content-[''] max-mobile:after:absolute max-mobile:after:top-1/2 " +
+  'max-mobile:after:right-[2.13vw] max-mobile:after:translate-y-[-50%] ' +
+  'max-mobile:after:border-t-[2.13vw] max-mobile:after:border-t-[var(--dark)] ' +
+  'max-mobile:after:border-l-[2.13vw] max-mobile:after:border-l-transparent ' +
+  'max-mobile:after:border-r-[2.13vw] max-mobile:after:border-r-transparent ' +
+  'max-mobile:after:pointer-events-none'
+
+const OUTER_SELECT_YELLOW = 'max-mobile:[&_select]:text-[4.1vw]'
+
+// `.matched-select` ─ the <select> itself. Desktop: tight 180px pill. Mobile:
+// full-width capsule with appearance:none so our ::after triangle is visible.
+const MATCHED_SELECT =
+  'w-[180px] text-[14px] p-0.5 leading-[29px] h-[29px] ' +
+  'max-mobile:appearance-none max-mobile:w-full max-mobile:text-[3.73vw] ' +
+  'max-mobile:h-[10.67vw] max-mobile:px-4 max-mobile:rounded-[1.6vw] max-mobile:uppercase'
 
 export default function Result() {
   const { t } = useTranslation()
@@ -163,12 +230,12 @@ export default function Result() {
     {
       key: 'resultItem1',
       label: t('results.home', 'Home'),
-      cellClassName: 'text-bold',
+      cellClassName: 'font-bold',
     },
     {
       key: 'resultItem2',
       label: t('results.away', 'Away'),
-      cellClassName: 'text-bold',
+      cellClassName: 'font-bold',
     },
   ]
 
@@ -188,22 +255,31 @@ export default function Result() {
     console.log('filterVal :>> ', filterVal)
   }
 
+  const outerSelectClass = [
+    OUTER_SELECT,
+    isYellowTheme && OUTER_SELECT_YELLOW,
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   return (
-    <div className="result-page">
-      <div className="inplay-wrapper mt-md-2">
-        <div className="overflow-x-auto pb-2 d-flex justify-content-between result-tabs-wrapper">
-          <ul className="nav-tabs" role="tablist">
+    <div>
+      {/* `.inplay-wrapper mt-md-2` — the original styles for these classes are
+          owned by inplay.scss (lives on the page). We retain layout-only
+          spacing here. */}
+      <div className="md:mt-2">
+        <div className={RESULT_TABS_WRAPPER}>
+          <ul className={TABS_ROW} role="tablist">
             {TABS.map((tab) => {
               const isActive = tab.id === activeTab
+              const btnClass = [TAB_BTN_BASE, isActive && TAB_BTN_ACTIVE]
+                .filter(Boolean)
+                .join(' ')
               return (
-                <li
-                  key={tab.id}
-                  className={`nav-item ${tab.itemClass}`}
-                  role="presentation"
-                >
+                <li key={tab.id} className="list-none" role="presentation">
                   <button
                     type="button"
-                    className={`nav-link${isActive ? ' active' : ''}`}
+                    className={btnClass}
                     role="tab"
                     aria-selected={isActive}
                     onClick={() => changeTab(tab.id)}
@@ -214,12 +290,10 @@ export default function Result() {
               )
             })}
           </ul>
-          <div
-            className={`outer-select${isYellowTheme ? ' yellow-theme' : ''}`}
-          >
+          <div className={outerSelectClass}>
             <select
               id="sport-type"
-              className="matched-select"
+              className={MATCHED_SELECT}
               value={sportFilter}
               onChange={updateFilter}
             >
@@ -232,7 +306,9 @@ export default function Result() {
           </div>
         </div>
 
-        <div className="second-part-wrapper">
+        {/* `.second-part-wrapper` — overflow container; the inplay.scss rule
+            adds max-h/min-h on desktop. */}
+        <div className="md:max-h-[calc(100vh-198px)] md:min-h-[200px] md:overflow-y-auto">
           {isMobile ? (
             <MobileResultTable data={data} />
           ) : (

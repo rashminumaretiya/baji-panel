@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Overlay, Popover } from 'react-bootstrap'
+import { Overlay, Popover } from '../shared/components/primitives/Popover.jsx'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -11,7 +11,6 @@ import { setOneClickBetStake } from '../store/slices/betSlipSlice.js'
 import { LOCALSTORAGE } from '../shared/types/common.js'
 import { localStorageService } from '../shared/services/local-storage.js'
 import SvgIcon from './SvgIcon.jsx'
-import './oneClickBet.scss'
 
 const STAKE_SLOTS = [1, 2, 3, 4]
 
@@ -73,22 +72,34 @@ export default function OneClickBet() {
     setEditStakes({ ...defaultStakes })
   }
 
+  // Confirmation "OK" button inside the attention popover. Default = solid dark,
+  // yellow-theme overrides with yellow gradient + dark text, mcw with grey
+  // gradient + gold text.
+  const okBtnBase =
+    'block mx-auto w-[46.42857%] p-1.5 rounded-[4px] text-[12px] font-bold border border-black text-white bg-[var(--xts-black)] hover:bg-[var(--xmd-black)]'
+  const okBtnYellow =
+    'bg-gradient-to-b !from-[var(--md-primary-yellow)] !to-[#ffa10c] !text-[var(--dark)]'
+  const okBtnMcw =
+    'bg-gradient-to-b !from-[#474747] !to-[#070707] !text-[#ffd354]'
+
   const attentionPopover = (
-    <div className="d-flex flex-column one-click-attention">
-      <div className="content">
+    <div className="flex flex-col bg-transparent">
+      <div className="px-5 pt-[5px] pb-[7px]">
         <p className="m-0">
           Stake selected will be placed immediately once you click on the market
           odds.
         </p>
-        <span>Attention: Back/Lay at your own risk</span>
+        <span className="text-[var(--md-yellow)]">
+          Attention: Back/Lay at your own risk
+        </span>
       </div>
-      <div className="btn-wrapper">
+      <div className="pt-[7px] px-2.5 pb-2.5 border-t border-white/20 w-full">
         <button
           type="button"
           className={cx(
-            'btn btn-primary',
-            isYellowTheme && 'yellow-btn',
-            isMcwCasinoTheme && 'mcw-btn'
+            okBtnBase,
+            isYellowTheme && okBtnYellow,
+            isMcwCasinoTheme && okBtnMcw
           )}
           onClick={popoverClose}
         >
@@ -98,16 +109,48 @@ export default function OneClickBet() {
     </div>
   )
 
+  // The bottom one-click panel. Wrapper background changes per theme; SCSS had
+  // .one-click-wrapper bg gradient, then .yellow-theme/.mcw-casino-theme
+  // overrides which used different gradients.
+  const wrapperClass = cx(
+    'sticky bottom-0 z-[1010] px-2.5 shadow-[inset_0_1px_0_0_var(--shadow-primary)]',
+    !isYellowTheme && !isMcwCasinoTheme &&
+      'bg-gradient-to-b from-[var(--xts-primary)] to-[var(--mdx-primary)]',
+    isYellowTheme &&
+      'bg-gradient-to-b from-[#4e9600] to-[#386a02]',
+    isMcwCasinoTheme &&
+      'bg-gradient-to-b from-[#b43807] to-[#912b06]'
+  )
+
+  // The 4-slot stake row (the curvy banner background). Default uses the green
+  // banner, yellow-theme uses the yellow banner, mcw-casino uses the red one.
+  const stakeRowClass = cx(
+    'flex items-center justify-center absolute left-1/2 -translate-x-1/2 w-[414px] h-[31px] gap-[3px] bg-no-repeat bg-center',
+    !isYellowTheme && !isMcwCasinoTheme && 'bg-[url(/img/main-bg-shape.png)]',
+    isYellowTheme && 'bg-[url(/img/stake-1click.png)]',
+    isMcwCasinoTheme && 'bg-[url(/img/red-stake-banner.png)]'
+  )
+
+  // Stake input — common style, then "active" highlight when not in edit mode.
+  // In yellow-theme the active btn uses #ffd200 instead of var(--md-yellow).
+  const stakeInputBase =
+    'p-0 text-[11px] leading-[18px] h-5 w-[65px] text-center rounded-[4px] border border-[var(--sm-black)] text-black bg-gradient-to-b from-white from-0% to-[var(--xs-gray)] to-[89%] shadow-[inset_0_2px_0_0_rgba(var(--white-rgb),0.5)] hover:bg-gradient-to-b hover:from-[var(--xs-gray)] hover:from-0% hover:to-white hover:to-[89%] focus:bg-[var(--md-yellow)] focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+  const stakeInputActive = isYellowTheme
+    ? 'min-w-[65px] !bg-[#ffd200] !bg-none focus:!bg-[#ffd200]'
+    : 'min-w-[65px] !bg-[var(--md-yellow)] !bg-none focus:!bg-[var(--md-yellow)]'
+
+  // Edit / Save button. Default "edit-btn" = transparent w/ white text,
+  // "Save" = btn-secondary text white.
+  const actionBtnBase =
+    'min-w-[70px] py-0.5 px-1 rounded-[4px] text-[11px] font-normal mr-2'
+  const editBtnClass =
+    'mt-0 bg-transparent shadow-[inset_0_1px_0_0_rgba(var(--white-rgb),0.5)] border border-black/50 text-white hover:underline'
+  const saveBtnClass = 'text-white' // matches .btn-secondary fallback
+
   return (
     <>
-      <div className={attentionOpen ? 'overlay' : ''}> </div>
-      <div
-        className={cx(
-          'position-sticky bottom-0 one-click-wrapper',
-          isYellowTheme && 'yellow-theme',
-          isMcwCasinoTheme && 'mcw-casino-theme'
-        )}
-      >
+      <div className={attentionOpen ? 'fixed inset-0 w-full h-full bg-black/30 z-[9]' : ''}> </div>
+      <div className={wrapperClass}>
         <div ref={setAttentionTarget} />
 
         <Overlay
@@ -116,11 +159,13 @@ export default function OneClickBet() {
           placement="top"
           rootClose={false}
         >
-          <Popover className="attention-popover">
-            <Popover.Header as="h3" className="popover-header">
+          <Popover className="!bg-black/85 !rounded-[10px] !overflow-visible shadow-[0_0_8px_8px_rgba(var(--white-rgb),0.7)] min-w-[320px] w-full [&_*]:font-[Tahoma,Helvetica,sans-serif]">
+            <Popover.Header className="text-center text-white !bg-transparent text-[15px] font-bold py-[7px] px-0">
               {t('header.oneClickBetOn', 'One Click Bet ON')}
             </Popover.Header>
-            <Popover.Body>{attentionPopover}</Popover.Body>
+            <Popover.Body className="!p-0 text-white border-t border-white/30 text-[13px] leading-[18px] font-[Tahoma]">
+              {attentionPopover}
+            </Popover.Body>
           </Popover>
         </Overlay>
 
@@ -130,24 +175,19 @@ export default function OneClickBet() {
               e.preventDefault()
             }}
           >
-            <div className="d-flex align-items-center justify-content-between">
-              <h6 className="m-0 text-white">
+            <div className="flex items-center justify-between">
+              <h6 className="m-0 leading-[31px] text-[var(--dark)] text-[12px] font-bold">
                 {t('header.oneClickBet', 'One Click Bet')}{' '}
                 {t('header.stake.title', 'Stake')}
               </h6>
-              <div
-                className={cx(
-                  'd-flex align-items-center justify-content-center one-click-stake',
-                  isYellowTheme && 'yellow-label'
-                )}
-              >
+              <div className={stakeRowClass}>
                 {STAKE_SLOTS.map((slot) => (
-                  <div key={slot} className="btns">
+                  <div key={slot}>
                     <input
                       type={isEdit ? 'number' : 'button'}
                       className={cx(
-                        'form-control text-center',
-                        !isEdit && activeStakeIndex === slot && 'btn btn-yellow'
+                        stakeInputBase,
+                        !isEdit && activeStakeIndex === slot && stakeInputActive
                       )}
                       value={stakes[slot]}
                       disabled={stakesDisabled}
@@ -162,10 +202,7 @@ export default function OneClickBet() {
               <button
                 type="button"
                 disabled={attentionOpen}
-                className={cx(
-                  'btn me-2',
-                  isEdit ? 'btn-secondary' : 'edit-btn'
-                )}
+                className={cx(actionBtnBase, isEdit ? saveBtnClass : editBtnClass)}
                 onClick={isEdit ? saveOneClickStake : toggleEdit}
               >
                 {!isEdit ? (

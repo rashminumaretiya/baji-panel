@@ -35,8 +35,6 @@ import {
 import InlineBetSlip from '../components/GameDetails/InlineBetSlip.jsx'
 import { alertService } from '../shared/services/alert.js'
 
-import './live-odds.scss'
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Constants
 // ─────────────────────────────────────────────────────────────────────────────
@@ -83,6 +81,64 @@ const MAIN_FANCY = {
   FANCY_BET: 'fancyBet',
   SPORTS_BOOK: 'sportBook',
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Tailwind class constants (extracted to keep the JSX readable since the same
+// styles repeat across runners, bookmaker rows, fancy rows, etc.)
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Match-Odds table base
+const MATCH_ODDS_TABLE =
+  'w-full border-separate [border-spacing:1px_0] max-mobile:bg-white'
+
+// ── Generic table th/td (mirrors the SCSS .table th / .table td defaults)
+const TABLE_TH =
+  'text-[var(--dark)] text-center align-bottom text-[11px] font-normal pb-[3px] max-mobile:px-[1.86667vw] max-mobile:pt-[1.86667vw] max-mobile:pb-[0.8vw] max-mobile:text-[3.46667vw] max-mobile:font-bold'
+
+// ── Price cell base (back/lay)
+const PRICE_CELL_BASE =
+  'text-center border-t border-[var(--tbl-border-color)] text-[var(--header-primary)] relative text-[12px] cursor-pointer w-[10.9%] h-[40px] max-mobile:text-[4vw] max-mobile:w-[70px] max-mobile:h-[11.51vw] max-mobile:min-w-[18.66667vw] hover:opacity-80 [&_p]:font-bold [&_p]:leading-none [&_p]:text-[12px] max-mobile:[&_p]:text-[3.46667vw] max-mobile:[&_p]:leading-normal [&_span]:leading-none [&_span]:text-[12px] max-mobile:[&_span]:text-[2.93333vw]'
+
+// ── Back (blue) tones
+const BLUE_XS =
+  'bg-[var(--back-0)] hover:bg-[var(--back-0-hover)]'
+const BLUE_MD = 'bg-[var(--back-1)] hover:bg-[var(--back-1-hover)]'
+const BLUE_XXS = 'bg-[var(--back-2)] hover:bg-[var(--back-2-hover)]'
+
+// ── Lay (red/pink) tones
+const RED_XS =
+  'bg-[var(--lay-0)] hover:bg-[rgba(var(--light-red),0.8)]'
+const RED_MD = 'bg-[var(--lay-1)] hover:bg-[var(--lay-1-hover)]'
+const RED_XXS = 'bg-[var(--lay-2)] hover:bg-[var(--lay-2-hover)]'
+
+// ── Active state (yellow highlight / blue / red as per SCSS)
+const BLUE_XS_ACTIVE =
+  '!bg-[var(--lg-blue-bg)] !text-white shadow-[inset_0_1px_3px_rgba(var(--black-rgb),0.5)] hover:opacity-100'
+const RED_XS_ACTIVE =
+  '!bg-[var(--lg-red-bg)] !text-white shadow-[inset_0_1px_3px_rgba(var(--black-rgb),0.5)] hover:opacity-100'
+
+// ── Suspended bg (diagonal stripes)
+const BG_LINE =
+  '!bg-[url(/img/bg-line.png)] opacity-90 [filter:brightness(0.7)] [background-blend-mode:color-burn] !cursor-default pointer-events-none'
+
+// ── Spark animations on odds change
+const BACK_SPARK = 'animate-[sparkBack_0.8s_ease-in-out]'
+const LAY_SPARK = 'animate-[sparkLay_0.8s_ease-in-out]'
+
+// ── Runner-name first cell (white bg desktop / transparent mobile)
+const RUNNER_FIRST_CELL =
+  'whitespace-nowrap bg-white text-start px-[10px] py-[3px] text-[var(--header-primary)] border-t border-[var(--tbl-border-color)] max-mobile:bg-transparent max-mobile:px-[1.8666666667vw] max-mobile:py-[0.3333333333vw]'
+
+// ── Game-status overlay (suspended / etc.) inside bookmaker / fancy
+const GAME_STATUS_OVERLAY =
+  'absolute inset-0 max-w-[665px] !w-full bg-[rgba(36,58,72,0.4)] z-[9] flex items-center justify-center text-white/80 [text-shadow:0_1px_4px_rgba(0,0,0,0.5)] text-[13px] cursor-default hover:bg-[rgba(36,58,72,0.6)] max-mobile:text-[3.46667vw] max-mobile:font-bold'
+
+// ── Fancy_info popup
+const FANCY_INFO_POPUP =
+  'absolute top-0 right-0 w-auto bg-white z-[99] px-[1.8666666667vw] pb-[1.8666666667vw] shadow-[0_6px_10px_rgba(var(--black-rgb),0.7)] rounded-[1.0666666667vw] flex [&_p]:text-[var(--sxl-text-color)] [&_p]:text-[2.6666666667vw] [&_p]:leading-[3.2vw] [&_p]:pt-[0.8vw] [&_p]:pb-[1.0666666667vw] [&_p]:whitespace-nowrap [&_p]:mb-0 [&_span]:leading-[3.7333333333vw] [&_span]:text-[var(--dark)] [&_span]:whitespace-nowrap [&_span]:text-[3vw]'
+
+const FANCY_INFO_CLOSE_ICON =
+  'pl-[2.5vw] pt-[1vw] inline-flex text-black [&_svg]:!h-[3.2vw] [&_svg]:!w-[3.2vw]'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Pure helpers
@@ -657,12 +713,12 @@ export default function LiveOdds() {
   if (error) {
     return (
       <div className="p-4">
-        <p className="small text-danger mb-2">
+        <p className="text-[12px] text-[var(--red)] mb-2">
           Failed to load markets: {error?.message || 'Unknown error'}
         </p>
         <button
           type="button"
-          className="btn btn-sm btn-secondary"
+          className="text-[12px] px-3 py-1 bg-[var(--sm-text-color)] text-white rounded"
           onClick={refreshMarkets}
         >
           Retry
@@ -677,35 +733,39 @@ export default function LiveOdds() {
   const showPip = isMobile && scrolledPastPip && showStream
 
   return (
-    <div className="live-odds-wrapper-container">
-      <div
-        className={cx(
-          'live-odds-wrapper mt-md-1',
-          isYellowTheme && 'yellow-theme'
-        )}
-      >
+    <div>
+      <div className={cx('mobile:mt-1', isYellowTheme && 'yellow-theme')}>
         {isMobile && showStream && (
           <>
-            {showPip && <div className="mobile-live-streaming pip-spacer" />}
-            <div className={cx('mobile-live-streaming', showPip && 'tv-url')}>
+            {showPip && (
+              <div className="w-full aspect-video max-mobile:aspect-video" />
+            )}
+            <div
+              className={cx(
+                'hover:[&_.close]:opacity-100',
+                showPip &&
+                  'fixed top-[120px] left-[calc(50%-40px)] z-[999] max-w-[260px] h-auto transition-all duration-300 ease-in-out max-h-[32vw] overflow-visible max-mobile:top-[15.583vw] max-mobile:left-auto max-mobile:right-[1vw] max-mobile:max-w-[54.167vw] max-mobile:rounded-[2vw] max-mobile:overflow-hidden'
+              )}
+            >
               <LiveStream
                 url={liveStreamUrl}
                 iframeRef={iframeRef}
                 onClose={closeLiveStream}
                 onFullscreen={toggleFullscreen}
                 hideClose={isMobile}
+                isPip={showPip}
               />
             </div>
           </>
         )}
 
-        <div className={cx(isMobile && showStream && 'mobile-odds-wrapper')}>
+        <div className={cx(isMobile && showStream && '')}>
           {isMobile && (
-            <div className="blue-header score-game-header d-flex justify-content-between align-items-center px-3">
-              <span className="text-capitalize">{getSportName(sportId)}</span>
+            <div className="bg-[var(--text-color)] flex justify-between items-center px-3 mr-0 leading-[2] text-white">
+              <span className="capitalize">{getSportName(sportId)}</span>
               {isInplay && (
-                <div className="d-inline-flex align-items-center">
-                  <i className="time-icon" aria-hidden="true" />
+                <div className="inline-flex items-center [&_i]:inline-flex [&_i]:rounded-[0.8vw] [&_i]:mr-[0.6vw] [&_i]:bg-gradient-to-t [&_i]:from-[var(--xs-green-primary)] [&_i]:via-[var(--xs-green-primary)] [&_i]:to-[var(--xs-shadow-primary)] [&_small]:text-[3.2666666667vw] [&_small]:font-normal">
+                  <i aria-hidden="true" />
                   <small>In-Play</small>
                 </div>
               )}
@@ -715,12 +775,12 @@ export default function LiveOdds() {
           {hasScoreboard && isAuthenticated && (
             <div
               className={cx(
-                'score-iframe-wrapper text-center pb-0',
-                isMobile && 'mobile-score-iframe-wrapper'
+                'text-center pb-0 bg-[#1e1e1e]',
+                isMobile && '[&_iframe]:max-mobile:h-[185px]'
               )}
             >
               <iframe
-                className="score-iframe d-block"
+                className="block"
                 src={scoreIframeUrl}
                 width="100%"
                 height="100%"
@@ -733,7 +793,7 @@ export default function LiveOdds() {
 
           <PinRefresh onRefresh={refreshMarkets} />
         </div>
-        <div className="odds-wrapper">
+        <div>
           {matchOddsArray.map((matchOdds, idx) => (
             <MatchOddsSection
               key={matchOdds.marketId}
@@ -797,7 +857,7 @@ export default function LiveOdds() {
           )}
 
           {fancyMainTabs.length > 0 && (
-            <div className="fancy-bet-wrapper mt-4">
+            <div className="mt-4">
               <FancyTabHeader
                 tabs={fancyMainTabs}
                 selectedFancy={selectedFancy}
@@ -855,14 +915,25 @@ export default function LiveOdds() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function PinRefresh({ onRefresh }) {
+  // Each div is a Pin / Refresh pill; the first has a rotated ::before tail,
+  // the second a rotated ::after tail to give the angled-pill shape.
+  const baseDiv =
+    'text-white font-bold z-[1] min-w-[90px] h-[25px] leading-[20px] relative max-mobile:px-3 max-mobile:py-[6px] max-mobile:h-[7.46667vw] max-mobile:leading-tight max-mobile:text-[3.2vw] max-mobile:min-w-[25.5vw] [&_i_svg]:h-[14px] [&_i_svg]:w-[14px] max-mobile:[&_i_svg]:h-[3.73333vw] max-mobile:[&_i_svg]:w-[3.73333vw] mobile:[&_span]:hidden'
+
+  const firstDiv =
+    `${baseDiv} bg-[var(--text-xl-color)] rounded-bl-[10px] max-mobile:bg-gradient-to-t max-mobile:from-[var(--xls-navy)] max-mobile:to-[var(--xts-light-bg)] max-mobile:w-[25.5vw] max-mobile:rounded-bl-[3vw] before:content-[''] before:absolute before:left-[-3px] before:w-[19px] before:bg-[var(--text-xl-color)] before:top-[-4px] before:bottom-[1px] before:-z-[1] before:[transform:rotate(-22deg)] before:rounded-bl-[10px] max-mobile:before:[transform:rotate(-16deg)] max-mobile:before:bg-gradient-to-t max-mobile:before:from-[var(--xs-navy)] max-mobile:before:to-[var(--xts-md-bg)] max-mobile:before:rounded-bl-[3vw]`
+
+  const secondDiv =
+    `${baseDiv} bg-[var(--text-xl-color)] shadow-[1px_0_0_0_rgba(255,255,255,0.3)_inset] rounded-br-[10px] max-mobile:bg-gradient-to-t max-mobile:from-[var(--xls-navy)] max-mobile:to-[var(--xts-light-bg)] max-mobile:rounded-br-[3vw] max-mobile:border-l-[0.53333vw] max-mobile:border-l-[rgba(22,40,49,0.9)] after:content-[''] after:absolute after:right-[-3px] after:w-[19px] after:bg-[var(--text-xl-color)] after:top-[-4px] after:bottom-[1px] after:-z-[1] after:rounded-br-[10px] after:[transform:rotate(22deg)] max-mobile:after:[transform:rotate(16deg)] max-mobile:after:bg-gradient-to-t max-mobile:after:from-[var(--xs-navy)] max-mobile:after:to-[var(--xts-md-bg)] max-mobile:after:rounded-br-[3vw]`
+
   return (
-    <div className="text-center overflow-hidden pin-refresh-section-wrapper">
-      <div className="d-inline-flex align-items-center pin-refresh-section cursor-pointer">
-        <div>
+    <div className="text-center overflow-hidden bg-white mt-px max-mobile:bg-[var(--light-bg)] max-mobile:mt-0">
+      <div className="inline-flex items-center relative cursor-pointer">
+        <div className={firstDiv}>
           <PinIcon />
           <span>Pin</span>
         </div>
-        <div onClick={onRefresh} role="button">
+        <div className={secondDiv} onClick={onRefresh} role="button">
           <RefreshIcon />
           <span>Refresh</span>
         </div>
@@ -871,13 +942,25 @@ function PinRefresh({ onRefresh }) {
   )
 }
 
-function LiveStream({ url, iframeRef, onClose, onFullscreen, hideClose }) {
+function LiveStream({
+  url,
+  iframeRef,
+  onClose,
+  onFullscreen,
+  hideClose,
+  isPip,
+}) {
   if (!url) return null
   return (
-    <div className="live-streaming-wrapper text-center mb-md-3 p-md-2 pb-0">
+    <div className="relative max-w-[500px] mx-auto text-center mobile:mb-3 mobile:p-2 pb-0 max-mobile:max-w-full max-mobile:overflow-hidden">
       <iframe
         ref={iframeRef}
-        className="live-streaming"
+        className={cx(
+          'mx-auto h-auto block aspect-video',
+          isPip
+            ? 'max-w-[260px] max-mobile:max-w-[54.167vw] max-mobile:h-[32vw]'
+            : 'max-w-[480px] max-mobile:max-w-full max-mobile:w-full'
+        )}
         src={url}
         width="100%"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share;"
@@ -885,9 +968,17 @@ function LiveStream({ url, iframeRef, onClose, onFullscreen, hideClose }) {
         title="Live stream"
       />
       {!hideClose && (
-        <div className="close-icon-wrapper">
+        <div
+          className={cx(
+            'absolute top-[15px] right-[15px] max-[991px]:right-0',
+            isPip && 'top-[5px] right-[5px] max-mobile:top-[1.042vw] max-mobile:right-[1.042vw]'
+          )}
+        >
           <i
-            className="cursor-pointer close"
+            className={cx(
+              'close cursor-pointer h-[35px] w-[50px] bg-black/50 rounded-md border border-[var(--xxl-gray)] flex items-center justify-center z-[999] text-white hover:bg-black/60 [&_svg]:h-[14px] [&_svg]:w-[14px] max-mobile:h-[8.33333vw] max-mobile:w-[8.33333vw] max-mobile:[&_svg]:h-[2.73333vw] max-mobile:[&_svg]:w-[2.73333vw]',
+              isPip && '!rounded-full !h-[15px] !w-[15px] max-mobile:!h-[3.125vw] max-mobile:!w-[3.125vw]'
+            )}
             onClick={onClose}
             role="button"
             aria-label="Close"
@@ -898,7 +989,7 @@ function LiveStream({ url, iframeRef, onClose, onFullscreen, hideClose }) {
       )}
       <div>
         <i
-          className="cursor-pointer fullscreen"
+          className="absolute right-[18px] bottom-[8px] max-mobile:right-[16px] cursor-pointer"
           onClick={onFullscreen}
           role="button"
           aria-label="Fullscreen"
@@ -933,24 +1024,41 @@ function MatchOddsSection({
   const totalMatched = num(matchOdds.totalMatched)
   const minMaxStr = `${fmt(marketSetting.min || 1)} / ${fmt(marketSetting.max || 100)}`
 
+  const matchOddsTabClass = isYellowTheme
+    ? // mobile yellow theme: gradient + coffee border + dark text
+      'inline-block relative font-bold mr-0 max-mobile:!bg-gradient-to-t max-mobile:!from-[#ffa10c] max-mobile:!to-[var(--md-primary-yellow)] max-mobile:border max-mobile:!border-[var(--coffee)] max-mobile:!text-[var(--dark)] max-mobile:px-[3.4vw] max-mobile:rounded-[4.8vw] max-mobile:text-[3.46667vw] max-mobile:leading-[9.06667vw] mobile:bg-[var(--sm-white)] mobile:text-[var(--xxl-blue)] mobile:px-[2px] mobile:py-[8px_2px_7px_10px] mobile:py-2 mobile:pl-[10px] mobile:pr-[2px] mobile:text-[13px] mobile:mr-5 mobile:after:content-[""] mobile:after:absolute mobile:after:[background-image:url(/img/main-s1aea395e8c.png)] mobile:after:z-[1] mobile:after:bottom-0 mobile:after:top-0 mobile:after:-right-5 mobile:after:h-[30px] mobile:after:[background-position:432px_1725px] mobile:after:w-5'
+    : 'inline-block relative font-bold mr-0 max-mobile:text-white max-mobile:border max-mobile:border-[rgba(var(--md-dark-rgb),0.3)] max-mobile:bg-gradient-to-b max-mobile:from-[var(--xs-primary)] max-mobile:to-[var(--xxs-primary)] max-mobile:px-[3.4vw] max-mobile:rounded-[4.8vw] max-mobile:text-[3.46667vw] max-mobile:leading-[9.06667vw] mobile:bg-[var(--sm-white)] mobile:text-[var(--xxl-blue)] mobile:pl-[10px] mobile:pr-[2px] mobile:py-2 mobile:text-[13px] mobile:mr-5 mobile:after:content-[""] mobile:after:absolute mobile:after:[background-image:url(/img/main-s1aea395e8c.png)] mobile:after:z-[1] mobile:after:bottom-0 mobile:after:top-0 mobile:after:-right-5 mobile:after:h-[30px] mobile:after:[background-position:432px_1725px] mobile:after:w-5'
+
   return (
-    <div className="match-odds-wrapper">
-      <div className="row g-0 mx-0 gr-2 justify-content-between align-items-center flex-wrap position-relative">
-        <div className="col-12">
-          <div className="market-type d-flex justify-content-between position-relative">
+    <div className="mobile:mb-[30px]">
+      <div className="flex flex-wrap justify-between items-center relative">
+        <div className="w-full">
+          <div
+            className={cx(
+              'flex justify-between relative bg-white border-b border-[var(--sm-text-color)]',
+              'max-mobile:border-b-0 max-mobile:bg-[var(--light-bg)] max-mobile:p-[1.86667vw]'
+            )}
+          >
             <div>
-              <span
-                className={cx(
-                  'match-odds-tab',
-                  isYellowTheme && 'yellow-match-odds-tab'
-                )}
-              >
-                Match Odds
-              </span>
+              <span className={matchOddsTabClass}>Match Odds</span>
               {!isMobile && (
-                <span className={matchOdds.inplay ? 'inplay' : 'not-inplay'}>
-                  <i className="time" />
-                  <span className="d-inline-block ms-1 align-middle">
+                <span
+                  className={cx(
+                    'text-[13px] ml-2 align-text-bottom inline-block',
+                    matchOdds.inplay
+                      ? 'text-[var(--dark-green)]'
+                      : 'text-inherit'
+                  )}
+                >
+                  <i
+                    className={cx(
+                      "inline-block align-middle w-[15px] h-[15px] mr-[5px] [background-image:url('/img/main-s1aea395e8c.png')]",
+                      matchOdds.inplay
+                        ? '[background-position:-399px_-2401px]'
+                        : '[background-position:-399px_-2869px]'
+                    )}
+                  />
+                  <span className="inline-block ml-1 align-middle">
                     {matchOdds.inplay
                       ? 'In-Play'
                       : fmtDate(matchOdds.marketStartTime)}
@@ -960,25 +1068,29 @@ function MatchOddsSection({
             </div>
             {!isMobile && (
               <>
-                <div className="d-flex text-black min-max-odds">
+                <div className="flex text-black absolute top-0 left-1/2 -translate-x-1/2 my-[7px] mx-[5px] bg-[var(--xl-light-bg)] text-[12px] leading-4 rounded-[3px] px-[6px] !text-[var(--sm-xl-dark)]">
                   <p className="mb-0">Min/ Max</p>
-                  <p className="mb-0 ms-1">
-                    <small>{minMaxStr}</small>
+                  <p className="mb-0 ml-1">
+                    <small className="text-[13px] text-[var(--light-navy)]">
+                      {minMaxStr}
+                    </small>
                   </p>
                 </div>
-                <div className="d-flex">
-                  <div className="matched d-flex">
+                <div className="flex">
+                  <div className="flex items-center text-[13px] text-[var(--lg-white,#fff)] [&_span]:font-bold">
                     <p className="m-0">Matched</p>
-                    <span className="ms-1">{currency || 'PBU'}</span>
-                    <span className="ms-1 me-2">{fmt(totalMatched)}</span>
+                    <span className="ml-1">{currency || 'PBU'}</span>
+                    <span className="ml-1 mr-2">{fmt(totalMatched)}</span>
                   </div>
                   {isAuthenticated && isStreamAvailable && (
                     <div>
                       <button
                         type="button"
                         className={cx(
-                          'btn btn-live',
-                          !isLiveStreamOn && 'btn-live-close'
+                          'relative h-[23px] leading-[19px] rounded-[3px] text-white px-[7px] my-[3px_4px_3px_5px] mx-[5px] text-[13px] before:content-[""] before:inline-block before:[background-image:url(/img/live-icons.png)] before:align-middle before:mr-[5px] before:[background-position:-396px_-2453px] before:h-[15px] before:w-[18px]',
+                          isLiveStreamOn
+                            ? 'bg-gradient-to-b from-[var(--md-cloud)] to-[var(--lg-cloud)]'
+                            : 'bg-gradient-to-b from-[var(--mds-orange)] to-[var(--lg-orange)] before:[background-image:url(/img/close-live.png)] before:[background-position:center]'
                         )}
                         onClick={onToggleLive}
                       >
@@ -995,24 +1107,24 @@ function MatchOddsSection({
 
       {liveStreamSlot}
 
-      <div className="match-odds table-responsive">
-        <table className="match-odds-table w-100">
+      <div className="overflow-auto">
+        <table className={MATCH_ODDS_TABLE}>
           <thead>
             <tr>
               {isMobile ? (
                 <>
-                  <th className="text-start w-nowrap">
-                    <div className="mb-data">
-                      <div className="bet-limit">
+                  <th className={cx(TABLE_TH, 'text-start whitespace-nowrap')}>
+                    <div className="flex items-center">
+                      <div className="bg-[var(--light-bg)] relative max-mobile:m-[-1.86vw_3.7vw_-2vw_-1.9vw] max-mobile:p-[2.13333vw_1.86667vw_3.2vw_1.86667vw] max-mobile:before:content-[''] max-mobile:before:absolute max-mobile:before:top-0 max-mobile:before:left-[10.4vw] max-mobile:before:border-b-[14.33333vw] max-mobile:before:border-b-transparent max-mobile:before:border-l-[1.86667vw] max-mobile:before:border-l-[var(--light-bg)] [&_svg]:max-mobile:w-[6.66667vw] [&_svg]:max-mobile:h-[6.66667vw]">
                         <InfoIcon onClick={onToggleBetLimit} />
                         {betLimitOpen && (
-                          <div className="fancy_info-popup max">
+                          <div className={cx(FANCY_INFO_POPUP, 'left-0 w-max [&_svg]:!h-[14px] [&_svg]:!w-[14px]')}>
                             <div>
                               <p>Max</p>
                               <span>{fmt(marketSetting.max || 100)}</span>
                             </div>
                             <i
-                              className="close-icon"
+                              className={FANCY_INFO_CLOSE_ICON}
                               onClick={onToggleBetLimit}
                               role="button"
                             >
@@ -1021,29 +1133,34 @@ function MatchOddsSection({
                           </div>
                         )}
                       </div>
-                      <i className="a-depth" />
-                      <div className="content">
+                      <i className="[background-image:url('/img/svg/barChart.svg')] bg-contain bg-no-repeat max-mobile:w-[6.5vw] max-mobile:h-[6.66667vw]" />
+                      <div className="max-mobile:pl-[1.86667vw] [&_p]:leading-[7px] [&_p]:font-normal [&_p]:mt-1 [&_p]:max-mobile:text-[2.93333vw] [&_span]:font-bold [&_span]:max-mobile:text-[2.93333vw]">
                         <p className="mb-0">Matched</p>
                         <span>{currency || 'PBU'}</span>{' '}
                         <span>{fmt(totalMatched)}</span>
                       </div>
                     </div>
                   </th>
-                  <th>Back</th>
-                  <th>Lay</th>
+                  <th className={cx(TABLE_TH, '!w-[18.66667vw]')}>Back</th>
+                  <th className={cx(TABLE_TH, '!w-[18.66667vw]')}>Lay</th>
                 </>
               ) : (
                 <>
-                  <th className="text-start w-nowrap refer_only ps-1">
+                  <th
+                    className={cx(
+                      TABLE_TH,
+                      'text-start whitespace-nowrap text-[var(--sm-text-color)] pt-[20px] pl-1'
+                    )}
+                  >
                     {matchOdds.numberOfRunners ??
                       matchOdds.runners?.length ??
                       0}{' '}
                     Selection
                   </th>
-                  <th colSpan={3} className="text-start">
+                  <th colSpan={3} className={cx(TABLE_TH, 'text-start')}>
                     101%
                   </th>
-                  <th colSpan={3} className="text-end">
+                  <th colSpan={3} className={cx(TABLE_TH, 'text-end')}>
                     99.6%
                   </th>
                 </>
@@ -1051,7 +1168,7 @@ function MatchOddsSection({
             </tr>
           </thead>
           <tbody>
-            {(matchOdds.runners ?? []).map((runner) => {
+            {(matchOdds.runners ?? []).map((runner, rowIdx) => {
               const back = runner.ex?.availableToBack ?? []
               const lay = runner.ex?.availableToLay ?? []
               const runnerExt = {
@@ -1081,22 +1198,24 @@ function MatchOddsSection({
                 : [back[2], back[1], back[0]]
               const layCells = isMobile ? [lay[0]] : [lay[0], lay[1], lay[2]]
               const backClasses = isMobile
-                ? ['blue-xs']
-                : ['blue-xxs', 'blue-md', 'blue-xs']
+                ? [BLUE_XS]
+                : [BLUE_XXS, BLUE_MD, BLUE_XS]
               const layClasses = isMobile
-                ? ['red-xs']
-                : ['red-xs', 'red-md', 'red-xxs']
+                ? [RED_XS]
+                : [RED_XS, RED_MD, RED_XXS]
+
+              const isFirstRow = rowIdx === 0
 
               return (
                 <Fragment key={runner.selectionId}>
-                  <tr>
-                    <td className="runner w-nowrap">
-                      <div className="d-flex flex-column">
-                        <p className="mb-1 runner-name">
-                          <i className="chart" />
+                  <tr className="hover:[&>td:first-child:not(.price)]:bg-[var(--mds-light-bg)]">
+                    <td className={cx(RUNNER_FIRST_CELL, 'h-[40px] max-mobile:h-[11.51vw]')}>
+                      <div className="flex flex-col">
+                        <p className="mb-1 font-bold overflow-hidden text-ellipsis [-webkit-line-clamp:2] [-webkit-box-orient:vertical] [display:-webkit-box] min-w-[150px]">
+                          <i className="inline-block align-bottom w-[15px] h-[15px] mr-[5px] bg-no-repeat [background-image:url('/img/main-s1aea395e8c.png')] [background-position:-398px_-1968px]" />
                           {runner.runnerName || runner.runner}
                         </p>
-                        <div className="d-flex align-items-center">
+                        <div className="flex items-center">
                           {/* bet-exposure slot (Angular: <app-bet-exposure />) */}
                         </div>
                       </div>
@@ -1104,22 +1223,28 @@ function MatchOddsSection({
                     {/* BACK columns — Angular: @for back of matchOdd.back; classes blue-xxs/blue-md/blue-xs */}
                     {backCells.map((cell, idx) => {
                       const price = cell?.price
-                      const klass = backClasses[idx]
+                      const tone = backClasses[idx]
+                      const isBestBack =
+                        (isMobile && idx === 0) || (!isMobile && idx === 2)
                       // Active highlight follows Angular: only the best-back cell (blue-xs)
                       // shows the active state when this runner has an active BACK bet.
                       const isActive =
-                        klass === 'blue-xs' &&
+                        isBestBack &&
                         active?.selectionId === runner.selectionId &&
                         active?.betType === 'BACK'
+                      // First-row best back cell shows the "Back All" pseudo-header (desktop only).
+                      const showBackAllHeader = isFirstRow && isBestBack && !isMobile
                       return (
                         <td
                           key={`b-${idx}`}
                           className={cx(
-                            'price',
-                            klass,
-                            cell?.isChanged && 'back-spark',
-                            bgLine(price) && 'bg-line',
-                            isActive && 'active'
+                            PRICE_CELL_BASE,
+                            tone,
+                            cell?.isChanged && BACK_SPARK,
+                            bgLine(price) && BG_LINE,
+                            isActive && BLUE_XS_ACTIVE,
+                            showBackAllHeader &&
+                              "relative before:content-['Back_All'] before:absolute before:bottom-full before:left-1/2 before:-translate-x-1/2 before:w-full before:h-[22px] before:leading-[23px] before:font-semibold before:bg-no-repeat before:[background-image:url('/img/main-s1aea395e8c.png')] before:[background-position:-274px_-317px] before:text-[var(--xs-black)] before:border-b before:border-white"
                           )}
                           onClick={() =>
                             !bgLine(price) && onPick(runnerExt, cell, 'BACK')
@@ -1133,20 +1258,27 @@ function MatchOddsSection({
                     {/* LAY columns — Angular: @for lay of matchOdd.lay; classes red-xs/red-md/red-xxs */}
                     {layCells.map((cell, idx) => {
                       const price = cell?.price
-                      const klass = layClasses[idx]
+                      const tone = layClasses[idx]
+                      const isBestLay = idx === 0
                       const isActive =
-                        klass === 'red-xs' &&
+                        isBestLay &&
                         active?.selectionId === runner.selectionId &&
                         active?.betType === 'LAY'
+                      const showLayAllHeader = isFirstRow && isBestLay && !isMobile
+                      // last cell on the lay side gets a white border-left (mirrors :last-child rule)
+                      const isLastLay = idx === layCells.length - 1
                       return (
                         <td
                           key={`l-${idx}`}
                           className={cx(
-                            'suspend-hover price',
-                            klass,
-                            cell?.isChanged && 'lay-spark',
-                            bgLine(price) && 'bg-line',
-                            isActive && 'active'
+                            PRICE_CELL_BASE,
+                            tone,
+                            isLastLay && 'border-l border-white',
+                            cell?.isChanged && LAY_SPARK,
+                            bgLine(price) && BG_LINE,
+                            isActive && RED_XS_ACTIVE,
+                            showLayAllHeader &&
+                              "relative before:content-['Lay_All'] before:absolute before:bottom-full before:left-1/2 before:-translate-x-1/2 before:w-full before:h-[22px] before:leading-[23px] before:font-semibold before:bg-no-repeat before:[background-image:url('/img/main-s1aea395e8c.png')] before:[background-position:100%_-399px] before:text-[var(--xs-black)] before:border-b before:border-white"
                           )}
                           onClick={() =>
                             !bgLine(price) && onPick(runnerExt, cell, 'LAY')
@@ -1162,7 +1294,7 @@ function MatchOddsSection({
                       Desktop: bet slip lives in the right-side <BetSlip /> panel via Redux. */}
                   {isMobile && active?.selectionId === runner.selectionId && (
                     <tr>
-                      <td colSpan={3} className="p-0 inline-betslip-host">
+                      <td colSpan={3} className="p-0">
                         <InlineBetSlip
                           betSlipDetails={{
                             ...active,
@@ -1234,47 +1366,72 @@ function BookmakerSection({
     [runners]
   )
 
+  const backCellCls = (i, isActiveAny) =>
+    cx(
+      PRICE_CELL_BASE,
+      // status-table cells have their own size + transparent bg
+      'h-[42px] !w-[16.66667%] !border-l-0 text-center bg-transparent z-[9] !border-t-0 max-mobile:!min-w-[18.66667vw] max-mobile:!h-[11.51vw]',
+      i === 2 && BLUE_XS,
+      i === 1 && BLUE_MD,
+      i === 0 && BLUE_XXS,
+      isActiveAny && active?.betType === 'BACK' && i === 2 && BLUE_XS_ACTIVE
+    )
+
+  const layCellCls = (i, isActiveAny) =>
+    cx(
+      PRICE_CELL_BASE,
+      'h-[42px] !w-[16.66667%] !border-l-0 text-center bg-transparent z-[9] !border-t-0 max-mobile:!min-w-[18.66667vw] max-mobile:!h-[11.51vw]',
+      i === 0 && RED_XS,
+      i === 1 && RED_MD,
+      i === 2 && RED_XXS,
+      isActiveAny && active?.betType === 'LAY' && i === 0 && RED_XS_ACTIVE
+    )
+
   return (
-    <div className="bookmaker-wrapper">
-      <div className="match-header">
-        <div className="d-flex align-items-center justify-content-center">
+    <div>
+      <MatchHeader>
+        <div className="flex items-center justify-center [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center [&_.icon-wrapper]:max-mobile:pl-[1.86667vw] mobile:[&_.icon-wrapper_i]:bg-no-repeat mobile:[&_.icon-wrapper_i]:[background-image:url('/img/main-s1aea395e8c.png')] mobile:[&_.icon-wrapper_i]:[background-position:-385px_-833px] mobile:[&_.icon-wrapper_i]:h-[28px] mobile:[&_.icon-wrapper_i]:w-[29px] mobile:[&_.icon-wrapper_i]:mr-[6px] mobile:[&_.icon-wrapper_svg]:hidden max-mobile:[&_.icon-wrapper_svg]:block max-mobile:[&_.icon-wrapper_svg]:w-[6.66667vw] max-mobile:[&_.icon-wrapper_svg]:h-[6.66667vw]">
           <span className="icon-wrapper">
             <i>
               <PinSvg />
             </i>
           </span>
-          <span className="head d-inline-block">
+          <span className="text-white font-bold text-[14px] inline-block max-mobile:ml-[1.86667vw] max-mobile:text-[3.46667vw] max-mobile:leading-[8.53333vw]">
             Bookmaker Market
-            <small>| Zero Commission</small>
+            <small className="opacity-70 font-normal">| Zero Commission</small>
           </span>
         </div>
 
         {!isMobile ? (
-          <div className="d-flex align-items-center justify-content-center min-max-details">
-            <span className="chip">Min</span>
-            <span className="d-inline-block ms-1 text-white">
+          <div className="flex items-center justify-center mr-[10px] [&_span]:text-[11px]">
+            <span className="rounded-sm px-[16px] py-[1px] bg-[var(--xl-light-bg)] text-[11px]">
+              Min
+            </span>
+            <span className="inline-block ml-1 text-white">
               {fmt(setting.min || 1)}
             </span>
-            <span className="chip ms-2 d-inline-block">Max</span>
-            <span className="d-inline-block ms-1 text-white">
+            <span className="rounded-sm px-[16px] py-[1px] bg-[var(--xl-light-bg)] text-[11px] ml-2 inline-block">
+              Max
+            </span>
+            <span className="inline-block ml-1 text-white">
               {fmt(setting.max || 10000)}
             </span>
           </div>
         ) : (
-          <span className="warning-wrapper position-relative px-md-2">
+          <span className="bg-gradient-to-br from-[var(--xts-lightest-navy)] to-[var(--mds-lightest-navy)] inline-block rounded-tr-[12px] relative mobile:px-2 mr-[1.86667vw] text-white [&_svg]:max-mobile:w-[4vw] [&_svg]:max-mobile:h-[4vw]">
             <i onClick={onToggleInfo} role="button" aria-label="Info">
               <WarningSvg />
             </i>
             {infoOpen && (
-              <div className="fancy_info-popup">
-                <div className="flex-fill d-flex flex-column">
+              <div className={FANCY_INFO_POPUP}>
+                <div className="flex-1 flex flex-col">
                   <p>Min / Max</p>
                   <span>
                     {fmt(setting.min || 1)} / {fmt(setting.max || 1000)}
                   </span>
                 </div>
                 <i
-                  className="close-icon"
+                  className={FANCY_INFO_CLOSE_ICON}
                   onClick={onToggleInfo}
                   role="button"
                   aria-label="Close"
@@ -1285,30 +1442,27 @@ function BookmakerSection({
             )}
           </span>
         )}
-      </div>
+      </MatchHeader>
 
-      <div className="bookmaker-market mb-4">
-        <table className="bookmaker-table w-100">
-          <thead>
+      <div className="mb-4">
+        <table className="w-full border-collapse bg-[var(--light-xs-yellow)] max-mobile:bg-[var(--light-xts-yellow)]">
+          <thead className="bg-[var(--light-xs-yellow)] max-mobile:bg-[var(--light-xts-yellow)]">
             <tr>
-              <th />
-              <th colSpan={isMobile ? 1 : 2} />
+              <th className="h-[22px] p-[5px] max-mobile:h-[8vw]" />
+              <th
+                colSpan={isMobile ? 1 : 2}
+                className="h-[22px] p-[5px] max-mobile:h-[8vw] w-[64px]"
+              />
               {!isMobile && (
                 <>
-                  <th />
-                  <th />
-                  <th />
+                  <th className="h-[22px] p-[5px] max-mobile:h-[8vw]" />
+                  <th className="h-[22px] p-[5px] max-mobile:h-[8vw] w-[64px]" />
                 </>
               )}
             </tr>
           </thead>
           <tbody>
-            {normalized.map((bookmaker) => {
-              // The "Suspended" overlay only shows for real status blocks
-              // (SUSPENDED / BALL RUNNING) or an admin-level setting suspend.
-              // The Angular price-over-odd check (BOOKMAKER_ODD = 99) gets in the way
-              // for legitimate bookmaker odds in the 100–250 range that the feed
-              // delivers as ACTIVE — so individual cells stay fully clickable here.
+            {normalized.map((bookmaker, rowIdx) => {
               const isStatusBlocked = isBookmakerStatusBlocked(bookmaker.status)
               const isSuspended = setting.isSuspended || isStatusBlocked
               const isInlineBookmaker =
@@ -1316,42 +1470,49 @@ function BookmakerSection({
               const statusLabel = titleCase(
                 setting.isSuspended ? 'Suspended' : bookmaker.status || ''
               )
+              const isFirstRow = rowIdx === 0
 
               return (
                 <Fragment key={bookmaker.selectionId}>
-                  <tr>
-                    <td className="runner-name-td">
-                      <div className="d-flex flex-column">
-                        <span className="runner-name">
-                          {bookmaker.runnerName}
-                        </span>
-                        <div className="d-flex align-items-center">
+                  <tr className="bg-[var(--light-xs-yellow)] max-mobile:bg-[var(--light-xts-yellow)] hover:[&_td]:bg-white/40 hover:[&_td:first-child]:bg-white/40">
+                    <td className="px-[10px] pt-[4px] !align-top bg-[var(--light-xs-yellow)] max-mobile:bg-[var(--light-xts-yellow)] max-mobile:px-[1.8666666667vw] max-mobile:py-0 max-mobile:!align-middle">
+                      <div className="flex flex-col">
+                        <span className="font-bold">{bookmaker.runnerName}</span>
+                        <div className="flex items-center">
                           {/* bet-exposure slot (Angular: <app-bet-exposure />) */}
                         </div>
                       </div>
                     </td>
                     <td
                       colSpan={isMobile ? 1 : 5}
-                      className="p-0 bookmaker-full-td"
+                      className="p-0 w-full max-mobile:w-[140px]"
                     >
-                      <table className="status-table" align="right">
+                      <table
+                        align="right"
+                        className="border-collapse relative mobile:w-full mobile:max-w-[76%] before:content-[''] before:bg-gradient-to-r before:from-[rgba(130,183,221,0.15)] before:to-[rgba(130,183,221,0.8)] before:absolute before:left-0 before:right-0 before:top-0 before:bottom-0 before:w-1/2 before:z-0 after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-1/2 after:bg-gradient-to-l after:from-[rgba(231,170,184,0.8)] after:to-[rgba(231,170,184,0.15)] after:z-0 after:top-0"
+                      >
                         <tbody>
                           <tr>
                             {/* BACK — iterates bookmaker.back; mobile shows only $index === 2 */}
                             {bookmaker.back.map((backCell, i) => {
                               if (isMobile && i !== 2) return null
-                              const klass = cx(
-                                i === 2 && 'blue-xs',
-                                i === 1 && 'blue-md',
-                                i === 0 && 'blue-xxs',
-                                isInlineBookmaker &&
-                                  active?.betType === 'BACK' &&
-                                  'active'
-                              )
+                              const isBestBack = i === 2
+                              const showBackHeader =
+                                isFirstRow && isBestBack
                               return (
                                 <td
                                   key={`back-${i}`}
-                                  className={cx('price', klass)}
+                                  className={cx(
+                                    backCellCls(i, isInlineBookmaker),
+                                    showBackHeader &&
+                                      "relative max-mobile:bg-gradient-to-r max-mobile:from-[rgba(151,199,234,0.7)] max-mobile:to-[var(--xs-lightest-navy)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Back'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-mobile:before:text-[3.46667vw]",
+                                    // chip styling: rounded outer cell — handled by ::after layer
+                                    "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-blue)] after:-z-[1] max-mobile:after:inset-[1vw]",
+                                    isInlineBookmaker &&
+                                      active?.betType === 'BACK' &&
+                                      isBestBack &&
+                                      '!bg-[var(--xs-blue)] !shadow-none'
+                                  )}
                                   onClick={() =>
                                     backCell?.price &&
                                     !isSuspended &&
@@ -1365,18 +1526,21 @@ function BookmakerSection({
                             {/* LAY — iterates bookmaker.lay; mobile shows only $index === 0 */}
                             {bookmaker.lay.map((layCell, i) => {
                               if (isMobile && i !== 0) return null
-                              const klass = cx(
-                                i === 0 && 'red-xs',
-                                i === 1 && 'red-md',
-                                i === 2 && 'red-xxs',
-                                isInlineBookmaker &&
-                                  active?.betType === 'LAY' &&
-                                  'active'
-                              )
+                              const isBestLay = i === 0
+                              const showLayHeader = isFirstRow && isBestLay
                               return (
                                 <td
                                   key={`lay-${i}`}
-                                  className={cx('price', klass)}
+                                  className={cx(
+                                    layCellCls(i, isInlineBookmaker),
+                                    showLayHeader &&
+                                      "relative !bg-transparent max-mobile:bg-gradient-to-l max-mobile:from-[var(--xts-red)] max-mobile:to-[rgba(247,205,214,0.75)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Lay'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-mobile:before:text-[3.46667vw]",
+                                    "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-red)] after:-z-[1] max-mobile:after:inset-[5px]",
+                                    isInlineBookmaker &&
+                                      active?.betType === 'LAY' &&
+                                      isBestLay &&
+                                      '!bg-[var(--xs-red)] !shadow-none'
+                                  )}
                                   onClick={() =>
                                     layCell?.price &&
                                     !isSuspended &&
@@ -1390,8 +1554,10 @@ function BookmakerSection({
                           </tr>
                           {isSuspended && (
                             <tr>
-                              <td colSpan={6} className="suspend-hover-class">
-                                <div className="game-status">{statusLabel}</div>
+                              <td colSpan={6}>
+                                <div className={GAME_STATUS_OVERLAY}>
+                                  {statusLabel}
+                                </div>
                               </td>
                             </tr>
                           )}
@@ -1425,62 +1591,158 @@ function BookmakerSection({
   )
 }
 
+// Tiny shared header bar (used by Bookmaker + Fancy "match-header")
+function MatchHeader({ children }) {
+  return (
+    <div className="flex items-center justify-between bg-[var(--light-navy)] max-mobile:bg-[var(--text-color)]">
+      {children}
+    </div>
+  )
+}
+
 function FancyTabHeader({ tabs, selectedFancy, onSelect, isMobile }) {
+  const isSportsBookSelected = selectedFancy === MAIN_FANCY.SPORTS_BOOK
+
   return (
     <div
       className={cx(
-        'fancy-bet-header',
-        selectedFancy === MAIN_FANCY.SPORTS_BOOK && 'orange'
+        'flex items-center border-b-2 border-[var(--sky-blue-light)] max-mobile:border-b-[1.06667vw] max-mobile:border-b-[var(--smd-text-color)]',
+        isSportsBookSelected && '!border-b-[var(--orange)]'
       )}
     >
       {tabs.map((tab) => {
         const isActive = tab.type === selectedFancy
+        const isPremium =
+          isSportsBookSelected && tab.type === MAIN_FANCY.SPORTS_BOOK
+
+        // Base chip wrapper
+        const chipBase =
+          'inline-flex items-center cursor-pointer relative ml-4 max-mobile:ml-[4.786vw]'
+        const chipActive = isActive ? 'ml-0' : ''
+        // Hide the pin for the second chip (sports-book), as per :nth-child(2) rule
+        // We approximate by checking the tab type instead of index.
+        const hidePin = tab.type === MAIN_FANCY.SPORTS_BOOK
+
+        // Inner-bg base
+        let innerBg =
+          'flex items-center px-[10px] py-[7px] h-[30px] bg-[var(--light-navy)] text-white relative font-bold max-mobile:px-[1.66667vw] max-mobile:py-[1.3vw] max-mobile:h-[7.55vw]'
+        // Skew tails before/after — only when NOT active
+        if (!isActive) {
+          innerBg +=
+            " before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-[-6px] before:w-[10px] before:rounded-tl-[4px] before:[transform:skew(-14deg,0deg)] before:bg-[var(--light-navy)] before:z-[1] max-mobile:before:left-[-1.582vw] max-mobile:before:w-[3.304vw] max-mobile:before:rounded-tl-[0.522vw] max-mobile:before:h-[8.55vw]" +
+            " after:content-[''] after:absolute after:top-0 after:bottom-0 after:right-[-6px] after:w-[10px] after:rounded-tr-[4px] after:[transform:skew(14deg,0deg)] after:bg-[var(--light-navy)] after:z-[1] max-mobile:after:right-[-1.782vw] max-mobile:after:w-[3.304vw] max-mobile:after:rounded-tr-[0.522vw] max-mobile:after:h-[8.55vw]"
+        } else {
+          innerBg = innerBg.replace(
+            'bg-[var(--light-navy)]',
+            isPremium
+              ? '!bg-[var(--orange)]'
+              : 'bg-gradient-to-b from-[var(--md-lightest-navy)] to-[var(--smd-text-color)]'
+          )
+        }
+
         return (
           <div
             key={tab.type}
-            className={cx(
-              'fancy-bet-chip cursor-pointer position-relative',
-              isActive && 'active',
-              selectedFancy === MAIN_FANCY.SPORTS_BOOK &&
-                tab.type === MAIN_FANCY.SPORTS_BOOK &&
-                'premium'
-            )}
+            className={cx(chipBase, chipActive)}
             onClick={() => onSelect(tab.type)}
             role="button"
           >
             {tab.type === MAIN_FANCY.SPORTS_BOOK && !isActive && (
-              <p className="live-chip">
-                <span className="number">New</span>
+              <p
+                className="absolute overflow-visible top-[-5px] right-[-15px] h-[14px] z-[99] [filter:drop-shadow(1px_1px_2px_rgba(0,0,0,0.6))] mb-0 max-mobile:top-[-3.5667vw] max-mobile:right-[-5vw] before:content-[''] before:absolute before:bottom-[-8px] before:left-[15px] before:w-0 before:h-0 before:border-solid before:border-t-[8px] before:border-r-[7px] before:border-b-0 before:border-l-0 before:border-t-[var(--xsm-red)] before:border-r-transparent max-mobile:before:border-t-[1.8vw] max-mobile:before:border-r-[1.8vw] max-mobile:before:left-[3.5vw] max-mobile:before:bottom-[-1.3vw]"
+              >
+                <span className="rounded-[15px] px-2 py-[3px] text-white text-[10px] bg-[var(--xsm-red)] max-mobile:px-[1.7vw] max-mobile:py-[0.2vw] max-mobile:rounded-[0.8vw]">
+                  New
+                </span>
               </p>
             )}
-            <div
-              className={cx(
-                'd-flex align-items-center inner-bg',
-                tab.type === MAIN_FANCY.SPORTS_BOOK && 'premium'
-              )}
-            >
-              {isMobile && tab.type !== MAIN_FANCY.SPORTS_BOOK && (
-                <i className="pin-icon">
+            <div className={cx(innerBg)}>
+              {isMobile && tab.type !== MAIN_FANCY.SPORTS_BOOK && !hidePin && (
+                <i
+                  className="relative z-[2] mr-[4vw] before:content-[''] before:absolute before:left-[-4vw] before:right-0 before:top-[0.2vw] before:bottom-[0.3vw] before:bg-[var(--xsm-blue)] before:w-[10.5vw] before:[transform:skewX(15deg)] before:-z-[1] [&_svg]:w-[5vw] [&_svg]:h-[8vw]"
+                >
                   <PinSvg />
                 </i>
               )}
-              <i className="time-icon">
+              <i className="bg-gradient-to-t from-[var(--xs-green-primary)] via-[var(--xs-green-primary)] to-[var(--xs-shadow-primary)] rounded-[3px] max-mobile:w-[4vw] max-mobile:h-[4vw] max-mobile:text-center [&_svg]:max-mobile:w-[3.8vw] [&_svg]:max-mobile:h-[3.8vw] [&_svg]:max-mobile:leading-[3.8vw]">
                 <TimeSvg />
               </i>
-              <span className="d-inline-block align-middle">{tab.title}</span>
+              <span
+                className={cx(
+                  'inline-block align-middle text-[12px] text-[var(--xts-gray)] max-mobile:text-[3.73333vw]',
+                  isActive && 'ml-2 !text-white'
+                )}
+              >
+                {tab.title}
+              </span>
             </div>
-            {isActive && <i className="que-icon" />}
+            {isActive && (
+              <i className="inline-flex text-center relative text-white z-[2] px-1 w-[16px] h-[16px] max-mobile:w-[4vw] max-mobile:h-[4.45vw] after:content-[''] after:bg-no-repeat after:absolute after:z-[1] after:bg-center after:left-0 after:top-0 after:bg-contain after:w-[16px] after:h-[16px] after:[background-image:url('/img/svg/info.svg')] max-mobile:after:w-[5vw] max-mobile:after:h-[4vw] max-mobile:after:[background-image:url('/img/svg/questionMarkRounded.svg')] before:content-[''] before:absolute before:rounded-tr-[4px] before:[transform:skew(14deg,0deg)] before:-z-[1] before:left-[-5px] before:w-[28px] before:top-[-7px] before:bottom-[-7px] max-mobile:before:top-[-1.6vw] max-mobile:before:bottom-0 max-mobile:before:w-[7vw] max-mobile:before:h-[7.6vw] max-mobile:before:left-[-1vw]" />
+            )}
           </div>
         )
       })}
-      {selectedFancy === MAIN_FANCY.SPORTS_BOOK && (
-        <p className="text-black mb-0 min-chips">
+      {isSportsBookSelected && (
+        <p className="text-black mb-0 inline-flex items-center bg-[var(--xl-light-bg)] !text-[var(--light-navy)] ml-auto px-2 py-px rounded-[3px] mr-[5px] text-[11px] leading-4 max-mobile:h-[6.4vw] max-mobile:px-[1.6vw] max-mobile:mr-[1.86667vw] max-mobile:-mt-[0.9vw] max-mobile:text-[3.46667vw] max-mobile:leading-[6.4vw] max-mobile:rounded-[1.06667vw] [&_i]:inline-flex [&_i]:mr-1 [&_svg]:w-[11px] [&_svg]:h-[11px] [&_svg_path]:fill-black max-mobile:[&_i]:mr-[1vw] max-mobile:[&_i]:text-[var(--light-navy)] max-mobile:[&_svg]:w-[3.4666666667vw] max-mobile:[&_svg]:h-[3.4666666667vw]">
           <i>
             <WarningSvg />
           </i>
           <span>Min</span>
         </p>
       )}
+    </div>
+  )
+}
+
+// Shared tabs (Fancy / Sportbook priority strip)
+function PriorityTabs({ tabs, selectedType, onSelectType, variant = 'fancy' }) {
+  const isSportBook = variant === 'sport-book'
+
+  const containerCls = cx(
+    'overflow-x-auto whitespace-nowrap cursor-pointer [&::-webkit-scrollbar]:hidden'
+  )
+
+  const wrapperCls = cx(
+    'flex justify-center items-center shadow-[inset_0_1px_0_0_rgba(var(--black-rgb),0.2)] bg-gradient-to-b from-[var(--md-lightest-navy)] from-[15%] to-[var(--lg-lightest-navy)] max-mobile:!shadow-none max-mobile:bg-none max-mobile:bg-[var(--smd-text-color)] max-mobile:justify-start max-mobile:pl-[1.6vw]',
+    isSportBook &&
+      '!bg-gradient-to-b !from-[var(--xs-orange)] !from-[15%] !to-[var(--md-orange)] pb-[3px] max-mobile:!bg-[var(--orange)]'
+  )
+
+  const ulCls =
+    'flex pl-0 mb-0 w-auto bg-white/50 rounded-[5px] my-[1px_3px_0] justify-center items-center max-mobile:bg-transparent'
+
+  return (
+    <div className={containerCls}>
+      <div className={wrapperCls}>
+        <ul className={ulCls}>
+          {tabs.map((tab) => {
+            const isActive = selectedType === tab.type
+            const liBase =
+              'min-w-[70px] h-[18px] leading-[18px] font-bold rounded-[4px] px-[5px] text-center max-mobile:h-[5.9333333333vw] max-mobile:min-w-0 max-mobile:px-[2.6666666667vw] max-mobile:leading-[6vw] max-mobile:rounded-none max-mobile:border-r max-mobile:border-r-white/40 hover:[&_a]:underline'
+            const liActive = isActive
+              ? cx(
+                  'bg-white hover:[&_a]:!no-underline max-mobile:rounded-[1.0666666667vw]',
+                  isSportBook && 'max-mobile:!bg-[var(--orange)] max-mobile:!rounded-none'
+                )
+              : ''
+            const aCls = cx(
+              'no-underline text-[var(--lg-lightest-navy)] max-mobile:text-white',
+              isSportBook && 'text-[rgba(var(--orange-rgba),0.85)] max-mobile:text-white',
+              isActive && 'max-mobile:!text-[var(--lg-lightest-navy)]'
+            )
+
+            return (
+              <li
+                key={tab.type}
+                className={cx(liBase, liActive)}
+                onClick={() => onSelectType(tab.type)}
+              >
+                <a className={aCls}>{tab.label}</a>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
     </div>
   )
 }
@@ -1501,7 +1763,7 @@ function FancySection({
 }) {
   if (!items.length) {
     return (
-      <div className="text-center p-3 text-secondary small bg-white">
+      <div className="text-center p-3 text-[var(--sm-text-color)] text-[12px] bg-white">
         No fancy markets
       </div>
     )
@@ -1515,49 +1777,43 @@ function FancySection({
 
   return (
     <>
-      <div className="fancy-priority-container">
-        <div className="tabs-wrapper fancy">
-          <ul className="ps-0 mb-0">
-            {availableTabs.map((tab) => (
-              <li
-                key={tab.type}
-                className={cx(
-                  'text-center',
-                  selectedType === tab.type && 'active'
-                )}
-                onClick={() => onSelectType(tab.type)}
-              >
-                <a>{tab.label}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <PriorityTabs
+        tabs={availableTabs}
+        selectedType={selectedType}
+        onSelectType={onSelectType}
+        variant="fancy"
+      />
 
       {!isMobile && (
-        <div className="match-header pe-3">
-          <div className="d-flex align-items-center justify-content-center">
+        <MatchHeader>
+          <div className="flex items-center justify-center pr-3 [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center mobile:[&_.icon-wrapper_i]:bg-no-repeat mobile:[&_.icon-wrapper_i]:[background-image:url('/img/main-s1aea395e8c.png')] mobile:[&_.icon-wrapper_i]:[background-position:-385px_-833px] mobile:[&_.icon-wrapper_i]:h-[28px] mobile:[&_.icon-wrapper_i]:w-[29px] mobile:[&_.icon-wrapper_i]:mr-[6px] mobile:[&_.icon-wrapper_svg]:hidden">
             <span className="icon-wrapper">
               <i>
                 <PinSvg />
               </i>
             </span>
-            <span className="head d-inline-block ms-2">Fancy Bet</span>
+            <span className="text-white font-bold text-[14px] inline-block ml-2">
+              Fancy Bet
+            </span>
           </div>
-        </div>
+        </MatchHeader>
       )}
 
-      <div className="fancy-bet overflow-auto">
-        <table className="fancy-bet-table w-100">
-          <thead>
+      <div className="overflow-auto">
+        <table className="w-full border-collapse max-mobile:bg-white">
+          <thead className="bg-white">
             <tr>
-              <th />
-              <th>No</th>
-              <th>Yes</th>
+              <th className="px-[10px] py-1 font-bold text-[12px] max-mobile:text-[var(--lg-white,#fff)] max-mobile:text-[3.46667vw] max-mobile:h-[4.954vw] max-mobile:p-[1.33333vw_1.86667vw]" />
+              <th className="px-[10px] py-1 font-bold text-[12px] max-mobile:text-[var(--lg-white,#fff)] max-mobile:text-[3.46667vw] max-mobile:h-[4.954vw] max-mobile:p-[1.33333vw_1.86667vw]">
+                No
+              </th>
+              <th className="px-[10px] py-1 font-bold text-[12px] max-mobile:text-[var(--lg-white,#fff)] max-mobile:text-[3.46667vw] max-mobile:h-[4.954vw] max-mobile:p-[1.33333vw_1.86667vw]">
+                Yes
+              </th>
               {!isMobile && (
                 <>
-                  <th />
-                  <th className="lg-none" />
+                  <th className="px-[10px] py-1 font-bold text-[12px]" />
+                  <th className="px-[10px] py-1 font-bold text-[12px] max-[1199px]:hidden" />
                 </>
               )}
             </tr>
@@ -1573,13 +1829,16 @@ function FancySection({
               return (
                 <Fragment key={`${item.SelectionId}-${i}`}>
                   {isMobile && (
-                    <tr className="mobile-fancy-runner">
-                      <td colSpan={3}>
-                        <div className="d-flex justify-content-between align-items-center">
-                          <span className="mobile-runner-name">
+                    <tr className="bg-[var(--xsl-blue-bg)] max-mobile:even:[&_td]:border-t-0">
+                      <td
+                        colSpan={3}
+                        className="p-[7px_0_7px_8px] border-b-0 h-[38px] max-mobile:!p-[1.33333vw_1.86667vw] max-mobile:h-[8.954vw] [&_svg]:h-[15px] [&_svg]:w-[15px] [&_svg]:text-[var(--sm-light-bg)] max-mobile:[&_svg]:w-[4vw] max-mobile:[&_svg]:h-[4vw]"
+                      >
+                        <div className="flex justify-between items-center">
+                          <span className="block w-full max-w-[90%] overflow-hidden text-ellipsis whitespace-nowrap font-bold max-mobile:!text-[3.4666666667vw]">
                             {item.RunnerName}
                           </span>
-                          <span className="warning-wrapper px-md-2 position-relative">
+                          <span className="relative mr-[1.86667vw] text-white [&_svg]:max-mobile:w-[4vw] [&_svg]:max-mobile:h-[4vw]">
                             <i
                               onClick={() =>
                                 setFancyInfoIndex(fancyInfoIndex === i ? -1 : i)
@@ -1590,8 +1849,8 @@ function FancySection({
                               <WarningSvg />
                             </i>
                             {fancyInfoIndex === i && (
-                              <div className="fancy_info-popup">
-                                <div className="flex-fill d-flex flex-column">
+                              <div className={FANCY_INFO_POPUP}>
+                                <div className="flex-1 flex flex-col">
                                   <p>Min / Max</p>
                                   <span>
                                     {fmt(item.min || 1)} /{' '}
@@ -1599,7 +1858,7 @@ function FancySection({
                                   </span>
                                 </div>
                                 <i
-                                  className="close-icon"
+                                  className={FANCY_INFO_CLOSE_ICON}
                                   onClick={() => setFancyInfoIndex(-1)}
                                   role="button"
                                   aria-label="Close"
@@ -1613,46 +1872,46 @@ function FancySection({
                       </td>
                     </tr>
                   )}
-                  <tr>
-                    <td>
+                  <tr className="hover:bg-[var(--hover-bg)] hover:[&>td]:bg-[var(--hover-bg)] hover:[&>td:last-child]:border-l-[var(--hover-bg)]">
+                    <td className="px-[10px] py-[5px] relative min-w-[100px] max-mobile:min-w-[70px]">
                       {!isMobile && (
                         <div>
-                          <span className="runner-name">{item.RunnerName}</span>
+                          <span className="block w-full max-w-[90%] overflow-hidden text-ellipsis whitespace-nowrap font-bold min-w-[50px]">
+                            {item.RunnerName}
+                          </span>
                         </div>
                       )}
-                      <div className="d-flex justify-content-between">
+                      <div className="flex justify-between">
                         {/* bet-exposure slot (Angular: <app-bet-exposure />) */}
-                        {/* Book button slot — rendered when an exposure entry matches this selection */}
                       </div>
                     </td>
                     <td
                       colSpan={2}
-                      className={cx(
-                        'p-0',
-                        item.GameStatus && 'game-status-active'
-                      )}
+                      className="p-0 relative"
                     >
                       {item.GameStatus && (
-                        <div className="game-status">
+                        <div className="absolute inset-0 bg-[rgba(36,58,72,0.4)] z-[9] flex items-center justify-center text-white/80 font-bold [text-shadow:0_1px_4px_rgba(0,0,0,0.5)] text-[13px] cursor-default max-mobile:text-[3.46667vw]">
                           {item.GameStatus === 'SUSPENDED'
                             ? 'Suspended'
                             : item.GameStatus}
                         </div>
                       )}
-                      <table className="status-table">
+                      <table className="w-full border-collapse">
                         <tbody>
                           <tr>
                             <td
                               className={cx(
-                                'red-xs price',
-                                isInline && active?.betType === 'NO' && 'active'
+                                PRICE_CELL_BASE,
+                                RED_XS,
+                                'h-[42px] !w-[100px] !min-w-[53px] !px-[5px] max-mobile:!h-[11.51vw]',
+                                isInline &&
+                                  active?.betType === 'NO' &&
+                                  RED_XS_ACTIVE
                               )}
-                              onClick={() =>
-                                onFancyClickWrapper(onPick, item, 'NO')
-                              }
+                              onClick={() => onPick(item, 'NO')}
                             >
                               <p className="m-0">{item.LayPrice1 || ''}</p>
-                              <small>
+                              <small className="text-[12px] leading-none max-mobile:text-[2.93333vw]">
                                 {!isSuspended && item.LaySize1
                                   ? item.LaySize1
                                   : ''}
@@ -1660,17 +1919,17 @@ function FancySection({
                             </td>
                             <td
                               className={cx(
-                                'blue-xs price',
+                                PRICE_CELL_BASE,
+                                BLUE_XS,
+                                'h-[42px] !w-[100px] !min-w-[53px] !px-[5px] max-mobile:!h-[11.51vw]',
                                 isInline &&
                                   active?.betType === 'YES' &&
-                                  'active'
+                                  BLUE_XS_ACTIVE
                               )}
-                              onClick={() =>
-                                onFancyClickWrapper(onPick, item, 'YES')
-                              }
+                              onClick={() => onPick(item, 'YES')}
                             >
                               <p className="m-0">{item.BackPrice1 || ''}</p>
-                              <small>
+                              <small className="text-[12px] leading-none max-mobile:text-[2.93333vw]">
                                 {!isSuspended && item.BackSize1
                                   ? item.BackSize1
                                   : ''}
@@ -1682,24 +1941,21 @@ function FancySection({
                     </td>
                     {!isMobile && (
                       <>
-                        <td>
-                          <p className="mb-0 min-max">
+                        <td className="px-[10px] py-[5px] relative border-l border-white">
+                          <p className="mb-0 text-[var(--sm-text-color)] min-h-[32px] text-left text-[11px]">
                             Min/Max
-                            <span className="min-max-value">
+                            <span className="block whitespace-nowrap !text-[12px] text-[var(--dark)]">
                               {fmt(item.min || 1)} / {fmt(item.max || 1000)}
                             </span>
                           </p>
                         </td>
-                        <td className="lg-none" />
+                        <td className="max-[1199px]:hidden" />
                       </>
                     )}
                   </tr>
                   {isInline && (
                     <tr>
-                      <td
-                        colSpan={isMobile ? 3 : 5}
-                        className="p-0 inline-betslip-host"
-                      >
+                      <td colSpan={isMobile ? 3 : 5} className="p-0">
                         <InlineBetSlip
                           betSlipDetails={active}
                           onChange={onActiveChange}
@@ -1722,10 +1978,6 @@ function FancySection({
   )
 }
 
-function onFancyClickWrapper(onPick, item, type) {
-  onPick(item, type)
-}
-
 function SportbookSection({
   markets,
   selectedCategory,
@@ -1741,7 +1993,7 @@ function SportbookSection({
 
   if (!markets.length) {
     return (
-      <div className="text-center p-3 text-secondary small bg-white">
+      <div className="text-center p-3 text-[var(--sm-text-color)] text-[12px] bg-white">
         No sportsbook markets
       </div>
     )
@@ -1749,44 +2001,37 @@ function SportbookSection({
 
   return (
     <>
-      <div className="fancy-priority-container">
-        <div className="tabs-wrapper sport-book">
-          <ul className="ps-0 mb-0">
-            {SPORTSBOOK_TABS.map((tab) => (
-              <li
-                key={tab.type}
-                className={cx(selectedCategory === tab.type && 'active')}
-                onClick={() => onSelectCategory(tab.type)}
-              >
-                <a>{tab.label}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <PriorityTabs
+        tabs={SPORTSBOOK_TABS}
+        selectedType={selectedCategory}
+        onSelectType={onSelectCategory}
+        variant="sport-book"
+      />
 
-      <div className="sport-book-main accordion">
+      <div>
         {markets.map((market, i) => {
           if (!market.runners?.length) return null
           const id = market.marketId || `mkt-${i}`
           const isCollapsed =
             collapsed[id] === undefined ? i > 5 : collapsed[id]
           return (
-            <div key={id} className="accordion-item mb-md-1 mb-0">
-              <h2 className="accordion-header">
+            <div key={id} className="mobile:mb-1 mb-0">
+              <h2>
                 <button
                   type="button"
-                  className={cx('accordion-button', isCollapsed && 'collapsed')}
+                  className="pl-0 flex items-center w-full text-left max-mobile:bg-[var(--text-color)] max-mobile:px-0 max-mobile:pl-[1.8666666667vw] max-mobile:leading-[8.6vw] max-mobile:border-b max-mobile:border-b-[var(--sm-text-color)] max-mobile:text-white"
                   onClick={() => toggle(id)}
                 >
-                  <i className="icon-wrapper me-md-1">
+                  <i className="mobile:mr-1 inline-flex items-center justify-center bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xs-black)] h-[25px] w-[25px] text-center leading-[22px] text-[var(--sm-white)] hover:bg-gradient-to-b hover:from-[var(--xs-black)] hover:to-[var(--xl-blue)] hover:text-[var(--xs-shadow-primary)] [&_svg]:h-[16px] [&_svg]:w-[18px] max-mobile:rounded-full max-mobile:h-[6.6666666667vw] max-mobile:w-[6.6666666667vw] max-mobile:leading-normal max-mobile:bg-[var(--xs-dark)] max-mobile:mr-[1.4vw] max-mobile:[&_svg]:w-[4.6666666667vw] max-mobile:[&_svg]:h-[4.6666666667vw]">
                     <PinSvg />
                   </i>
-                  <span>{market.market}</span>
+                  <span className="text-[14px] font-bold max-mobile:text-[3.4666666667vw] max-mobile:leading-[1.5] max-mobile:flex-1">
+                    {market.market}
+                  </span>
                 </button>
               </h2>
               {!isCollapsed && (
-                <div className="sport-book-row d-flex flex-wrap">
+                <div className="w-full flex flex-col flex-wrap relative">
                   {market.runners.map((runner) => {
                     const isSuspended =
                       market.status === '1' && runner.status !== '1'
@@ -1797,35 +2042,38 @@ function SportbookSection({
                       <Fragment key={runner.selectionId}>
                         <div
                           className={cx(
-                            'sport-book-list',
-                            isSuspended && 'suspended'
+                            'w-full flex items-center min-h-[40px] border-b border-[var(--sm-text-color)] relative hover:bg-[var(--hover-bg)] max-mobile:min-h-0',
+                            isSuspended && 'z-[9]'
                           )}
                           onClick={() => !isSuspended && onPick(market, runner)}
                           role="button"
                         >
-                          <p className="m-0 runner-name">
-                            <span className="fw-bold">
+                          <p className="m-0 flex-[0_0_60%] w-[60%] py-1 pl-[10px] pr-[5px] max-mobile:flex-1 max-mobile:w-auto max-mobile:font-bold max-mobile:py-[1.3333333333vw] max-mobile:px-[1.8666666667vw] max-mobile:leading-[7vw]">
+                            <span className="font-bold">
                               {titleCase(runner.runnerName)}
                             </span>
                             {/* bet-exposure slot */}
                           </p>
-                          <div className="d-flex align-items-center runner-data">
+                          <div className="flex items-center flex-[0_0_40%] max-mobile:flex-[0_0_37.3333333333vw]">
                             <span
                               className={cx(
-                                'green-xs ball-running position-relative cursor-pointer',
-                                isActive && 'active'
+                                'relative cursor-pointer min-h-[39px] w-full block border border-transparent text-center leading-[34px] max-mobile:min-h-[11vw] max-mobile:leading-[10vw] [&_b]:max-mobile:text-[2.9333333333vw] [&_b]:max-mobile:font-normal',
+                                isActive &&
+                                  'text-white !bg-[var(--lg-green-bg)] shadow-[inset_0_1px_3px_rgba(var(--black-rgb),0.5)]'
                               )}
                             >
                               {isSuspended && (
-                                <div className="suspended-row">Suspended</div>
+                                <div className="absolute inset-[-1px] bg-[rgba(var(--black-rgb),0.435)] [backdrop-filter:blur(2px)] text-white flex items-center justify-center cursor-default">
+                                  Suspended
+                                </div>
                               )}
                               <b>{runner.back?.[0]?.price || ''}</b>
                             </span>
-                            <span className="empty d-none d-md-inline-block" />
+                            <span className="mobile:inline-block max-mobile:hidden" />
                           </div>
                         </div>
                         {isActive && (
-                          <div className="inline-betslip-host w-100">
+                          <div className="w-full">
                             <InlineBetSlip
                               betSlipDetails={active}
                               onChange={onActiveChange}
@@ -1933,20 +2181,21 @@ function InfoIcon({ onClick }) {
       height="25"
       viewBox="0 0 25 25"
       width="25"
+      onClick={onClick}
     >
-      <g fill="none" fill-rule="evenodd" transform="">
+      <g fill="none" fillRule="evenodd" transform="">
         <circle
           cx="12.5"
           cy="12.5"
           fill="#7e97a7"
-          fill-rule="evenodd"
+          fillRule="evenodd"
           r="12.5"
         ></circle>
         <circle cx="12.5" cy="12.5" r="12" stroke="#7e97a7"></circle>
         <path
           d="m8 14h6v2h-6v3l-4-4 4-4zm9 0v-3h-6v-2h6v-3l4 4z"
           fill="#e0e6e6"
-          fill-rule="nonzero"
+          fillRule="nonzero"
           transform="matrix(0 1 -1 0 25 0)"
         ></path>
       </g>

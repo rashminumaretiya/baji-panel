@@ -15,7 +15,7 @@ const filledIconStyle = {
 
 export function EditIcon() {
   return (
-    <i className="lh-none ps-1 cursor-pointer">
+    <i className="leading-none pl-1 cursor-pointer">
       <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9">
         <path
           d="m8.856 2.016-.912.912-1.872-1.872.912-.912A.481.481 0 0 1 7.338 0c.14 0 .258.048.354.144l1.164 1.164A.481.481 0 0 1 9 1.662c0 .14-.048.258-.144.354ZM0 7.128l5.532-5.532 1.872 1.872L1.872 9H0V7.128Z"

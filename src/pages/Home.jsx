@@ -22,7 +22,6 @@ import MobileSports from '../components/home/MobileSports.jsx'
 import Footer from '../components/Footer.jsx'
 import Loader from '../shared/components/Loader.jsx'
 import { GAME_LIST_FILTERS, RACING_SPORTS, SPORT_IDS } from '../core/constant/constants.js'
-import '../components/home/home.scss'
 
 const SPORT_BANNER = {
   [SPORT_IDS.SOCCER]: '/img/soccer-img.jpg',
@@ -31,6 +30,23 @@ const SPORT_BANNER = {
   [SPORT_IDS.HORSE_RACING]: '/img/horse_racing_landing.webp',
   [SPORT_IDS.GREYHOUND_RACING]: '/img/greyhound_landing.webp',
 }
+
+const LANDING_IMG_CLASS =
+  'h-[194px] w-full object-cover mt-px mb-4'
+
+const TAB_LIST_CLASS =
+  'flex rounded-none gap-[5px] justify-start border-b-0 m-0 px-[10px] pt-0 pb-px bg-[var(--xl-dark-green)] list-none'
+
+const TAB_ITEM_CLASS = 'flex-none ml-0'
+
+const TAB_LINK_BASE =
+  'block bg-[var(--xts-light-bg)] border border-[var(--xxl-blue)] rounded-t-[4px] rounded-b-none w-[130px] text-[12px] text-white leading-[21px] font-normal p-0 shadow-[inset_0_7px_2px_-7px_var(--xts-gray)]'
+
+const TAB_LINK_ACTIVE =
+  'bg-[var(--xl-th-bg)] text-black border-[var(--xl-th-bg)] shadow-[inset_0_7px_2px_-7px_var(--white)]'
+
+const GAME_TITLE_CLASS =
+  'flex items-center justify-between bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xxl-blue)] text-white text-[12px] p-2 mb-2 max-mobile:text-center max-mobile:font-semibold max-mobile:text-[3.73vw] max-mobile:leading-[1.05] max-mobile:p-[2.043vw]'
 
 export default function Home() {
   const { t } = useTranslation()
@@ -73,28 +89,28 @@ export default function Home() {
   const loading = gamesStatus === 'loading'
 
   return (
-    <div className="sports-landing">
+    <div className="relative">
       <Loader show={loading} variant="wrapper" />
       {!isMobile ? (
         <>
           <img
-            className="landing-img"
+            className={LANDING_IMG_CLASS}
             src="/img/home_banner.jpg"
             alt="Cricket Landing Image"
           />
 
           <DesktopGameFilter value={filterType} onChange={setFilterType} />
 
-          <div className="game-list">
-            <ul className="nav nav-tabs" role="tablist">
+          <div className="mt-0">
+            <ul className={TAB_LIST_CLASS} role="tablist">
               {tabs.map((tab, idx) => {
                 const isActive = String(tab.id) === activeSportId
                 const navId = `ngb-nav-${idx}`
                 return (
-                  <li key={tab.id} className="nav-item" role="presentation">
+                  <li key={tab.id} className={TAB_ITEM_CLASS} role="presentation">
                     <button
                       type="button"
-                      className={`nav-link${isActive ? ' active' : ''}`}
+                      className={`${TAB_LINK_BASE} ${isActive ? TAB_LINK_ACTIVE : ''}`}
                       id={navId}
                       role="tab"
                       aria-selected={isActive}
@@ -112,16 +128,16 @@ export default function Home() {
             </ul>
           </div>
 
-          <div className="sports-landing">
+          <div className="relative">
             {isRacing && sportBanner && (
               <>
                 <img
-                  className="landing-img"
+                  className={LANDING_IMG_CLASS}
                   src={sportBanner}
                   alt={`${activeSport?.name ?? 'Sport'} Landing Image`}
                 />
-                <div className="row mx-0 mt-2">
-                  <div className="col-12 game-title mb-2">
+                <div className="mx-0 mt-2">
+                  <div className={GAME_TITLE_CLASS}>
                     {t('titles.highLights')}
                   </div>
                 </div>
@@ -135,7 +151,7 @@ export default function Home() {
                 loading={loading}
               />
             ) : (
-              <div className="game-list">
+              <div className="mt-0">
                 <GameList
                   games={games}
                   sport={activeSport?.id}
@@ -150,7 +166,7 @@ export default function Home() {
         <>
           <MobileSports />
           <MobileGameFilter value={filterType} onChange={setFilterType} />
-          <div className="game-list">
+          <div className="mt-0">
             <GameList
               games={games}
               sport={activeSport?.id}

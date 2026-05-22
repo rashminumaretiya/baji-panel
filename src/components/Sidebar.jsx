@@ -1,5 +1,4 @@
 import { NavLink } from 'react-router-dom'
-import { ListGroup } from 'react-bootstrap'
 
 const sidebarItems = [
   { to: '/sports', label: 'Sports', heading: true },
@@ -19,46 +18,45 @@ const sidebarItems = [
 
 export default function Sidebar() {
   return (
-    <aside className="h-100 w-100 overflow-auto bg-light small text-dark">
-      <ListGroup variant="flush" className="rounded-0">
+    <aside className="h-full w-full overflow-auto bg-[var(--xs-gray)] text-xs text-[var(--dark)]">
+      <ul className="flex flex-col">
         {sidebarItems.map((item) => {
           if (item.heading) {
             return (
-              <ListGroup.Item
+              <li
                 key={item.to}
-                className="bg-success text-white fw-semibold border-0 rounded-0 py-2"
+                className="bg-[var(--primary)] text-white font-semibold px-3 py-2"
               >
                 {item.label}
-              </ListGroup.Item>
+              </li>
             )
           }
           return (
-            <ListGroup.Item
-              key={item.to}
-              as="div"
-              className="p-0 border-secondary-subtle"
-            >
+            <li key={item.to} className="p-0">
               <NavLink
                 to={item.to}
                 className={({ isActive }) =>
                   [
-                    'd-block text-decoration-none px-3 py-2 border-bottom',
-                    item.indent ? 'ps-4' : '',
+                    'block px-3 py-2 border-b border-[var(--light-border)] no-underline',
+                    item.indent ? 'pl-6' : '',
                     isActive
-                      ? 'bg-success text-white fw-medium'
-                      : 'text-dark',
+                      ? 'bg-[var(--primary)] text-white font-medium'
+                      : 'text-[var(--dark)]',
                   ].join(' ')
                 }
               >
                 {item.indent && (
-                  <span className="d-inline-block me-2 rounded-circle border border-secondary" style={{ width: 8, height: 8 }} />
+                  <span
+                    className="inline-block mr-2 rounded-full border border-[var(--sm-gray-blue)]"
+                    style={{ width: 8, height: 8 }}
+                  />
                 )}
                 {item.label}
               </NavLink>
-            </ListGroup.Item>
+            </li>
           )
         })}
-      </ListGroup>
+      </ul>
     </aside>
   )
 }

@@ -5,9 +5,9 @@ import Loader from '../shared/components/Loader.jsx'
 
 export default function ResultLayout() {
   return (
-    <div className="d-flex flex-column vh-100 bg-light text-dark">
+    <div className="flex flex-col h-screen bg-[var(--xs-gray)] text-[var(--dark)]">
       <Header />
-      <main className="flex-grow-1 overflow-auto bg-white">
+      <main className="grow overflow-auto bg-white">
         <Suspense fallback={<Loader show variant="wrapper" />}>
           <Outlet />
         </Suspense>
