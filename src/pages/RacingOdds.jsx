@@ -25,6 +25,7 @@ import {
   selectActiveBetSlip,
   selectIsPlacingBet,
   selectOneClickBetStake,
+  selectOpenBetRefreshTick,
   selectPlacingSelectionId,
   setActiveBetSlip,
 } from '../store/slices/betSlipSlice.js'
@@ -62,6 +63,7 @@ export default function RacingOdds() {
   const activeBetSlip = useSelector(selectActiveBetSlip)
   const isPlacingBet = useSelector(selectIsPlacingBet)
   const placingSelectionId = useSelector(selectPlacingSelectionId)
+  const openBetRefreshTick = useSelector(selectOpenBetRefreshTick)
 
   const sportId = useMemo(() => getSportIdFromSlug(sportSlug), [sportSlug])
   const sportIsRacing = useMemo(
@@ -71,6 +73,38 @@ export default function RacingOdds() {
 
   const [matchOdds, setMatchOdds] = useState(null)
   const [marketSetting, setMarketSetting] = useState({ isRacing: true })
+
+  const [racingExposure, setRacingExposure] = useState([])
+  useEffect(() => {
+    if (!isAuthenticated || !eventId || !marketId) return undefined
+    let cancelled = false
+    http
+      .get(`bet/post-exposure/${eventId}`)
+      .then(({ data }) => {
+        if (cancelled) return
+        const entries = Array.isArray(data?.data) ? data.data : []
+        const entry = entries.find(
+          (e) => String(e?.marketId) === String(marketId)
+        )
+        setRacingExposure(
+          Array.isArray(entry?.selections) ? entry.selections : []
+        )
+      })
+      .catch(() => {
+        if (cancelled) return
+        setRacingExposure([])
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [isAuthenticated, eventId, marketId, openBetRefreshTick])
+
+  // Gated read — avoids leaking the previous event's exposure when the user
+  // navigates away / logs out, without an in-effect setState.
+  const visibleRacingExposure = useMemo(() => {
+    if (!isAuthenticated || !eventId || !marketId) return []
+    return racingExposure
+  }, [isAuthenticated, eventId, marketId, racingExposure])
 
   // ── Load default odds (POST sport/default-odds with marketId).
   const loadDefaultOdds = useCallback(
@@ -166,7 +200,10 @@ export default function RacingOdds() {
 
       const slip = {
         marketId: runner._marketId || marketId,
-        marketName: runner._marketName || 'Match Odds',
+        // Technical identifier — must match `BetExposureCell`'s `marketName`
+        // prop so the live preExposure preview shows under the right runner.
+        marketName: 'MATCH_ODDS',
+        marketDisplayName: runner._marketName || 'Match Odds',
         eventTitle: runner._eventTitle || '',
         eventId: matchOdds?.eventId || eventId,
         sportId,
@@ -296,6 +333,7 @@ export default function RacingOdds() {
         isYellowTheme={isYellowTheme}
         currency={currency}
         marketSetting={marketSetting}
+        exposureData={visibleRacingExposure}
         active={activeForThisMarket}
         onPick={onPick}
         onCancelMatchOdds={onCancelMatchOdds}
