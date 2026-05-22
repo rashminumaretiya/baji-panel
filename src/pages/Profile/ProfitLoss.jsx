@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
 import { selectToken, selectUser } from '../../store/slices/authSlice.js'
@@ -6,39 +7,15 @@ import Table from '../../shared/Table.jsx'
 import Tabs from '../../shared/Tabs.jsx'
 
 const PL_MARKET_TABS = [
-  { id: 'EXCHANGE', label: 'Exchange' },
-  { id: 'FANCY', label: 'FancyBet' },
-  { id: 'CASINO', label: 'Casino' },
-  { id: 'SPORTS_BOOK', label: 'Sportsbook' },
-  { id: 'BOOKMAKER', label: 'BookMaker' },
-  { id: 'BPOKER', label: 'BPoker' },
-  { id: 'SABA', label: 'SABA' },
-  { id: 'MINI_GAME', label: 'MiniGame' },
-  { id: 'ROYAL', label: 'Royal' },
-]
-
-const COLUMNS = [
-  {
-    key: 'date',
-    label: 'Date',
-    render: (_v, row) =>
-      row?.date ? new Date(row.date).toLocaleString() : '--',
-  },
-  {
-    key: 'marketName',
-    label: 'Market',
-    render: (_v, row) => row?.marketName ?? '--',
-  },
-  {
-    key: 'description',
-    label: 'Description',
-    render: (_v, row) => row?.description ?? '--',
-  },
-  {
-    key: 'profitLoss',
-    label: 'Profit/Loss',
-    render: (_v, row) => row?.profitLoss ?? '--',
-  },
+  { id: 'EXCHANGE', i18nKey: 'common.exchange', fallback: 'Exchange' },
+  { id: 'FANCY', i18nKey: 'markets.fancy', fallback: 'Fancy' },
+  { id: 'CASINO', i18nKey: 'common.casino', fallback: 'Casino' },
+  { id: 'SPORTS_BOOK', i18nKey: 'markets.sportBook', fallback: 'Sport Book' },
+  { id: 'BOOKMAKER', i18nKey: 'markets.bookmaker', fallback: 'Bookmaker' },
+  { id: 'BPOKER', i18nKey: 'markets.bPoker', fallback: 'BPoker' },
+  { id: 'SABA', i18nKey: 'common.saba', fallback: 'SABA' },
+  { id: 'MINI_GAME', i18nKey: 'common.miniGame', fallback: 'MiniGame' },
+  { id: 'ROYAL', i18nKey: 'common.royal', fallback: 'Royal' },
 ]
 
 const pad = (n) => String(n).padStart(2, '0')
@@ -152,10 +129,47 @@ const getHistoryBtnClass =
   'h-[26px] px-[10px] text-[12px] rounded-[3px] bg-[#0A876D] border border-[#0A876D] text-white hover:bg-[#0A876D] focus:bg-[#0A876D]'
 
 export default function ProfitLoss() {
+  const { t } = useTranslation()
   const token = useSelector(selectToken)
   const user = useSelector(selectUser)
   const userName = user?.profileDetails?.userName ?? '--'
   const generatedAt = useMemo(() => nowLabel(), [])
+
+  const COLUMNS = useMemo(
+    () => [
+      {
+        key: 'date',
+        label: t('table.columns.date', 'Date'),
+        render: (_v, row) =>
+          row?.date ? new Date(row.date).toLocaleString() : '--',
+      },
+      {
+        key: 'marketName',
+        label: t('myBets.market', 'Market'),
+        render: (_v, row) => row?.marketName ?? '--',
+      },
+      {
+        key: 'description',
+        label: t('common.description', 'Description'),
+        render: (_v, row) => row?.description ?? '--',
+      },
+      {
+        key: 'profitLoss',
+        label: t('myBets.profitLoss', 'Profit/Loss'),
+        render: (_v, row) => row?.profitLoss ?? '--',
+      },
+    ],
+    [t]
+  )
+
+  const marketTabs = useMemo(
+    () =>
+      PL_MARKET_TABS.map((tab) => ({
+        id: tab.id,
+        label: t(tab.i18nKey, tab.fallback),
+      })),
+    [t]
+  )
 
   const [marketCategory, setMarketCategory] = useState('EXCHANGE')
   const initial = todayRange()
@@ -205,7 +219,9 @@ export default function ProfitLoss() {
   return (
     <div className={plCardClass}>
       <div className={plHeaderClass}>
-        <h4 className={plTitleClass}>Profit &amp; Loss - Main wallet</h4>
+        <h4 className={plTitleClass}>
+          {t('myBets.pnlMainWallet', 'Profit & Loss - Main wallet')}
+        </h4>
         <div className={plMetaClass}>
           <span className={plMetaItemClass}>
             <UserIcon />
@@ -219,14 +235,16 @@ export default function ProfitLoss() {
       </div>
 
       <Tabs
-        tabs={PL_MARKET_TABS}
+        tabs={marketTabs}
         activeId={marketCategory}
         onChange={setMarketCategory}
       />
 
       <div className={filterContainerClass}>
         <div className={filterRowClass}>
-          <label className={filterLabelClass}>Period</label>
+          <label className={filterLabelClass}>
+            {t('filters.period', 'Period')}
+          </label>
           <input
             type="date"
             className={dateInputClass}
@@ -239,7 +257,7 @@ export default function ProfitLoss() {
             value="09 : 00"
             readOnly
           />
-          <span className={periodSepClass}>to</span>
+          <span className={periodSepClass}>{t('filters.to', 'to')}</span>
           <input
             type="date"
             className={dateInputClass}
@@ -260,21 +278,21 @@ export default function ProfitLoss() {
             className={btnLightClass}
             onClick={setJustForToday}
           >
-            Just For Today
+            {t('filters.justForToday', 'Just For Today')}
           </button>
           <button
             type="button"
             className={btnLightClass}
             onClick={setFromYesterday}
           >
-            From Yesterday
+            {t('filters.fromYesterday', 'From Yesterday')}
           </button>
           <button
             type="button"
             className={getHistoryBtnClass}
             onClick={fetchPnl}
           >
-            Get P &amp; L
+            {t('filters.getPnl', 'Get P & L')}
           </button>
         </div>
       </div>
@@ -283,7 +301,10 @@ export default function ProfitLoss() {
         columns={COLUMNS}
         data={rows}
         rowKey="_id"
-        emptyMessage="No profit/loss records for the selected period."
+        emptyMessage={t(
+          'table.noData.pnlNoData.noRecordsForPeriod',
+          'No profit/loss records for the selected period.'
+        )}
       />
     </div>
   )

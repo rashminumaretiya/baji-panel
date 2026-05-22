@@ -150,7 +150,11 @@
     "betFailed": "Bet could not be placed. Please try again.",
     "pleaseLogin": "Please login to proceed",
     "all": "All",
-    "sport": "Sport"
+    "sport": "Sport",
+    "description": "Description",
+    "miniGame": "MiniGame",
+    "royal": "Royal",
+    "saba": "SABA"
   },
   "news": {
     "welcomeOurExchange": "Welcome to our exchange"
@@ -247,13 +251,15 @@
       "pnlNoData": {
         "p1": "Betting Profit & Loss enables you to review the bets you have placed.",
         "p2": "Specify the time period during which your bets were placed, the type of markets on which the bets were placed, and the sport.",
-        "p3": "Betting Profit & Loss is available online for the past 2 months."
+        "p3": "Betting Profit & Loss is available online for the past 2 months.",
+        "noRecordsForPeriod": "No profit/loss records for the selected period."
       },
       "currentBetsNoData": "You have no active bets.",
       "betHistory": {
         "p1": " Betting History enables you to review the bets you have placed.",
         "p2": "  Specify the time period during which your bets were placed, the type of markets on which the bets were placed, and the sport.",
-        "p3": "Betting History is available online for the past 30 days."
+        "p3": "Betting History is available online for the past 30 days.",
+        "noBetsForPeriod": "No bets found for the selected period."
       }
     },
     "columns": {
@@ -389,7 +395,8 @@
     "loginStatus": "Login Status",
     "ipAddress": "IP Address",
     "isp": "ISP",
-    "address": "City/State/Country"
+    "address": "City/State/Country",
+    "userAgentType": "User Agent Type"
   },
   "pagination": {
     "previous": "Prev",
@@ -596,7 +603,8 @@
     "period": "Period",
     "justForToday": "Just For Today",
     "fromYesterday": "From Yesterday",
-    "all": "All"
+    "all": "All",
+    "orderBy": "Order By"
   },
   "myBets": {
     "betID": "Bet ID",
@@ -691,7 +699,8 @@
       "lay": "Lay",
       "yes": "YES",
       "no": "NO"
-    }
+    },
+    "pending": "Pending"
   },
   "betSlip": {
     "validation": {

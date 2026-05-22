@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   createCatopayWithdrawRequest,
@@ -68,6 +69,7 @@ function validate(values, limits) {
 }
 
 export default function Withdraw({ showTitle = true }) {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const userCurrency = useSelector(selectCurrency) || CURRENCY_TYPE.BDT
   const details = useSelector(selectWithdrawDetails)
@@ -176,7 +178,7 @@ export default function Withdraw({ showTitle = true }) {
       {showTitle && (
         <div className="flex justify-between items-center">
           <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
-            Withdraw
+            {t('common.withdraw', 'Withdraw')}
           </p>
         </div>
       )}

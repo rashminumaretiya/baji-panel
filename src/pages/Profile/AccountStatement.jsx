@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
@@ -6,29 +7,33 @@ import Table from '../../shared/Table.jsx'
 
 const PER_PAGE = 10
 
-const columns = [
-  {
-    key: 'dateTime',
-    label: 'Date/Time',
-    render: (_v, row) =>
-      row?.createdAt ? new Date(row.createdAt).toLocaleString() : '--',
-  },
-  { key: 'deposit', label: 'Deposit' },
-  { key: 'withdraw', label: 'Withdraw' },
-  { key: 'balance', label: 'Balance' },
-  { key: 'remark', label: 'Remark' },
-  {
-    key: 'fromTo',
-    label: 'From/To',
-    render: (_v, row) => `${row?.from ?? '--'} / ${row?.to ?? '--'}`,
-  },
-]
-
 export default function AccountStatement() {
+  const { t } = useTranslation()
   const token = useSelector(selectToken)
   const [statements, setStatements] = useState([])
   const [page, setPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'dateTime',
+        label: t('common.dateTime', 'Date/Time'),
+        render: (_v, row) =>
+          row?.createdAt ? new Date(row.createdAt).toLocaleString() : '--',
+      },
+      { key: 'deposit', label: t('common.deposit', 'Deposit') },
+      { key: 'withdraw', label: t('common.withdraw', 'Withdraw') },
+      { key: 'balance', label: t('table.columns.balance', 'Balance') },
+      { key: 'remark', label: t('table.columns.remarks', 'Remark') },
+      {
+        key: 'fromTo',
+        label: t('common.fromTo', 'From/To'),
+        render: (_v, row) => `${row?.from ?? '--'} / ${row?.to ?? '--'}`,
+      },
+    ],
+    [t]
+  )
 
   useEffect(() => {
     if (!token) return
@@ -51,7 +56,7 @@ export default function AccountStatement() {
 
   return (
     <Table
-      title="Account Statement"
+      title={t('common.accountStatement', 'Account Statement')}
       columns={columns}
       data={statements}
       rowKey="_id"

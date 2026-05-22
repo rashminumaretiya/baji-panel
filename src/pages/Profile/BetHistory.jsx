@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
@@ -6,45 +7,8 @@ import Table from '../../shared/Table.jsx'
 import MarketTabs from './MarketTabs.jsx'
 
 const BET_STATUS_OPTIONS = [
-  { value: 'SETTLED', label: 'Settled' },
-  { value: 'VOIDED', label: 'Voided' },
-]
-
-const COLUMNS = [
-  {
-    key: 'betId',
-    label: 'Bet ID',
-    render: (_v, row) => row?.betId ?? row?._id ?? '--',
-  },
-  { key: 'plId', label: 'PL ID', render: (_v, row) => row?.plId ?? '--' },
-  {
-    key: 'market',
-    label: 'Market',
-    render: (_v, row) => row?.marketName ?? '--',
-  },
-  {
-    key: 'selection',
-    label: 'Selection',
-    render: (_v, row) => row?.selectionName ?? '--',
-  },
-  { key: 'type', label: 'Type', render: (_v, row) => row?.betType ?? '--' },
-  {
-    key: 'betPlaced',
-    label: 'Bet Placed',
-    render: (_v, row) =>
-      row?.createdAt ? new Date(row.createdAt).toLocaleString() : '--',
-  },
-  { key: 'stake', label: 'Stake', render: (_v, row) => row?.stake ?? '--' },
-  {
-    key: 'avgOddMatched',
-    label: 'Avg. Odd Matched',
-    render: (_v, row) => row?.avgOddMatched ?? row?.odds ?? '--',
-  },
-  {
-    key: 'profitLoss',
-    label: 'Profit/Loss',
-    render: (_v, row) => row?.profitLoss ?? '--',
-  },
+  { value: 'SETTLED', i18nKey: 'myBets.settled', fallback: 'Settled' },
+  { value: 'VOIDED', i18nKey: 'myBets.voided', fallback: 'Voided' },
 ]
 
 const pad = (n) => String(n).padStart(2, '0')
@@ -98,6 +62,7 @@ const getHistoryBtnClass =
   'h-[26px] px-[10px] text-[12px] rounded-[3px] bg-[#0A876D] border border-[#0A876D] text-white hover:bg-[#0A876D] focus:bg-[#0A876D]'
 
 export default function BetHistory() {
+  const { t } = useTranslation()
   const token = useSelector(selectToken)
   const [marketCategory, setMarketCategory] = useState('EXCHANGE')
   const [betStatus, setBetStatus] = useState('SETTLED')
@@ -106,6 +71,58 @@ export default function BetHistory() {
   const [toDate, setToDate] = useState(initial.to)
   const [bets, setBets] = useState([])
   const [refreshKey, setRefreshKey] = useState(0)
+
+  const COLUMNS = useMemo(
+    () => [
+      {
+        key: 'betId',
+        label: t('myBets.betID', 'Bet ID'),
+        render: (_v, row) => row?.betId ?? row?._id ?? '--',
+      },
+      {
+        key: 'plId',
+        label: t('myBets.plID', 'PL ID'),
+        render: (_v, row) => row?.plId ?? '--',
+      },
+      {
+        key: 'market',
+        label: t('myBets.market', 'Market'),
+        render: (_v, row) => row?.marketName ?? '--',
+      },
+      {
+        key: 'selection',
+        label: t('markets.selection', 'Selection'),
+        render: (_v, row) => row?.selectionName ?? '--',
+      },
+      {
+        key: 'type',
+        label: t('myBets.type', 'Type'),
+        render: (_v, row) => row?.betType ?? '--',
+      },
+      {
+        key: 'betPlaced',
+        label: t('myBets.betPlaced', 'Bet Placed'),
+        render: (_v, row) =>
+          row?.createdAt ? new Date(row.createdAt).toLocaleString() : '--',
+      },
+      {
+        key: 'stake',
+        label: t('markets.stake', 'Stake'),
+        render: (_v, row) => row?.stake ?? '--',
+      },
+      {
+        key: 'avgOddMatched',
+        label: t('myBets.avgOddMatched', 'Avg. Odd Matched'),
+        render: (_v, row) => row?.avgOddMatched ?? row?.odds ?? '--',
+      },
+      {
+        key: 'profitLoss',
+        label: t('common.profitLoss', 'Profit/Loss'),
+        render: (_v, row) => row?.profitLoss ?? '--',
+      },
+    ],
+    [t]
+  )
 
   const setJustForToday = () => {
     const r = todayRange()
@@ -151,7 +168,9 @@ export default function BetHistory() {
     <MarketTabs value={marketCategory} onChange={setMarketCategory}>
       <div className={filterContainerClass}>
         <div className={filterRowClass}>
-          <label className={filterLabelClass}>Bet Status</label>
+          <label className={filterLabelClass}>
+            {t('common.betStatus', 'Bet Status')}
+          </label>
           <select
             className={betStatusSelectClass}
             value={betStatus}
@@ -159,13 +178,15 @@ export default function BetHistory() {
           >
             {BET_STATUS_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
-                {opt.label}
+                {t(opt.i18nKey, opt.fallback)}
               </option>
             ))}
           </select>
 
           {/* Bootstrap `.ms-3` (= 1rem left margin). */}
-          <label className={`${filterLabelClass} ml-4`}>Period</label>
+          <label className={`${filterLabelClass} ml-4`}>
+            {t('filters.period', 'Period')}
+          </label>
           <input
             type="date"
             className={dateInputClass}
@@ -178,7 +199,7 @@ export default function BetHistory() {
             value="09 : 00"
             readOnly
           />
-          <span className={periodSepClass}>to</span>
+          <span className={periodSepClass}>{t('filters.to', 'to')}</span>
           <input
             type="date"
             className={dateInputClass}
@@ -199,21 +220,21 @@ export default function BetHistory() {
             className={btnLightClass}
             onClick={setJustForToday}
           >
-            Just For Today
+            {t('filters.justForToday', 'Just For Today')}
           </button>
           <button
             type="button"
             className={btnLightClass}
             onClick={setFromYesterday}
           >
-            From Yesterday
+            {t('filters.fromYesterday', 'From Yesterday')}
           </button>
           <button
             type="button"
             className={getHistoryBtnClass}
             onClick={fetchHistory}
           >
-            Get History
+            {t('filters.getHistory', 'Get History')}
           </button>
         </div>
       </div>
@@ -222,7 +243,10 @@ export default function BetHistory() {
         columns={COLUMNS}
         data={bets}
         rowKey="_id"
-        emptyMessage="No bets found for the selected period."
+        emptyMessage={t(
+          'table.noData.betHistory.noBetsForPeriod',
+          'No bets found for the selected period.'
+        )}
       />
     </MarketTabs>
   )

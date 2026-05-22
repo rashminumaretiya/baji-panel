@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Table from '../../shared/Table.jsx'
 import {
@@ -63,9 +64,17 @@ function ActionButton({ visible, icon, title, label, onClick }) {
 function getStatusCellClass(value) {
   if (!value) return ''
   const slug = String(value).toLowerCase().trim()
-  if (slug.includes('complete') || slug.includes('approve') || slug.includes('success'))
+  if (
+    slug.includes('complete') ||
+    slug.includes('approve') ||
+    slug.includes('success')
+  )
     return 'text-[var(--avocado-green)] font-bold'
-  if (slug.includes('fail') || slug.includes('reject') || slug.includes('decline'))
+  if (
+    slug.includes('fail') ||
+    slug.includes('reject') ||
+    slug.includes('decline')
+  )
     return 'text-[var(--failed-status)] font-bold'
   if (slug.includes('pending') || slug.includes('process'))
     return 'text-[var(--orange-dark)] font-bold'
@@ -73,6 +82,7 @@ function getStatusCellClass(value) {
 }
 
 export default function DepositHistory() {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const { data: history, totalCount } = useSelector(selectDepositHistory)
   const currency = useSelector(selectCurrency) || 'BDT'
@@ -113,66 +123,66 @@ export default function DepositHistory() {
     () => [
       {
         key: 'createdAt',
-        label: 'Created On',
+        label: t('myBets.createdOn', 'Created On'),
         render: (value) => formatDate(value),
       },
       {
         key: 'paymentMethod',
-        label: 'Payment Type',
+        label: t('myBets.paymentType', 'Payment Type'),
         render: (value) => <PaymentMethodCell html={value} />,
       },
       {
-        key: 'paymentType',
-        label: 'Payment Method',
+        key: 'payment',
+        label: t('common.paymentMethod', 'Payment Method'),
       },
       {
-        key: 'netAmount',
-        label: `${currency} Amount`,
+        key: 'original_amount',
+        label: `${currency} ${t('myBets.amount', 'Amount')}`,
       },
       {
         key: 'transactionId',
-        label: 'Trx Id',
+        label: t('myBets.trxId', 'Trx Id'),
       },
       {
         key: 'status',
-        label: 'Status',
+        label: t('myBets.status', 'Status'),
         cellClassName: getStatusCellClass,
         render: (value) => <span>{value}</span>,
       },
       {
         key: 'uploadScreenshot',
-        label: 'Upload ScreenShot',
+        label: t('myBets.screenshot', 'Upload ScreenShot'),
         render: (_, row) => (
           <ActionButton
             visible={!!row?.isShowComplaint}
             icon="uploadSS"
-            title="Upload Screenshot"
+            title={t('myBets.screenshot', 'Upload Screenshot')}
             onClick={() => onUploadScreenshot(row)}
           />
         ),
       },
       {
         key: 'action',
-        label: 'Action',
+        label: t('common.actions', 'Action'),
         render: (_, row) => (
           <ActionButton
             visible={!!row?.isShowRepayment}
             icon="arrowRoundBox"
-            title="Repay"
+            title={t('myBets.repayment', 'Repay')}
             onClick={() => onRepayment(row)}
           />
         ),
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currency, page],
+    [currency, page, t]
   )
 
   return (
     <>
       <div className="flex justify-between items-center">
         <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
-          Deposit History
+          {t('common.depositHistory', 'Deposit History')}
         </p>
       </div>
 

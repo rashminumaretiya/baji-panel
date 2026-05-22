@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import Header from '../components/Header.jsx'
@@ -16,16 +17,56 @@ function cx(...cs) {
 }
 
 const tabs = [
-  { path: '/my-account/my-profile', label: 'My Profile' },
-  { path: '/my-account/balance-overview', label: 'Balance Overview' },
-  { path: '/my-account/account-statement', label: 'Account Statement' },
-  { path: '/my-account/my-bets', label: 'My Bets' },
-  { path: '/my-account/bets-complaints', label: 'Bets Complaints' },
-  { path: '/my-account/activity-log', label: 'Activity Log' },
-  { path: '/my-account/deposit', label: 'Deposit' },
-  { path: '/my-account/deposit-history', label: 'Deposit History' },
-  { path: '/my-account/withdraw', label: 'Withdraw' },
-  { path: '/my-account/withdraw-history', label: 'Withdraw History' },
+  {
+    path: '/my-account/my-profile',
+    i18nKey: 'common.myProfile',
+    fallback: 'My Profile',
+  },
+  {
+    path: '/my-account/balance-overview',
+    i18nKey: 'common.balanceOverview',
+    fallback: 'Balance Overview',
+  },
+  {
+    path: '/my-account/account-statement',
+    i18nKey: 'common.accountStatement',
+    fallback: 'Account Statement',
+  },
+  {
+    path: '/my-account/my-bets',
+    i18nKey: 'common.myBets',
+    fallback: 'My Bets',
+  },
+  {
+    path: '/my-account/bets-complaints',
+    i18nKey: 'common.betsComplaints',
+    fallback: 'Bets Complaints',
+  },
+  {
+    path: '/my-account/activity-log',
+    i18nKey: 'common.activityLog',
+    fallback: 'Activity Log',
+  },
+  {
+    path: '/my-account/deposit',
+    i18nKey: 'common.deposit',
+    fallback: 'Deposit',
+  },
+  {
+    path: '/my-account/deposit-history',
+    i18nKey: 'common.depositHistory',
+    fallback: 'Deposit History',
+  },
+  {
+    path: '/my-account/withdraw',
+    i18nKey: 'common.withdraw',
+    fallback: 'Withdraw',
+  },
+  {
+    path: '/my-account/withdraw-history',
+    i18nKey: 'common.withdrawHistory',
+    fallback: 'Withdraw History',
+  },
 ]
 
 // Ported from layout.scss .main-wrapper auth / no-header-wrapper.
@@ -40,6 +81,7 @@ const sidebarLiFirst =
   'list-none py-[5.5px] pl-2.5 pr-1.5 text-[12px] cursor-pointer text-white border-b-0 text-right relative bg-[var(--primary)]'
 
 export default function MyAccountLayout() {
+  const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
@@ -83,7 +125,9 @@ export default function MyAccountLayout() {
                 <ul
                   className={`mb-0 pl-0 ${sidebarBg} overflow-y-auto max-h-[calc(100svh-106px)] [scrollbar-width:none]`}
                 >
-                  <li className={sidebarLiFirst}>My Account</li>
+                  <li className={sidebarLiFirst}>
+                    {t('header.myAccount', 'My Account')}
+                  </li>
                   {tabs.map((tab, idx) => {
                     const isActive = location.pathname === tab.path
                     const isLast = idx === tabs.length - 1
@@ -105,7 +149,7 @@ export default function MyAccountLayout() {
                           }
                         }}
                       >
-                        {tab.label}
+                        {t(tab.i18nKey, tab.fallback)}
                       </li>
                     )
                   })}
@@ -126,10 +170,10 @@ export default function MyAccountLayout() {
                       className="whitespace-nowrap cursor-pointer text-white relative mr-[1.87vw] pr-[3.47vw] text-[3.47vw] after:absolute after:top-1/2 after:right-0 after:content-[''] after:w-[1.6vw] after:h-[2.67vw] after:bg-[url(/img/svg/next-arrow.svg)] after:bg-no-repeat after:bg-contain after:-mt-[1.33vw]"
                       onClick={goToAccountMobile}
                     >
-                      My Account
+                      {t('header.myAccount', 'My Account')}
                     </li>
                     <li className="whitespace-nowrap text-white text-[3.47vw]">
-                      {activeTab.label}
+                      {t(activeTab.i18nKey, activeTab.fallback)}
                     </li>
                   </ul>
                 </div>

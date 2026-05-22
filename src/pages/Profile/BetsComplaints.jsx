@@ -1,22 +1,27 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
 import Table from '../../shared/Table.jsx'
 
-const columns = [
-  { key: 'eventId', label: 'Event Id' },
-  { key: 'marketId', label: 'Market Id' },
-  { key: 'eventType', label: 'Event Type' },
-  { key: 'sport', label: 'Sport' },
-  { key: 'eventTitle', label: 'Event Title' },
-  { key: 'selectionName', label: 'Selection Name' },
-  { key: 'complaint', label: 'Complaint' },
-]
-
 export default function BetsComplaints() {
+  const { t } = useTranslation()
   const token = useSelector(selectToken)
   const [complaints, setComplaints] = useState([])
+
+  const columns = useMemo(
+    () => [
+      { key: 'eventId', label: t('myBets.eventId', 'Event Id') },
+      { key: 'marketId', label: t('myBets.marketId', 'Market Id') },
+      { key: 'eventType', label: t('myBets.eventType', 'Event Type') },
+      { key: 'sport', label: t('myBets.sport', 'Sport') },
+      { key: 'eventTitle', label: t('myBets.eventTitle', 'Event Title') },
+      { key: 'selectionName', label: t('myBets.selection', 'Selection Name') },
+      { key: 'complaint', label: t('myBets.complaint', 'Complaint') },
+    ],
+    [t]
+  )
 
   useEffect(() => {
     if (!token) return
@@ -36,10 +41,10 @@ export default function BetsComplaints() {
   return (
     <div className="max-h-[calc(100svh-240px)] overflow-y-auto overflow-x-hidden">
       <Table
-        title="Bet Complaints"
+        title={t('common.betsComplaints', 'Bet Complaints')}
         columns={columns}
         data={complaints}
-        emptyMessage="No Data Found"
+        emptyMessage={t('table.noData.default', 'No Data Found')}
       />
     </div>
   )

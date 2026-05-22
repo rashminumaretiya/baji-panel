@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   fetchDepositPaymentMethods,
@@ -213,6 +214,7 @@ const promotionCardBase =
 const promotionCardActive = 'border-[var(--primary-yellow)]'
 
 export default function Deposit({ showTitle = true }) {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const isDepositOnePage = useSelector(selectIsDepositOnePage)
   const methods = useSelector(selectDepositPaymentMethods)
@@ -242,13 +244,18 @@ export default function Deposit({ showTitle = true }) {
   // derived from Redux directly (no useState mirror) so we don't trip the
   // react-hooks/set-state-in-effect rule. selectedMethodName is derived from
   // the picked method object below — no separate state.
-  const [verifyValues, setVerifyValues] = useState({ trxId: '', senderNumber: '' })
+  const [verifyValues, setVerifyValues] = useState({
+    trxId: '',
+    senderNumber: '',
+  })
   const [verifyTouched, setVerifyTouched] = useState({})
   const verifyCardRef = useRef(null)
   // Privacy mask flag from /self-deposit/payment-methods response (one-page
   // only); derived inline — no need to hoist into local state.
   const privacySettings = !!methods.data?.privacySettings?.privacy_setting
-  const selfDepositTx = isDepositOnePage ? onePageSubmit.data?.data ?? null : null
+  const selfDepositTx = isDepositOnePage
+    ? (onePageSubmit.data?.data ?? null)
+    : null
   const isDepositSuccess =
     isDepositOnePage &&
     onePageSubmit.status === 'succeeded' &&
@@ -267,7 +274,7 @@ export default function Deposit({ showTitle = true }) {
   // trx-id regex, the available paymentTypes, and the submit payload.
   const selectedMethod = useMemo(
     () => methodOptions.find((m) => m.methodId === values.methodId) || null,
-    [methodOptions, values.methodId],
+    [methodOptions, values.methodId]
   )
 
   const availableTypes = selectedMethod?.types ?? []
@@ -296,7 +303,6 @@ export default function Deposit({ showTitle = true }) {
       dispatch(resetDepositSubmit())
     }
   }, [dispatch, isDepositOnePage])
-
 
   // Auto-pick the only available option at each level — derived (not stored)
   // so we don't violate React's "you might not need an effect" rule.
@@ -489,12 +495,17 @@ export default function Deposit({ showTitle = true }) {
           receiverNumber: selfDepositTx?.receiver_number ?? '',
           trxId,
           senderNumber,
-        }),
+        })
       ).unwrap()
       if (result?.key) alertService.success(result.key)
       setVerifyValues({ trxId: '', senderNumber: '' })
       setVerifyTouched({})
-      setValues({ amount: '', methodId: '', paymentType: '', promotionId: null })
+      setValues({
+        amount: '',
+        methodId: '',
+        paymentType: '',
+        promotionId: null,
+      })
       setTouched({})
       dispatch(resetDepositSubmit())
     } catch {
@@ -504,7 +515,7 @@ export default function Deposit({ showTitle = true }) {
 
   const copyToClipboard = async (value) => {
     const text =
-      value != null ? String(value) : selfDepositTx?.receiver_number ?? ''
+      value != null ? String(value) : (selfDepositTx?.receiver_number ?? '')
     if (!text) return
     try {
       await navigator.clipboard.writeText(text)
@@ -549,7 +560,7 @@ export default function Deposit({ showTitle = true }) {
       {showTitle && (
         <div className="flex justify-between items-center">
           <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
-            Deposit
+            {t('common.deposit', 'Deposit')}
           </p>
         </div>
       )}

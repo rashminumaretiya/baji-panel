@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
@@ -56,32 +57,42 @@ function getLoginStatusCellClass(value) {
   return ''
 }
 
-// Columns wired to api.mcv88.live's actual response shape:
-// { _id, ip, isp, address: {city, state, country}, status, activity, activityAt }
-// `address` is flattened into a combined `country` string by
-// `getConvertedAddress` below. baji-exchange-frontend uses different field
-// names (`logInAt`, `logInStatus`) — this backend uses `activityAt` + `status`.
-const columns = [
-  {
-    key: 'activityAt',
-    label: 'Login Date & Time',
-    render: (value) => formatDate(value),
-  },
-  {
-    key: 'status',
-    label: 'Login Status',
-    cellClassName: getLoginStatusCellClass,
-    render: (value) => <span>{titleCase(value)}</span>,
-  },
-  { key: 'ip', label: 'IP Address', render: wrapSpan },
-  { key: 'isp', label: 'ISP', render: wrapSpan },
-  { key: 'country', label: 'Country', render: wrapSpan },
-  // Angular reuses `country` here for "User Agent Type" — preserving parity.
-  { key: 'country', label: 'User Agent Type', render: wrapSpan },
-]
-
 export default function ActivityLog() {
+  const { t } = useTranslation()
   const token = useSelector(selectToken)
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'activityAt',
+        label: t('activityLog.loginDateTime', 'Login Date & Time'),
+        render: (value) => formatDate(value),
+      },
+      {
+        key: 'status',
+        label: t('activityLog.loginStatus', 'Login Status'),
+        cellClassName: getLoginStatusCellClass,
+        render: (value) => <span>{titleCase(value)}</span>,
+      },
+      {
+        key: 'ip',
+        label: t('activityLog.ipAddress', 'IP Address'),
+        render: wrapSpan,
+      },
+      { key: 'isp', label: t('activityLog.isp', 'ISP'), render: wrapSpan },
+      {
+        key: 'country',
+        label: t('profile.country', 'Country'),
+        render: wrapSpan,
+      },
+      {
+        key: 'country',
+        label: t('activityLog.userAgentType', 'User Agent Type'),
+        render: wrapSpan,
+      },
+    ],
+    [t]
+  )
   const [logs, setLogs] = useState([])
   const [totalCount, setTotalCount] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
@@ -112,7 +123,7 @@ export default function ActivityLog() {
     // declared widths instead of letting cells size to content.
     <div className="max-h-[calc(100svh-240px)] overflow-y-auto overflow-x-hidden [&_table]:table-fixed [&_table]:w-full [&_thead>tr>th:nth-child(1)]:w-[18%] [&_thead>tr>th:nth-child(2)]:w-[12%] [&_thead>tr>th:nth-child(3)]:w-[14%] [&_thead>tr>th:nth-child(4)]:w-[22%] [&_thead>tr>th:nth-child(5)]:w-[17%] [&_thead>tr>th:nth-child(6)]:w-[17%] [&_tbody>tr>td:nth-child(1)]:w-[18%] [&_tbody>tr>td:nth-child(2)]:w-[12%] [&_tbody>tr>td:nth-child(3)]:w-[14%] [&_tbody>tr>td:nth-child(4)]:w-[22%] [&_tbody>tr>td:nth-child(5)]:w-[17%] [&_tbody>tr>td:nth-child(6)]:w-[17%]">
       <Table
-        title="Activity Log"
+        title={t('activityLog.title', 'Activity Log')}
         columns={columns}
         data={logs}
         pagination={{

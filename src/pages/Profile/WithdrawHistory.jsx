@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Table from '../../shared/Table.jsx'
 import {
@@ -63,6 +64,7 @@ function getStatusCellClass(value) {
 }
 
 export default function WithdrawHistory() {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const { data: history, totalCount } = useSelector(selectWithdrawalHistory)
   const currency = useSelector(selectCurrency) || 'BDT'
@@ -83,48 +85,54 @@ export default function WithdrawHistory() {
 
   const columns = useMemo(
     () => [
-      { key: 'accountNumber', label: 'Account Number' },
-      { key: 'trxId', label: 'Trx Id' },
+      {
+        key: 'accountNumber',
+        label: t('myBets.accountNumber', 'Account Number'),
+      },
+      { key: 'trxId', label: t('myBets.trxId', 'Trx Id') },
       {
         key: 'paymentType',
-        label: 'Payment Type',
+        label: t('myBets.paymentType', 'Payment Type'),
         render: (value) => <PaymentTypeCell html={value} />,
       },
-      { key: 'currency', label: 'Currency' },
-      { key: 'pbu', label: `${currency} Amount` },
+      { key: 'currency', label: t('common.currency', 'Currency') },
+      { key: 'pbu', label: `${currency} ${t('myBets.amount', 'Amount')}` },
       {
         key: 'remainingAmount',
-        label: 'Remaining amount',
+        label: t('myBets.remainingAmount', 'Remaining amount'),
         cellClassName: 'whitespace-nowrap',
       },
-      { key: 'transactionId', label: 'Transaction Id' },
+      {
+        key: 'transactionId',
+        label: t('myBets.transactionID', 'Transaction Id'),
+      },
       {
         key: 'reasonTemp',
-        label: 'Rejected Reason',
+        label: t('myBets.rejectedReason', 'Rejected Reason'),
         render: (value, row) => (
           <ReasonCell html={value} onClick={() => openReason(row)} />
         ),
       },
       {
         key: 'createdAt',
-        label: 'Created On',
+        label: t('myBets.createdOn', 'Created On'),
         render: (value) => formatDate(value),
       },
       {
         key: 'status',
-        label: 'Status',
+        label: t('myBets.status', 'Status'),
         cellClassName: getStatusCellClass,
         render: (value) => <span>{value}</span>,
       },
     ],
-    [currency],
+    [currency, t],
   )
 
   return (
     <>
       <div className="flex justify-between items-center">
         <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
-          Withdraw History
+          {t('common.withdrawHistory', 'Withdraw History')}
         </p>
       </div>
 
@@ -149,7 +157,9 @@ export default function WithdrawHistory() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--light-gray)]">
-              <h5 className="m-0 text-[16px] font-semibold">Decline Reason</h5>
+              <h5 className="m-0 text-[16px] font-semibold">
+                {t('myBets.rejectedReason', 'Decline Reason')}
+              </h5>
               <button
                 type="button"
                 className="bg-transparent border-0 cursor-pointer text-[18px] text-[var(--dark-md-gray)] hover:text-black"

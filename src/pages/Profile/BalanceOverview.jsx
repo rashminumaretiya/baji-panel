@@ -1,66 +1,47 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
 import Table from '../../shared/Table.jsx'
 
-const summaryCards = [
+const SUMMARY_CARDS = [
   {
     key: 'balances',
-    title: 'Your Balances',
-    heading: 'Welcome,',
-    description:
+    titleKey: 'balanceOverview.yourBalance',
+    titleFallback: 'Your Balances',
+    headingKey: 'balanceOverview.welcome',
+    headingFallback: 'Welcome',
+    descriptionKey: 'balanceOverview.message',
+    descriptionFallback:
       'View your account details here. You can manage funds, review and change your settings and see the performance of your betting activity.',
   },
   {
     key: 'betHold',
-    title: 'Bet Placement Hold',
-    heading: 'On Hold for Bets,',
-    description:
+    titleKey: 'balanceOverview.betPlaceHoldAmount',
+    titleFallback: 'Bet Placement Hold',
+    headingKey: 'balanceOverview.onHoldForBets',
+    headingFallback: 'On Hold for Bets',
+    descriptionKey: 'balanceOverview.betPlaceMessage',
+    descriptionFallback:
       'A portion of your funds is currently on hold due to active or pending bets. You can track these bets and manage your activity in your account details.',
   },
   {
     key: 'withdrawHold',
-    title: 'Withdrawal Hold',
-    heading: 'Funds Awaiting Withdrawal,',
-    description:
+    titleKey: 'balanceOverview.withdrawHoldAmount',
+    titleFallback: 'Withdrawal Hold',
+    headingKey: 'balanceOverview.fundsAwaitingWithdrawal',
+    headingFallback: 'Funds Awaiting Withdrawal',
+    descriptionKey: 'balanceOverview.withdrawHoldMessage',
+    descriptionFallback:
       'Some of your funds are reserved for a pending withdrawal request. You can review and manage this in your account details.',
   },
 ]
 
 const PER_PAGE = 10
 
-const columns = [
-  {
-    key: 'date',
-    label: 'Date',
-    render: (_v, row) =>
-      row?.createdAt ? new Date(row.createdAt).toLocaleString() : '--',
-  },
-  {
-    key: 'transactionNo',
-    label: 'Transaction №',
-    render: (_v, row) => row?.transactionId ?? row?._id ?? '--',
-  },
-  {
-    key: 'debits',
-    label: 'Debits',
-    render: (_v, row) => row?.withdraw ?? 0,
-  },
-  {
-    key: 'credits',
-    label: 'Credits',
-    render: (_v, row) => row?.deposit ?? 0,
-  },
-  { key: 'balance', label: 'Balance' },
-  {
-    key: 'remarks',
-    label: 'Remarks',
-    render: (_v, row) => row?.remark ?? row?.remarks ?? '--',
-  },
-]
-
 export default function BalanceOverview() {
+  const { t } = useTranslation()
   const token = useSelector(selectToken)
   const [summary, setSummary] = useState({
     balances: { amount: 0, currency: 'BDT' },
@@ -70,6 +51,39 @@ export default function BalanceOverview() {
   const [transactions, setTransactions] = useState([])
   const [page, setPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'date',
+        label: t('table.columns.date', 'Date'),
+        render: (_v, row) =>
+          row?.createdAt ? new Date(row.createdAt).toLocaleString() : '--',
+      },
+      {
+        key: 'transactionNo',
+        label: t('table.columns.transactionNo', 'Transaction №'),
+        render: (_v, row) => row?.transactionId ?? row?._id ?? '--',
+      },
+      {
+        key: 'debits',
+        label: t('table.columns.debits', 'Debits'),
+        render: (_v, row) => row?.withdraw ?? 0,
+      },
+      {
+        key: 'credits',
+        label: t('table.columns.credits', 'Credits'),
+        render: (_v, row) => row?.deposit ?? 0,
+      },
+      { key: 'balance', label: t('table.columns.balance', 'Balance') },
+      {
+        key: 'remarks',
+        label: t('table.columns.remarks', 'Remarks'),
+        render: (_v, row) => row?.remark ?? row?.remarks ?? '--',
+      },
+    ],
+    [t]
+  )
 
   useEffect(() => {
     if (!token) return
@@ -115,18 +129,17 @@ export default function BalanceOverview() {
   return (
     <>
       <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
-        Summary
+        {t('balanceOverview.summary', 'Summary')}
       </p>
 
-      {summaryCards.map((card) => {
+      {SUMMARY_CARDS.map((card) => {
         const value = summary[card.key] || {}
         return (
           <div className="mb-[15px]" key={card.key}>
             <div className="flex bg-white py-[7px] px-[10px] border-b border-[var(--dark-gray)]">
-              {/* account-balance-wrapper: flex: 0 0 31.37255% / pr-4 */}
               <div className="pr-4 basis-[31.37255%] shrink-0 grow-0">
                 <p className="text-[15px] font-bold mb-[7px] text-[#3b5160]">
-                  {card.title}
+                  {t(card.titleKey, card.titleFallback)}
                 </p>
                 <p className="mb-0 text-[12px] text-[#7e97a7]">
                   <span className="text-[30px] leading-9 font-bold text-[#2789ce]">
@@ -135,13 +148,12 @@ export default function BalanceOverview() {
                   {value.currency || 'BDT'}
                 </p>
               </div>
-              {/* welcome-section: left border, padding 0 10px 3px */}
               <div className="px-[10px] pb-[3px] relative border-l border-[var(--xs-lightGray)]">
                 <h4 className="text-[15px] font-bold mb-[7px] text-[#3b5160]">
-                  {card.heading}
+                  {t(card.headingKey, card.headingFallback)},
                 </h4>
                 <p className="mb-0 text-[#3b5160] text-[13px] leading-[18px] max-w-[570px]">
-                  {card.description}
+                  {t(card.descriptionKey, card.descriptionFallback)}
                 </p>
               </div>
             </div>
