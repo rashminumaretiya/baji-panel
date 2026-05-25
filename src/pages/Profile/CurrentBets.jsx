@@ -84,6 +84,11 @@ export default function CurrentBets() {
   const { t } = useTranslation()
   const token = useSelector(selectToken)
 
+  const [marketCategory, setMarketCategory] = useState('EXCHANGE')
+  const [betStatus, setBetStatus] = useState('ALL')
+  const [orderBy, setOrderBy] = useState({ betPlaced: true, market: false })
+  const [bets, setBets] = useState([])
+
   const COLUMNS = useMemo(
     () => [
       {
@@ -122,7 +127,16 @@ export default function CurrentBets() {
       {
         key: 'type',
         label: t('myBets.type', 'Type'),
-        render: (_v, row) => row?.betType ?? row?.type ?? '--',
+        // Fancy bets show the matched odd alongside the bet type
+        // ("{betType} - {odd}"); other market categories keep just betType.
+        render: (_v, row) => {
+          const betType = row?.betType ?? row?.type ?? '--'
+          if (marketCategory === 'FANCY') {
+            const odd = row?.odd ?? row?.avgOddMatched
+            if (odd != null && odd !== '') return `${betType} > ${odd}`
+          }
+          return betType
+        },
       },
       {
         key: 'betPlaced',
@@ -146,13 +160,8 @@ export default function CurrentBets() {
         render: () => '--',
       },
     ],
-    [t]
+    [t, marketCategory]
   )
-
-  const [marketCategory, setMarketCategory] = useState('EXCHANGE')
-  const [betStatus, setBetStatus] = useState('ALL')
-  const [orderBy, setOrderBy] = useState({ betPlaced: true, market: false })
-  const [bets, setBets] = useState([])
 
   useEffect(() => {
     if (!token) return

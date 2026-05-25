@@ -21,6 +21,21 @@ applyCachedThemeBodyClass()
 bootstrapHttp()
 bootstrapSocket()
 setupMobileBreakpointListener(store)
+redirectPreviousTab()
+
+// BroadcastChannel doesn't deliver a message to its own sender, so only the
+// pre-existing tabs receive 'newTabOpened' and redirect away — the freshly
+// opened tab keeps the session.
+function redirectPreviousTab() {
+  if (typeof BroadcastChannel === 'undefined') return
+  const channel = new BroadcastChannel('site-activity')
+  channel.onmessage = (event) => {
+    if (event.data === 'newTabOpened') {
+      window.location.href = 'https://www.google.com/'
+    }
+  }
+  channel.postMessage('newTabOpened')
+}
 
 let prevPanelTheme = store.getState().common.panelTheme
 let prevSelectedTheme = store.getState().common.selectedTheme
