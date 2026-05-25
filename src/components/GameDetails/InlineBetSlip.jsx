@@ -290,8 +290,8 @@ export default function InlineBetSlip({
 
   if (isMobile) {
     const lastRowBg = isBack
-      ? '[&_tr:last-of-type_td]:bg-[#c7dbe9]'
-      : '[&_tr:last-of-type_td]:bg-[#ebd5db]'
+      ? 'md:[&_tr:last-of-type_td]:bg-[#c7dbe9]'
+      : 'md:[&_tr:last-of-type_td]:bg-[#ebd5db]'
 
     return (
       <table
@@ -304,7 +304,7 @@ export default function InlineBetSlip({
               className="bg-transparent max-md:px-[1.86667vw] max-md:pt-[10px] max-md:pb-[1.86667vw]"
             >
               <div className="flex items-end justify-around">
-                <div className="mr-[1.86667vw] text-center max-md:flex-[1_1_47.2vw] max-md:last-of-type:mr-0 md:flex-1">
+                <div className="mr-[1.86667vw] text-center max-md:flex-[1_1_47.2vw] max-md:last-of-type:mr-0 flex-1">
                   {isSportsBook && (
                     <p className="mr-[2vw] mb-0 text-[14px] text-(--dark-gray) max-md:text-[2.93333vw] max-md:leading-[1.3] max-md:text-[#1e1e1e]">
                       {t('common.odds', 'Odds')}
@@ -322,7 +322,7 @@ export default function InlineBetSlip({
                         </button>
                         <input
                           type="text"
-                          className="h-[34px] max-w-[63px] rounded-none border border-t-0 border-b-0 border-[#4a4a4a] bg-[#d9d9d9] p-1 text-center text-[20px] text-(--primary) max-md:h-[10.66667vw] max-md:max-w-none max-md:flex-1 max-md:border-0 max-md:bg-white max-md:p-0 max-md:text-[4vw] max-md:leading-[10.13333vw] max-md:font-bold max-md:text-[#1e1e1e] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(0,0,0,0.1)]"
+                          className="h-[34px] max-w-[63px] rounded-none border border-t-0 border-b-0 border-[#4a4a4a] bg-[#d9d9d9] p-1 text-center text-[20px] text-(--primary) max-md:h-[10.66667vw] max-md:max-w-none max-md:flex-1 max-md:border-0 max-md:bg-white max-md:p-0 max-md:text-[4vw] max-md:leading-[10.13333vw] max-md:font-bold max-md:text-[#1e1e1e] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(0,0,0,0.1)] flex-1 w-full"
                           value={betSlipDetails?.odds ?? ''}
                           onKeyDown={(e) => e.preventDefault()}
                           inputMode="none"

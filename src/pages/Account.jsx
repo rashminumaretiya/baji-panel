@@ -170,7 +170,7 @@ export default function Account() {
       <div className="flex items-center justify-between border-t border-white bg-(--xl-black) pr-0 pl-[1.86vw]">
         <div className="inline-flex items-center text-white">
           <i className="inline-flex items-center text-white">
-            <UserIcon />
+            <SvgIcon name="userIcon2" />
           </i>
           <span className="ml-1 inline-block text-[3.46vw] leading-[10.66vw] font-bold text-white">
             {userName}
@@ -214,7 +214,7 @@ export default function Account() {
             >
               <span>{t(item.i18nKey, item.fallback)}</span>
               <i className={rightArrowBtnClass}>
-                <RightArrowIcon />
+              <SvgIcon name="chevronRightArrow" />
               </i>
             </a>
           </li>
@@ -228,7 +228,7 @@ export default function Account() {
       >
         {t('common.logout', 'Logout')}
         <i className="ml-1.5 inline-flex items-center text-white">
-          <LogoutIcon />
+          <SvgIcon name="logInIcon" />
         </i>
       </button>
     </div>

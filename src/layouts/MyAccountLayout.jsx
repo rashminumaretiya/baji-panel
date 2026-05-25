@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import Header from '../components/Header.jsx'
 import NewsLine from '../components/NewsLine.jsx'
 import Loader from '../shared/components/Loader.jsx'
-import { useIsMobile } from '../hooks/useMediaQuery.js'
 import {
   selectIsMcvYellowTheme,
   selectIsYellowTheme,
@@ -90,7 +89,6 @@ export default function MyAccountLayout() {
   const location = useLocation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const isMobile = useIsMobile()
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
   const isAuthenticated = useSelector(selectIsAuthenticated)
@@ -100,13 +98,10 @@ export default function MyAccountLayout() {
     if (isAuthenticated) dispatch(fetchUplineContacts())
   }, [isAuthenticated, dispatch])
 
-  const activeTab = tabs.find((tab) => tab.path === location.pathname)
-  const showSidebar = !isMobile
 
   const handleSelect = (path) => {
     if (location.pathname !== path) navigate(path)
   }
-  const goToAccountMobile = () => navigate('/my-account')
 
   const mainWrapperClass = isAuthenticated
     ? MAIN_WRAPPER_AUTH
@@ -128,10 +123,9 @@ export default function MyAccountLayout() {
     <>
       <Header isAuthenticated />
       <div className={mainWrapperClass}>
-        <div className="mx-auto w-full max-w-[1349px] bg-(--xs-gray) md:w-[calc(100%-40px)]">
+        <div className="mx-auto w-[1350px] bg-(--xs-gray)">
           <NewsLine />
           <div className="relative h-full w-full">
-            {showSidebar && (
               <div className="absolute top-0 left-0 w-[17.36%]">
                 <ul
                   className={`mb-0 pl-0 ${sidebarBg} max-h-[calc(100svh-106px)] [scrollbar-width:none] overflow-y-auto`}
@@ -188,29 +182,7 @@ export default function MyAccountLayout() {
                   })}
                 </ul>
               </div>
-            )}
-            <div className="ml-[17.36%] h-full max-h-[calc(100svh-130px)] w-[calc(100%-17.36%)] overflow-y-auto pl-[15px] max-md:ml-0 max-md:max-h-none max-md:w-auto max-md:pl-0">
-              {isMobile && activeTab && (
-                <div className="flex items-center border-t border-white bg-gradient-to-t from-[#141e21] to-[#2f424d]">
-                  <i
-                    className="h-[10.67vw] w-[10.67vw] shrink-0 border-r border-[#4b4b4b] bg-[url(/img/svg/play-icon.svg)] bg-contain bg-center bg-no-repeat text-white"
-                    role="button"
-                    aria-label="Back to account"
-                    onClick={goToAccountMobile}
-                  />
-                  <ul className="mb-0 flex items-center overflow-x-auto pl-2 leading-[10.4vw]">
-                    <li
-                      className="relative mr-[1.87vw] cursor-pointer pr-[3.47vw] text-[3.47vw] whitespace-nowrap text-white after:absolute after:top-1/2 after:right-0 after:-mt-[1.33vw] after:h-[2.67vw] after:w-[1.6vw] after:bg-[url(/img/svg/next-arrow.svg)] after:bg-contain after:bg-no-repeat after:content-['']"
-                      onClick={goToAccountMobile}
-                    >
-                      {t('header.myAccount', 'My Account')}
-                    </li>
-                    <li className="text-[3.47vw] whitespace-nowrap text-white">
-                      {t(activeTab.i18nKey, activeTab.fallback)}
-                    </li>
-                  </ul>
-                </div>
-              )}
+            <div className="ml-[17.36%] h-full max-h-[calc(100svh-130px)] w-[calc(100%-17.36%)] overflow-y-auto pl-[15px]">
               <Suspense fallback={<Loader show variant="wrapper" />}>
                 <Outlet />
               </Suspense>
