@@ -75,7 +75,13 @@ function NoOpenBets({ isYellowTheme }) {
 function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
   const { t } = useTranslation()
   const isFancy = openBetsValue?.event?.type === 'Fancy'
-  const isSportsBook = openBetsValue?.event?.type === 'Sports Book'
+  const marketName = openBetsValue?.marketName?.toLowerCase() ?? ''
+  const isSportsBook = marketName === 'sports_book'
+  const eventType = openBetsValue?.eventType ?? ''
+  const gtype = openBetsValue?.gtype ?? ''
+  const subLabel = (
+    marketName === 'fancy' ? `${eventType} / ${gtype}` : eventType
+  ).toUpperCase()
   const backBets = openBetsValue?.bets?.back ?? []
 
   if (!backBets.length) return null
@@ -138,19 +144,26 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
               >
                 <div>
                   <div className={ODD_TYPE_CHIP}>
-                    <span>
-                      {isSportsBook
-                        ? openBet.selectedRunnerName
-                        : titleCaseBetType(openBet.betType)}
-                    </span>
+                    <span>{titleCaseBetType(openBet.betType)}</span>
                   </div>
                 </div>
               </td>
               <td className={TD_BASE}>
                 <div className="flex flex-col items-start text-left">
-                  <span className="m-0 w-[100px] [-webkit-line-clamp:2] [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden text-ellipsis font-semibold text-[12px] text-[var(--lg-blue)] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:block max-md:text-[var(--dark)] max-md:w-[19.038vw]">
-                    {openBet?.selection?.name}
-                  </span>
+                  {isSportsBook ? (
+                    <span className="m-0 w-[100px] [-webkit-line-clamp:2] [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden text-ellipsis font-semibold text-[12px] text-[var(--lg-blue)] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:block max-md:text-[var(--dark)] max-md:w-[19.038vw]">
+                      {eventType}
+                    </span>
+                  ) : (
+                    <>
+                      <span className="m-0 w-[100px] [-webkit-line-clamp:2] [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden text-ellipsis font-semibold text-[12px] text-[var(--lg-blue)] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:block max-md:text-[var(--dark)] max-md:w-[19.038vw]">
+                        {openBet?.selection?.name}
+                      </span>
+                      <p className="m-0 text-[var(--xls-black)] opacity-50 max-md:text-[3.46667vw] max-md:leading-[1.3]">
+                        {subLabel}
+                      </p>
+                    </>
+                  )}
                 </div>
               </td>
               <td className={TD_BASE}>
@@ -179,7 +192,13 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
 function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
   const { t } = useTranslation()
   const isFancy = openBetsValue?.event?.type === 'Fancy'
-  const isSportsBook = openBetsValue?.event?.type === 'Sports Book'
+  const marketName = openBetsValue?.marketName?.toLowerCase() ?? ''
+  const isSportsBook = marketName === 'sports_book'
+  const eventType = openBetsValue?.eventType ?? ''
+  const gtype = openBetsValue?.gtype ?? ''
+  const subLabel = (
+    marketName === 'fancy' ? `${eventType} / ${gtype}` : eventType
+  ).toUpperCase()
   const layBets = openBetsValue?.bets?.lay ?? []
 
   if (!layBets.length) return null
@@ -242,19 +261,26 @@ function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
               >
                 <div>
                   <div className={ODD_TYPE_CHIP}>
-                    <span>
-                      {isSportsBook
-                        ? openBet.selectedRunnerName
-                        : titleCaseBetType(openBet.betType)}
-                    </span>
+                    <span>{titleCaseBetType(openBet.betType)}</span>
                   </div>
                 </div>
               </td>
               <td className={TD_BASE}>
                 <div className="flex flex-col items-start text-left">
-                  <span className="m-0 w-[100px] [-webkit-line-clamp:2] [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden text-ellipsis font-semibold text-[12px] text-[var(--lg-blue)] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:block max-md:text-[var(--dark)] max-md:w-[19.038vw]">
-                    {openBet?.selection?.name}
-                  </span>
+                  {isSportsBook ? (
+                    <span className="m-0 w-[100px] [-webkit-line-clamp:2] [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden text-ellipsis font-semibold text-[12px] text-[var(--lg-blue)] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:block max-md:text-[var(--dark)] max-md:w-[19.038vw]">
+                      {eventType}
+                    </span>
+                  ) : (
+                    <>
+                      <span className="m-0 w-[100px] [-webkit-line-clamp:2] [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden text-ellipsis font-semibold text-[12px] text-[var(--lg-blue)] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:block max-md:text-[var(--dark)] max-md:w-[19.038vw]">
+                        {openBet?.selection?.name}
+                      </span>
+                      <p className="m-0 text-[var(--xls-black)] opacity-50 max-md:text-[3.46667vw] max-md:leading-[1.3]">
+                        {subLabel}
+                      </p>
+                    </>
+                  )}
                 </div>
               </td>
               <td className={TD_BASE}>
