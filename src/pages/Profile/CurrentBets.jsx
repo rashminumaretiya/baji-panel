@@ -181,15 +181,9 @@ export default function CurrentBets() {
         orderBy={orderBy}
         onOrderChange={setOrderBy}
       />
-      <Table
-        columns={COLUMNS}
-        data={bets}
-        rowKey="_id"
-        emptyMessage={t(
-          'table.noData.currentBetsNoData',
-          'You have no active bets.'
-        )}
-      />
+      {bets.length > 0 && (
+        <Table columns={COLUMNS} data={bets} rowKey="_id" />
+      )}
     </MarketTabs>
   )
 }
