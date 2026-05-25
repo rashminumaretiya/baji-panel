@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { http } from '../core/http/client.js'
 import { getSportSlug } from '../core/constant/constants.js'
 import { SearchIcon } from './icons.jsx'
 
-const SEARCH_DEBOUNCE_MS = 250
+const SEARCH_DEBOUNCE_MS = 300
 
 function formatEventTime(iso) {
   if (!iso) return ''
@@ -36,7 +36,7 @@ const LeftArrowSvg = (
   </svg>
 )
 
-const SearchSvg = (
+const SearchInlineSvg = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     height="22"
@@ -52,15 +52,13 @@ const SearchSvg = (
   </svg>
 )
 
-// Collapsed search trigger for mobile views. Tap the icon to open a fullscreen
-// overlay with the search input; tap the dim background or back arrow to close.
 export default function MobileSearchEvent() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
-  const [loading, setLoading] = useState(false)
+  const inputRef = useRef(null)
 
   const close = useCallback(() => {
     setOpen(false)
@@ -69,16 +67,18 @@ export default function MobileSearchEvent() {
   }, [])
   const toggle = useCallback(() => setOpen((v) => !v), [])
 
-  // Body scroll-lock while the overlay is open + Escape to close.
+  // Body scroll-lock + Esc to close.
   useEffect(() => {
     if (!open) return undefined
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     const onKey = (e) => e.key === 'Escape' && close()
     window.addEventListener('keydown', onKey)
+    const focusTimer = setTimeout(() => inputRef.current?.focus(), 50)
     return () => {
       document.body.style.overflow = prev
       window.removeEventListener('keydown', onKey)
+      clearTimeout(focusTimer)
     }
   }, [open, close])
 
@@ -88,7 +88,6 @@ export default function MobileSearchEvent() {
     if (!text) return undefined
     const controller = new AbortController()
     const timer = setTimeout(() => {
-      setLoading(true)
       http
         .get('sport/search', {
           params: { searchText: text },
@@ -96,16 +95,13 @@ export default function MobileSearchEvent() {
         })
         .then((res) => {
           if (controller.signal?.aborted) return
-          setResults(Array.isArray(res?.data?.data) ? res.data.data : [])
+          const data = res?.data?.data ?? res?.data ?? []
+          setResults(Array.isArray(data) ? data : [])
         })
         .catch((err) => {
-          if (err?.name === 'CanceledError' || err?.code === 'ERR_CANCELED') {
+           if (err?.name === 'CanceledError' || err?.code === 'ERR_CANCELED') {
             return
           }
-          setResults([])
-        })
-        .finally(() => {
-          setLoading(false)
         })
     }, SEARCH_DEBOUNCE_MS)
     return () => {
@@ -114,9 +110,9 @@ export default function MobileSearchEvent() {
     }
   }, [query])
 
-  const trimmedQuery = query.trim()
-  const effectiveResults = trimmedQuery ? results : []
-  const isSearching = !!trimmedQuery && loading
+  const trimmed = query.trim()
+  const showPanel = open && trimmed.length > 0
+  const showResults = results.length > 0
 
   const onResultClick = useCallback(
     (item) => {
@@ -124,29 +120,21 @@ export default function MobileSearchEvent() {
       const slug =
         getSportSlug(item.sportId) ||
         (item.sportName ? String(item.sportName).toLowerCase() : '')
-      navigate(`/odds/${item.eventId}/${slug}`)
+      if (item.marketId) {
+        navigate(`/racing-odds/${item.eventId}/${item.marketId}/${slug}`)
+      } else {
+        navigate(`/odds/${item.eventId}/${slug}`)
+      }
       close()
     },
     [navigate, close]
   )
 
-  const showEmpty =
-    open &&
-    trimmedQuery.length > 0 &&
-    !isSearching &&
-    effectiveResults.length === 0
-
-  const placeholder = t('header.searchEvents', 'Search Events')
-
   return (
     <div className="relative">
-      {/* `.search-out` ─ collapsed icon button */}
+      {/* `.search-out` ─ collapsed icon trigger (12.8vw × 12.45vw, dark gradient). */}
       <span
-        className={
-          'flex h-[12.45vw] w-[12.8vw] items-center justify-center text-white ' +
-          'bg-gradient-to-b from-[#525252] to-[#2d2d2d] ' +
-          '[&_i_svg]:h-full [&_i_svg]:w-[5.87vw]'
-        }
+        className="flex items-center justify-center cursor-pointer text-white w-[12.8vw] h-[12.45vw] bg-[linear-gradient(180deg,#525252_0%,#2d2d2d_100%)] [&_i_svg]:w-[5.87vw] [&_i_svg]:h-full"
         onClick={toggle}
         role="button"
         tabIndex={0}
@@ -156,24 +144,20 @@ export default function MobileSearchEvent() {
         <SearchIcon />
       </span>
 
-      {/* `.search-events` ─ fullscreen overlay */}
+      {/* `.search-events` ─ fullscreen overlay; opacity 0→1, transition 0.7s. */}
       <div
         className={
-          'fixed inset-0 z-[99999] transition-all duration-700 ease-in-out ' +
+          'fixed inset-0 z-99999 transition-all duration-700 ease-in-out ' +
           (open
-            ? 'pointer-events-auto opacity-100'
-            : 'pointer-events-none opacity-0')
+            ? 'opacity-100 pointer-events-auto'
+            : 'opacity-0 pointer-events-none')
         }
       >
-        {/* `.search-events-inner` ─ search bar row */}
-        <div className="flex items-center bg-white max-md:h-[16vw]">
-          {/* `.left-arrow` ─ back button */}
+        {/* `.search-events-inner` ─ 16vw-tall white top bar. */}
+        <div className="flex items-center bg-white h-[16vw] relative z-1">
+          {/* `.left-arrow` */}
           <i
-            className={
-              'inline-flex items-center justify-center ' +
-              '[&_svg]:scale-80 max-md:[&_svg]:scale-100 ' +
-              'max-md:[&_svg]:h-[10.07vw] max-md:[&_svg]:w-[10.67vw]'
-            }
+            className="inline-flex items-center justify-center cursor-pointer flex-none [&_svg]:w-[10.67vw] [&_svg]:h-[10.07vw]"
             onClick={close}
             role="button"
             tabIndex={0}
@@ -183,138 +167,99 @@ export default function MobileSearchEvent() {
             {LeftArrowSvg}
           </i>
 
-          {/* `.ng-select-container` ─ input + clear */}
-          <div className="flex flex-1 items-center rounded-none border-0">
-            {/* `.ng-value-container` */}
-            <div className="flex h-full flex-1 items-center">
-              {/* `.ng-input` */}
-              <div className="h-full">
-                <input
-                  aria-autocomplete="list"
-                  role="combobox"
-                  type="text"
-                  placeholder={placeholder}
-                  autoCorrect="off"
-                  autoCapitalize="off"
-                  autoComplete="off"
-                  aria-expanded={open}
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  autoFocus={open}
-                  className={
-                    'h-[46px] w-full border-0 outline-none max-md:h-full max-md:pl-0 ' +
-                    'font-normal placeholder:ml-0 placeholder:font-normal placeholder:text-[#9b9b9b]'
-                  }
-                />
-              </div>
-            </div>
+          {/* `.ng-select-container` ─ the input row (12vw tall, no border/radius). */}
+          <div className="flex flex-1 items-center h-[12vw] rounded-none border-0">
+            <input
+              ref={inputRef}
+              type="text"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded={showPanel}
+              autoCorrect="off"
+              autoCapitalize="off"
+              autoComplete="off"
+              placeholder={t('header.searchEvents', 'Search Events')}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="w-full h-[7vw] border-0 outline-none bg-transparent text-(--text-color) placeholder:text-[#9b9b9b] placeholder:font-normal placeholder:ml-0 font-normal"
+            />
+            {/* `.ng-clear-wrapper` ─ 6.07vw wide × button. */}
             {query && (
               <span
-                className={
-                  'flex w-[22px] items-center font-thin max-md:w-[6.07vw]'
-                }
+                className="flex items-center justify-center cursor-pointer flex-none w-[6.07vw] font-thin"
                 role="button"
                 tabIndex={0}
-                onClick={() => setQuery('')}
-                onKeyDown={(e) =>
-                  (e.key === 'Enter' || e.key === ' ') && setQuery('')
-                }
                 aria-label="Clear search"
-              >
-                <span
-                  className={
-                    'text-[26px] leading-[20px] text-(--lg-black) ' +
-                    'max-md:text-[7vw] max-md:leading-normal max-md:text-(--xxl-black)'
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => setQuery('')}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    setQuery('')
                   }
-                >
+                }}
+              >
+                <span className="text-[7vw] leading-normal text-(--xxl-black)">
                   ×
                 </span>
               </span>
             )}
-            {/* `.ng-arrow-wrapper` ─ hidden in original */}
-            <span className="hidden">
-              <span />
-            </span>
           </div>
 
-          {/* `.search-icon` */}
-          <i
-            className={
-              'p-2.5 leading-[45px] ' +
-              '[&_svg]:h-[5.07vw] [&_svg]:w-[5.67vw] ' +
-              '[&_svg_path]:fill-(--lg-black) max-md:[&_svg_path]:fill-(--xxl-black)'
-            }
-          >
-            {SearchSvg}
+          {/* `.search-icon` (right) ─ decorative magnifier inside the bar. */}
+          <i className="p-2.5 leading-[45px] flex-none [&_svg]:w-[5.67vw] [&_svg]:h-[5.07vw] [&_svg_path]:fill-(--xxl-black)">
+            {SearchInlineSvg}
           </i>
         </div>
 
-        {(effectiveResults.length > 0 || isSearching || showEmpty) && (
-          // `.ng-select` ─ dropdown results panel
-          <div
-            className={
-              'flex w-full items-center overflow-y-auto bg-white max-md:h-[16vw]'
-            }
-          >
-            {/* `.ng-dropdown-panel` */}
-            <div
-              className={
-                'max-md:fixed max-md:right-0 max-md:left-0 ' +
-                'max-md:top-[16vw] max-md:border-t max-md:border-(--xxl-gray)'
-              }
-            >
-              {/* `.ng-dropdown-panel-items` */}
-              <div className="overflow-y-auto max-md:max-h-[46.67vw]">
-                {isSearching && effectiveResults.length === 0 && (
+        {/* `.ng-dropdown-panel` ─ fixed below the 16vw-tall bar. */}
+        {showPanel && (
+          <div className="fixed left-0 right-0 top-[16vw] bg-white border-t border-(--xxl-gray)">
+            <div className="overflow-y-auto max-h-[46.67vw]">
+              {showResults ? (
+                results.map((item) => (
                   <div
-                    className={
-                      'bg-white px-1 text-[14px] text-(--text-color) ' +
-                      'max-md:px-[2vw] max-md:text-[4vw] max-md:text-(--blue)'
-                    }
-                  >
-                    {t('common.loading', 'Searching…')}
-                  </div>
-                )}
-                {effectiveResults.map((item) => (
-                  <div
-                    type="button"
-                    key={`${item.sportId}-${item.eventId}`}
-                    className={
-                      'cursor-pointer bg-white px-1 text-[14px] text-(--text-color) ' +
-                      'max-md:px-[2vw] max-md:text-[4vw] max-md:text-(--blue) ' +
-                      'max-md:[&_.item]:overflow-hidden max-md:[&_.item]:text-ellipsis ' +
-                      'max-md:[&_.item]:leading-[11.68vw] ' +
-                      'max-md:[&_.time]:mr-[1.86vw] max-md:[&_.time]:font-normal ' +
-                      'max-md:[&_.time]:text-(--lg-black)'
-                    }
+                    key={`${item.sportId}-${item.eventId}-${item.marketId ?? 'evt'}`}
+                    className="cursor-pointer bg-white px-[2vw] text-[4vw] text-(--blue) [&_.item]:overflow-hidden [&_.item]:text-ellipsis [&_.item]:leading-[11.68vw] [&_.item]:whitespace-nowrap [&_.time]:mr-[1.87vw] [&_.time]:font-normal [&_.time]:text-(--lg-black) hover:bg-(--xxs-gray)"
+                    role="option"
+                    aria-selected="false"
+                    tabIndex={0}
                     onClick={() => onResultClick(item)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        onResultClick(item)
+                      }
+                    }}
                   >
-                    <div title={item.eventName} className="item">
+                    <div className="item" title={item.eventName}>
                       <span className="time">
-                        {formatEventTime(item.openDate)}
+                        {formatEventTime(
+                          item.marketStartTime ?? item.openDate
+                        )}
                       </span>
-                      <span>{item.eventName?.trim()}</span>
+                      <span>
+                        {item.marketName
+                          ? `${item.eventName} -> ${item.marketName}`
+                          : item.eventName?.trim()}
+                      </span>
                     </div>
                   </div>
-                ))}
-                {showEmpty && (
-                  <div
-                    className={
-                      'bg-white px-1 text-[14px] text-(--text-color) ' +
-                      'max-md:px-[2vw] max-md:text-[4vw] max-md:text-(--blue)'
-                    }
-                  >
-                    {t('common.noEventsFound', 'No events found')}
-                  </div>
-                )}
-              </div>
+                ))
+              ) : (
+                <div className="px-[2vw] text-[4vw] text-(--blue) leading-[11.68vw] bg-white">
+                  {t('header.noEventsFound', 'No events found')}
+                </div>
+              )}
             </div>
           </div>
         )}
 
-        {/* `.search-overlay` ─ dim backdrop */}
+        {/* `.search-overlay` ─ dim backdrop. Sits *behind* the bar (-z-[1])
+            but inside `.search-events`, so clicks on the dim area dismiss
+            the modal. */}
         <div
-          className="fixed top-0 left-0 -z-[1] h-full w-screen bg-black/70"
+          className="fixed top-0 left-0 w-screen h-full bg-black/70 z-[-1]"
           onClick={close}
           aria-hidden="true"
         />
