@@ -14,11 +14,12 @@ import {
 import {
   selectIsMcvYellowTheme,
   selectIsPlayLiveStream,
-  selectIsStreamUrlAvailable,
   selectIsYellowTheme,
   setIsPlayLiveStream,
   selectLogo,
 } from '../store/slices/commonSlice.js'
+
+const selectIsStreamUrlAvailable = (s) => s.common.isStreamUrlAvailable
 import {
   fetchOpenBets,
   selectOpenBetRefreshTick,
