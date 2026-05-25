@@ -101,7 +101,7 @@ export default function EventSearch() {
   return (
     <div
       ref={wrapperRef}
-      className="relative mr-2 w-full max-w-[280px] min-w-[150px] flex-[0_0_auto] max-[1440px]:flex-[0_0_50%]"
+      className="relative mr-2 w-full max-w-[280px] min-w-[150px] flex-[0_0_auto]"
     >
       <i className="absolute top-1/2 left-[5px] z-1002 flex -translate-y-1/2 [&_svg]:h-[14px] [&_svg]:w-[14px] [&_svg]:text-(--dark-grey)">
         <SearchIcon />
