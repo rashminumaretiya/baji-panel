@@ -63,17 +63,17 @@ export function MatchOddsSection({
   const minMaxStr = `${fmt(marketSetting.min || 1)} / ${fmt(marketSetting.max || 100)}`
 
   const matchOddsTabClass = isYellowTheme
-    ? 'inline-block relative font-bold mr-0 max-md:!bg-gradient-to-t max-md:!from-[#ffa10c] max-md:!to-[var(--md-primary-yellow)] max-md:border max-md:!border-[var(--coffee)] max-md:!text-[var(--dark)] max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-[var(--sm-white)] md:text-[var(--xxl-blue)] md:px-[2px] md:py-[8px_2px_7px_10px] md:py-2 md:pl-[10px] md:pr-[2px] md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.png)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
-    : 'inline-block relative font-bold mr-0 max-md:text-white max-md:border max-md:border-[rgba(var(--md-dark-rgb),0.3)] max-md:bg-gradient-to-b max-md:from-[var(--xs-primary)] max-md:to-[var(--xxs-primary)] max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-[var(--sm-white)] md:text-[var(--xxl-blue)] md:pl-[10px] md:pr-[2px] md:pb-[7px] md:pt-2 md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.png)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
+    ? 'inline-block relative font-bold mr-0 max-md:!bg-gradient-to-t max-md:!from-[#ffa10c] max-md:!to-(--md-primary-yellow) max-md:border max-md:!border-(--coffee) max-md:!text-(--dark) max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-(--sm-white) md:text-(--xxl-blue) md:px-[2px] md:py-[8px_2px_7px_10px] md:py-2 md:pl-[10px] md:pr-[2px] md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.png)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
+    : 'inline-block relative font-bold mr-0 max-md:text-white max-md:border max-md:border-[rgba(var(--md-dark-rgb),0.3)] max-md:bg-gradient-to-b max-md:from-(--xs-primary) max-md:to-(--xxs-primary) max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-(--sm-white) md:text-(--xxl-blue) md:pl-[10px] md:pr-[2px] md:pb-[7px] md:pt-2 md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.png)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
 
   return (
     <div className="md:mb-[30px]">
-      <div className="flex flex-wrap justify-between items-center relative">
+      <div className="relative flex flex-wrap items-center justify-between">
         <div className="w-full">
           <div
             className={cx(
-              'flex justify-between relative bg-white border-b border-[var(--sm-text-color)]',
-              'max-md:border-b-0 max-md:bg-[var(--light-bg)] max-md:p-[1.86667vw]'
+              'relative flex justify-between border-b border-(--sm-text-color) bg-white',
+              'max-md:border-b-0 max-md:bg-(--light-bg) max-md:p-[1.86667vw]'
             )}
           >
             <div>
@@ -83,21 +83,19 @@ export function MatchOddsSection({
               {!isMobile && (
                 <span
                   className={cx(
-                    'text-[13px] ml-2 align-text-bottom inline-block',
-                    matchOdds.inplay
-                      ? 'text-[var(--dark-green)]'
-                      : 'text-inherit'
+                    'ml-2 inline-block align-text-bottom text-[13px]',
+                    matchOdds.inplay ? 'text-(--dark-green)' : 'text-inherit'
                   )}
                 >
                   <i
                     className={cx(
-                      "inline-block align-middle w-[15px] h-[15px] mr-[5px] [background-image:url('/img/main-s1aea395e8c.png')]",
+                      "mr-[5px] inline-block h-[15px] w-[15px] [background-image:url('/img/main-s1aea395e8c.png')] align-middle",
                       matchOdds.inplay
                         ? '[background-position:-399px_-2401px]'
                         : '[background-position:-399px_-2869px]'
                     )}
                   />
-                  <span className="inline-block ml-1 align-middle">
+                  <span className="ml-1 inline-block align-middle">
                     {matchOdds.inplay
                       ? t('common.inPlay', 'In-Play')
                       : fmtDate(matchOdds.marketStartTime)}
@@ -107,12 +105,12 @@ export function MatchOddsSection({
             </div>
             {!isMobile && (
               <>
-                <div className="flex text-black absolute top-0 left-1/2 -translate-x-1/2 my-[7px] mx-[5px] bg-[var(--xl-light-bg)] text-[12px] leading-4 rounded-[3px] px-[6px] !text-[var(--sm-xl-dark)]">
+                <div className="absolute top-0 left-1/2 mx-[5px] my-[7px] flex -translate-x-1/2 rounded-[3px] bg-(--xl-light-bg) px-[6px] text-[12px] leading-4 !text-(--sm-xl-dark) text-black">
                   <p className="mb-0">
                     {t('common.min', 'Min')}/ {t('common.max', 'Max')}
                   </p>
                   <p className="mb-0 ml-1">
-                    <small className="text-[13px] text-[var(--light-navy)]">
+                    <small className="text-[13px] text-(--light-navy)">
                       {minMaxStr}
                     </small>
                   </p>
@@ -140,7 +138,7 @@ export function MatchOddsSection({
                 <>
                   <th className={cx(TABLE_TH, 'text-start whitespace-nowrap')}>
                     <div className="flex items-center">
-                      <div className="bg-[var(--light-bg)] relative max-md:m-[-1.86vw_3.7vw_-2vw_-1.9vw] max-md:p-[2.13333vw_1.86667vw_3.2vw_1.86667vw] max-md:before:content-[''] max-md:before:absolute max-md:before:top-0 max-md:before:left-[10.4vw] max-md:before:border-b-[14.33333vw] max-md:before:border-b-transparent max-md:before:border-l-[1.86667vw] max-md:before:border-l-[var(--light-bg)] [&_svg]:max-md:w-[6.66667vw] [&_svg]:max-md:h-[6.66667vw]">
+                      <div className="relative bg-(--light-bg) max-md:m-[-1.86vw_3.7vw_-2vw_-1.9vw] max-md:p-[2.13333vw_1.86667vw_3.2vw_1.86667vw] max-md:before:absolute max-md:before:top-0 max-md:before:left-[10.4vw] max-md:before:border-b-[14.33333vw] max-md:before:border-l-[1.86667vw] max-md:before:border-b-transparent max-md:before:border-l-(--light-bg) max-md:before:content-[''] [&_svg]:max-md:h-[6.66667vw] [&_svg]:max-md:w-[6.66667vw]">
                         <InfoIcon onClick={onToggleBetLimit} />
                         {betLimitOpen && (
                           <div
@@ -163,8 +161,8 @@ export function MatchOddsSection({
                           </div>
                         )}
                       </div>
-                      <i className="[background-image:url('/img/svg/barChart.svg')] bg-contain bg-no-repeat max-md:w-[6.5vw] max-md:h-[6.66667vw]" />
-                      <div className="max-md:pl-[1.86667vw] [&_p]:leading-[7px] [&_p]:font-normal [&_p]:mt-1 [&_p]:max-md:text-[2.93333vw] [&_span]:font-bold [&_span]:max-md:text-[2.93333vw]">
+                      <i className="[background-image:url('/img/svg/barChart.svg')] bg-contain bg-no-repeat max-md:h-[6.66667vw] max-md:w-[6.5vw]" />
+                      <div className="max-md:pl-[1.86667vw] [&_p]:mt-1 [&_p]:leading-[7px] [&_p]:font-normal [&_p]:max-md:text-[2.93333vw] [&_span]:font-bold [&_span]:max-md:text-[2.93333vw]">
                         <p className="mb-0">{t('common.matched', 'Matched')}</p>
                         <span>{currency || 'PBU'}</span>{' '}
                         <span>{fmt(totalMatched)}</span>
@@ -183,7 +181,7 @@ export function MatchOddsSection({
                   <th
                     className={cx(
                       TABLE_TH,
-                      'text-start whitespace-nowrap text-[var(--sm-text-color)] pt-[20px] pl-1'
+                      'pt-[20px] pl-1 text-start whitespace-nowrap text-(--sm-text-color)'
                     )}
                   >
                     {matchOdds.numberOfRunners ??
@@ -240,7 +238,7 @@ export function MatchOddsSection({
 
               return (
                 <Fragment key={runner.selectionId}>
-                  <tr className="hover:[&>td:first-child:not(.price)]:bg-[var(--mds-light-bg)]">
+                  <tr className="hover:[&>td:first-child:not(.price)]:bg-(--mds-light-bg)">
                     <td
                       className={cx(
                         RUNNER_FIRST_CELL,
@@ -248,8 +246,8 @@ export function MatchOddsSection({
                       )}
                     >
                       <div className="flex flex-col">
-                        <p className="mb-1 font-bold overflow-hidden text-ellipsis [-webkit-line-clamp:2] [-webkit-box-orient:vertical] [display:-webkit-box] min-w-[150px]">
-                          <i className="inline-block align-bottom w-[15px] h-[15px] mr-[5px] bg-no-repeat [background-image:url('/img/main-s1aea395e8c.png')] [background-position:-398px_-1968px]" />
+                        <p className="mb-1 [display:-webkit-box] min-w-[150px] overflow-hidden font-bold text-ellipsis [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">
+                          <i className="mr-[5px] inline-block h-[15px] w-[15px] [background-image:url('/img/main-s1aea395e8c.png')] [background-position:-398px_-1968px] bg-no-repeat align-bottom" />
                           {runner.runnerName || runner.runner}
                         </p>
                         <div className="flex items-center">
@@ -286,7 +284,7 @@ export function MatchOddsSection({
                             bgLine(price) && BG_LINE,
                             isActive && BLUE_XS_ACTIVE,
                             showBackAllHeader &&
-                              "relative before:content-['Back_All'] before:absolute before:bottom-full before:left-1/2 before:-translate-x-1/2 before:w-full before:h-[22px] before:leading-[23px] before:font-semibold before:bg-no-repeat before:[background-image:url('/img/main-s1aea395e8c.png')] before:[background-position:-274px_-317px] before:text-[var(--xs-black)] before:border-b before:border-white"
+                              "relative before:absolute before:bottom-full before:left-1/2 before:h-[22px] before:w-full before:-translate-x-1/2 before:border-b before:border-white before:[background-image:url('/img/main-s1aea395e8c.png')] before:[background-position:-274px_-317px] before:bg-no-repeat before:leading-[23px] before:font-semibold before:text-(--xs-black) before:content-['Back_All']"
                           )}
                           onClick={() =>
                             !bgLine(price) && onPick(runnerExt, cell, 'BACK')
@@ -321,7 +319,7 @@ export function MatchOddsSection({
                             bgLine(price) && BG_LINE,
                             isActive && RED_XS_ACTIVE,
                             showLayAllHeader &&
-                              "relative before:content-['Lay_All'] before:absolute before:bottom-full before:left-1/2 before:-translate-x-1/2 before:w-full before:h-[22px] before:leading-[23px] before:font-semibold before:bg-no-repeat before:[background-image:url('/img/main-s1aea395e8c.png')] before:[background-position:100%_-399px] before:text-[var(--xs-black)] before:border-b before:border-white"
+                              "relative before:absolute before:bottom-full before:left-1/2 before:h-[22px] before:w-full before:-translate-x-1/2 before:border-b before:border-white before:[background-image:url('/img/main-s1aea395e8c.png')] before:[background-position:100%_-399px] before:bg-no-repeat before:leading-[23px] before:font-semibold before:text-(--xs-black) before:content-['Lay_All']"
                           )}
                           onClick={() =>
                             !bgLine(price) && onPick(runnerExt, cell, 'LAY')

@@ -44,7 +44,7 @@ function ReasonCell({ html, onClick }) {
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => e.key === 'Enter' && onClick()}
-      className="[&_a]:text-[var(--cyanBlue)] [&_a]:underline [&_a]:cursor-pointer [&_a]:text-[12px]"
+      className="[&_a]:cursor-pointer [&_a]:text-[12px] [&_a]:text-(--cyanBlue) [&_a]:underline"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   )
@@ -59,15 +59,15 @@ function getStatusCellClass(value) {
     slug.includes('approve') ||
     slug.includes('success')
   )
-    return 'text-[var(--avocado-green)] font-bold'
+    return 'text-(--avocado-green) font-bold'
   if (
     slug.includes('fail') ||
     slug.includes('reject') ||
     slug.includes('decline')
   )
-    return 'text-[var(--failed-status)] font-bold'
+    return 'text-(--failed-status) font-bold'
   if (slug.includes('pending') || slug.includes('process'))
-    return 'text-[var(--orange-dark)] font-bold'
+    return 'text-(--orange-dark) font-bold'
   return ''
 }
 
@@ -138,8 +138,8 @@ export default function WithdrawHistory() {
 
   return (
     <>
-      <div className="flex justify-between items-center">
-        <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
+      <div className="flex items-center justify-between">
+        <p className="mb-1.5 pt-1.5 text-[13px] leading-5 font-bold text-[#1e1e1e]">
           {t('common.withdrawHistory', 'Withdraw History')}
         </p>
       </div>
@@ -155,29 +155,29 @@ export default function WithdrawHistory() {
         // with a centred 420px-wide white card; the deposit-history.scss copy
         // is preserved verbatim here in utility form.
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1050]"
+          className="fixed inset-0 z-[1050] flex items-center justify-center bg-black/50"
           onClick={closeReason}
         >
           <div
-            className="bg-white rounded-md w-[90%] max-w-[420px] shadow-[0_4px_20px_rgba(0,0,0,0.25)] overflow-hidden"
+            className="w-[90%] max-w-[420px] overflow-hidden rounded-md bg-white shadow-[0_4px_20px_rgba(0,0,0,0.25)]"
             role="dialog"
             aria-modal="true"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--light-gray)]">
+            <div className="flex items-center justify-between border-b border-(--light-gray) px-4 py-3">
               <h5 className="m-0 text-[16px] font-semibold">
                 {t('myBets.rejectedReason', 'Decline Reason')}
               </h5>
               <button
                 type="button"
-                className="bg-transparent border-0 cursor-pointer text-[18px] text-[var(--dark-md-gray)] hover:text-black"
+                className="cursor-pointer border-0 bg-transparent text-[18px] text-(--dark-md-gray) hover:text-black"
                 aria-label="Close"
                 onClick={closeReason}
               >
                 ✕
               </button>
             </div>
-            <div className="p-4 text-[14px] text-[var(--dark-md-gray)] break-words">
+            <div className="p-4 text-[14px] break-words text-(--dark-md-gray)">
               {reasonModal.reason || '—'}
             </div>
           </div>

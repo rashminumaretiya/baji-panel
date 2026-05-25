@@ -19,16 +19,16 @@ export default function Loader({
   const isSide = variant === 'side'
 
   const inner = (
-    <div className="flex flex-col items-center justify-center bg-white shadow-[0_5px_10px_rgba(var(--black-rgb),0.5)] rounded-[10px] px-5 pt-10 pb-5 h-[115px] w-[190px]">
-      <div className="relative w-10 mx-auto mt-[15px]">
-        <span className="block absolute bottom-0 w-5 h-5 rounded-full bg-[var(--primary-yellow)] z-[5] animate-[yellow-circle_0.6s_infinite_ease-in-out]" />
-        <span className="block absolute bottom-0 w-5 h-5 rounded-full bg-[var(--xxl-blue)] left-1/2 animate-[blue-circle_0.6s_infinite_ease-in-out]" />
+    <div className="flex h-[115px] w-[190px] flex-col items-center justify-center rounded-[10px] bg-white px-5 pt-10 pb-5 shadow-[0_5px_10px_rgba(var(--black-rgb),0.5)]">
+      <div className="relative mx-auto mt-[15px] w-10">
+        <span className="absolute bottom-0 z-[5] block h-5 w-5 animate-[yellow-circle_0.6s_infinite_ease-in-out] rounded-full bg-(--primary-yellow)" />
+        <span className="absolute bottom-0 left-1/2 block h-5 w-5 animate-[blue-circle_0.6s_infinite_ease-in-out] rounded-full bg-(--xxl-blue)" />
       </div>
       <div
         className={
           isSide
-            ? 'text-white mt-3 text-center text-[11px]'
-            : 'text-[var(--xxl-blue)] mt-[5px] text-[11px]'
+            ? 'mt-3 text-center text-[11px] text-white'
+            : 'mt-[5px] text-[11px] text-(--xxl-blue)'
         }
       >
         {t(message, fallback)}

@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 const TAB_LIST_CLASS =
-  'flex rounded-none gap-[5px] flex-wrap justify-start border-b-0 m-0 px-[10px] pt-0 pb-px bg-[var(--xl-dark-green)] list-none'
+  'flex rounded-none gap-[5px] flex-wrap justify-start border-b-0 m-0 px-[10px] pt-0 pb-px bg-(--xl-dark-green) list-none'
 
 const TAB_ITEM_CLASS = 'flex-none ml-0'
 
@@ -10,10 +10,10 @@ const TAB_LINK_BASE =
   'block border rounded-t-[4px] rounded-b-none w-[130px] text-[12px] leading-[21px] font-normal p-0 -mb-px'
 
 const TAB_LINK_INACTIVE =
-  'bg-[var(--xts-light-bg)] border-[var(--xxl-blue)] text-white shadow-[inset_0_7px_2px_-7px_var(--xts-gray)]'
+  'bg-(--xts-light-bg) border-(--xxl-blue) text-white shadow-[inset_0_7px_2px_-7px_var(--xts-gray)]'
 
 const TAB_LINK_ACTIVE =
-  'bg-[var(--xl-th-bg)] border-[var(--xl-th-bg)] text-black shadow-[inset_0_7px_2px_-7px_var(--white)]'
+  'bg-(--xl-th-bg) border-(--xl-th-bg) text-black shadow-[inset_0_7px_2px_-7px_var(--white)]'
 
 const SportTab = memo(function SportTab({ tab, navId, isActive, onSelect }) {
   const { t } = useTranslation()

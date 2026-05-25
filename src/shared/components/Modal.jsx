@@ -59,16 +59,16 @@ export default function Modal({
       aria-modal="true"
     >
       <div
-        className={`mx-auto my-[1.75rem] ${centered ? 'min-h-[calc(100%-3.5rem)] flex items-center' : ''}`}
+        className={`mx-auto my-[1.75rem] ${centered ? 'flex min-h-[calc(100%-3.5rem)] items-center' : ''}`}
       >
         <div
-          className={`relative mx-auto w-full ${sizeClass} bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.2)] ${innerClass}`}
+          className={`relative mx-auto w-full ${sizeClass} rounded-md bg-white shadow-[0_10px_30px_rgba(0,0,0,0.2)] ${innerClass}`}
           onClick={(e) => e.stopPropagation()}
         >
           {title && (
             <div className="flex items-center justify-between border-b border-[#e5e5e5] px-4 py-3">
               <h4
-                className={`m-0 text-base font-bold text-[#3b5160] font-[Tahoma,Helvetica,sans-serif] ${centerTitle ? 'flex-1 text-center' : ''}`}
+                className={`m-0 font-[Tahoma,Helvetica,sans-serif] text-base font-bold text-[#3b5160] ${centerTitle ? 'flex-1 text-center' : ''}`}
               >
                 {title}
               </h4>

@@ -25,21 +25,21 @@ const MOBILE_OPTIONS = [
 export function DesktopGameFilter({ value, onChange }) {
   const { t } = useTranslation()
   return (
-    <div className="font-bold px-[2px] py-[3px] pl-[10px] text-[var(--white)] bg-[linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] leading-[25px] flex justify-between">
+    <div className="flex justify-between bg-[linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] px-[2px] py-[3px] pl-[10px] leading-[25px] font-bold text-(--white)">
       <div>{t('titles.sportHighLights')}</div>
       <div className="inline-flex items-center font-normal">
         <label
           htmlFor="viewType"
-          className="text-[12px] text-white whitespace-nowrap mb-0 cursor-default"
+          className="mb-0 cursor-default text-[12px] whitespace-nowrap text-white"
         >
           {t('common.viewBy')}
         </label>
         <div
           className={
             'relative ' +
-            "after:content-[''] after:absolute after:right-[7px] after:top-1/2 after:-translate-y-1/2 " +
-            'after:w-0 after:h-0 after:border-l-[4px] after:border-l-transparent ' +
-            'after:border-r-[4px] after:border-r-transparent after:border-t-[5px] after:border-t-white ' +
+            "after:absolute after:top-1/2 after:right-[7px] after:-translate-y-1/2 after:content-[''] " +
+            'after:h-0 after:w-0 after:border-l-[4px] after:border-l-transparent ' +
+            'after:border-t-[5px] after:border-r-[4px] after:border-t-white after:border-r-transparent ' +
             'after:pointer-events-none'
           }
         >
@@ -50,11 +50,11 @@ export function DesktopGameFilter({ value, onChange }) {
             onChange={(e) => onChange(e.target.value)}
             aria-label={t('titles.highLights')}
             className={
-              'w-[108px] h-[23px] border border-black/40 ' +
-              'shadow-[inset_0_1px_rgba(var(--white-rgb),0.5)] rounded-[4px] ' +
-              'bg-white/20 mr-0.5 ml-[7px] inline-block text-white ' +
-              'appearance-none leading-[14px] pl-1 text-[12px] ' +
-              '[&_option]:bg-[var(--dark-black)] [&_option]:text-white'
+              'h-[23px] w-[108px] border border-black/40 ' +
+              'rounded-[4px] shadow-[inset_0_1px_rgba(var(--white-rgb),0.5)] ' +
+              'mr-0.5 ml-[7px] inline-block bg-white/20 text-white ' +
+              'appearance-none pl-1 text-[12px] leading-[14px] ' +
+              '[&_option]:bg-(--dark-black) [&_option]:text-white'
             }
           >
             {DESKTOP_OPTIONS.map((opt) => (
@@ -79,18 +79,18 @@ export function MobileGameFilter({ value, onChange }) {
     <div>
       <h3
         className={
-          'text-center mb-0 max-md:px-[1.87vw] ' +
-          'max-md:bg-gradient-to-t max-md:from-[var(--xxl-blue)] max-md:to-[var(--xl-blue)] ' +
-          'max-md:text-white max-md:text-[3.73vw] max-md:leading-[2.2] max-md:font-bold'
+          'mb-0 text-center max-md:px-[1.87vw] ' +
+          'max-md:bg-gradient-to-t max-md:from-(--xxl-blue) max-md:to-(--xl-blue) ' +
+          'max-md:text-[3.73vw] max-md:leading-[2.2] max-md:font-bold max-md:text-white'
         }
       >
         {t('titles.highLights')}
       </h3>
-      <div className="max-md:flex max-md:justify-center max-md:items-center max-md:h-[10.67vw]">
+      <div className="max-md:flex max-md:h-[10.67vw] max-md:items-center max-md:justify-center">
         <ul
           className={
-            'p-0 flex max-md:w-[80%] max-md:mx-auto max-md:h-fit ' +
-            'max-md:bg-[var(--light-xl-bg)] max-md:shadow-[inset_0_1px_3px_0_rgba(var(--black-rgb),0.15)] ' +
+            'flex p-0 max-md:mx-auto max-md:h-fit max-md:w-[80%] ' +
+            'max-md:bg-(--light-xl-bg) max-md:shadow-[inset_0_1px_3px_0_rgba(var(--black-rgb),0.15)] ' +
             'max-md:rounded-[1.6vw] max-md:p-[0.27vw]'
           }
           role="tablist"
@@ -110,11 +110,11 @@ export function MobileGameFilter({ value, onChange }) {
                   type="button"
                   className={
                     'max-md:h-[8vw] max-md:w-[calc(100%-0.5vw)] max-md:bg-transparent ' +
-                    'max-md:text-black max-md:rounded-[1.33vw] max-md:p-0 max-md:mb-0 ' +
-                    'max-md:text-[3.2vw] max-md:leading-[3.2vw] max-md:border ' +
-                    'max-md:border-transparent max-md:m-[0.25vw] max-md:font-semibold ' +
+                    'max-md:mb-0 max-md:rounded-[1.33vw] max-md:p-0 max-md:text-black ' +
+                    'max-md:border max-md:text-[3.2vw] max-md:leading-[3.2vw] ' +
+                    'max-md:m-[0.25vw] max-md:border-transparent max-md:font-semibold ' +
                     (isActive
-                      ? 'max-md:!bg-white max-md:!text-[var(--active-blue)] ' +
+                      ? 'max-md:!bg-white max-md:!text-(--active-blue) ' +
                         'max-md:shadow-[0_0_3px_0_rgba(var(--black-rgb),0.15)]'
                       : '')
                   }

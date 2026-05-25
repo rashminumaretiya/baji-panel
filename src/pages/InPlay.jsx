@@ -63,16 +63,16 @@ const SECOND_PART_WRAPPER =
   'max-h-[calc(100vh-198px)] overflow-y-auto min-h-[200px] max-md:max-h-none max-md:min-h-0 max-md:overflow-y-visible'
 
 const GAME_DETAILS_ROW =
-  'flex items-center border-b border-[color:var(--light-bg)] pl-[10px] pr-[6px] py-0 hover:bg-[var(--hover-bg)]'
+  'flex items-center border-b border-[color:var(--light-bg)] pl-[10px] pr-[6px] py-0 hover:bg-(--hover-bg)'
 
 const TIME_CELL =
   'text-[color:var(--light-navy)] text-[12px] py-2 max-w-[70px] w-full font-bold whitespace-nowrap overflow-hidden text-ellipsis'
 
 const EVENT_TITLE_H6 =
-  "mb-0 cursor-pointer text-[var(--blue)] text-[12px] font-bold relative pl-[18px] hover:underline before:content-[''] before:absolute before:left-0 before:top-[3px] before:w-0 before:h-0 before:border-solid before:border-transparent before:border-l-[var(--sm-white)] before:border-y-[4px] before:border-r-0 before:border-l-[8px]"
+  "mb-0 cursor-pointer text-(--blue) text-[12px] font-bold relative pl-[18px] hover:underline before:content-[''] before:absolute before:left-0 before:top-[3px] before:w-0 before:h-0 before:border-solid before:border-transparent before:border-l-(--sm-white) before:border-y-[4px] before:border-r-0 before:border-l-[8px]"
 
 const SPORT_FILTER_WRAPPER =
-  'relative flex items-center px-[10px] py-[10px] bg-[var(--light-bg)] border-b border-[color:var(--sm-text-color)] mb-[10px]'
+  'relative flex items-center px-[10px] py-[10px] bg-(--light-bg) border-b border-[color:var(--sm-text-color)] mb-[10px]'
 
 const SPORT_FILTER_CHIP_BASE =
   "bg-no-repeat bg-left pr-[6px] [&+&]:pl-[10px] [&+&]:bg-[url('/img/filter-dot.png')]"
@@ -249,7 +249,7 @@ export default function InPlay() {
   const renderSportFilter = () => (
     <div className={SPORT_FILTER_WRAPPER}>
       <div className="flex items-center">
-        <p className="font-bold m-0 mr-2">Sport Filters:</p>
+        <p className="m-0 mr-2 font-bold">Sport Filters:</p>
         {savedSelections.map((sport) => (
           <span key={sport.value} className={SPORT_FILTER_CHIP_BASE}>
             {t(sport.label)}
@@ -274,11 +274,11 @@ export default function InPlay() {
       >
         <Popover
           id="inplay-sport-filter"
-          className="min-w-[500px] max-w-[500px] mt-[2px]"
+          className="mt-[2px] max-w-[500px] min-w-[500px]"
         >
-          <Popover.Body className="p-2 text-[12px] font-['Tahoma',Helvetica,sans-serif]">
+          <Popover.Body className="p-2 font-['Tahoma',Helvetica,sans-serif] text-[12px]">
             <div className="flex flex-wrap">
-              <div className="w-1/2 mb-1">
+              <div className="mb-1 w-1/2">
                 <input
                   id="inplay-filter-all"
                   type="checkbox"
@@ -291,7 +291,7 @@ export default function InPlay() {
                 </label>
               </div>
               {INPLAY_FILTER_SPORTS.map((sport, idx) => (
-                <div key={sport.value} className="w-1/2 mb-1">
+                <div key={sport.value} className="mb-1 w-1/2">
                   <input
                     id={`inplay-filter-${sport.value}`}
                     type="checkbox"
@@ -308,11 +308,11 @@ export default function InPlay() {
                 </div>
               ))}
             </div>
-            <div className="border-t border-[color:var(--bg-xs-light)] pt-2 mt-1">
+            <div className="mt-1 border-t border-[color:var(--bg-xs-light)] pt-2">
               <div className="flex">
                 <button
                   type="button"
-                  className="w-[120px] mr-2 text-[12px] bg-[color:var(--text-color)] text-white rounded px-3 py-[6px] hover:opacity-90"
+                  className="mr-2 w-[120px] rounded bg-[color:var(--text-color)] px-3 py-[6px] text-[12px] text-white hover:opacity-90"
                   onClick={saveFilter}
                 >
                   {t('common.save')}

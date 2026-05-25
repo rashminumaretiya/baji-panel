@@ -20,15 +20,15 @@ const labelClass = 'block text-[13px] text-[#1e1e1e] mb-[6px]'
 // Form input style mirrors Bootstrap's `.form-control` defaults that the
 // original scss inherited.
 const inputBaseClass =
-  'block w-full px-3 py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded focus:outline-none focus:border-[var(--light-gray)]'
+  'block w-full px-3 py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded focus:outline-none focus:border-(--light-gray)'
 // Country code <select>: 80px, no right border, joined to the phone input.
 const countryCodeSelectClass =
   'block w-[80px] shrink-0 px-3 pr-[1.4rem] py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded-l border-r-0 focus:outline-none appearance-none bg-no-repeat bg-[position:right_0.4rem_center] bg-[length:16px_12px] bg-[url("data:image/svg+xml,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3e%3cpath%20fill=%27none%27%20stroke=%27%23343a40%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20stroke-width=%272%27%20d=%27M2%205l6%206%206-6%27/%3e%3c/svg%3e")]'
 const phoneInputClass =
-  'block w-full px-3 py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded-r focus:outline-none focus:border-[var(--light-gray)]'
+  'block w-full px-3 py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded-r focus:outline-none focus:border-(--light-gray)'
 // "Add Number" / "Verify" submit button.
 const addNumberBtnClass =
-  'text-[11px] px-[8px] py-[5px] cursor-pointer inline-block font-semibold text-white border border-[var(--lg-primary)] rounded bg-gradient-to-b from-[var(--xs-primary)] to-[var(--xxs-primary)] hover:from-[var(--xxs-primary)] hover:to-[var(--xs-primary)] hover:brightness-95 focus:from-[var(--xxs-primary)] focus:to-[var(--xs-primary)] focus:brightness-95 disabled:opacity-65 disabled:cursor-not-allowed'
+  'text-[11px] px-[8px] py-[5px] cursor-pointer inline-block font-semibold text-white border border-(--lg-primary) rounded bg-gradient-to-b from-(--xs-primary) to-(--xxs-primary) hover:from-(--xxs-primary) hover:to-(--xs-primary) hover:brightness-95 focus:from-(--xxs-primary) focus:to-(--xs-primary) focus:brightness-95 disabled:opacity-65 disabled:cursor-not-allowed'
 const resendLinkClass = 'text-[#1e6fff] underline text-[13px]'
 
 export default function AddWhatsAppModal({ isOpen, onClose, onSuccess }) {
@@ -177,7 +177,7 @@ export default function AddWhatsAppModal({ isOpen, onClose, onSuccess }) {
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
             />
           </div>
-          <div className="text-right mb-2">
+          <div className="mb-2 text-right">
             {timer > 0 ? (
               <a className={resendLinkClass}>Resend otp in {timer} Seconds</a>
             ) : (

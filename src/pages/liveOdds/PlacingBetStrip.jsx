@@ -25,11 +25,11 @@ export const PlacingBetStrip = memo(function PlacingBetStrip({
     <div
       role="status"
       aria-live="polite"
-      className="relative overflow-hidden flex items-center justify-between h-7 px-3 bg-[var(--xl-light-bg)] text-[var(--dark)]"
+      className="relative flex h-7 items-center justify-between overflow-hidden bg-(--xl-light-bg) px-3 text-(--dark)"
     >
       <span
         aria-hidden="true"
-        className="absolute left-0 top-0 bottom-0 bg-[var(--xs-green-primary)] transition-[width] duration-100 ease-linear"
+        className="absolute top-0 bottom-0 left-0 bg-(--xs-green-primary) transition-[width] duration-100 ease-linear"
         style={{ width: `${progress}%` }}
       />
       <span className="relative z-[1] text-[12px] font-medium">

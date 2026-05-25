@@ -62,15 +62,15 @@ function activateOnKey(handler) {
 const WRAPPER_BASE =
   'inline-flex items-center justify-center rounded-[3px] h-4 ' +
   'max-md:rounded-[0.8vw] max-md:h-[4vw] max-md:w-[4.53vw] max-md:p-0.5 max-md:text-white'
-const WRAPPER_ORANGE = 'bg-[var(--orange-darkest)]'
-const WRAPPER_BLUE_DARK = 'bg-[var(--blue-dark)] [&_i]:inline-flex'
+const WRAPPER_ORANGE = 'bg-(--orange-darkest)'
+const WRAPPER_BLUE_DARK = 'bg-(--blue-dark) [&_i]:inline-flex'
 
 // `.current-chip` ─ taller compound chip with an alarm icon.
 const CURRENT_CHIP_BASE =
   'inline-flex rounded-[4px] overflow-hidden items-center h-4 ' +
   'max-md:rounded-[0.8vw] max-md:h-[4vw] max-md:w-8'
-const CURRENT_CHIP_LIGHTEST = 'bg-[var(--lightest-neavy)]'
-const CURRENT_CHIP_BLUE_DARK = 'bg-[var(--blue-dark)]'
+const CURRENT_CHIP_LIGHTEST = 'bg-(--lightest-neavy)'
+const CURRENT_CHIP_BLUE_DARK = 'bg-(--blue-dark)'
 
 const ALARM_ICON_CLASS =
   'w-4 h-full inline-flex items-center justify-center text-white bg-[#60ba1e] ' +
@@ -171,8 +171,8 @@ const DATA_CHIP_BASE =
   '[&_span]:justify-center [&_span]:text-[11px]'
 
 const ODDS_SPAN_BASE = 'text-center font-bold'
-const ODDS_SPAN_BACK = 'bg-[var(--back-0)] hover:bg-[var(--back-0-hover)]'
-const ODDS_SPAN_LAY = 'bg-[var(--lay-0)] hover:bg-[var(--lay-0-hover)]'
+const ODDS_SPAN_BACK = 'bg-(--back-0) hover:bg-(--back-0-hover)'
+const ODDS_SPAN_LAY = 'bg-(--lay-0) hover:bg-(--lay-0-hover)'
 const ODDS_SPAN_DISABLED =
   'cursor-not-allowed relative ' +
   "before:content-[''] before:absolute before:inset-0 " +
@@ -207,26 +207,26 @@ const OddsCell = memo(function OddsCell({ value, isBack, disabled, onClick }) {
 const NAME_WRAP_CLASS = 'pt-[2px] pb-[3px] pl-2 cursor-pointer max-md:pl-0'
 
 const MATCH_TITLE_BASE =
-  'text-[var(--blue)] text-[12px] mb-0 relative font-semibold tracking-[0.01px] hover:underline ' +
+  'text-(--blue) text-[12px] mb-0 relative font-semibold tracking-[0.01px] hover:underline ' +
   'max-md:text-[4vw] max-md:leading-[1.6] ' +
-  "before:content-[''] before:bg-[var(--light-green)] before:border before:border-black/40 " +
+  "before:content-[''] before:bg-(--light-green) before:border before:border-black/40 " +
   'before:rounded-full before:w-2 before:h-2 before:inline-block ' +
   'max-md:before:absolute max-md:before:right-full max-md:before:translate-x-[-5px] ' +
   'max-md:before:top-[1.6vw] max-md:before:w-[2.8vw] max-md:before:h-[2.8vw] ' +
   '[&>span]:max-md:overflow-hidden [&>span]:max-md:text-ellipsis [&>span]:max-md:line-clamp-1 ' +
   '[&>span]:max-md:[-webkit-box-orient:vertical] [&>span]:max-md:[display:-webkit-box]'
 
-const MATCH_TITLE_NOT_IN_PLAY = 'before:!bg-[var(--sm-white)]'
+const MATCH_TITLE_NOT_IN_PLAY = 'before:!bg-(--sm-white)'
 
 const INPLAY_LABEL =
-  'inline-block ml-1 text-[var(--dark-green)] font-bold text-[12px]'
-const TIME_LABEL = 'inline-block ml-1 text-[var(--lg-dark-gray)] text-[12px]'
+  'inline-block ml-1 text-(--dark-green) font-bold text-[12px]'
+const TIME_LABEL = 'inline-block ml-1 text-(--lg-dark-gray) text-[12px]'
 
 // ─── Desktop row (`.games-detail`) ─────────────────────────────────────────
 const GAMES_DETAIL_BASE =
   'flex border-b border-[color:var(--light-bg)] last:border-b-[color:var(--sm-text-color)] ' +
   'max-md:last:border-b-[0.8vw] max-md:last:border-[color:var(--light-bg)] ' +
-  'hover:bg-[var(--hover-bg)]'
+  'hover:bg-(--hover-bg)'
 
 const GAME_NAME_PART =
   'flex-1 flex items-center justify-between border-r border-[color:var(--light-bg)]'
@@ -239,7 +239,7 @@ const GAME_SCORE_PART =
   '[&>div:nth-child(2)]:pr-1 [&>div:nth-child(5)]:pl-1'
 
 const TOTAL_MATCHED_CLASS =
-  'text-[11px] text-[var(--dark-gray)] whitespace-nowrap pr-1 flex-shrink-0'
+  'text-[11px] text-(--dark-gray) whitespace-nowrap pr-1 flex-shrink-0'
 
 const PIN_CHIP_CLASS =
   'h-full cursor-pointer min-w-[6%] w-auto text-center justify-center flex items-center'
@@ -283,7 +283,7 @@ const DesktopGameRow = memo(function DesktopGameRow({
           >
             <span className="ml-1">{name}</span>
           </h6>
-          <div className="flex gap-1 mt-1 ml-2">
+          <div className="mt-1 ml-2 flex gap-1">
             {isInPlay ? (
               <span className={INPLAY_LABEL}>{t('common.inPlay')}</span>
             ) : (
@@ -322,22 +322,22 @@ const DesktopGameRow = memo(function DesktopGameRow({
 // ─── Mobile row (`.mobile-detail`) ─────────────────────────────────────────
 const MOBILE_DETAIL_CLASS =
   'bg-white pt-[1.6vw] pb-[1.87vw] pr-[2.4vw] pl-[6.67vw] flex items-center justify-between gap-3 ' +
-  'border-b border-[var(--light-bg)] cursor-pointer hover:bg-[#eff2f2]'
+  'border-b border-(--light-bg) cursor-pointer hover:bg-[#eff2f2]'
 
 // `.icon-row` ─ chips + in-play / time text. Chip sizing already folded into
 // the chip class builders above; here we only own the layout (flex + gap).
 const ICON_ROW_CLASS = 'flex items-center gap-[1.33vw]'
 
 const MOBILE_INPLAY_TEXT =
-  'text-[var(--md-parrot)] max-md:text-[var(--primary)] max-md:text-[13px]'
-const MOBILE_TIME_TEXT = 'text-[var(--dark-gray)]'
+  'text-(--md-parrot) max-md:text-(--primary) max-md:text-[13px]'
+const MOBILE_TIME_TEXT = 'text-(--dark-gray)'
 
 const ICON_PIN_CLASS =
   'h-6 w-6 flex items-center justify-center flex-none ' +
   '[&_svg]:w-[6.67vw] [&_svg]:h-[6.67vw]'
 
 const GAMES_BORDER_CLASS =
-  'max-md:last:border-b-[0.8vw] max-md:last:border-[var(--mobile-sport-active-menu-bg)]'
+  'max-md:last:border-b-[0.8vw] max-md:last:border-(--mobile-sport-active-menu-bg)'
 
 const MobileGameCard = memo(function MobileGameCard({
   game,
@@ -476,7 +476,7 @@ function LoadingState() {
   const { t } = useTranslation()
   return (
     <div
-      className="flex items-center justify-center text-gray-500 p-3"
+      className="flex items-center justify-center p-3 text-gray-500"
       role="status"
       aria-live="polite"
     >
@@ -488,17 +488,17 @@ function LoadingState() {
 // ─── Header strip above desktop rows ───────────────────────────────────────
 // `.game-detail-header` ─ thin grey bar with 1 / X / 2 column labels.
 const GAME_DETAIL_HEADER_CLASS =
-  'flex items-center bg-[var(--xl-th-bg)] justify-end ' +
+  'flex items-center bg-(--xl-th-bg) justify-end ' +
   'max-[991px]:shadow-none max-[991px]:justify-start max-[991px]:pl-2'
 
 const GAME_DETAIL_INNER_CLASS = 'flex items-center max-w-[40%] w-full'
 
 const GAME_DETAIL_HEADING_CLASS =
-  'text-[var(--header-primary)] flex-1 mx-1 text-center py-1 text-[12px] leading-[17px]'
+  'text-(--header-primary) flex-1 mx-1 text-center py-1 text-[12px] leading-[17px]'
 
 // `.game-wrap` ─ container that paints rows white & owns the bottom border.
 const GAME_WRAP_CLASS =
-  'bg-white [&_.accordion]:border-b [&_.accordion]:border-[var(--light-bg)] ' +
+  'bg-white [&_.accordion]:border-b [&_.accordion]:border-(--light-bg) ' +
   '[&_.accordion-body]:p-0 [&_.accordion-body]:bg-white'
 
 export default function GameList({
@@ -596,7 +596,7 @@ export default function GameList({
             >
               <Accordion.Header
                 variant="light"
-                className="flex items-center  [&_button]:justify-center [&_button]:bg-right [&_buttton]:bg-[url(/img/collapse_icon.png)]! [&_button]:h-[8.19vw] [&_button]:items-center [&_button]:flex [&_button]:row-reverse [&_button]:text-[3.73vw] [&_button]:leading-[1.2] [&_button]:text-white mb-0 px-[1.87vw] bg-gradient-to-t from-[var(--xxl-blue)] to-[var(--xl-blue)] max-md:font-bold"
+                className="[&_button]:row-reverse mb-0 flex items-center bg-gradient-to-t from-(--xxl-blue) to-(--xl-blue) px-[1.87vw] max-md:font-bold [&_button]:flex [&_button]:h-[8.19vw] [&_button]:items-center [&_button]:justify-center [&_button]:bg-right [&_button]:text-[3.73vw] [&_button]:leading-[1.2] [&_button]:text-white [&_buttton]:bg-[url(/img/collapse_icon.png)]!"
               >
                 {group.competitionName}
               </Accordion.Header>

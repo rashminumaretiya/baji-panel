@@ -39,7 +39,7 @@ export default function BetsComplaints() {
   }, [token])
 
   return (
-    <div className="max-h-[calc(100svh-240px)] overflow-y-auto overflow-x-hidden">
+    <div className="max-h-[calc(100svh-240px)] overflow-x-hidden overflow-y-auto">
       <Table
         title={t('common.betsComplaints', 'Bet Complaints')}
         columns={columns}

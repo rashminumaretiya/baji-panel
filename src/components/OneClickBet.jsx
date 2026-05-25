@@ -100,7 +100,7 @@ export default function OneClickBet() {
   const okBtnBase =
     'block mx-auto w-[46.42857%] p-1.5 rounded-[4px] text-[12px] font-bold btn btn-primary'
   const okBtnYellow =
-    'bg-gradient-to-b !from-[var(--md-primary-yellow)] !to-[#ffa10c] !text-[var(--dark)]'
+    'bg-gradient-to-b !from-(--md-primary-yellow) !to-[#ffa10c] !text-(--dark)'
   const okBtnMcw =
     'bg-gradient-to-b !from-[#474747] !to-[#070707] !text-[#ffd354]'
 
@@ -111,11 +111,11 @@ export default function OneClickBet() {
           Stake selected will be placed immediately once you click on the market
           odds.
         </p>
-        <span className="text-[var(--md-yellow)]">
+        <span className="text-(--md-yellow)">
           Attention: Back/Lay at your own risk
         </span>
       </div>
-      <div className="pt-[7px] px-2.5 pb-2.5 border-t border-white/20 w-full">
+      <div className="w-full border-t border-white/20 px-2.5 pt-[7px] pb-2.5">
         <button
           type="button"
           className={cx(
@@ -138,7 +138,7 @@ export default function OneClickBet() {
     'sticky bottom-0 z-[1010] px-2.5 shadow-[inset_0_1px_0_0_var(--shadow-primary)]',
     !isYellowTheme &&
       !isMcwCasinoTheme &&
-      'bg-gradient-to-b from-[var(--xts-primary)] to-[var(--mdx-primary)]',
+      'bg-gradient-to-b from-(--xts-primary) to-(--mdx-primary)',
     isYellowTheme && 'bg-gradient-to-b from-[#4e9600] to-[#386a02]',
     isMcwCasinoTheme && 'bg-gradient-to-b from-[#b43807] to-[#912b06]'
   )
@@ -155,10 +155,10 @@ export default function OneClickBet() {
   // Stake input — common style, then "active" highlight when not in edit mode.
   // In yellow-theme the active btn uses #ffd200 instead of var(--md-yellow).
   const stakeInputBase =
-    'p-0 text-[11px] leading-[18px] h-5 w-[65px] text-center rounded-[4px] border border-[var(--sm-black)] text-black bg-gradient-to-b from-white from-0% to-[var(--xs-gray)] to-[89%] shadow-[inset_0_2px_0_0_rgba(var(--white-rgb),0.5)] hover:bg-gradient-to-b hover:from-[var(--xs-gray)] hover:from-0% hover:to-white hover:to-[89%] focus:bg-[var(--md-yellow)] focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+    'p-0 text-[11px] leading-[18px] h-5 w-[65px] text-center rounded-[4px] border border-(--sm-black) text-black bg-gradient-to-b from-white from-0% to-(--xs-gray) to-[89%] shadow-[inset_0_2px_0_0_rgba(var(--white-rgb),0.5)] hover:bg-gradient-to-b hover:from-(--xs-gray) hover:from-0% hover:to-white hover:to-[89%] focus:bg-(--md-yellow) focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
   const stakeInputActive = isYellowTheme
     ? 'min-w-[65px] !bg-[#ffd200] !bg-none focus:!bg-[#ffd200]'
-    : 'min-w-[65px] !bg-[var(--md-yellow)] !bg-none focus:!bg-[var(--md-yellow)]'
+    : 'min-w-[65px] !bg-(--md-yellow) !bg-none focus:!bg-(--md-yellow)'
 
   // Edit / Save button. Default "edit-btn" = transparent w/ white text,
   // "Save" = btn-secondary text white.
@@ -173,7 +173,7 @@ export default function OneClickBet() {
     <>
       <div
         className={
-          attentionOpen ? 'fixed inset-0 w-full h-full bg-black/30 z-9' : ''
+          attentionOpen ? 'fixed inset-0 z-9 h-full w-full bg-black/30' : ''
         }
       ></div>
       <div className={wrapperClass}>
@@ -185,12 +185,12 @@ export default function OneClickBet() {
           placement="top"
           rootClose={false}
         >
-          <div className="absolute top-full left-1/2 -translate-y-6 z-1 -translate-x-1/2 after:content-[''] after:absolute after:-bottom-[10px] after:-left-2 after:w-0 after:h-0 after:border-l-[10px] after:border-r-[10px] after:border-t-[10px] after:border-l-transparent after:border-r-transparent after:border-t-black"></div>
-          <Popover className="bg-black/85! -translate-y-6 rounded-[10px]! overflow-visible! shadow-[0_0_8px_8px_rgba(var(--white-rgb),0.7)]! max-w-[320px] w-full">
-            <Popover.Header className="text-center text-white bg-transparent text-[15px] font-bold py-[10px]! px-0">
+          <div className="absolute top-full left-1/2 z-1 -translate-x-1/2 -translate-y-6 after:absolute after:-bottom-[10px] after:-left-2 after:h-0 after:w-0 after:border-t-[10px] after:border-r-[10px] after:border-l-[10px] after:border-t-black after:border-r-transparent after:border-l-transparent after:content-['']"></div>
+          <Popover className="w-full max-w-[320px] -translate-y-6 overflow-visible! rounded-[10px]! bg-black/85! shadow-[0_0_8px_8px_rgba(var(--white-rgb),0.7)]!">
+            <Popover.Header className="bg-transparent px-0 py-[10px]! text-center text-[15px] font-bold text-white">
               {t('header.oneClickBetOn', 'One Click Bet ON')}
             </Popover.Header>
-            <Popover.Body className="!p-0 text-white border-t border-white/30 text-[13px] leading-[18px] font-[Tahoma]">
+            <Popover.Body className="border-t border-white/30 !p-0 font-[Tahoma] text-[13px] leading-[18px] text-white">
               {attentionPopover}
             </Popover.Body>
           </Popover>
@@ -203,7 +203,7 @@ export default function OneClickBet() {
             }}
           >
             <div className="flex items-center justify-between">
-              <h6 className="m-0 leading-[31px] text-white text-[12px] font-bold">
+              <h6 className="m-0 text-[12px] leading-[31px] font-bold text-white">
                 {t('header.oneClickBet', 'One Click Bet')}{' '}
                 {t('header.stake.title', 'Stake')}
               </h6>

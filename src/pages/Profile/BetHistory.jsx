@@ -45,7 +45,7 @@ function yesterdayRange() {
 
 // Tailwind class strings ported from myBets.scss `.bet-history-filter`.
 const filterContainerClass =
-  'bg-[var(--platinum-grey)] border-b border-[#d0d0d0] px-[10px] py-[8px] text-[12px] text-[#1e1e1e]'
+  'bg-(--platinum-grey) border-b border-[#d0d0d0] px-[10px] py-[8px] text-[12px] text-[#1e1e1e]'
 const filterRowClass = 'flex items-center flex-wrap gap-[6px] mb-4'
 const actionRowClass = 'flex items-center gap-[8px] mt-2'
 const filterLabelClass = 'text-[#1e1e1e] whitespace-nowrap m-0'
@@ -54,7 +54,7 @@ const betStatusSelectClass =
 const dateInputClass =
   'h-6 px-[6px] py-0 text-[12px] leading-[22px] rounded-[3px] border border-[#aaa] bg-white w-[130px]'
 const timeInputClass =
-  'h-7 px-[2px] py-0 text-[12px] leading-[22px] rounded-[3px] border border-[#aaa] w-[48px] text-center bg-[var(--bg-xs-light)] text-[#666]'
+  'h-7 px-[2px] py-0 text-[12px] leading-[22px] rounded-[3px] border border-[#aaa] w-[48px] text-center bg-(--bg-xs-light) text-[#666]'
 const periodSepClass = 'px-1'
 const btnLightClass =
   'h-[24px] px-[10px] text-[12px]! btn btn-white font-normal!'

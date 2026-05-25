@@ -18,14 +18,14 @@ const sidebarItems = [
 
 export default function Sidebar() {
   return (
-    <aside className="h-full w-full overflow-auto bg-[var(--xs-gray)] text-xs text-[var(--dark)]">
+    <aside className="h-full w-full overflow-auto bg-(--xs-gray) text-xs text-(--dark)">
       <ul className="flex flex-col">
         {sidebarItems.map((item) => {
           if (item.heading) {
             return (
               <li
                 key={item.to}
-                className="bg-[var(--primary)] text-white font-semibold px-3 py-2"
+                className="bg-(--primary) px-3 py-2 font-semibold text-white"
               >
                 {item.label}
               </li>
@@ -37,17 +37,17 @@ export default function Sidebar() {
                 to={item.to}
                 className={({ isActive }) =>
                   [
-                    'block px-3 py-2 border-b border-[var(--light-border)] no-underline',
+                    'block border-b border-(--light-border) px-3 py-2 no-underline',
                     item.indent ? 'pl-6' : '',
                     isActive
-                      ? 'bg-[var(--primary)] text-white font-medium'
-                      : 'text-[var(--dark)]',
+                      ? 'bg-(--primary) font-medium text-white'
+                      : 'text-(--dark)',
                   ].join(' ')
                 }
               >
                 {item.indent && (
                   <span
-                    className="inline-block mr-2 rounded-full border border-[var(--sm-gray-blue)]"
+                    className="mr-2 inline-block rounded-full border border-(--sm-gray-blue)"
                     style={{ width: 8, height: 8 }}
                   />
                 )}

@@ -55,7 +55,7 @@ function isBabu365Host() {
 // `.tabs-wrapper` base — outer flex shell with inset top shadow.
 const TABS_WRAPPER_BASE =
   'flex items-center shadow-[inset_0_1px_0_0_rgba(var(--black-rgb),0.2)] ' +
-  'bg-[var(--md-black)] border-b-[0.7vw] border-[var(--lg-yellow)]'
+  'bg-(--md-black) border-b-[0.7vw] border-(--lg-yellow)'
 
 // Theme overrides — colour-swap the wrapper border + background.
 const TABS_WRAPPER_YELLOW =
@@ -66,7 +66,7 @@ const TABS_WRAPPER_MCW =
 
 // `.sport-header-tabs` ─ horizontally scrolling row.
 const SPORT_HEADER_TABS_BASE =
-  'bg-[var(--md-black)] flex mr-auto pr-[4vw] flex-nowrap [scroll-behavior:smooth] ' +
+  'bg-(--md-black) flex mr-auto pr-[4vw] flex-nowrap [scroll-behavior:smooth] ' +
   '[&::-webkit-scrollbar]:hidden'
 const SPORT_HEADER_TABS_YELLOW =
   'max-md:bg-gradient-to-b max-md:from-black max-md:to-black max-md:text-white'
@@ -82,9 +82,9 @@ const TAB_BUTTON_BASE =
   '[&_i]:text-white [&_>i]:mr-[1.6vw] ' +
   '[&_svg]:w-[5.33vw] [&_svg]:h-[5.33vw] max-md:[&_>i_>svg]:overflow-visible max-md:[&_>i_>svg]:w-[5.3333333333vw] max-md:[&_>i_>svg]:h-[5.3333333333vw] max-md:[&_svg]:w-[3.233333vw] max-md:[&_svg]:h-[3.233333vw]'
 const TAB_BUTTON_ACTIVE_DEFAULT =
-  '!bg-[var(--lg-yellow)] [&_>span]:text-black [&_i]:!text-black'
+  '!bg-(--lg-yellow) [&_>span]:text-black [&_i]:!text-black'
 const TAB_BUTTON_ACTIVE_YELLOW =
-  'max-md:!bg-gradient-to-b max-md:!from-[var(--md-primary-yellow)] max-md:!to-[#ffa10c]'
+  'max-md:!bg-gradient-to-b max-md:!from-(--md-primary-yellow) max-md:!to-[#ffa10c]'
 const TAB_BUTTON_ACTIVE_BABU =
   'max-md:!bg-gradient-to-b max-md:!from-[#0e0e0e] max-md:!to-[#fd1111] max-md:!text-white ' +
   'max-md:[&_i]:!text-white'
@@ -230,8 +230,8 @@ export default function MobileSports() {
           <div
             className={
               'relative border-l border-white/10 ' +
-              "before:content-[''] before:absolute before:right-[12.8vw] " +
-              'before:w-[8.27vw] before:h-[12.27vw] ' +
+              "before:absolute before:right-[12.8vw] before:content-[''] " +
+              'before:h-[12.27vw] before:w-[8.27vw] ' +
               'before:bg-[linear-gradient(90deg,rgba(var(--black-rgb),0)_0%,var(--black)_110%)]'
             }
           >

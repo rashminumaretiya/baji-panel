@@ -53,10 +53,9 @@ function getLoginStatusCellClass(value) {
   // Verbatim port of baji-exchange-frontend styles.scss:830-842 —
   //   .logInStatus-login-success span { color: var(--dark-green); }
   //   .logInStatus-login-failed  span { color: var(--red); }
-  // `!` is required to beat the td's base `text-[var(--dark)]`.
-  if (slug.includes('success')) return 'text-[var(--dark-green)]!'
-  if (slug.includes('fail') || slug.includes('error'))
-    return 'text-[var(--red)]!'
+  // `!` is required to beat the td's base `text-(--dark)`.
+  if (slug.includes('success')) return 'text-(--dark-green)!'
+  if (slug.includes('fail') || slug.includes('error')) return 'text-(--red)!'
   return ''
 }
 
@@ -124,7 +123,7 @@ export default function ActivityLog() {
     // Fixed column widths (18/12/14/22/17/17%) ported from activityLog.scss
     // via [&_thead>tr>th]/[&_tbody>tr>td] selectors. table-fixed enforces the
     // declared widths instead of letting cells size to content.
-    <div className="max-h-[calc(100svh-240px)] overflow-y-auto overflow-x-hidden [&_table]:table-fixed [&_table]:w-full [&_thead>tr>th:nth-child(1)]:w-[18%] [&_thead>tr>th:nth-child(2)]:w-[12%] [&_thead>tr>th:nth-child(3)]:w-[14%] [&_thead>tr>th:nth-child(4)]:w-[22%] [&_thead>tr>th:nth-child(5)]:w-[17%] [&_thead>tr>th:nth-child(6)]:w-[17%] [&_tbody>tr>td:nth-child(1)]:w-[18%] [&_tbody>tr>td:nth-child(2)]:w-[12%] [&_tbody>tr>td:nth-child(3)]:w-[14%] [&_tbody>tr>td:nth-child(4)]:w-[22%] [&_tbody>tr>td:nth-child(5)]:w-[17%] [&_tbody>tr>td:nth-child(6)]:w-[17%]">
+    <div className="max-h-[calc(100svh-240px)] overflow-x-hidden overflow-y-auto [&_table]:w-full [&_table]:table-fixed [&_tbody>tr>td:nth-child(1)]:w-[18%] [&_tbody>tr>td:nth-child(2)]:w-[12%] [&_tbody>tr>td:nth-child(3)]:w-[14%] [&_tbody>tr>td:nth-child(4)]:w-[22%] [&_tbody>tr>td:nth-child(5)]:w-[17%] [&_tbody>tr>td:nth-child(6)]:w-[17%] [&_thead>tr>th:nth-child(1)]:w-[18%] [&_thead>tr>th:nth-child(2)]:w-[12%] [&_thead>tr>th:nth-child(3)]:w-[14%] [&_thead>tr>th:nth-child(4)]:w-[22%] [&_thead>tr>th:nth-child(5)]:w-[17%] [&_thead>tr>th:nth-child(6)]:w-[17%]">
       <Table
         title={t('activityLog.title', 'Activity Log')}
         columns={columns}

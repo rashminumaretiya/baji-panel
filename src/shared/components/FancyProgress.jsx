@@ -21,7 +21,7 @@ function CloseButton({ onClose }) {
       type="button"
       aria-label="Close"
       onClick={onClose}
-      className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer z-[2] text-white p-0 leading-none [&_svg]:h-3 [&_svg]:w-3"
+      className="absolute top-1/2 right-4 z-[2] -translate-y-1/2 cursor-pointer p-0 leading-none text-white [&_svg]:h-3 [&_svg]:w-3"
     >
       {CloseIcon}
     </button>
@@ -65,8 +65,8 @@ export default function FancyProgress({ config, onClose }) {
   if (config?.progress) {
     return (
       <div style={durationStyle}>
-        <div className="relative z-[1] h-7 leading-6 text-center bg-(--xs-blue-bg) border-b border-(--tbl-border-color) overflow-hidden before:absolute before:content-[''] before:left-0 before:top-0 before:bottom-0 before:w-0 before:bg-[#b1c5d355] before:z-0 before:animate-[fancy-progress_var(--duration)_ease-in-out_forwards]">
-          <p className="relative z-[1] inline-block mr-3 mb-0 text-[12px] font-bold text-[#565656]">
+        <div className="relative z-[1] h-7 overflow-hidden border-b border-(--tbl-border-color) bg-(--xs-blue-bg) text-center leading-6 before:absolute before:top-0 before:bottom-0 before:left-0 before:z-0 before:w-0 before:animate-[fancy-progress_var(--duration)_ease-in-out_forwards] before:bg-[#b1c5d355] before:content-['']">
+          <p className="relative z-[1] mr-3 mb-0 inline-block text-[12px] font-bold text-[#565656]">
             Placing your bets, Please wait
           </p>
           <span className="relative z-[1] text-[11px] opacity-70">
@@ -80,7 +80,7 @@ export default function FancyProgress({ config, onClose }) {
   if (config?.failed) {
     return (
       <div style={durationStyle}>
-        <div className="relative h-7 leading-[26px] text-center bg-(--lg-red) border-b border-(--tbl-border-color)">
+        <div className="relative h-7 border-b border-(--tbl-border-color) bg-(--lg-red) text-center leading-[26px]">
           <p className="mb-0 text-[12px] font-semibold text-white">
             {config?.errMsg || 'Bet can not be placed.'}
           </p>
@@ -93,7 +93,7 @@ export default function FancyProgress({ config, onClose }) {
   if (config?.warning) {
     return (
       <div style={durationStyle}>
-        <div className="relative h-7 leading-[26px] text-center bg-(--lg-yellow) border-b border-(--tbl-border-color)">
+        <div className="relative h-7 border-b border-(--tbl-border-color) bg-(--lg-yellow) text-center leading-[26px]">
           <p className="mb-0 text-[12px] font-semibold">{config?.errMsg}</p>
           <CloseButton onClose={handleClose} />
         </div>
@@ -104,7 +104,7 @@ export default function FancyProgress({ config, onClose }) {
   if (config?.success) {
     return (
       <div style={durationStyle}>
-        <div className="relative h-7 leading-[26px] text-center bg-(--md-green-primary) border-b border-(--tbl-border-color)">
+        <div className="relative h-7 border-b border-(--tbl-border-color) bg-(--md-green-primary) text-center leading-[26px]">
           <p className="mb-0 text-[12px] font-semibold">
             Bet Matched {currency} at odds: {config?.odd}
             {config?.size ? ` / ${config.size}` : ''}

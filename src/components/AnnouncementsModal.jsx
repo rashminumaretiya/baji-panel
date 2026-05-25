@@ -39,17 +39,17 @@ export default function AnnouncementsModal({ isOpen, onClose }) {
       closeOnEscape
     >
       {loading ? (
-        <p className="text-center text-[13px] text-[#3b5160] m-0">Loading...</p>
+        <p className="m-0 text-center text-[13px] text-[#3b5160]">Loading...</p>
       ) : announcements.length === 0 ? (
-        <p className="text-center text-[13px] text-[#3b5160] m-0">
+        <p className="m-0 text-center text-[13px] text-[#3b5160]">
           No Annoucements Found.
         </p>
       ) : (
-        <ul className="list-none m-0 p-0">
+        <ul className="m-0 list-none p-0">
           {announcements.map((a, i) => (
             <li
               key={a._id ?? a.id ?? i}
-              className="text-[13px] text-[#1e1e1e] py-2 border-b border-[#e5e5e5] last:border-b-0"
+              className="border-b border-[#e5e5e5] py-2 text-[13px] text-[#1e1e1e] last:border-b-0"
               dangerouslySetInnerHTML={{
                 __html: a.message ?? a.text ?? a.title ?? '',
               }}

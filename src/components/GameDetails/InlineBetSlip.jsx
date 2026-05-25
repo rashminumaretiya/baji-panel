@@ -4,10 +4,7 @@ import { useSelector } from 'react-redux'
 import { useIsMobile } from '../../hooks/useMediaQuery.js'
 import FancyProgress from '../../shared/components/FancyProgress.jsx'
 import { resolveApiMessage } from '../../shared/services/alert.js'
-import {
-  selectMaxAvailBalance,
-  selectStakesData,
-} from '../../store/slices/authSlice.js'
+import { selectStakesData } from '../../store/slices/authSlice.js'
 
 const FEEDBACK_TIMEPERIOD = {
   success: 5000,
@@ -79,7 +76,7 @@ const DESKTOP_STAKE_BTN =
   'btn btn-white max-w-[100px] w-full ml-2 cursor-pointer'
 
 const MOBILE_STAKE_BTN =
-  'text-white bg-transparent border-0 flex-1 p-0 max-md:text-[var(--white)] max-md:bg-white max-md:w-auto max-md:px-1 max-md:py-[3px] max-md:bg-[linear-gradient(-180deg,#32617f_20%,#1f4258_91%)] max-md:p-0! max-md:leading-[1.76] max-md:text-[3.7vw]'
+  'text-white bg-transparent border-0 flex-1 p-0 max-md:text-(--white) max-md:bg-white max-md:w-auto max-md:px-1 max-md:py-[3px] max-md:bg-[linear-gradient(-180deg,#32617f_20%,#1f4258_91%)] max-md:p-0! max-md:leading-[1.76] max-md:text-[3.7vw]'
 
 function StakeButtons({ isMobile, onStakeClick, stakes: stakesProp }) {
   const source =
@@ -121,12 +118,12 @@ const BackspaceIcon = (
 )
 
 const KEYPAD_BTN =
-  'w-full cursor-pointer text-[18px] py-[6px] px-1 rounded-none border border-[var(--tbl-border-color)] border-l-0 text-[var(--header-primary)] bg-white max-md:text-[4vw] max-md:text-[#1e1e1e] max-md:leading-[10.4vw] max-md:p-0 max-md:bg-white max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:!border-b max-md:!border-b-[#aaa] [&_svg]:max-md:w-[4.8vw] [&_svg]:max-md:h-[3.2vw]'
+  'w-full cursor-pointer text-[18px] py-[6px] px-1 rounded-none border border-(--tbl-border-color) border-l-0 text-(--header-primary) bg-white max-md:text-[4vw] max-md:text-[#1e1e1e] max-md:leading-[10.4vw] max-md:p-0 max-md:bg-white max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:!border-b max-md:!border-b-[#aaa] [&_svg]:max-md:w-[4.8vw] [&_svg]:max-md:h-[3.2vw]'
 
 function Keypad({ onValueChanged }) {
   const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '00', '.']
   return (
-    <div className="flex flex-row flex-wrap mx-0 max-md:border-t max-md:border-[#aaa]">
+    <div className="mx-0 flex flex-row flex-wrap max-md:border-t max-md:border-[#aaa]">
       <div className="w-[83.333%]">
         <div className="flex flex-row flex-wrap">
           {keys.map((key, idx) => (
@@ -155,7 +152,7 @@ function Keypad({ onValueChanged }) {
           className={`${KEYPAD_BTN} flex h-full items-center justify-center`}
           onClick={() => onValueChanged('backspace')}
         >
-          <i className="not-italic max-md:[&_svg]:w-[4.8vw] max-md:[&_svg]:h-[4.8vw]">
+          <i className="not-italic max-md:[&_svg]:h-[4.8vw] max-md:[&_svg]:w-[4.8vw]">
             {BackspaceIcon}
           </i>
         </button>
@@ -179,11 +176,11 @@ function isPremiumSlip(details) {
 function betTypeBg(details) {
   const type = details?.type
   if (isPremiumSlip(details) && (type === 'BACK' || type === 'YES')) {
-    return 'bg-[var(--md-green-bg)]'
+    return 'bg-(--md-green-bg)'
   }
   return type === 'BACK' || type === 'YES'
-    ? 'bg-[var(--md-blue-bg)]'
-    : 'bg-[var(--md-red-bg)]'
+    ? 'bg-(--md-blue-bg)'
+    : 'bg-(--md-red-bg)'
 }
 
 export default function InlineBetSlip({
@@ -197,7 +194,6 @@ export default function InlineBetSlip({
   const isMobile = useIsMobile()
 
   const stakesData = useSelector(selectStakesData)
-  const maxAvailBalance = useSelector(selectMaxAvailBalance)
   const [isMatchChecked, setIsMatchChecked] = useState(false)
 
   const [fancyConfig, setFancyConfig] = useState(null)
@@ -217,40 +213,6 @@ export default function InlineBetSlip({
 
   const handlePlace = async () => {
     if (isPlacing) return
-    const stake = Number(betSlipDetails?.stake) || 0
-    const min = Number(betSlipDetails?.min) || 0
-    if (!stake) {
-      updateFancyLoader({
-        warning: true,
-        errMsg: t(
-          'betSlip.enterStake',
-          'Please enter a stake to place the bet.'
-        ),
-      })
-      return
-    }
-    if (min && stake < min) {
-      updateFancyLoader({
-        warning: true,
-        errMsg: t(
-          'betSlip.belowMinimum',
-          'The stake you have entered are below the minimum.'
-        ),
-      })
-      return
-    }
-    if (stake > maxAvailBalance) {
-      updateFancyLoader({
-        failed: true,
-        errMsg: t(
-          'errors.insufficientFund',
-          `Insufficient fund, max available balance ${maxAvailBalance}`,
-          { balance: maxAvailBalance }
-        ),
-        timePeriod: FEEDBACK_TIMEPERIOD.failed,
-      })
-      return
-    }
     try {
       await onPlaceBet?.(betSlipDetails)
 
@@ -333,34 +295,34 @@ export default function InlineBetSlip({
 
     return (
       <table
-        className={`w-full m-0 max-md:-ml-px max-md:w-[calc(100%+1px)] ${betTypeClass} ${lastRowBg}`}
+        className={`m-0 w-full max-md:-ml-px max-md:w-[calc(100%+1px)] ${betTypeClass} ${lastRowBg}`}
       >
         <tbody>
           <tr>
             <td
               colSpan={2}
-              className="bg-transparent max-md:pt-[10px] max-md:px-[1.86667vw] max-md:pb-[1.86667vw]"
+              className="bg-transparent max-md:px-[1.86667vw] max-md:pt-[10px] max-md:pb-[1.86667vw]"
             >
               <div className="flex items-end justify-around">
-                <div className="text-center md:flex-1 mr-[1.86667vw] max-md:last-of-type:mr-0 max-md:flex-[1_1_47.2vw]">
+                <div className="mr-[1.86667vw] text-center max-md:flex-[1_1_47.2vw] max-md:last-of-type:mr-0 md:flex-1">
                   {isSportsBook && (
-                    <p className="text-(--dark-gray) text-[14px] mb-0 mr-[2vw] max-md:text-[2.93333vw] max-md:text-[#1e1e1e] max-md:leading-[1.3]">
+                    <p className="mr-[2vw] mb-0 text-[14px] text-(--dark-gray) max-md:text-[2.93333vw] max-md:leading-[1.3] max-md:text-[#1e1e1e]">
                       {t('common.odds', 'Odds')}
                     </p>
                   )}
-                  <div className="flex items-center border border-[#4a4a4a] rounded-md max-md:border-[#aaa] max-md:justify-between max-md:bg-white max-md:rounded-[1.6vw]">
+                  <div className="flex items-center rounded-md border border-[#4a4a4a] max-md:justify-between max-md:rounded-[1.6vw] max-md:border-[#aaa] max-md:bg-white">
                     {isMatchOdds ? (
                       <>
                         <button
                           type="button"
-                          className="bg-[#bfbfbf] text-(--primary) border border-[#bfbfbf] rounded-l-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-linear-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-r max-md:border-[#aaa] max-md:rounded-tl-[1.6vw] max-md:rounded-bl-[1.6vw] max-md:rounded-tr-none max-md:rounded-br-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]"
+                          className="rounded-l-md border border-[#bfbfbf] bg-[#bfbfbf] text-(--primary) max-md:h-[10.66667vw] max-md:w-[12vw] max-md:rounded-tl-[1.6vw] max-md:rounded-tr-none max-md:rounded-br-none max-md:rounded-bl-[1.6vw] max-md:border-0 max-md:border-r max-md:border-[#aaa] max-md:bg-linear-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 [&_svg]:max-md:h-[7.5vw] [&_svg]:max-md:w-[7.5vw]"
                           onClick={() => updateField('odds', 'DEC')}
                         >
                           {MinusIcon}
                         </button>
                         <input
                           type="text"
-                          className="p-1 text-center max-w-[63px] bg-[#d9d9d9] text-(--primary) h-[34px] rounded-none border border-[#4a4a4a] border-t-0 border-b-0 text-[20px] max-md:h-[10.66667vw] max-md:border-0 max-md:p-0 max-md:text-[#1e1e1e] max-md:text-[4vw] max-md:leading-[10.13333vw] max-md:font-bold max-md:bg-white max-md:shadow-[inset_0_0.53333vw_0_0_rgba(0,0,0,0.1)] max-md:max-w-none max-md:flex-1"
+                          className="h-[34px] max-w-[63px] rounded-none border border-t-0 border-b-0 border-[#4a4a4a] bg-[#d9d9d9] p-1 text-center text-[20px] text-(--primary) max-md:h-[10.66667vw] max-md:max-w-none max-md:flex-1 max-md:border-0 max-md:bg-white max-md:p-0 max-md:text-[4vw] max-md:leading-[10.13333vw] max-md:font-bold max-md:text-[#1e1e1e] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(0,0,0,0.1)]"
                           value={betSlipDetails?.odds ?? ''}
                           onKeyDown={(e) => e.preventDefault()}
                           inputMode="none"
@@ -368,36 +330,35 @@ export default function InlineBetSlip({
                         />
                         <button
                           type="button"
-                          className="bg-[#bfbfbf] text-(--primary) border border-[#bfbfbf] rounded-r-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-linear-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:rounded-tr-[1.6vw] max-md:rounded-br-[1.6vw] max-md:rounded-tl-none max-md:rounded-bl-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]"
+                          className="rounded-r-md border border-[#bfbfbf] bg-[#bfbfbf] text-(--primary) max-md:h-[10.66667vw] max-md:w-[12vw] max-md:rounded-tl-none max-md:rounded-tr-[1.6vw] max-md:rounded-br-[1.6vw] max-md:rounded-bl-none max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:bg-linear-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 [&_svg]:max-md:h-[7.5vw] [&_svg]:max-md:w-[7.5vw]"
                           onClick={() => updateField('odds', 'INC')}
                         >
                           {PlusIcon}
                         </button>
                       </>
                     ) : (
-                      <p className="m-0 flex items-center justify-center bg-[#dcdcdc] text-(--dark-gray) border-[#dcdcdc] w-full max-md:h-[10.66667vw] max-md:p-0 max-md:border-0 max-md:rounded-[1.6vw]">
+                      <p className="m-0 flex w-full items-center justify-center border-[#dcdcdc] bg-[#dcdcdc] text-(--dark-gray) max-md:h-[10.66667vw] max-md:rounded-[1.6vw] max-md:border-0 max-md:p-0">
                         {oddDisplay}
                       </p>
                     )}
                   </div>
                 </div>
 
-                <div className="text-center md:flex-1 mr-[1.86667vw] max-md:last-of-type:mr-0 max-md:flex-[1_1_47.2vw]">
-                  <p className="text-(--dark-gray) text-[14px] mb-0 mr-[2vw] max-md:text-[2.93333vw] max-md:text-[#1e1e1e] max-md:leading-[1.3]">
+                <div className="mr-[1.86667vw] text-center max-md:flex-[1_1_47.2vw] max-md:last-of-type:mr-0 md:flex-1">
+                  <p className="mr-[2vw] mb-0 text-[14px] text-(--dark-gray) max-md:text-[2.93333vw] max-md:leading-[1.3] max-md:text-[#1e1e1e]">
                     {t('common.minBet', 'Min Bet')} : {betSlipDetails?.min || 1}
                   </p>
-                  <div className="flex items-center border border-[#4a4a4a] rounded-md max-md:border-[#aaa] max-md:justify-between max-md:bg-white max-md:rounded-[1.6vw]">
+                  <div className="flex items-center rounded-md border border-[#4a4a4a] max-md:justify-between max-md:rounded-[1.6vw] max-md:border-[#aaa] max-md:bg-white">
                     <button
                       type="button"
-                      className="bg-[#bfbfbf] text-(--primary) border border-[#bfbfbf] rounded-l-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-linear-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-r max-md:border-[#aaa] max-md:rounded-tl-[1.6vw] max-md:rounded-bl-[1.6vw] max-md:rounded-tr-none max-md:rounded-br-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]
-[&_svg]:mx-auto"
+                      className="rounded-l-md border border-[#bfbfbf] bg-[#bfbfbf] text-(--primary) max-md:h-[10.66667vw] max-md:w-[12vw] max-md:rounded-tl-[1.6vw] max-md:rounded-tr-none max-md:rounded-br-none max-md:rounded-bl-[1.6vw] max-md:border-0 max-md:border-r max-md:border-[#aaa] max-md:bg-linear-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 [&_svg]:mx-auto [&_svg]:max-md:h-[7.5vw] [&_svg]:max-md:w-[7.5vw]"
                       onClick={() => updateField('stake', 'DEC')}
                     >
                       {MinusIcon}
                     </button>
                     <input
                       type="text"
-                      className="p-1 text-center max-w-[63px] bg-(--xs-secondary) shadow-[inset_0_0.26667vw_1.33333vw_var(--primary)] text-(--primary) h-[34px] rounded-none border border-[#4a4a4a] border-t-0 border-b-0 text-[20px] max-md:h-[10.66667vw] max-md:border-0 max-md:p-0 max-md:text-[#1e1e1e] max-md:text-[4vw] max-md:leading-[10.13333vw] max-md:font-bold max-md:max-w-none max-md:flex-1 w-full"
+                      className="h-[34px] w-full max-w-[63px] rounded-none border border-t-0 border-b-0 border-[#4a4a4a] bg-(--xs-secondary) p-1 text-center text-[20px] text-(--primary) shadow-[inset_0_0.26667vw_1.33333vw_var(--primary)] max-md:h-[10.66667vw] max-md:max-w-none max-md:flex-1 max-md:border-0 max-md:p-0 max-md:text-[4vw] max-md:leading-[10.13333vw] max-md:font-bold max-md:text-[#1e1e1e]"
                       inputMode="none"
                       min={0}
                       value={betSlipDetails?.stake ?? ''}
@@ -405,8 +366,7 @@ export default function InlineBetSlip({
                     />
                     <button
                       type="button"
-                      className="bg-[#bfbfbf] text-(--primary) border border-[#bfbfbf] rounded-r-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-linear-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:rounded-tr-[1.6vw] max-md:rounded-br-[1.6vw] max-md:rounded-tl-none max-md:rounded-bl-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]
-[&_svg]:mx-auto"
+                      className="rounded-r-md border border-[#bfbfbf] bg-[#bfbfbf] text-(--primary) max-md:h-[10.66667vw] max-md:w-[12vw] max-md:rounded-tl-none max-md:rounded-tr-[1.6vw] max-md:rounded-br-[1.6vw] max-md:rounded-bl-none max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:bg-linear-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 [&_svg]:mx-auto [&_svg]:max-md:h-[7.5vw] [&_svg]:max-md:w-[7.5vw]"
                       onClick={() => updateField('stake', 'INC')}
                     >
                       {PlusIcon}
@@ -418,7 +378,7 @@ export default function InlineBetSlip({
           </tr>
 
           <tr>
-            <td colSpan={2} className="p-0 bg-[#103c59] border border-white">
+            <td colSpan={2} className="border border-white bg-[#103c59] p-0">
               <StakeButtons
                 isMobile
                 onStakeClick={updateStake}
@@ -428,8 +388,8 @@ export default function InlineBetSlip({
           </tr>
 
           <tr>
-            <td colSpan={2} className="p-0 bg-transparent">
-              <div className="pt-2 bg-transparent">
+            <td colSpan={2} className="bg-transparent p-0">
+              <div className="bg-transparent pt-2">
                 <Keypad onValueChanged={keypadChange} />
               </div>
             </td>
@@ -441,9 +401,9 @@ export default function InlineBetSlip({
                 <button
                   type="button"
                   className={cx(
-                    'bg-linear-to-b from-white to-[#eeeeee] text-[12px] border border-[#bbb] rounded p-0 min-w-0 w-full max-w-[75px] leading-[31px] font-semibold flex-1 py-2',
-                    'max-md:text-[4vw] max-md:font-bold max-md:leading-[2.6] max-md:text-[#1e1e1e] max-md:p-0! max-md:max-w-none! max-md:rounded-[1.6vw] max-md:w-1/2 max-md:mr-[1.86667vw]',
-                    isPlacing && 'opacity-60 cursor-not-allowed'
+                    'w-full max-w-[75px] min-w-0 flex-1 rounded border border-[#bbb] bg-linear-to-b from-white to-[#eeeeee] p-0 py-2 text-[12px] leading-[31px] font-semibold',
+                    'max-md:mr-[1.86667vw] max-md:w-1/2 max-md:max-w-none! max-md:rounded-[1.6vw] max-md:p-0! max-md:text-[4vw] max-md:leading-[2.6] max-md:font-bold max-md:text-[#1e1e1e]',
+                    isPlacing && 'cursor-not-allowed opacity-60'
                   )}
                   onClick={onCancel}
                   disabled={isPlacing}
@@ -453,8 +413,8 @@ export default function InlineBetSlip({
                 <button
                   type="button"
                   className={cx(
-                    'text-[4vw]! font-bold leading-[2.6] text-white! p-0! rounded-[1.6vw]! btn btn-primary w-1/2 py-2 max-w-[120px]',
-                    isPlacing && 'opacity-60 cursor-not-allowed'
+                    'btn btn-primary w-1/2 max-w-[120px] rounded-[1.6vw]! p-0! py-2 text-[4vw]! leading-[2.6] font-bold text-white!',
+                    isPlacing && 'cursor-not-allowed opacity-60'
                   )}
                   onClick={handlePlace}
                   disabled={isPlacing}
@@ -462,7 +422,7 @@ export default function InlineBetSlip({
                   {isPlacing ? (
                     <span className="inline-flex items-center">
                       <span
-                        className="inline-block w-3 h-3 mr-2 border-2 border-current border-r-transparent rounded-full animate-spin"
+                        className="mr-2 inline-block h-3 w-3 animate-spin rounded-full border-2 border-current border-r-transparent"
                         role="status"
                         aria-hidden="true"
                       />
@@ -480,19 +440,19 @@ export default function InlineBetSlip({
             <tr className="table-row">
               <td
                 colSpan={2}
-                className="max-md:px-[1.86667vw] max-md:h-[8.53333vw]"
+                className="max-md:h-[8.53333vw] max-md:px-[1.86667vw]"
               >
-                <div className="flex items-center h-full">
+                <div className="flex h-full items-center">
                   <div
                     className={cx(
-                      'relative max-md:h-[4.8vw] max-md:w-[4.8vw] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(0,0,0,0.4)] max-md:bg-white max-md:rounded-[1.06667vw]',
+                      'relative max-md:h-[4.8vw] max-md:w-[4.8vw] max-md:rounded-[1.06667vw] max-md:bg-white max-md:shadow-[inset_0_0.53333vw_0_0_rgba(0,0,0,0.4)]',
                       isMatchChecked && 'max-md:bg-(--spanish-yellow)'
                     )}
                   >
                     <i
                       className={cx(
                         'not-italic',
-                        '[&_svg]:max-md:h-[3vw] [&_svg]:max-md:w-[3vw] [&_svg]:max-md:absolute [&_svg]:max-md:top-1/2 [&_svg]:max-md:left-1/2 [&_svg]:max-md:-translate-x-1/2 [&_svg]:max-md:-translate-y-1/2',
+                        '[&_svg]:max-md:absolute [&_svg]:max-md:top-1/2 [&_svg]:max-md:left-1/2 [&_svg]:max-md:h-[3vw] [&_svg]:max-md:w-[3vw] [&_svg]:max-md:-translate-x-1/2 [&_svg]:max-md:-translate-y-1/2',
                         isMatchChecked
                           ? '[&_svg]:max-md:block'
                           : '[&_svg]:max-md:hidden'
@@ -505,11 +465,11 @@ export default function InlineBetSlip({
                       type="checkbox"
                       checked={isMatchChecked}
                       onChange={() => setIsMatchChecked((v) => !v)}
-                      className="max-md:h-[4.8vw] max-md:w-[4.8vw] max-md:opacity-0 max-md:absolute max-md:top-0 max-md:left-0 max-md:z-2"
+                      className="max-md:absolute max-md:top-0 max-md:left-0 max-md:z-2 max-md:h-[4.8vw] max-md:w-[4.8vw] max-md:opacity-0"
                     />
                   </div>
                   <label
-                    className="text-black whitespace-nowrap max-md:ml-[1.86667vw] max-md:text-[#1e1e1e]"
+                    className="whitespace-nowrap text-black max-md:ml-[1.86667vw] max-md:text-[#1e1e1e]"
                     htmlFor={marketData}
                   >
                     {t('common.acceptAnyOdds', 'Accept Any Odds')}
@@ -525,20 +485,20 @@ export default function InlineBetSlip({
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full m-0">
+      <table className="m-0 w-full">
         <tbody>
           <tr>
             <td
               className={cx(
-                'font-medium leading-[10px] text-[#254c5d] px-1.5 py-2 text-[14px] align-middle text-right',
+                'px-1.5 py-2 text-right align-middle text-[14px] leading-[10px] font-medium text-[#254c5d]',
                 betTypeClass
               )}
             >
-              <div className="flex justify-end items-center">
+              <div className="flex items-center justify-end">
                 <div className="mr-auto">
                   <input id={marketData} type="checkbox" />
                   <label
-                    className="ml-1 text-black whitespace-nowrap"
+                    className="ml-1 whitespace-nowrap text-black"
                     htmlFor={marketData}
                   >
                     {t('common.acceptAnyOdds', 'Accept Any Odds')}
@@ -548,8 +508,8 @@ export default function InlineBetSlip({
                 <button
                   type="button"
                   className={cx(
-                    'ml-2 bg-linear-to-b from-white to-[#eeeeee] text-[12px] border border-[#bbb] rounded p-0 min-w-0 w-full max-w-[75px] leading-[31px] font-semibold',
-                    isPlacing && 'opacity-60 cursor-not-allowed'
+                    'ml-2 w-full max-w-[75px] min-w-0 rounded border border-[#bbb] bg-linear-to-b from-white to-[#eeeeee] p-0 text-[12px] leading-[31px] font-semibold',
+                    isPlacing && 'cursor-not-allowed opacity-60'
                   )}
                   onClick={onCancel}
                   disabled={isPlacing}
@@ -557,10 +517,10 @@ export default function InlineBetSlip({
                   {t('common.cancel', 'Cancel')}
                 </button>
 
-                <div className="flex ml-2">
+                <div className="ml-2 flex">
                   <div
                     className={cx(
-                      'mr-2 min-[768px]:w-[69px] min-[768px]:p-0 min-[768px]:border-0 min-[768px]:bg-white/50 min-[768px]:rounded min-[768px]:min-h-[33px] max-[1440px]:w-[70px] max-[1440px]:p-1 flex flex-col justify-center [&_p]:m-0 [&_p]:text-right min-[768px]:[&_p]:leading-[18px] min-[768px]:[&_p]:text-[12px] min-[768px]:[&_p]:px-[8px] min-[768px]:[&_p]:font-semibold min-[768px]:[&_p]:text-[#1e1e1e] min-[768px]:[&_small]:leading-[12px] min-[768px]:[&_small]:text-[10px] min-[768px]:[&_small]:px-[5px] min-[768px]:[&_small]:text-[#222] min-[768px]:[&_small]:opacity-50 min-[768px]:[&_small]:font-medium [&_small]:text-right',
+                      'mr-2 flex flex-col justify-center max-[1440px]:w-[70px] max-[1440px]:p-1 min-[768px]:min-h-[33px] min-[768px]:w-[69px] min-[768px]:rounded min-[768px]:border-0 min-[768px]:bg-white/50 min-[768px]:p-0 [&_p]:m-0 [&_p]:text-right min-[768px]:[&_p]:px-[8px] min-[768px]:[&_p]:text-[12px] min-[768px]:[&_p]:leading-[18px] min-[768px]:[&_p]:font-semibold min-[768px]:[&_p]:text-[#1e1e1e] [&_small]:text-right min-[768px]:[&_small]:px-[5px] min-[768px]:[&_small]:text-[10px] min-[768px]:[&_small]:leading-[12px] min-[768px]:[&_small]:font-medium min-[768px]:[&_small]:text-[#222] min-[768px]:[&_small]:opacity-50',
                       betTypeClass
                     )}
                   >
@@ -570,7 +530,7 @@ export default function InlineBetSlip({
 
                   <input
                     type="number"
-                    className="text-right mr-2 min-[768px]:w-[100px] min-[768px]:p-0 min-[768px]:border-0 min-[768px]:bg-white min-[768px]:rounded min-[768px]:min-h-[33px] min-[768px]:shadow-[inset_0_1px_0_rgba(0,0,0,0.5)] min-[768px]:text-[#1e1e1e] min-[768px]:text-[12px] max-[1440px]:w-[70px] max-[1440px]:px-2 max-[1440px]:py-1 [&::-webkit-inner-spin-button]:opacity-100 [&::-webkit-inner-spin-button]:mr-0 [&::-webkit-inner-spin-button]:ml-[5px]"
+                    className="mr-2 text-right max-[1440px]:w-[70px] max-[1440px]:px-2 max-[1440px]:py-1 min-[768px]:min-h-[33px] min-[768px]:w-[100px] min-[768px]:rounded min-[768px]:border-0 min-[768px]:bg-white min-[768px]:p-0 min-[768px]:text-[12px] min-[768px]:text-[#1e1e1e] min-[768px]:shadow-[inset_0_1px_0_rgba(0,0,0,0.5)] [&::-webkit-inner-spin-button]:mr-0 [&::-webkit-inner-spin-button]:ml-[5px] [&::-webkit-inner-spin-button]:opacity-100"
                     min={0}
                     value={betSlipDetails?.stake ?? ''}
                     onChange={(e) => updateStake(e.target.value)}
@@ -582,8 +542,8 @@ export default function InlineBetSlip({
                 <button
                   type="button"
                   className={cx(
-                    'min-w-[182px] h-[31px] md:text-xs! btn btn-primary',
-                    isPlacing && 'opacity-60 cursor-not-allowed'
+                    'btn btn-primary h-[31px] min-w-[182px] md:text-xs!',
+                    isPlacing && 'cursor-not-allowed opacity-60'
                   )}
                   onClick={handlePlace}
                   disabled={isPlacing}
@@ -591,7 +551,7 @@ export default function InlineBetSlip({
                   {isPlacing ? (
                     <span className="inline-flex items-center">
                       <span
-                        className="inline-block w-3 h-3 mr-2 border-2 border-current border-r-transparent rounded-full animate-spin"
+                        className="mr-2 inline-block h-3 w-3 animate-spin rounded-full border-2 border-current border-r-transparent"
                         role="status"
                         aria-hidden="true"
                       />
@@ -608,7 +568,7 @@ export default function InlineBetSlip({
           <tr>
             <td
               className={cx(
-                'font-medium leading-[10px] text-[#254c5d] px-1.5 py-2 text-[14px] align-middle text-right',
+                'px-1.5 py-2 text-right align-middle text-[14px] leading-[10px] font-medium text-[#254c5d]',
                 betTypeClass
               )}
             >

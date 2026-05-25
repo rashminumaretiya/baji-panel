@@ -195,7 +195,8 @@ export const selectFancyProgressMap = (s) => s.betSlip.fancyProgressMap
 export const selectMatchOddsFancyProgress = (s) => {
   const map = s.betSlip.fancyProgressMap
   for (const id in map) {
-    if (map[id]?.marketName === 'MATCH_ODDS') return { selectionId: id, config: map[id] }
+    if (map[id]?.marketName === 'MATCH_ODDS')
+      return { selectionId: id, config: map[id] }
   }
   return null
 }

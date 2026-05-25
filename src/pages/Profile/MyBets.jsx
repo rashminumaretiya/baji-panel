@@ -41,7 +41,7 @@ export default function MyBets() {
 
   return (
     <div className="mb-4">
-      <h3 className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
+      <h3 className="mb-1.5 pt-1.5 text-[13px] leading-5 font-bold text-[#1e1e1e]">
         {t('common.myBets', 'My Bets')}
       </h3>
       <Tabs

@@ -70,27 +70,27 @@ const LI_BASE =
 const LI_DEFAULT = 'text-white border-b-white/15'
 
 // `light-sidebar` (yellow theme) — blue text on light background.
-const LI_LIGHT = 'text-[var(--blue)] border-b border-[var(--light-bg)]'
+const LI_LIGHT = 'text-(--blue) border-b border-(--light-bg)'
 
 // `mcw-sidebar` (mcw theme) — dark text, soft hover.
 const LI_MCW = 'text-[#222222] border-b border-[#eee1c0] hover:!bg-[#ece4b9]'
 
 // State helpers — `.active`, `.selected`, `.sub-title` (sub-title only paints
 // background, no other props change).
-const STATE_ACTIVE_DEFAULT = '!text-white !bg-[var(--primary)]'
+const STATE_ACTIVE_DEFAULT = '!text-white !bg-(--primary)'
 const STATE_ACTIVE_LIGHT =
-  '!text-white !bg-gradient-to-b !from-[#546d7d] !to-[var(--text-color)]'
+  '!text-white !bg-gradient-to-b !from-[#546d7d] !to-(--text-color)'
 const STATE_ACTIVE_MCW = '!text-[#222222] !bg-[#e5ca3a]'
 const STATE_SELECTED = '!bg-[rgba(var(--primary-rgb),0.6)] !text-white'
 const STATE_SUB_TITLE = '!bg-white/10'
 
 // `match-odds` ─ left padding for the leading bullet + ::before dot.
 const MATCH_ODDS_BASE =
-  '!pl-5 before:content-["•"] before:absolute before:left-[5px] before:text-[20px] before:text-[var(--sm-white)]'
-const MATCH_ODDS_IN_PLAY = 'before:!text-[var(--xs-green-primary)]'
+  '!pl-5 before:content-["•"] before:absolute before:left-[5px] before:text-[20px] before:text-(--sm-white)'
+const MATCH_ODDS_IN_PLAY = 'before:!text-(--xs-green-primary)'
 const MATCH_ODDS_ACTIVE_DEFAULT = '!bg-[rgba(var(--xss-green-primary),0.6)]'
-const MATCH_ODDS_ACTIVE_YELLOW = '!bg-[#f2dca7] !text-[var(--dark)]'
-const MATCH_ODDS_ACTIVE_MCW = '!bg-[rgba(229,202,58,0.6)] !text-[var(--dark)]'
+const MATCH_ODDS_ACTIVE_YELLOW = '!bg-[#f2dca7] !text-(--dark)'
+const MATCH_ODDS_ACTIVE_MCW = '!bg-[rgba(229,202,58,0.6)] !text-(--dark)'
 
 // `active-sport` — header row at the top of the sidebar.
 const ACTIVE_SPORT_DEFAULT = LI_BASE + ' ' + LI_DEFAULT
@@ -98,7 +98,7 @@ const ACTIVE_SPORT_YELLOW =
   LI_BASE +
   ' ' +
   LI_LIGHT +
-  ' !text-white !bg-gradient-to-b !from-[#546d7d] !to-[var(--text-color)]'
+  ' !text-white !bg-gradient-to-b !from-[#546d7d] !to-(--text-color)'
 const ACTIVE_SPORT_MCW =
   LI_BASE +
   ' ' +

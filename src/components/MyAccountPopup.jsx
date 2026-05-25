@@ -85,14 +85,14 @@ export default function MyAccountPopup({
   return (
     <>
       <div
-        className="flex items-center justify-center cursor-pointer lg:ms-4 sm:ms-2 text-[var(--header-balance-color)] h-[26px] px-1.5 bg-black/30 border border-black/40 shadow-[inset_0_1px_0_0_rgba(var(--dark-alpha),0.5)] font-normal text-[12px] rounded-[3px] whitespace-nowrap max-md:h-[9.6vw] max-md:w-[9.6vw] [&_.user-icon_svg]:h-[18px] [&_.user-icon_svg]:w-[18px] [&_.dropdown-icon_svg]:w-[9px]"
+        className="flex h-[26px] cursor-pointer items-center justify-center rounded-[3px] border border-black/40 bg-black/30 px-1.5 text-[12px] font-normal whitespace-nowrap text-(--header-balance-color) shadow-[inset_0_1px_0_0_rgba(var(--dark-alpha),0.5)] max-md:h-[9.6vw] max-md:w-[9.6vw] sm:ms-2 lg:ms-4 [&_.dropdown-icon_svg]:w-[9px] [&_.user-icon_svg]:h-[18px] [&_.user-icon_svg]:w-[18px]"
         onClick={handleToggle}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => e.key === 'Enter' && handleToggle(e)}
       >
         <SvgIcon name="userIcon" className="user-icon" />
-        <span className="inline-block mx-1 max-md:hidden">
+        <span className="mx-1 inline-block max-md:hidden">
           {t('common.myAccount', 'My Account')}
         </span>
         {!isMobile && <SvgIcon name="dropdown" className="dropdown-icon" />}
@@ -105,20 +105,20 @@ export default function MyAccountPopup({
         rootClose
         onHide={() => setShow(false)}
       >
-        <Popover className="border-0 w-[230px]">
-          <Popover.Body className="text-[12px] font-[Tahoma,Helvetica,sans-serif] text-[var(--popover)]">
-            <div className="flex justify-between font-bold text-[12px] border-b border-[var(--sm-text-color)] pl-2.5">
-              <p className="mb-0 leading-[26px] font-semibold flex-1 pr-1.5 border-r border-[#c5d0d7]">
+        <Popover className="w-[230px] border-0">
+          <Popover.Body className="font-[Tahoma,Helvetica,sans-serif] text-[12px] text-(--popover)">
+            <div className="flex justify-between border-b border-(--sm-text-color) pl-2.5 text-[12px] font-bold">
+              <p className="mb-0 flex-1 border-r border-[#c5d0d7] pr-1.5 leading-[26px] font-semibold">
                 {userName}
               </p>
-              <p className="mb-0 text-[11px] px-1 py-[5px]">GMT +5:30</p>
+              <p className="mb-0 px-1 py-[5px] text-[11px]">GMT +5:30</p>
             </div>
             <ul className="m-0 p-0">
-              <li className="flex flex-row items-center px-2.5 leading-[25px] border-b border-[var(--light-bg)] text-[#1e1e1e]">
+              <li className="flex flex-row items-center border-b border-(--light-bg) px-2.5 leading-[25px] text-[#1e1e1e]">
                 <span className="whitespace-nowrap">
                   {t('common.uplineContact', 'Upline Contact')}:
                 </span>
-                <div className="flex ml-2 overflow-x-auto gap-1.5 [&_a]:inline-flex [&_a]:items-center [&_i]:inline-flex [&_svg]:w-4 [&_svg]:h-4">
+                <div className="ml-2 flex gap-1.5 overflow-x-auto [&_a]:inline-flex [&_a]:items-center [&_i]:inline-flex [&_svg]:h-4 [&_svg]:w-4">
                   {uplineContacts
                     ?.filter((c) => c?.link)
                     ?.map((contact) => (
@@ -139,7 +139,7 @@ export default function MyAccountPopup({
                   key={item.path}
                   role="button"
                   tabIndex={0}
-                  className="px-2.5 leading-[25px] border-b last:border-b-0 border-[var(--light-bg)] text-[#1e1e1e] cursor-pointer hover:bg-[var(--xxs-gray)]"
+                  className="cursor-pointer border-b border-(--light-bg) px-2.5 leading-[25px] text-[#1e1e1e] last:border-b-0 hover:bg-(--xxs-gray)"
                   onClick={() => handleMenuClick(item.path)}
                   onKeyDown={(e) =>
                     e.key === 'Enter' && handleMenuClick(item.path)

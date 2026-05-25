@@ -14,7 +14,6 @@ import {
   selectCurrency,
   selectIsAuthenticated,
   selectIsOneClickBet,
-  selectMaxAvailBalance,
   setLoginWindow,
 } from '../store/slices/authSlice.js'
 import {
@@ -59,7 +58,6 @@ export default function RacingOdds() {
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const isOneClickBet = useSelector(selectIsOneClickBet)
   const oneClickBetStake = useSelector(selectOneClickBetStake)
-  const maxAvailBalance = useSelector(selectMaxAvailBalance)
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const currency = useSelector(selectCurrency)
   const activeBetSlip = useSelector(selectActiveBetSlip)
@@ -207,22 +205,6 @@ export default function RacingOdds() {
 
       if (isOneClickBet) {
         const stake = Number(oneClickBetStake)
-        if (!stake || Number.isNaN(stake)) {
-          alertService.error(
-            t('errors.invalidStake', 'Set a one-click stake first')
-          )
-          return
-        }
-        if (stake > maxAvailBalance) {
-          alertService.error(
-            t(
-              'errors.insufficientFund',
-              `Insufficient fund, max available balance ${maxAvailBalance}`,
-              { balance: maxAvailBalance }
-            )
-          )
-          return
-        }
         dispatch(
           placeBet({
             slip: { ...slip, stake },
@@ -252,7 +234,6 @@ export default function RacingOdds() {
       isAuthenticated,
       isOneClickBet,
       oneClickBetStake,
-      maxAvailBalance,
       marketId,
       matchOdds,
       eventId,

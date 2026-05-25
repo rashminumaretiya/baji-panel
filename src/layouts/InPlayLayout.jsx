@@ -47,15 +47,15 @@ export default function InPlayLayout() {
     <div>
       <Header />
 
-      <div className="relative mx-auto bg-[var(--xs-gray)] w-[calc(100%-40px)] mt-[105px] min-[768px]:max-[1440px]:w-[calc(100%-25px)] max-md:mt-[14.67vw] max-md:w-full">
+      <div className="relative mx-auto mt-[105px] w-[calc(100%-40px)] bg-(--xs-gray) max-md:mt-[14.67vw] max-md:w-full min-[768px]:max-[1440px]:w-[calc(100%-25px)]">
         {isFullScreenLoader && (
-          <div className="fixed inset-0 flex items-center justify-center z-[9999]">
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center">
             <Loader show message="common.loader.pleaseWait" />
           </div>
         )}
-        <div className="relative h-[calc(100svh-105px)] overflow-y-auto ml-0 pl-0 mr-[26.04%] px-[15px] max-md:mr-0 max-md:px-0">
+        <div className="relative mr-[26.04%] ml-0 h-[calc(100svh-105px)] overflow-y-auto px-[15px] pl-0 max-md:mr-0 max-md:px-0">
           {showNewsLine && <NewsLine />}
-          <div className="min-h-[calc(100vh-148px)] overflow-y-auto max-md:min-h-[unset] max-md:max-h-[unset] max-md:overflow-y-visible md:pt-2">
+          <div className="min-h-[calc(100vh-148px)] overflow-y-auto max-md:max-h-[unset] max-md:min-h-[unset] max-md:overflow-y-visible md:pt-2">
             <Suspense fallback={<Loader show variant="wrapper" />}>
               <Outlet />
             </Suspense>
@@ -67,7 +67,7 @@ export default function InPlayLayout() {
         </div>
 
         {!isMobile && (
-          <div className="absolute w-[26.04%] z-[8] right-0 top-0 bottom-0 bg-white">
+          <div className="absolute top-0 right-0 bottom-0 z-[8] w-[26.04%] bg-white">
             <BetSlip />
             <OpenBets />
           </div>

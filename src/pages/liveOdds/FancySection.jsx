@@ -41,7 +41,7 @@ export default function FancySection({
   const { t } = useTranslation()
   if (!items.length) {
     return (
-      <div className="text-center p-3 text-[var(--sm-text-color)] text-[12px] bg-white">
+      <div className="bg-white p-3 text-center text-[12px] text-(--sm-text-color)">
         {t('common.noFancyMarkets', 'No fancy markets')}
       </div>
     )
@@ -64,13 +64,13 @@ export default function FancySection({
 
       {!isMobile && (
         <MatchHeader>
-          <div className="flex items-center justify-center pr-3 [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center md:[&_.icon-wrapper_i]:bg-no-repeat md:[&_.icon-wrapper_i]:[background-image:url('/img/main-s1aea395e8c.png')] md:[&_.icon-wrapper_i]:[background-position:-385px_-833px] md:[&_.icon-wrapper_i]:h-[28px] md:[&_.icon-wrapper_i]:w-[29px] md:[&_.icon-wrapper_i]:mr-[6px] md:[&_.icon-wrapper_svg]:hidden">
+          <div className="flex items-center justify-center pr-3 [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center md:[&_.icon-wrapper_i]:mr-[6px] md:[&_.icon-wrapper_i]:h-[28px] md:[&_.icon-wrapper_i]:w-[29px] md:[&_.icon-wrapper_i]:[background-image:url('/img/main-s1aea395e8c.png')] md:[&_.icon-wrapper_i]:[background-position:-385px_-833px] md:[&_.icon-wrapper_i]:bg-no-repeat md:[&_.icon-wrapper_svg]:hidden">
             <span className="icon-wrapper">
               <i>
                 <PinSvg />
               </i>
             </span>
-            <span className="text-white font-bold text-[14px] inline-block ml-2">
+            <span className="ml-2 inline-block text-[14px] font-bold text-white">
               Fancy Bet
             </span>
           </div>
@@ -81,17 +81,17 @@ export default function FancySection({
         <table className="w-full border-collapse max-md:bg-white">
           <thead>
             <tr>
-              <th className="bg-white px-[10px] py-1 font-bold text-[12px] max-md:text-[3.46667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]" />
-              <th className="bg-white px-[10px] py-1 font-bold text-[12px] max-md:text-[3.46667vw] max-md:w-[18.66667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
+              <th className="bg-white px-[10px] py-1 text-[12px] font-bold max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw] max-md:text-[3.46667vw]" />
+              <th className="bg-white px-[10px] py-1 text-[12px] font-bold max-md:h-[4.954vw] max-md:w-[18.66667vw] max-md:p-[1.33333vw_1.86667vw] max-md:text-[3.46667vw]">
                 No
               </th>
-              <th className="bg-white px-[10px] py-1 font-bold text-[12px] max-md:text-[3.46667vw] max-md:w-[18.66667vw] max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw]">
+              <th className="bg-white px-[10px] py-1 text-[12px] font-bold max-md:h-[4.954vw] max-md:w-[18.66667vw] max-md:p-[1.33333vw_1.86667vw] max-md:text-[3.46667vw]">
                 Yes
               </th>
               {!isMobile && (
                 <>
-                  <th className="bg-white px-[10px] py-1 font-bold text-[12px]" />
-                  <th className="bg-white px-[10px] py-1 font-bold text-[12px] max-[1199px]:hidden" />
+                  <th className="bg-white px-[10px] py-1 text-[12px] font-bold" />
+                  <th className="bg-white px-[10px] py-1 text-[12px] font-bold max-[1199px]:hidden" />
                 </>
               )}
             </tr>
@@ -108,16 +108,16 @@ export default function FancySection({
               return (
                 <Fragment key={`${item.SelectionId}-${i}`}>
                   {isMobile && (
-                    <tr className="bg-[var(--xsl-blue-bg)] max-md:even:[&_td]:border-t-0">
+                    <tr className="bg-(--xsl-blue-bg) max-md:even:[&_td]:border-t-0">
                       <td
                         colSpan={3}
-                        className="p-[7px_0_7px_8px] border-b-0 h-[38px] max-md:!p-[1.33333vw_1.86667vw] max-md:h-[8.954vw] [&_svg]:h-[15px] [&_svg]:w-[15px] [&_svg]:text-[var(--sm-light-bg)] max-md:[&_svg]:w-[4vw] max-md:[&_svg]:h-[4vw]"
+                        className="h-[38px] border-b-0 p-[7px_0_7px_8px] max-md:h-[8.954vw] max-md:!p-[1.33333vw_1.86667vw] [&_svg]:h-[15px] [&_svg]:w-[15px] [&_svg]:text-(--sm-light-bg) max-md:[&_svg]:h-[4vw] max-md:[&_svg]:w-[4vw]"
                       >
-                        <div className="flex justify-between items-center">
-                          <span className="block w-full max-w-[90%] overflow-hidden text-ellipsis whitespace-nowrap font-bold max-md:!text-[3.4666666667vw]">
+                        <div className="flex items-center justify-between">
+                          <span className="block w-full max-w-[90%] overflow-hidden font-bold text-ellipsis whitespace-nowrap max-md:!text-[3.4666666667vw]">
                             {item.RunnerName}
                           </span>
-                          <span className="relative mr-[1.86667vw] text-white [&_svg]:max-md:w-[4vw] [&_svg]:max-md:h-[4vw]">
+                          <span className="relative mr-[1.86667vw] text-white [&_svg]:max-md:h-[4vw] [&_svg]:max-md:w-[4vw]">
                             <i
                               onClick={() =>
                                 setFancyInfoIndex(fancyInfoIndex === i ? -1 : i)
@@ -129,7 +129,7 @@ export default function FancySection({
                             </i>
                             {fancyInfoIndex === i && (
                               <div className={FANCY_INFO_POPUP}>
-                                <div className="flex-1 flex flex-col">
+                                <div className="flex flex-1 flex-col">
                                   <p>
                                     {t('common.min', 'Min')} /{' '}
                                     {t('common.max', 'Max')}
@@ -154,16 +154,16 @@ export default function FancySection({
                       </td>
                     </tr>
                   )}
-                  <tr className="[&_>td]:bg-white hover:bg-[var(--hover-bg)] hover:[&>td]:bg-[var(--hover-bg)] hover:[&_td:last-child]:border-l-[var(--hover-bg)]">
-                    <td className="px-[10px] py-[5px] relative min-w-[100px] max-md:min-w-[70px] border-t border-t-[var(--tbl-border-color)] h-[42px] max-md:h-[11.51vw]">
+                  <tr className="hover:bg-(--hover-bg) [&_>td]:bg-white hover:[&_td:last-child]:border-l-(--hover-bg) hover:[&>td]:bg-(--hover-bg)">
+                    <td className="relative h-[42px] min-w-[100px] border-t border-t-(--tbl-border-color) px-[10px] py-[5px] max-md:h-[11.51vw] max-md:min-w-[70px]">
                       {!isMobile && (
                         <div>
-                          <span className="block w-full max-w-[90%] overflow-hidden text-ellipsis whitespace-nowrap font-bold min-w-[50px]">
+                          <span className="block w-full max-w-[90%] min-w-[50px] overflow-hidden font-bold text-ellipsis whitespace-nowrap">
                             {item.RunnerName}
                           </span>
                         </div>
                       )}
-                      <div className="flex justify-between items-center gap-2">
+                      <div className="flex items-center justify-between gap-2">
                         <BetExposureCell
                           selectionId={item.SelectionId}
                           marketId={item.default_marketId}
@@ -176,7 +176,7 @@ export default function FancySection({
                           ) && (
                             <button
                               type="button"
-                              className="cursor-pointer text-[13px] leading-[1.3] px-1.5 py-[3px] rounded-[4px] bg-[#ffcc51] text-[color:var(--dark)] border border-[#cf9a47] hover:opacity-90 max-md:rounded-[1.33vw] max-md:text-[3.2vw] max-md:p-[1.6vw]"
+                              className="cursor-pointer rounded-[4px] border border-[#cf9a47] bg-[#ffcc51] px-1.5 py-[3px] text-[13px] leading-[1.3] text-[color:var(--dark)] hover:opacity-90 max-md:rounded-[1.33vw] max-md:p-[1.6vw] max-md:text-[3.2vw]"
                               onClick={() =>
                                 onBookClick?.({
                                   selectionId: item.SelectionId,
@@ -191,10 +191,10 @@ export default function FancySection({
                     </td>
                     <td
                       colSpan={2}
-                      className="p-0 relative border-t border-t-[var(--tbl-border-color)] h-[42px] max-md:h-[11.51vw] w-[10.9%] min-w-[100px]"
+                      className="relative h-[42px] w-[10.9%] min-w-[100px] border-t border-t-(--tbl-border-color) p-0 max-md:h-[11.51vw]"
                     >
                       {isSuspended && (
-                        <div className="absolute inset-0 bg-[rgba(36,58,72,0.4)] z-[9] flex items-center justify-center text-white/80 font-bold [text-shadow:0_1px_4px_rgba(0,0,0,0.5)] text-[13px] cursor-default max-md:text-[3.46667vw]">
+                        <div className="absolute inset-0 z-[9] flex cursor-default items-center justify-center bg-[rgba(36,58,72,0.4)] text-[13px] font-bold text-white/80 [text-shadow:0_1px_4px_rgba(0,0,0,0.5)] max-md:text-[3.46667vw]">
                           {statusLabel}
                         </div>
                       )}
@@ -243,15 +243,15 @@ export default function FancySection({
                     </td>
                     {!isMobile && (
                       <>
-                        <td className="px-[10px] py-[5px] relative border-white border-t border-t-[var(--tbl-border-color)] h-[42px] max-md:h-[11.51vw] w-[10.9%]">
-                          <p className="mb-0 text-[var(--sm-text-color)] min-h-[32px] text-left text-[11px]">
+                        <td className="relative h-[42px] w-[10.9%] border-t border-white border-t-(--tbl-border-color) px-[10px] py-[5px] max-md:h-[11.51vw]">
+                          <p className="mb-0 min-h-[32px] text-left text-[11px] text-(--sm-text-color)">
                             Min/Max
-                            <span className="block whitespace-nowrap !text-[12px] text-[var(--dark)]">
+                            <span className="block !text-[12px] whitespace-nowrap text-(--dark)">
                               {fmt(item.min || 1)} / {fmt(item.max || 1000)}
                             </span>
                           </p>
                         </td>
-                        <td className="w-[10.9%] border-t border-t-[var(--tbl-border-color)]" />
+                        <td className="w-[10.9%] border-t border-t-(--tbl-border-color)" />
                       </>
                     )}
                   </tr>

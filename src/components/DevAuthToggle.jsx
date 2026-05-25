@@ -126,7 +126,7 @@ function DevAuthPanel() {
           maxLength={4}
           onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))}
         />
-        <span className="text-[#fbbf24] font-bold">{captcha?.code ?? '…'}</span>
+        <span className="font-bold text-[#fbbf24]">{captcha?.code ?? '…'}</span>
       </div>
       {error && <div className="text-[#fca5a5]">{error}</div>}
       <div className={rowClass}>

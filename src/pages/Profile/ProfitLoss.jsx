@@ -89,10 +89,10 @@ const plTitleClass = 'text-[15px] font-semibold mb-[6px] text-[#3b5160] mt-0'
 const plMetaClass =
   'flex items-center flex-wrap gap-[10px] text-[12px] text-[#1e1e1e]'
 const plMetaItemClass =
-  'inline-flex items-center gap-[4px] text-[var(--text-color)] [&_svg_path]:fill-[var(--sm-text-color)]'
+  'inline-flex items-center gap-[4px] text-(--text-color) [&_svg_path]:fill-(--sm-text-color)'
 
 const filterContainerClass =
-  'bg-[var(--platinum-grey)] border-b border-[#d0d0d0] px-[10px] py-[8px] text-[12px] text-[#1e1e1e]'
+  'bg-(--platinum-grey) border-b border-[#d0d0d0] px-[10px] py-[8px] text-[12px] text-[#1e1e1e]'
 const filterRowClass = 'flex items-center flex-wrap gap-[6px] mb-4'
 const actionRowClass = 'flex items-center gap-[6px] mt-2'
 const filterLabelClass = 'text-[#1e1e1e] whitespace-nowrap m-0'
@@ -202,11 +202,11 @@ export default function ProfitLoss() {
         </h4>
         <div className={plMetaClass}>
           <span className={plMetaItemClass}>
-            <UserIcon className="w-5 h-5 -mt-0.5" />
+            <UserIcon className="-mt-0.5 h-5 w-5" />
             <span>{userName}</span>
           </span>
           <span className={plMetaItemClass}>
-            <span className="h-4 w-4 inline-block bg-[url('/img/calender-icon.png')] bg-[position:100%_-189px]"></span>
+            <span className="inline-block h-4 w-4 bg-[url('/img/calender-icon.png')] bg-[position:100%_-189px]"></span>
             <span>{generatedAt}</span>
           </span>
         </div>

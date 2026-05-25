@@ -130,22 +130,22 @@ const RESULT_DATA = [
 const MOBILE_STAKE_WRAPPER = 'mb-[2.5vw]'
 
 const MOBILE_STAKE_ROW =
-  'flex items-stretch bg-white border-b border-[var(--sm-text-color)]'
+  'flex items-stretch bg-white border-b border-(--sm-text-color)'
 
 // `.match-td` ─ each cell. `:first-child` doubles in width and left-aligns
 // its `p`/`label`; we model that via [&:first-child:..] arbitrary selectors.
 const MATCH_TD =
   'flex flex-col justify-center items-center flex-1 text-black ' +
   'pt-[6.67vw] pr-[1.6vw] pb-[1.6vw] pl-[1.6vw] text-center ' +
-  'text-[5.33vw] border-l border-[var(--light-bg)] relative ' +
+  'text-[5.33vw] border-l border-(--light-bg) relative ' +
   // first-child overrides — wider lane + left aligned text.
   'first:flex-[2] first:[&_p]:text-[4.27vw] first:[&_p]:leading-[5.33vw] ' +
-  'first:[&_p]:text-[var(--xs-text-color)] first:[&_p]:text-start ' +
+  'first:[&_p]:text-(--xs-text-color) first:[&_p]:text-start ' +
   'first:[&_label]:text-start first:[&_label]:left-[1.6vw]'
 
 const MATCH_LABEL =
   'absolute left-0 right-0 top-[1.7vw] text-center text-[2.93vw] ' +
-  'leading-[3.73vw] text-[var(--xs-text-color)]'
+  'leading-[3.73vw] text-(--xs-text-color)'
 
 const MATCH_P = 'mb-0 font-bold'
 
@@ -157,7 +157,7 @@ function MobileResultTable({ data }) {
           <div className={MATCH_TD}>
             <label className={MATCH_LABEL}>{row.eventDate}</label>
             <p
-              className={`${MATCH_P} text-[4.27vw] leading-[5.33vw] text-[var(--xs-text-color)] text-start w-full`}
+              className={`${MATCH_P} w-full text-start text-[4.27vw] leading-[5.33vw] text-(--xs-text-color)`}
             >
               {row.eventName}
             </p>
@@ -189,14 +189,14 @@ const TABS_ROW =
 const RESULT_TABS_WRAPPER =
   'overflow-x-auto pb-2 flex justify-between ' +
   'max-md:flex-col max-md:py-[1.6vw] max-md:px-[1.87vw] ' +
-  'max-md:bg-[var(--mts-blue)]'
+  'max-md:bg-(--mts-blue)'
 
 // `.outer-select` — relative wrapper with the mobile-only chevron via ::after.
 const OUTER_SELECT =
   'relative ' +
   "max-md:after:content-[''] max-md:after:absolute max-md:after:top-1/2 " +
   'max-md:after:right-[2.13vw] max-md:after:translate-y-[-50%] ' +
-  'max-md:after:border-t-[2.13vw] max-md:after:border-t-[var(--dark)] ' +
+  'max-md:after:border-t-[2.13vw] max-md:after:border-t-(--dark) ' +
   'max-md:after:border-l-[2.13vw] max-md:after:border-l-transparent ' +
   'max-md:after:border-r-[2.13vw] max-md:after:border-r-transparent ' +
   'max-md:after:pointer-events-none'
@@ -265,12 +265,12 @@ export default function Result() {
               return (
                 <li
                   key={tab.id}
-                  className="list-none flex-1"
+                  className="flex-1 list-none"
                   role="presentation"
                 >
                   <button
                     type="button"
-                    className={`border md:border-[var(--text-color)] border-white w-full p-0 md:text-[13px] text-[3.73333vw] md:leading-[27px] leading-[8.8vw] font-bold ${index === 0 ? 'md:rounded-l rounded-l-[1.6vw]' : ''} ${index === TABS.length - 1 ? 'md:rounded-r rounded-r-[1.6vw]' : ''} ${isActive ? 'border-[var(--primary)] md:bg-[var(--text-color)] bg-white md:text-white text-[var(--text-color)] font-semibold' : 'md:text-[var(--text-color)] text-white md:bg-white'}`}
+                    className={`w-full border border-white p-0 text-[3.73333vw] leading-[8.8vw] font-bold md:border-(--text-color) md:text-[13px] md:leading-[27px] ${index === 0 ? 'rounded-l-[1.6vw] md:rounded-l' : ''} ${index === TABS.length - 1 ? 'rounded-r-[1.6vw] md:rounded-r' : ''} ${isActive ? 'border-(--primary) bg-white font-semibold text-(--text-color) md:bg-(--text-color) md:text-white' : 'text-white md:bg-white md:text-(--text-color)'}`}
                     role="tab"
                     aria-selected={isActive}
                     onClick={() => changeTab(tab.id)}

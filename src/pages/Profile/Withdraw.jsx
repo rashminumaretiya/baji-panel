@@ -23,11 +23,11 @@ const DEFAULT_LIMITS = { withdrawMinLimit: 300, withdrawMaxLimit: 25000 }
 const formLabelClass = 'block text-[14px] mb-[3px]'
 const formLabelRequiredClass = `${formLabelClass} after:content-['*'] after:text-red-500 after:ml-1`
 const formControlClass =
-  'block w-full px-3 py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded focus:outline-none focus:border-[var(--light-gray)]'
+  'block w-full px-3 py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded focus:outline-none focus:border-(--light-gray)'
 // `.form-select` — padding 4 12 / 14px font.
 const formSelectClass =
-  'block w-full px-3 py-[4px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded focus:outline-none focus:border-[var(--light-gray)] appearance-none bg-no-repeat bg-[position:right_0.75rem_center] bg-[length:16px_12px] bg-[url("data:image/svg+xml,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3e%3cpath%20fill=%27none%27%20stroke=%27%23343a40%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20stroke-width=%272%27%20d=%27M2%205l6%206%206-6%27/%3e%3c/svg%3e")] pr-9'
-const errorTextClass = 'block text-[12px] text-[var(--red)] mt-1'
+  'block w-full px-3 py-[4px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded focus:outline-none focus:border-(--light-gray) appearance-none bg-no-repeat bg-[position:right_0.75rem_center] bg-[length:16px_12px] bg-[url("data:image/svg+xml,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3e%3cpath%20fill=%27none%27%20stroke=%27%23343a40%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20stroke-width=%272%27%20d=%27M2%205l6%206%206-6%27/%3e%3c/svg%3e")] pr-9'
+const errorTextClass = 'block text-[12px] text-(--red) mt-1'
 
 // `.payment-methods-cards` — flex w/ 10px gap (4px on mobile).
 const paymentMethodsCardsClass = 'flex gap-[10px] max-md:gap-[4px]'
@@ -37,7 +37,7 @@ const paymentMethodsCardsClass = 'flex gap-[10px] max-md:gap-[4px]'
 const formCheckClass =
   'relative mb-0 w-[100px] pl-0 max-md:w-[calc(33.33%-2.666px)]'
 const formCheckInputClass =
-  'absolute top-0 left-0 w-full h-full m-0 cursor-pointer bg-transparent rounded-[5px] border border-[#262626] shadow-none appearance-none checked:border-[var(--primary-yellow)]'
+  'absolute top-0 left-0 w-full h-full m-0 cursor-pointer bg-transparent rounded-[5px] border border-[#262626] shadow-none appearance-none checked:border-(--primary-yellow)'
 const formCheckLabelClass =
   'flex flex-col justify-center mb-0 p-2 rounded-[5px] whitespace-nowrap max-md:bg-[#262626] max-md:p-[1.86vw] max-md:rounded-[1.163vw]'
 const formCheckImgClass =
@@ -214,14 +214,14 @@ export default function Withdraw({ showTitle = true }) {
   return (
     <>
       {showTitle && (
-        <div className="flex justify-between items-center">
-          <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
+        <div className="flex items-center justify-between">
+          <p className="mb-1.5 pt-1.5 text-[13px] leading-5 font-bold text-[#1e1e1e]">
             {t('common.withdraw', 'Withdraw')}
           </p>
         </div>
       )}
 
-      <div className="bg-white border border-[rgba(0,0,0,0.125)] rounded p-3">
+      <div className="rounded border border-[rgba(0,0,0,0.125)] bg-white p-3">
         <form onSubmit={handleSubmit} noValidate>
           <div className="flex flex-col">
             <div className="mb-3">

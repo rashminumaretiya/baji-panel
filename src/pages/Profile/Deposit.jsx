@@ -91,9 +91,9 @@ function titleCase(value) {
 // Promotion-item container (used both inline and in the modal list).
 // `.promotion-item` from deposit.scss: bg sm-dark, padding 16, gap row, etc.
 const promoItemBase =
-  'bg-[var(--sm-dark)] rounded-lg p-4 flex justify-between items-center cursor-pointer transition-colors duration-200 border-[3px] border-transparent min-w-[calc(33.33%-7px)] max-md:max-w-full max-md:py-[25px] max-md:px-[15px]'
+  'bg-(--sm-dark) rounded-lg p-4 flex justify-between items-center cursor-pointer transition-colors duration-200 border-[3px] border-transparent min-w-[calc(33.33%-7px)] max-md:max-w-full max-md:py-[25px] max-md:px-[15px]'
 const promoItemActive =
-  'border-[var(--primary)] [&_.radio-button]:border-[5px] [&_.radio-button]:border-[var(--primary)] [&_.radio-button]:bg-white'
+  'border-(--primary) [&_.radio-button]:border-[5px] [&_.radio-button]:border-(--primary) [&_.radio-button]:bg-white'
 const promoItemDisabled = 'opacity-70 pointer-events-none'
 
 // Stable component reference — defined at module scope so React reuses the
@@ -104,7 +104,7 @@ function PromotionListItems({ promotions, activeId, onClick }) {
   return (
     // .promotion-list: row flex with horizontal scroll on desktop,
     // column with vertical scroll on mobile (max-h calc(100vh-145px)).
-    <div className="flex flex-row gap-[10px] overflow-auto max-md:max-h-[calc(100vh-145px)] max-md:flex-col max-md:gap-4 max-md:my-0 max-md:mx-4 max-md:mb-4">
+    <div className="flex flex-row gap-[10px] overflow-auto max-md:mx-4 max-md:my-0 max-md:mb-4 max-md:max-h-[calc(100vh-145px)] max-md:flex-col max-md:gap-4">
       {promotions.map((p) => {
         const isDisabled = p.promotionType === 'deposit_refund_interval_bonus'
         const active = activeId === p._id
@@ -120,22 +120,22 @@ function PromotionListItems({ promotions, activeId, onClick }) {
             onKeyDown={(e) => e.key === 'Enter' && !isDisabled && onClick(p)}
           >
             <div className="flex-1">
-              <h3 className="mb-2 text-[var(--sm-gray-30)] font-semibold text-[16px] max-md:text-[20px] max-md:mb-[10px]">
+              <h3 className="mb-2 text-[16px] font-semibold text-(--sm-gray-30) max-md:mb-[10px] max-md:text-[20px]">
                 {p.title}
               </h3>
-              <p className="text-[var(--sm-gray-30)] mb-[13px] text-[14px] max-md:text-[16px] max-md:mb-[10px]">
+              <p className="mb-[13px] text-[14px] text-(--sm-gray-30) max-md:mb-[10px] max-md:text-[16px]">
                 {titleCase(p.category)}
               </p>
               {p.promotionTimeline && (
-                <p className="text-[14px] text-[var(--sm-gray-30)] mb-0 font-semibold">
+                <p className="mb-0 text-[14px] font-semibold text-(--sm-gray-30)">
                   {formatDate(p.promotionTimeline.startDate)}~
                   {formatDate(p.promotionTimeline.endDate)}
                 </p>
               )}
             </div>
             {/* .radio-button — width/height 18px, border 2 #918e8e, rounded full */}
-            <div className="radio-button w-[18px] h-[18px] bg-black border-2 border-[#918e8e] rounded-full flex items-center justify-center mt-1 box-border">
-              <div className="w-[10px] h-[10px] rounded-full" />
+            <div className="radio-button mt-1 box-border flex h-[18px] w-[18px] items-center justify-center rounded-full border-2 border-[#918e8e] bg-black">
+              <div className="h-[10px] w-[10px] rounded-full" />
             </div>
           </div>
         )
@@ -192,26 +192,26 @@ function normalizeTwoPageMethods(activePaymentMethods) {
 const formLabelClass = 'block text-[14px] mb-[3px]'
 const formLabelRequiredClass = `${formLabelClass} after:content-['*'] after:text-red-500 after:ml-1`
 const formControlClass =
-  'block w-full px-3 py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded focus:outline-none focus:border-[var(--light-gray)]'
-const errorTextClass = 'block text-[12px] text-[var(--red)] mt-1'
+  'block w-full px-3 py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded focus:outline-none focus:border-(--light-gray)'
+const errorTextClass = 'block text-[12px] text-(--red) mt-1'
 
 // `.conversation-text` block.
 const conversationTextClass =
-  'text-center mb-3 p-2 bg-[var(--dark-green)] text-white text-[16px] rounded-md border-2 border-white shadow-[0_10px_10px_var(--xs-gray)]'
+  'text-center mb-3 p-2 bg-(--dark-green) text-white text-[16px] rounded-md border-2 border-white shadow-[0_10px_10px_var(--xs-gray)]'
 
 // `.method-box` payment thumbnail tile.
 // const methodBoxBase =
 //   'rounded-lg m-[5px] cursor-pointer border-2 border-transparent box-border'
-// const methodBoxActive = 'border-[var(--primary-yellow)]'
+// const methodBoxActive = 'border-(--primary-yellow)'
 
 // // Make Payment submit button.
 // const makePaymentBtnClass =
-//   'inline-flex items-center gap-1 mt-3 px-3 py-[6px] text-white bg-[var(--primary)] hover:bg-[var(--lg-primary)] rounded text-[14px] font-medium [&_i_svg]:h-[18px] [&_i_svg]:w-[18px] [&_i]:mr-[2px] disabled:opacity-65 disabled:cursor-not-allowed'
+//   'inline-flex items-center gap-1 mt-3 px-3 py-[6px] text-white bg-(--primary) hover:bg-(--lg-primary) rounded text-[14px] font-medium [&_i_svg]:h-[18px] [&_i_svg]:w-[18px] [&_i]:mr-[2px] disabled:opacity-65 disabled:cursor-not-allowed'
 
 // Promotion-card (small inline summary that opens the modal).
 const promotionCardBase =
-  'flex items-center bg-[var(--sm-dark)] border-2 border-transparent rounded-[5px] px-[15px] py-[23px] mb-[7px] cursor-pointer transition-colors duration-200'
-const promotionCardActive = 'border-[var(--primary-yellow)]'
+  'flex items-center bg-(--sm-dark) border-2 border-transparent rounded-[5px] px-[15px] py-[23px] mb-[7px] cursor-pointer transition-colors duration-200'
+const promotionCardActive = 'border-(--primary-yellow)'
 
 export default function Deposit({ showTitle = true }) {
   const { t } = useTranslation()
@@ -569,15 +569,15 @@ export default function Deposit({ showTitle = true }) {
   return (
     <>
       {showTitle && (
-        <div className="flex justify-between items-center">
-          <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
+        <div className="flex items-center justify-between">
+          <p className="mb-1.5 pt-1.5 text-[13px] leading-5 font-bold text-[#1e1e1e]">
             {t('common.deposit', 'Deposit')}
           </p>
         </div>
       )}
 
       {/* .card rounded p-3 — Bootstrap card emulated with bg white + border */}
-      <div className="bg-white border border-[rgba(0,0,0,0.125)] rounded p-3">
+      <div className="rounded border border-[rgba(0,0,0,0.125)] bg-white p-3">
         <div className={conversationTextClass}>
           {currency === CURRENCY_TYPE.BDT ? '1 BDT = 1 BDT' : `1 PBU = 1 BDT`}
         </div>
@@ -585,7 +585,7 @@ export default function Deposit({ showTitle = true }) {
         {promotions.length > 0 &&
           (!showTitle ? (
             <div className="w-full max-w-[400px]">
-              <h3 className="text-[14px] font-medium mb-3 max-md:mb-[10px]">
+              <h3 className="mb-3 text-[14px] font-medium max-md:mb-[10px]">
                 {t('deposit.selectYourPromotion', 'Select Your Promotion')}
               </h3>
               <div
@@ -597,12 +597,12 @@ export default function Deposit({ showTitle = true }) {
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && openPromotionModal()}
               >
-                <div className="flex justify-center items-center w-[24px] h-[24px] mr-[12px] [&_i]:text-[18px]">
+                <div className="mr-[12px] flex h-[24px] w-[24px] items-center justify-center [&_i]:text-[18px]">
                   <Icon name="giftBox" />
                 </div>
-                <div className="flex-1 flex justify-between items-center">
+                <div className="flex flex-1 items-center justify-between">
                   <div>
-                    <div className="text-[16px] font-medium mb-[2px] text-white">
+                    <div className="mb-[2px] text-[16px] font-medium text-white">
                       {t('common.promotion', 'Promotion')}
                     </div>
                     {selectedPromotion && (
@@ -612,7 +612,7 @@ export default function Deposit({ showTitle = true }) {
                     )}
                   </div>
                 </div>
-                <div className="text-white text-[14px]">
+                <div className="text-[14px] text-white">
                   <Icon name="rightArrowIcon" />
                 </div>
               </div>
@@ -620,7 +620,7 @@ export default function Deposit({ showTitle = true }) {
           ) : (
             <div className="mb-2">
               <div>
-                <label className="block mb-1 text-[14px]">
+                <label className="mb-1 block text-[14px]">
                   {t('deposit.selectYourPromotion', 'Select Your Promotion')}
                 </label>
               </div>
@@ -630,7 +630,7 @@ export default function Deposit({ showTitle = true }) {
                 onClick={onPromotionItemClick}
               />
               {touched.promotionId && !values.promotionId && (
-                <span className="block text-[12px] text-[var(--red)] mt-1 font-bold">
+                <span className="mt-1 block text-[12px] font-bold text-(--red)">
                   {t(
                     'deposit.promotionNotSelected',
                     'Promotion is not selected'
@@ -701,7 +701,7 @@ export default function Deposit({ showTitle = true }) {
                     {t('common.paymentMethod', 'Payment Method')}
                   </label>
                 )}
-                <div className="flex gap-[10px] flex-wrap max-md:gap-1">
+                <div className="flex flex-wrap gap-[10px] max-md:gap-1">
                   {methodOptions.map((m) => {
                     const active = effectiveMethodId === m.methodId
                     const locked = isDepositSuccess
@@ -718,24 +718,24 @@ export default function Deposit({ showTitle = true }) {
                           checked={active}
                           disabled={locked}
                           onChange={() => selectMethod(m.methodId)}
-                          className={`absolute inset-0 w-full h-full m-0 cursor-pointer bg-transparent rounded-[5px] appearance-none border ${
+                          className={`absolute inset-0 m-0 h-full w-full cursor-pointer appearance-none rounded-[5px] border bg-transparent ${
                             active
-                              ? 'border-[var(--primary-yellow)]'
+                              ? 'border-(--primary-yellow)'
                               : 'border-[#262626]'
                           } disabled:cursor-not-allowed disabled:opacity-60`}
                         />
                         <label
                           htmlFor={`method-${m.methodId}`}
-                          className="flex flex-col items-center justify-center mb-0 p-2 rounded-[5px] pointer-events-none max-md:bg-white max-md:p-[1.86vw] max-md:rounded-[1.163vw]"
+                          className="pointer-events-none mb-0 flex flex-col items-center justify-center rounded-[5px] p-2 max-md:rounded-[1.163vw] max-md:bg-white max-md:p-[1.86vw]"
                         >
                           {m.logo && (
                             <img
                               src={m.logo}
                               alt={m.name}
-                              className="h-10 w-auto mx-auto max-md:w-[9.302vw] max-md:h-[9.302vw]"
+                              className="mx-auto h-10 w-auto max-md:h-[9.302vw] max-md:w-[9.302vw]"
                             />
                           )}
-                          <span className="text-center text-[14px] mt-[5px] block max-md:text-[3.256vw] max-md:mt-[1.163vw]">
+                          <span className="mt-[5px] block text-center text-[14px] max-md:mt-[1.163vw] max-md:text-[3.256vw]">
                             {m.name}
                           </span>
                         </label>
@@ -768,7 +768,7 @@ export default function Deposit({ showTitle = true }) {
                     {t('common.paymentType', 'Payment Type')}
                   </label>
                 )}
-                <div className="flex overflow-x-auto gap-2">
+                <div className="flex gap-2 overflow-x-auto">
                   {availableTypes.map((t) => {
                     const active = effectivePaymentType === t.name
                     const locked = isDepositSuccess
@@ -776,11 +776,11 @@ export default function Deposit({ showTitle = true }) {
                     return (
                       <div
                         key={t.name}
-                        className={`rounded-lg m-[5px] cursor-pointer border-2 box-border ${
+                        className={`m-[5px] box-border cursor-pointer rounded-lg border-2 ${
                           active
-                            ? 'border-[var(--primary-yellow)]'
+                            ? 'border-(--primary-yellow)'
                             : 'border-transparent'
-                        } ${locked ? 'opacity-60 pointer-events-none' : ''}`}
+                        } ${locked ? 'pointer-events-none opacity-60' : ''}`}
                         onClick={() => !locked && selectPaymentType(t.name)}
                         role="button"
                         tabIndex={locked ? -1 : 0}
@@ -819,27 +819,27 @@ export default function Deposit({ showTitle = true }) {
             {isDepositSuccess && isDepositOnePage && (
               <div
                 ref={verifyCardRef}
-                className="mt-3 text-white rounded-[12px] p-[18px_16px] max-md:rounded-[2.326vw] max-md:p-[2.558vw_1.628vw]"
+                className="mt-3 rounded-[12px] p-[18px_16px] text-white max-md:rounded-[2.326vw] max-md:p-[2.558vw_1.628vw]"
                 style={{ backgroundColor: cardColor }}
               >
-                <h6 className="text-center text-[14px] font-semibold mb-3 text-white">
+                <h6 className="mb-3 text-center text-[14px] font-semibold text-white">
                   {t('deposit.keepScreenshot', 'Keep screenshot')}
                 </h6>
 
                 {/* Deposit Amount — read-only display + copy icon. */}
-                <div className="flex justify-between items-center relative gap-2 mb-2">
-                  <label className="whitespace-nowrap !mb-0 text-[13px] leading-[1.2] text-white">
+                <div className="relative mb-2 flex items-center justify-between gap-2">
+                  <label className="!mb-0 text-[13px] leading-[1.2] whitespace-nowrap text-white">
                     {t('deposit.depositAmountLabel', 'Deposit Amount')} :
                   </label>
                   <input
                     type="text"
-                    className="max-w-[180px] h-8 py-1 px-[10px] pr-[30px] text-[13px] text-[#364153] bg-white border border-[#ced4da] rounded-[6px] opacity-75 placeholder:text-[12px]"
+                    className="h-8 max-w-[180px] rounded-[6px] border border-[#ced4da] bg-white px-[10px] py-1 pr-[30px] text-[13px] text-[#364153] opacity-75 placeholder:text-[12px]"
                     value={`${currency} ${values.amount || ''}`}
                     disabled
                     readOnly
                   />
                   <span
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[#364153] cursor-pointer leading-none inline-flex [&_svg]:h-4 [&_svg]:w-auto"
+                    className="absolute top-1/2 right-2 inline-flex -translate-y-1/2 cursor-pointer leading-none text-[#364153] [&_svg]:h-4 [&_svg]:w-auto"
                     role="button"
                     tabIndex={0}
                     onClick={() => copyToClipboard(values.amount)}
@@ -850,19 +850,19 @@ export default function Deposit({ showTitle = true }) {
 
                 {/* Receiver Number — label changes per paymentType; value
                     is masked when privacy_setting is on. */}
-                <div className="flex justify-between items-center relative gap-2 mb-2">
-                  <label className="whitespace-nowrap !mb-0 text-[13px] leading-[1.2] text-white">
+                <div className="relative mb-2 flex items-center justify-between gap-2">
+                  <label className="!mb-0 text-[13px] leading-[1.2] whitespace-nowrap text-white">
                     {receiverLabel} :
                   </label>
                   <input
                     type="text"
-                    className="max-w-[180px] h-8 py-1 px-[10px] pr-[30px] text-[13px] text-[#364153] bg-white border border-[#ced4da] rounded-[6px] opacity-75 placeholder:text-[12px]"
+                    className="h-8 max-w-[180px] rounded-[6px] border border-[#ced4da] bg-white px-[10px] py-1 pr-[30px] text-[13px] text-[#364153] opacity-75 placeholder:text-[12px]"
                     value={receiverDisplay}
                     disabled
                     readOnly
                   />
                   <span
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[#364153] cursor-pointer leading-none inline-flex [&_svg]:h-4 [&_svg]:w-auto"
+                    className="absolute top-1/2 right-2 inline-flex -translate-y-1/2 cursor-pointer leading-none text-[#364153] [&_svg]:h-4 [&_svg]:w-auto"
                     role="button"
                     tabIndex={0}
                     onClick={() =>
@@ -873,20 +873,20 @@ export default function Deposit({ showTitle = true }) {
                   </span>
                 </div>
 
-                <hr className="opacity-40 my-[10px] border-white" />
+                <hr className="my-[10px] border-white opacity-40" />
 
                 {/* Editable: trxId. */}
-                <div className="flex justify-between items-center relative gap-2 mb-2">
-                  <label className="whitespace-nowrap !mb-0 text-[13px] leading-[1.2] text-white">
+                <div className="relative mb-2 flex items-center justify-between gap-2">
+                  <label className="!mb-0 text-[13px] leading-[1.2] whitespace-nowrap text-white">
                     {t(
                       'deposit.provideTransactionId',
                       'Please provide the transaction ID.'
                     )}
                   </label>
-                  <div className="flex flex-col items-end gap-1 w-full max-w-[180px]">
+                  <div className="flex w-full max-w-[180px] flex-col items-end gap-1">
                     <input
                       type="text"
-                      className="w-full h-8 py-1 px-[10px] text-[13px] text-[#364153] bg-white border border-[#ced4da] rounded-[6px] placeholder:text-[12px]"
+                      className="h-8 w-full rounded-[6px] border border-[#ced4da] bg-white px-[10px] py-1 text-[13px] text-[#364153] placeholder:text-[12px]"
                       placeholder={t(
                         'deposit.provideTransactionId',
                         'Please provide the transaction ID.'
@@ -896,7 +896,7 @@ export default function Deposit({ showTitle = true }) {
                       onBlur={() => markVerifyTouched('trxId')}
                     />
                     {verifyTouched.trxId && verifyErrors.trxIdRequired && (
-                      <span className="text-[11px] text-[#ffd6d6] text-left leading-[1.2] self-start">
+                      <span className="self-start text-left text-[11px] leading-[1.2] text-[#ffd6d6]">
                         {t(
                           'deposit.provideYourTransactionId',
                           'Please provide your transaction ID.'
@@ -904,7 +904,7 @@ export default function Deposit({ showTitle = true }) {
                       </span>
                     )}
                     {verifyTouched.trxId && verifyErrors.trxIdPattern && (
-                      <span className="text-[11px] text-[#ffd6d6] text-left leading-[1.2] self-start">
+                      <span className="self-start text-left text-[11px] leading-[1.2] text-[#ffd6d6]">
                         {t(
                           'deposit.invalidTransactionId',
                           'Please enter a valid transaction ID.'
@@ -915,17 +915,17 @@ export default function Deposit({ showTitle = true }) {
                 </div>
 
                 {/* Editable: senderNumber. */}
-                <div className="flex justify-between items-center relative gap-2">
-                  <label className="whitespace-nowrap !mb-0 text-[13px] leading-[1.2] text-white">
+                <div className="relative flex items-center justify-between gap-2">
+                  <label className="!mb-0 text-[13px] leading-[1.2] whitespace-nowrap text-white">
                     {t(
                       'deposit.transactionNumber',
                       'Enter the transaction number.'
                     )}
                   </label>
-                  <div className="flex flex-col items-end gap-1 w-full max-w-[180px]">
+                  <div className="flex w-full max-w-[180px] flex-col items-end gap-1">
                     <input
                       type="text"
-                      className="w-full h-8 py-1 px-[10px] text-[13px] text-[#364153] bg-white border border-[#ced4da] rounded-[6px] placeholder:text-[12px]"
+                      className="h-8 w-full rounded-[6px] border border-[#ced4da] bg-white px-[10px] py-1 text-[13px] text-[#364153] placeholder:text-[12px]"
                       placeholder="017XXXXXXXX"
                       value={verifyValues.senderNumber}
                       onChange={(e) =>
@@ -935,7 +935,7 @@ export default function Deposit({ showTitle = true }) {
                     />
                     {verifyTouched.senderNumber &&
                       verifyErrors.senderRequired && (
-                        <span className="text-[11px] text-[#ffd6d6] text-left leading-[1.2] self-start">
+                        <span className="self-start text-left text-[11px] leading-[1.2] text-[#ffd6d6]">
                           {t(
                             'deposit.enterYourTransactionNumber',
                             'Enter your transaction number.'
@@ -944,7 +944,7 @@ export default function Deposit({ showTitle = true }) {
                       )}
                     {verifyTouched.senderNumber &&
                       verifyErrors.senderPattern && (
-                        <span className="text-[11px] text-[#ffd6d6] text-left leading-[1.2] self-start">
+                        <span className="self-start text-left text-[11px] leading-[1.2] text-[#ffd6d6]">
                           {t('deposit.kindly', 'Please kindly enter the')}{' '}
                           {selectedMethodName === 'ROCKET'
                             ? t('deposit.12', '12')
@@ -963,7 +963,7 @@ export default function Deposit({ showTitle = true }) {
             {isDepositSuccess && isDepositOnePage ? (
               <button
                 type="button"
-                className="mt-3 w-full py-2 px-3 text-white rounded text-[14px] font-semibold disabled:opacity-65 disabled:cursor-not-allowed"
+                className="mt-3 w-full rounded px-3 py-2 text-[14px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-65"
                 style={{ backgroundColor: cardColor }}
                 onClick={handleVerifySubmit}
                 disabled={onePageVerify.status === 'loading'}
@@ -973,7 +973,7 @@ export default function Deposit({ showTitle = true }) {
             ) : (
               <button
                 type="submit"
-                className="inline-flex items-center justify-center gap-2 mt-3 w-full btn btn-primary text-[14px] font-medium disabled:opacity-65 disabled:cursor-not-allowed [&_i_svg]:h-[18px] [&_i_svg]:w-[18px]"
+                className="btn btn-primary mt-3 inline-flex w-full items-center justify-center gap-2 text-[14px] font-medium disabled:cursor-not-allowed disabled:opacity-65 [&_i_svg]:h-[18px] [&_i_svg]:w-[18px]"
                 disabled={!!promotionLimitError || submitting}
               >
                 <Icon name="bkash" />
@@ -990,16 +990,16 @@ export default function Deposit({ showTitle = true }) {
       {showPromotionModal && (
         // .promotion-list-wrapper: fixed full screen, sm-gray-20 bg, z-1000,
         // slide-in animation from the right.
-        <div className="fixed inset-0 bg-[#d4d4d4] flex items-center justify-center z-[1000] animate-[deposit-slide-in_300ms_ease-out]">
+        <div className="fixed inset-0 z-[1000] flex animate-[deposit-slide-in_300ms_ease-out] items-center justify-center bg-[#d4d4d4]">
           {/* .promotion-modal — flexible column on mobile, full svh */}
-          <div className="w-full bg-[var(--dark)] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.5)] min-h-[100svh] max-md:flex max-md:flex-col">
-            <div className="flex justify-between items-center p-4">
-              <h2 className="text-[20px] font-semibold mb-0 text-white">
+          <div className="min-h-[100svh] w-full rounded-lg bg-(--dark) shadow-[0_4px_20px_rgba(0,0,0,0.5)] max-md:flex max-md:flex-col">
+            <div className="flex items-center justify-between p-4">
+              <h2 className="mb-0 text-[20px] font-semibold text-white">
                 {t('deposit.selectPromotion', 'Select Promotion')}
               </h2>
               <button
                 type="button"
-                className="bg-transparent border-0 text-white cursor-pointer w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 [&_i]:text-[16px]"
+                className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-white hover:bg-white/10 [&_i]:text-[16px]"
                 onClick={closePromotionModal}
                 aria-label={t('deposit.closePromotions', 'Close promotions')}
               >
@@ -1013,7 +1013,7 @@ export default function Deposit({ showTitle = true }) {
             />
             <button
               type="button"
-              className="w-[calc(100%-32px)] mx-4 mb-4 py-[14px] bg-[var(--orange-dark)] text-white border-0 rounded-md text-[16px] font-medium cursor-pointer transition-colors duration-200 max-md:mt-auto"
+              className="mx-4 mb-4 w-[calc(100%-32px)] cursor-pointer rounded-md border-0 bg-(--orange-dark) py-[14px] text-[16px] font-medium text-white transition-colors duration-200 max-md:mt-auto"
               onClick={savePromotion}
             >
               {t('common.confirm', 'Confirm')}

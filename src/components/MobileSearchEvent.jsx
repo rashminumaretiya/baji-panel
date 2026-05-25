@@ -143,9 +143,9 @@ export default function MobileSearchEvent() {
       {/* `.search-out` ─ collapsed icon button */}
       <span
         className={
-          'w-[12.8vw] flex items-center h-[12.45vw] justify-center text-white ' +
+          'flex h-[12.45vw] w-[12.8vw] items-center justify-center text-white ' +
           'bg-gradient-to-b from-[#525252] to-[#2d2d2d] ' +
-          '[&_i_svg]:w-[5.87vw] [&_i_svg]:h-full'
+          '[&_i_svg]:h-full [&_i_svg]:w-[5.87vw]'
         }
         onClick={toggle}
         role="button"
@@ -161,18 +161,18 @@ export default function MobileSearchEvent() {
         className={
           'fixed inset-0 z-[99999] transition-all duration-700 ease-in-out ' +
           (open
-            ? 'opacity-100 pointer-events-auto'
-            : 'opacity-0 pointer-events-none')
+            ? 'pointer-events-auto opacity-100'
+            : 'pointer-events-none opacity-0')
         }
       >
         {/* `.search-events-inner` ─ search bar row */}
-        <div className="flex bg-white items-center max-md:h-[16vw]">
+        <div className="flex items-center bg-white max-md:h-[16vw]">
           {/* `.left-arrow` ─ back button */}
           <i
             className={
               'inline-flex items-center justify-center ' +
               '[&_svg]:scale-80 max-md:[&_svg]:scale-100 ' +
-              'max-md:[&_svg]:w-[10.67vw] max-md:[&_svg]:h-[10.07vw]'
+              'max-md:[&_svg]:h-[10.07vw] max-md:[&_svg]:w-[10.67vw]'
             }
             onClick={close}
             role="button"
@@ -186,7 +186,7 @@ export default function MobileSearchEvent() {
           {/* `.ng-select-container` ─ input + clear */}
           <div className="flex flex-1 items-center rounded-none border-0">
             {/* `.ng-value-container` */}
-            <div className="flex items-center h-full flex-1">
+            <div className="flex h-full flex-1 items-center">
               {/* `.ng-input` */}
               <div className="h-full">
                 <input
@@ -202,8 +202,8 @@ export default function MobileSearchEvent() {
                   onChange={(e) => setQuery(e.target.value)}
                   autoFocus={open}
                   className={
-                    'h-[46px] max-md:h-full max-md:pl-0 w-full outline-none border-0 ' +
-                    'font-normal placeholder:text-[#9b9b9b] placeholder:font-normal placeholder:ml-0'
+                    'h-[46px] w-full border-0 outline-none max-md:h-full max-md:pl-0 ' +
+                    'font-normal placeholder:ml-0 placeholder:font-normal placeholder:text-[#9b9b9b]'
                   }
                 />
               </div>
@@ -211,7 +211,7 @@ export default function MobileSearchEvent() {
             {query && (
               <span
                 className={
-                  'w-[22px] flex items-center font-thin max-md:w-[6.07vw]'
+                  'flex w-[22px] items-center font-thin max-md:w-[6.07vw]'
                 }
                 role="button"
                 tabIndex={0}
@@ -223,8 +223,8 @@ export default function MobileSearchEvent() {
               >
                 <span
                   className={
-                    'text-[26px] leading-[20px] text-[var(--lg-black)] ' +
-                    'max-md:text-[var(--xxl-black)] max-md:text-[7vw] max-md:leading-normal'
+                    'text-[26px] leading-[20px] text-(--lg-black) ' +
+                    'max-md:text-[7vw] max-md:leading-normal max-md:text-(--xxl-black)'
                   }
                 >
                   ×
@@ -241,8 +241,8 @@ export default function MobileSearchEvent() {
           <i
             className={
               'p-2.5 leading-[45px] ' +
-              '[&_svg]:w-[5.67vw] [&_svg]:h-[5.07vw] ' +
-              '[&_svg_path]:fill-[var(--lg-black)] max-md:[&_svg_path]:fill-[var(--xxl-black)]'
+              '[&_svg]:h-[5.07vw] [&_svg]:w-[5.67vw] ' +
+              '[&_svg_path]:fill-(--lg-black) max-md:[&_svg_path]:fill-(--xxl-black)'
             }
           >
             {SearchSvg}
@@ -253,23 +253,23 @@ export default function MobileSearchEvent() {
           // `.ng-select` ─ dropdown results panel
           <div
             className={
-              'bg-white flex items-center w-full overflow-y-auto max-md:h-[16vw]'
+              'flex w-full items-center overflow-y-auto bg-white max-md:h-[16vw]'
             }
           >
             {/* `.ng-dropdown-panel` */}
             <div
               className={
-                'max-md:fixed max-md:left-0 max-md:right-0 ' +
-                'max-md:top-[16vw] max-md:border-t max-md:border-[var(--xxl-gray)]'
+                'max-md:fixed max-md:right-0 max-md:left-0 ' +
+                'max-md:top-[16vw] max-md:border-t max-md:border-(--xxl-gray)'
               }
             >
               {/* `.ng-dropdown-panel-items` */}
-              <div className="max-md:max-h-[46.67vw] overflow-y-auto">
+              <div className="overflow-y-auto max-md:max-h-[46.67vw]">
                 {isSearching && effectiveResults.length === 0 && (
                   <div
                     className={
-                      'px-1 bg-white text-[var(--text-color)] text-[14px] ' +
-                      'max-md:px-[2vw] max-md:text-[4vw] max-md:text-[var(--blue)]'
+                      'bg-white px-1 text-[14px] text-(--text-color) ' +
+                      'max-md:px-[2vw] max-md:text-[4vw] max-md:text-(--blue)'
                     }
                   >
                     {t('common.loading', 'Searching…')}
@@ -280,12 +280,12 @@ export default function MobileSearchEvent() {
                     type="button"
                     key={`${item.sportId}-${item.eventId}`}
                     className={
-                      'px-1 bg-white text-[var(--text-color)] text-[14px] cursor-pointer ' +
-                      'max-md:px-[2vw] max-md:text-[4vw] max-md:text-[var(--blue)] ' +
+                      'cursor-pointer bg-white px-1 text-[14px] text-(--text-color) ' +
+                      'max-md:px-[2vw] max-md:text-[4vw] max-md:text-(--blue) ' +
                       'max-md:[&_.item]:overflow-hidden max-md:[&_.item]:text-ellipsis ' +
                       'max-md:[&_.item]:leading-[11.68vw] ' +
                       'max-md:[&_.time]:mr-[1.86vw] max-md:[&_.time]:font-normal ' +
-                      'max-md:[&_.time]:text-[var(--lg-black)]'
+                      'max-md:[&_.time]:text-(--lg-black)'
                     }
                     onClick={() => onResultClick(item)}
                   >
@@ -300,8 +300,8 @@ export default function MobileSearchEvent() {
                 {showEmpty && (
                   <div
                     className={
-                      'px-1 bg-white text-[var(--text-color)] text-[14px] ' +
-                      'max-md:px-[2vw] max-md:text-[4vw] max-md:text-[var(--blue)]'
+                      'bg-white px-1 text-[14px] text-(--text-color) ' +
+                      'max-md:px-[2vw] max-md:text-[4vw] max-md:text-(--blue)'
                     }
                   >
                     {t('common.noEventsFound', 'No events found')}
@@ -314,7 +314,7 @@ export default function MobileSearchEvent() {
 
         {/* `.search-overlay` ─ dim backdrop */}
         <div
-          className="fixed top-0 left-0 w-screen h-full bg-black/70 -z-[1]"
+          className="fixed top-0 left-0 -z-[1] h-full w-screen bg-black/70"
           onClick={close}
           aria-hidden="true"
         />

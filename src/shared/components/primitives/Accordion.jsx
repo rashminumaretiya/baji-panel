@@ -67,14 +67,14 @@ function Item({ eventKey, className = '', children }) {
 
 const HEADER_VARIANTS = {
   dark: {
-    header: 'bg-[var(--xts-blue)]',
+    header: 'bg-(--xts-blue)',
     headerCollapsedShadow: '',
     button: 'text-white px-2.5 font-medium bg-no-repeat bg-right',
     iconOpen: 'bg-[url(/img/square-remove.png)]',
     iconClosed: 'bg-[url(/img/square-add.png)]',
   },
   light: {
-    header: 'bg-[var(--xxs-text-color)] pl-[7px]',
+    header: 'bg-(--xxs-text-color) pl-[7px]',
     headerCollapsedShadow:
       'shadow-[inset_0_2px_0_0_rgba(var(--black-rgb),0.1)]',
     button:
@@ -99,7 +99,7 @@ function Header({ className = '', children, as: As = 'h2', variant = 'dark' }) {
         type="button"
         onClick={() => toggle(eventKey)}
         aria-expanded={isOpen}
-        className={`w-full text-left py-0 leading-[25px] text-[12px] ${v.button} ${iconUrl}`}
+        className={`w-full py-0 text-left text-[12px] leading-[25px] ${v.button} ${iconUrl}`}
       >
         {children}
       </button>
@@ -113,7 +113,7 @@ function Body({ className = '', children }) {
   const isOpen = activeKeys.includes(eventKey)
   return (
     <Collapse in={isOpen}>
-      <div className={`accordion-body p-0 bg-white ${className}`}>
+      <div className={`accordion-body bg-white p-0 ${className}`}>
         {children}
       </div>
     </Collapse>

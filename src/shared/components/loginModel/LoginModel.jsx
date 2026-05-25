@@ -19,10 +19,10 @@ export default function LoginModel({ isOpen, onClose }) {
   const btnBaseClass =
     'inline-block w-[50.4285714286%] mx-auto mt-[7px] py-1.5 px-3 rounded text-white font-semibold cursor-pointer transition-colors'
   const themeClass = isYellowTheme
-    ? 'bg-[var(--primary-yellow)] text-[var(--dark)] hover:bg-[var(--md-primary-yellow)]'
+    ? 'bg-(--primary-yellow) text-(--dark) hover:bg-(--md-primary-yellow)'
     : isMcwCasinoTheme
       ? 'bg-[var(--mcw-primary,var(--primary))] hover:opacity-90'
-      : 'bg-[var(--primary)] hover:opacity-90'
+      : 'bg-(--primary) hover:opacity-90'
 
   return (
     <Modal
@@ -38,9 +38,9 @@ export default function LoginModel({ isOpen, onClose }) {
           The `.no-login .modal-content { box-shadow }` rule targeted bootstrap's
           card chrome; the in-house Modal primitive already supplies its own
           card shadow so we don't re-add an inner one. */}
-      <div className="no-login max-w-[320px] mx-auto text-center">
+      <div className="no-login mx-auto max-w-[320px] text-center">
         {/* SCSS: `h4 { font-size: 15px; font-weight: 700; line-height: 20px }` */}
-        <h4 className="pt-1 pb-2 text-[15px] font-bold leading-5">
+        <h4 className="pt-1 pb-2 text-[15px] leading-5 font-bold">
           {t('common.pleaseLogin', 'Please login to proceed')}
         </h4>
         <div>

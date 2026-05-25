@@ -183,7 +183,7 @@ export function Popover({ id, className = '', children }) {
     <div
       id={id}
       role="tooltip"
-      className={`popover overflow-hidden rounded-[4px] bg-white shadow-[0_4px_5px_rgba(var(--black-rgb),0.5)] -mt-2 ${className}`}
+      className={`popover -mt-2 overflow-hidden rounded-[4px] bg-white shadow-[0_4px_5px_rgba(var(--black-rgb),0.5)] ${className}`}
     >
       {children}
     </div>
@@ -197,7 +197,7 @@ function PopoverBody({ className = '', children }) {
 function PopoverHeader({ className = '', children }) {
   return (
     <div
-      className={`px-2 py-1 bg-[var(--xs-gray)] font-bold text-[13px] ${className}`}
+      className={`bg-(--xs-gray) px-2 py-1 text-[13px] font-bold ${className}`}
     >
       {children}
     </div>

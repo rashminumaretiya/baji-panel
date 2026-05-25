@@ -19,14 +19,14 @@ function formatDate(value) {
 // Tailwind-only port of profile.scss. Rebuilds the 2-column Bootstrap grid
 // (col-md-6) with flex on >=768 and stacks on mobile.
 const cardHeaderClass =
-  'bg-[#7e97a7] border-b border-[var(--sm-text-color)] text-white leading-6 font-bold px-2.5 mb-0 text-[14px]'
+  'bg-[#7e97a7] border-b border-(--sm-text-color) text-white leading-6 font-bold px-2.5 mb-0 text-[14px]'
 
 const tableClass = 'w-full border-collapse'
 
 // Row + last-row border colours match the original .profile-container table tr
 // rules. Last-of-type uses #7e97a7 (var(--sm-text-color)).
 const trClass =
-  'bg-white border-b border-[var(--xs-lightGray)] last:border-b-[#7e97a7]'
+  'bg-white border-b border-(--xs-lightGray) last:border-b-[#7e97a7]'
 
 // Padding/font/line-height ported from .profile-container table td.
 // SCSS: `padding: 7px; font-size: 11px; line-height: 16px; vertical-align: top;`
@@ -38,7 +38,7 @@ function ActionCell({ children, onClick }) {
   return (
     <td className={tdValueClass}>
       <div
-        className="flex items-center justify-end cursor-pointer gap-1"
+        className="flex cursor-pointer items-center justify-end gap-1"
         onClick={onClick}
       >
         {children}
@@ -99,20 +99,20 @@ export default function Profile() {
 
   return (
     <div>
-      <h3 className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
+      <h3 className="mb-1.5 pt-1.5 text-[13px] leading-5 font-bold text-[#1e1e1e]">
         {t('profile.accountDetails', 'Account Details')}
       </h3>
 
-      <div className="flex flex-wrap mx-0">
+      <div className="mx-0 flex flex-wrap">
         {/* Left column (col-md-6) */}
-        <div className="w-full md:w-1/2 px-0">
-          <div className="flex flex-wrap mx-0">
+        <div className="w-full px-0 md:w-1/2">
+          <div className="mx-0 flex flex-wrap">
             <div className="w-full px-0">
               <div className={cardHeaderClass}>
                 {t('common.aboutYou', 'About You')}
               </div>
               <div>
-                <div className="bg-white p-0 flex items-center">
+                <div className="flex items-center bg-white p-0">
                   <table className={tableClass}>
                     <tbody>
                       <tr className={trClass}>
@@ -169,12 +169,12 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="w-full px-0 mt-3">
+            <div className="mt-3 w-full px-0">
               <div className={cardHeaderClass}>
                 {t('common.address', 'Address')}
               </div>
               <div>
-                <div className="bg-white p-0 flex items-center">
+                <div className="flex items-center bg-white p-0">
                   <table className={tableClass}>
                     <tbody>
                       <tr className={trClass}>
@@ -234,14 +234,14 @@ export default function Profile() {
         </div>
 
         {/* Right column (col-md-6) */}
-        <div className="w-full md:w-1/2 md:pl-2 px-0">
-          <div className={`flex flex-wrap mx-0`}>
+        <div className="w-full px-0 md:w-1/2 md:pl-2">
+          <div className={`mx-0 flex flex-wrap`}>
             <div className="w-full px-0">
               <div className={cardHeaderClass}>
                 {t('common.contactDetails', 'Contact Details')}
               </div>
               <div>
-                <div className="bg-white p-0 flex items-center">
+                <div className="flex items-center bg-white p-0">
                   <table className={tableClass}>
                     <tbody>
                       <tr className={trClass}>
@@ -257,7 +257,7 @@ export default function Profile() {
                           </td>
                         ) : (
                           <ActionCell onClick={openVerifyPrimaryModal}>
-                            <span className="cursor-pointer ml-1">
+                            <span className="ml-1 cursor-pointer">
                               {t('common.verify', 'Verify')}{' '}
                             </span>
                             <EditIcon />
@@ -302,12 +302,12 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="w-full px-0 mt-3">
+            <div className="mt-3 w-full px-0">
               <div className={cardHeaderClass}>
                 {t('common.settings', 'Settings')}
               </div>
               <div>
-                <div className="bg-white p-0 flex items-center">
+                <div className="flex items-center bg-white p-0">
                   <table className={tableClass}>
                     <tbody>
                       <tr className={trClass}>
@@ -330,12 +330,12 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="w-full px-0 mt-3">
+            <div className="mt-3 w-full px-0">
               <div className={cardHeaderClass}>
                 {t('common.commission', 'Commission')}
               </div>
               <div>
-                <div className="bg-white p-0 flex items-center">
+                <div className="flex items-center bg-white p-0">
                   <table className={tableClass}>
                     <tbody>
                       <tr className={trClass}>

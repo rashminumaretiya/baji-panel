@@ -51,7 +51,7 @@ function getDisplayAmount(wallet) {
 }
 
 const HEADER_BASE =
-  'flex items-center px-5 pr-[25px] py-2 h-[74px] bg-[var(--primary)] max-md:px-0 max-md:pr-[1.87vw] max-md:py-[2.67vw] max-md:h-[14.67vw] max-md:min-w-0'
+  'flex items-center px-5 pr-[25px] py-2 h-[74px] bg-(--primary) max-md:px-0 max-md:pr-[1.87vw] max-md:py-[2.67vw] max-md:h-[14.67vw] max-md:min-w-0'
 
 const HEADER_YELLOW = 'bg-gradient-to-b from-[#ffcb2e] to-[#ffb80c]'
 const HEADER_MCW = 'bg-gradient-to-b from-[#2f2f2f] to-[#010101]'
@@ -106,9 +106,9 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
 
   // Mobile stake popup header (used inside the open-bets drawer).
   const stakeHeaderClass = cx(
-    'flex items-center justify-between bg-[var(--primary)]',
+    'flex items-center justify-between bg-(--primary)',
     isYellowTheme &&
-      'bg-gradient-to-b from-[var(--sm-primary-yellow)] to-[var(--md-primary-yellow)]',
+      'bg-gradient-to-b from-(--sm-primary-yellow) to-(--md-primary-yellow)',
     isMcwCasinoTheme && 'bg-gradient-to-b from-[#2f2f2f] to-[#010101]'
   )
 
@@ -170,12 +170,12 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   }
 
   return (
-    <div className="fixed left-0 top-0 right-0 z-[1000]">
+    <div className="fixed top-0 right-0 left-0 z-[1000]">
       <header className={headerClass}>
         {!isMob ? (
-          <div className="inline-flex sm:flex-1 items-center">
+          <div className="inline-flex items-center sm:flex-1">
             {logo && (
-              <div className="me-0 sm:me-2 xl:me-3 [&_img]:object-cover [&_img]:h-auto [&_img]:w-auto [&_img]:max-w-[100px] [&_img]:max-h-[50px]">
+              <div className="me-0 sm:me-2 xl:me-3 [&_img]:h-auto [&_img]:max-h-[50px] [&_img]:w-auto [&_img]:max-w-[100px] [&_img]:object-cover">
                 <img
                   src={logo}
                   alt="logo"
@@ -194,9 +194,9 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
               <button
                 type="button"
                 className={cx(
-                  'relative bg-[#beaf0d] text-white border border-[#948800] px-[1.87vw] py-[1.87vw] pb-[1.33vw] w-[11.2vw] rounded-none shadow-[inset_0_0.27vw_0_0_rgba(255,255,255,0.4)] before:inline-block before:content-[""] before:bg-[url(/img/svg/mobile-live-icon.svg)] before:bg-contain before:bg-center before:h-[5.27vw] before:w-[5.6vw] before:align-middle',
+                  'relative w-[11.2vw] rounded-none border border-[#948800] bg-[#beaf0d] px-[1.87vw] py-[1.87vw] pb-[1.33vw] text-white shadow-[inset_0_0.27vw_0_0_rgba(255,255,255,0.4)] before:inline-block before:h-[5.27vw] before:w-[5.6vw] before:bg-[url(/img/svg/mobile-live-icon.svg)] before:bg-contain before:bg-center before:align-middle before:content-[""]',
                   isPlayLiveStream &&
-                    'bg-[var(--lg-orange)] border-[var(--mds-orange)] before:bg-[url(/img/svg/mobile-close-icon.svg)]'
+                    'border-(--mds-orange) bg-(--lg-orange) before:bg-[url(/img/svg/mobile-close-icon.svg)]'
                 )}
                 onClick={toggleLiveStream}
               />
@@ -205,14 +205,14 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
               <>
                 <span
                   className={cx(
-                    'flex items-center justify-center max-md:px-0 max-md:pt-[1.87vw] max-md:pb-[1.33vw] max-md:rounded-r-[1.07vw] max-md:min-w-[29.33vw] max-md:max-w-[31.2vw] max-md:text-[3.47vw] max-md:font-bold max-md:border-l-0 max-md:w-auto max-md:text-white text-base max-w-fit min-w-0',
+                    'flex max-w-fit min-w-0 items-center justify-center text-base max-md:w-auto max-md:max-w-[31.2vw] max-md:min-w-[29.33vw] max-md:rounded-r-[1.07vw] max-md:border-l-0 max-md:px-0 max-md:pt-[1.87vw] max-md:pb-[1.33vw] max-md:text-[3.47vw] max-md:font-bold max-md:text-white',
                     isStreamAvailable &&
-                      'max-md:min-w-[18.03vw] max-md:max-w-[21.2vw]',
+                      'max-md:max-w-[21.2vw] max-md:min-w-[18.03vw]',
                     !isYellowTheme &&
                       !isMcwCasinoTheme &&
-                      'max-md:bg-black/10 max-md:border max-md:border-black/40 max-md:shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.3)]',
+                      'max-md:border max-md:border-black/40 max-md:bg-black/10 max-md:shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.3)]',
                     isYellowTheme &&
-                      'max-md:!text-[var(--dark)] max-md:!bg-transparent',
+                      'max-md:!bg-transparent max-md:!text-(--dark)',
                     isMcwCasinoTheme &&
                       'max-md:!bg-white/10 max-md:!text-[#ffd45f]'
                   )}
@@ -223,19 +223,19 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                 >
                   <SvgIcon
                     name="dollarCoin"
-                    className="max-md:[&_svg]:w-[5.33333vw] max-md:[&_svg]:h-[5.33333vw]"
+                    className="max-md:[&_svg]:h-[5.33333vw] max-md:[&_svg]:w-[5.33333vw]"
                   />
-                  <p className="mb-0 ms-lg-2 max-md:ml-[1.33vw]">
+                  <p className="ms-lg-2 mb-0 max-md:ml-[1.33vw]">
                     {' '}
                     {t('header.bets', 'Bets')}
                   </p>
                 </span>
                 <div
                   className={cx(
-                    'fixed inset-0 transition-all duration-100 bg-white',
+                    'fixed inset-0 bg-white transition-all duration-100',
                     showBets
-                      ? 'opacity-100 visible z-999'
-                      : 'opacity-0 invisible z-[-999]'
+                      ? 'visible z-999 opacity-100'
+                      : 'invisible z-[-999] opacity-0'
                   )}
                 >
                   <div className={stakeHeaderClass}>
@@ -247,7 +247,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                     </div>
                     <SvgIcon
                       name="closePopover"
-                      className="px-[3vw] leading-[2.2] cursor-pointer [&_svg]:h-[3.8vw] [&_svg]:w-[3.8vw] [&_svg_path]:fill-white"
+                      className="cursor-pointer px-[3vw] leading-[2.2] [&_svg]:h-[3.8vw] [&_svg]:w-[3.8vw] [&_svg_path]:fill-white"
                       role="button"
                       tabIndex={0}
                       onClick={() => setShowBets(false)}
@@ -261,18 +261,18 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
           </>
         )}
 
-        <div className="flex items-center justify-end ml-auto md:ms-0">
+        <div className="ml-auto flex items-center justify-end md:ms-0">
           <div
             className={cx(
               'flex items-center text-white',
-              isYellowTheme && '[&_a]:text-(--dark)! [&_.value]:text-(--dark)!',
+              isYellowTheme && '[&_.value]:text-(--dark)! [&_a]:text-(--dark)!',
               isMcwCasinoTheme &&
                 '[&_.label]:!text-[#ffd45f] [&_.value]:!text-[#ffd45f]'
             )}
           >
             <div className="flex items-center justify-between">
               {isBalanceRefresh ? (
-                <div className="me-2 [&_span]:inline-block [&_span]:w-1 [&_span]:h-1 [&_span]:rounded-full [&_span]:bg-white [&_span]:opacity-0 [&_span]:mr-1.5 [&_span]:animate-[loadBar_0.8s_ease_infinite] max-md:[&_span]:bg-black">
+                <div className="me-2 [&_span]:mr-1.5 [&_span]:inline-block [&_span]:h-1 [&_span]:w-1 [&_span]:animate-[loadBar_0.8s_ease_infinite] [&_span]:rounded-full [&_span]:bg-white [&_span]:opacity-0 max-md:[&_span]:bg-black">
                   {LOADING_BAR_ITEMS.map((n) => (
                     <span
                       key={n}
@@ -282,13 +282,13 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                 </div>
               ) : (
                 <a
-                  className="md:flex items-center pr-3.5 max-md:pr-[2.13vw] max-md:text-right max-md:text-[3.2vw] text-white no-underline [&_span]:opacity-70 [&_.value]:opacity-100! [&_.value]:font-bold"
+                  className="items-center pr-3.5 text-white no-underline max-md:pr-[2.13vw] max-md:text-right max-md:text-[3.2vw] md:flex [&_.value]:font-bold [&_.value]:opacity-100! [&_span]:opacity-70"
                   href="#"
                   onClick={(e) => e.preventDefault()}
                 >
                   <p className="mb-0">
                     <span className="label">{balanceLabel} </span>
-                    <span className="md:pr-1 value">
+                    <span className="value md:pr-1">
                       {currency} {formatBalance(amount)}
                     </span>
                   </p>
@@ -313,7 +313,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
             <button
               type="button"
               className={cx(
-                'h-[26px] w-[28px] flex items-center justify-center px-1.5 bg-black/30 border border-black/30 shadow-[inset_0_1px_0_0_rgba(var(--white-rgb),0.5)] rounded-[3px] hover:underline max-md:h-[9.47vw] max-md:w-auto max-md:px-[1.87vw] max-md:py-[1.7vw] max-md:bg-black/10 max-md:border max-md:border-black/40 max-md:shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.5)] [&_svg]:h-[14px] [&_svg]:w-[14px] max-md:[&_svg]:h-[5.07vw] max-md:[&_svg]:w-[5.07vw]',
+                'flex h-[26px] w-[28px] items-center justify-center rounded-[3px] border border-black/30 bg-black/30 px-1.5 shadow-[inset_0_1px_0_0_rgba(var(--white-rgb),0.5)] hover:underline max-md:h-[9.47vw] max-md:w-auto max-md:border max-md:border-black/40 max-md:bg-black/10 max-md:px-[1.87vw] max-md:py-[1.7vw] max-md:shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.5)] [&_svg]:h-[14px] [&_svg]:w-[14px] max-md:[&_svg]:h-[5.07vw] max-md:[&_svg]:w-[5.07vw]',
                 isYellowTheme && '!bg-transparent [&_svg]:brightness-0'
               )}
               onClick={balanceRefresh}
@@ -332,7 +332,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
         {showMobileStake && (
           <div
             className={cx(
-              'flex items-center h-[9.47vw] w-auto px-[1.27vw] py-[1.7vw] rounded-[1.07vw] ml-[2.13vw] bg-black/10 border border-black/40 shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.3)] [&_svg]:text-white max-md:[&_svg]:w-[6.07vw] max-md:[&_svg]:h-[6.07vw]',
+              'ml-[2.13vw] flex h-[9.47vw] w-auto items-center rounded-[1.07vw] border border-black/40 bg-black/10 px-[1.27vw] py-[1.7vw] shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.3)] [&_svg]:text-white max-md:[&_svg]:h-[6.07vw] max-md:[&_svg]:w-[6.07vw]',
               isYellowTheme && '!bg-transparent [&_svg]:brightness-0',
               isMcwCasinoTheme && '!bg-white/10 [&_svg]:!text-[#ffd45f]'
             )}
@@ -353,7 +353,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
         rootClose={false}
         onHide={() => setStakeOpen(false)}
       >
-        <Popover className="max-md:fixed max-md:inset-0 max-md:!max-w-full max-md:!mt-0 max-md:rounded-none max-md:overflow-y-auto max-md:pb-[16.33vw]">
+        <Popover className="max-md:fixed max-md:inset-0 max-md:!mt-0 max-md:!max-w-full max-md:overflow-y-auto max-md:rounded-none max-md:pb-[16.33vw]">
           <Popover.Body className="p-0">
             <Stake isMobile onCancel={() => setStakeOpen(false)} />
           </Popover.Body>

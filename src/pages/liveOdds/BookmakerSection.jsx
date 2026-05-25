@@ -16,13 +16,7 @@ import {
   RED_XS_ACTIVE,
   RED_XXS,
 } from './constants.js'
-import {
-  cx,
-  fmt,
-  isBookmakerStatusBlocked,
-  num,
-  titleCase,
-} from './helpers.js'
+import { cx, fmt, isBookmakerStatusBlocked, num, titleCase } from './helpers.js'
 import { CloseIcon, PinSvg, WarningSvg } from './icons.jsx'
 import MatchHeader from './MatchHeader.jsx'
 import { PlacingBetStrip } from './PlacingBetStrip.jsx'
@@ -89,37 +83,37 @@ export default function BookmakerSection({
   return (
     <div>
       <MatchHeader>
-        <div className="flex items-center justify-center [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center [&_.icon-wrapper]:max-md:pl-[1.86667vw] md:[&_.icon-wrapper_i]:bg-no-repeat md:[&_.icon-wrapper_i]:[background-image:url('/img/main-s1aea395e8c.png')] md:[&_.icon-wrapper_i]:[background-position:-385px_-833px] md:[&_.icon-wrapper_i]:h-[28px] md:[&_.icon-wrapper_i]:w-[29px] md:[&_.icon-wrapper_i]:mr-[6px] md:[&_.icon-wrapper_svg]:hidden max-md:[&_.icon-wrapper_svg]:block max-md:[&_.icon-wrapper_svg]:w-[6.66667vw] max-md:[&_.icon-wrapper_svg]:h-[6.66667vw]">
+        <div className="flex items-center justify-center [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center [&_.icon-wrapper]:max-md:pl-[1.86667vw] md:[&_.icon-wrapper_i]:mr-[6px] md:[&_.icon-wrapper_i]:h-[28px] md:[&_.icon-wrapper_i]:w-[29px] md:[&_.icon-wrapper_i]:[background-image:url('/img/main-s1aea395e8c.png')] md:[&_.icon-wrapper_i]:[background-position:-385px_-833px] md:[&_.icon-wrapper_i]:bg-no-repeat max-md:[&_.icon-wrapper_svg]:block max-md:[&_.icon-wrapper_svg]:h-[6.66667vw] max-md:[&_.icon-wrapper_svg]:w-[6.66667vw] md:[&_.icon-wrapper_svg]:hidden">
           <span className="icon-wrapper">
             <i>
               <PinSvg />
             </i>
           </span>
-          <span className="text-white font-bold text-[14px] inline-block max-md:ml-[1.86667vw] max-md:text-[3.46667vw] max-md:leading-[8.53333vw]">
+          <span className="inline-block text-[14px] font-bold text-white max-md:ml-[1.86667vw] max-md:text-[3.46667vw] max-md:leading-[8.53333vw]">
             {t('odds.bookmakerMarket', 'Bookmaker Market')}
-            <small className="opacity-70 font-normal">
+            <small className="font-normal opacity-70">
               | {t('odds.zeroCommission', 'Zero Commission')}
             </small>
           </span>
         </div>
 
         {!isMobile ? (
-          <div className="flex items-center justify-center mr-[10px] [&_span]:text-[11px]">
-            <span className="rounded-sm px-[16px] py-[1px] bg-[var(--xl-light-bg)] text-[11px]">
+          <div className="mr-[10px] flex items-center justify-center [&_span]:text-[11px]">
+            <span className="rounded-sm bg-(--xl-light-bg) px-[16px] py-[1px] text-[11px]">
               {t('common.min', 'Min')}
             </span>
-            <span className="inline-block ml-1 text-white">
+            <span className="ml-1 inline-block text-white">
               {fmt(setting.min || 1)}
             </span>
-            <span className="rounded-sm px-[16px] py-[1px] bg-[var(--xl-light-bg)] text-[11px] ml-2 inline-block">
+            <span className="ml-2 inline-block rounded-sm bg-(--xl-light-bg) px-[16px] py-[1px] text-[11px]">
               {t('common.max', 'Max')}
             </span>
-            <span className="inline-block ml-1 text-white">
+            <span className="ml-1 inline-block text-white">
               {fmt(setting.max || 10000)}
             </span>
           </div>
         ) : (
-          <span className="bg-gradient-to-br from-[var(--xts-lightest-navy)] to-[var(--mds-lightest-navy)] inline-block rounded-tr-[12px] relative md:px-2 mr-[1.86667vw] text-white [&_svg]:max-md:w-[4vw] [&_svg]:max-md:h-[4vw]">
+          <span className="relative mr-[1.86667vw] inline-block rounded-tr-[12px] bg-gradient-to-br from-(--xts-lightest-navy) to-(--mds-lightest-navy) text-white md:px-2 [&_svg]:max-md:h-[4vw] [&_svg]:max-md:w-[4vw]">
             <i
               onClick={onToggleInfo}
               role="button"
@@ -129,7 +123,7 @@ export default function BookmakerSection({
             </i>
             {infoOpen && (
               <div className={FANCY_INFO_POPUP}>
-                <div className="flex-1 flex flex-col">
+                <div className="flex flex-1 flex-col">
                   <p>
                     {t('common.min', 'Min')} / {t('common.max', 'Max')}
                   </p>
@@ -152,18 +146,18 @@ export default function BookmakerSection({
       </MatchHeader>
 
       <div className="mb-4">
-        <table className="w-full border-collapse bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)]  [&_td]:border-t [&_td]:border-[var(--tbl-border-color)]">
-          <thead className="bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)]">
+        <table className="w-full border-collapse bg-(--light-xs-yellow) max-md:bg-(--light-xts-yellow) [&_td]:border-t [&_td]:border-(--tbl-border-color)">
+          <thead className="bg-(--light-xs-yellow) max-md:bg-(--light-xts-yellow)">
             <tr>
               <th className="h-[22px] p-[5px] max-md:h-[8vw]" />
               <th
                 colSpan={isMobile ? 1 : 2}
-                className="h-[22px] p-[5px] max-md:h-[8vw] w-[64px]"
+                className="h-[22px] w-[64px] p-[5px] max-md:h-[8vw]"
               />
               {!isMobile && (
                 <>
                   <th className="h-[22px] p-[5px] max-md:h-[8vw]" />
-                  <th className="h-[22px] p-[5px] max-md:h-[8vw] w-[64px]" />
+                  <th className="h-[22px] w-[64px] p-[5px] max-md:h-[8vw]" />
                 </>
               )}
             </tr>
@@ -181,8 +175,8 @@ export default function BookmakerSection({
 
               return (
                 <Fragment key={bookmaker.selectionId}>
-                  <tr className="bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)] hover:[&_td]:bg-white/40">
-                    <td className="px-[10px] pt-[4px] !align-top bg-[var(--light-xs-yellow)] max-md:bg-[var(--light-xts-yellow)] max-md:px-[1.8666666667vw] max-md:py-0 max-md:!align-middle max-md:text-[4vw] min-w-[170px]">
+                  <tr className="bg-(--light-xs-yellow) max-md:bg-(--light-xts-yellow) hover:[&_td]:bg-white/40">
+                    <td className="min-w-[170px] bg-(--light-xs-yellow) px-[10px] pt-[4px] !align-top max-md:bg-(--light-xts-yellow) max-md:px-[1.8666666667vw] max-md:py-0 max-md:!align-middle max-md:text-[4vw]">
                       <div className="flex flex-col">
                         <span className="font-bold">
                           {bookmaker.runnerName}
@@ -192,19 +186,19 @@ export default function BookmakerSection({
                     </td>
                     <td
                       colSpan={isMobile ? 1 : 5}
-                      className="p-0 w-full max-md:w-[140px]"
+                      className="w-full p-0 max-md:w-[140px]"
                     >
                       <table
                         align="right"
-                        className="border-collapse relative md:w-full md:max-w-[76%] before:content-[''] before:bg-[linear-gradient(90deg,rgba(130,183,221,0.15)_0%,rgba(130,183,221,0.8)_65%)] before:absolute before:left-0 before:right-0 before:top-0 before:bottom-0 before:w-1/2 before:z-0 after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-1/2 after:bg-[linear-gradient(270deg,rgba(231,170,184,0.15)_5%,rgba(231,170,184,0.8)_60%)] after:z-0 after:top-0 after:z-1 before:z-1 after:w-[50%+1px]"
+                        className="relative border-collapse before:absolute before:top-0 before:right-0 before:bottom-0 before:left-0 before:z-0 before:z-1 before:w-1/2 before:bg-[linear-gradient(90deg,rgba(130,183,221,0.15)_0%,rgba(130,183,221,0.8)_65%)] before:content-[''] after:absolute after:top-0 after:right-0 after:bottom-0 after:z-0 after:z-1 after:w-1/2 after:w-[50%+1px] after:bg-[linear-gradient(270deg,rgba(231,170,184,0.15)_5%,rgba(231,170,184,0.8)_60%)] after:content-[''] md:w-full md:max-w-[76%]"
                       >
                         <tbody className="relative">
                           {isSuspended && (
-                            <div className="inset-0 w-full h-full absolute bg-[rgba(36,58,72,0.4)] z-50 text-white/80 font-bold flex items-center justify-center text-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
+                            <div className="absolute inset-0 z-50 flex h-full w-full items-center justify-center bg-[rgba(36,58,72,0.4)] font-bold text-white/80 text-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
                               Suspended
                             </div>
                           )}
-                          <tr className="bg-[var(--light-xs-yellow)]">
+                          <tr className="bg-(--light-xs-yellow)">
                             {bookmaker.back.map((backCell, i) => {
                               if (isMobile && i !== 2) return null
                               const isBestBack = i === 2
@@ -215,12 +209,12 @@ export default function BookmakerSection({
                                   className={cx(
                                     backCellCls(i, isInlineBookmaker),
                                     showBackHeader &&
-                                      "relative max-md:bg-gradient-to-r max-md:from-[rgba(151,199,234,0.7)] max-md:to-[var(--xs-lightest-navy)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Back'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-md:before:text-[3.46667vw]",
-                                    "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-blue)] after:-z-[1] max-md:after:inset-[1vw] first-of-type:after:hidden [&:nth-of-type(2)]:after:hidden",
+                                      "relative before:absolute before:right-0 before:bottom-full before:left-0 before:px-[6px] before:py-[5px] before:text-center before:text-[12px] before:font-bold before:text-(--xs-black) before:content-['Back'] max-md:bg-gradient-to-r max-md:from-[rgba(151,199,234,0.7)] max-md:to-(--xs-lightest-navy) max-md:before:text-[3.46667vw]",
+                                    "after:absolute after:inset-[2px] after:-z-[1] after:rounded-[4px] after:border after:border-white after:bg-(--xs-blue) after:content-[''] first-of-type:after:hidden max-md:after:inset-[1vw] [&:nth-of-type(2)]:after:hidden",
                                     isInlineBookmaker &&
                                       active?.betType === 'BACK' &&
                                       isBestBack &&
-                                      '!bg-[var(--xs-blue)] !shadow-none'
+                                      '!bg-(--xs-blue) !shadow-none'
                                   )}
                                   onClick={() =>
                                     backCell?.price &&
@@ -242,12 +236,12 @@ export default function BookmakerSection({
                                   className={cx(
                                     layCellCls(i, isInlineBookmaker),
                                     showLayHeader &&
-                                      "relative !bg-transparent max-md:bg-gradient-to-l max-md:from-[var(--xts-red)] max-md:to-[rgba(247,205,214,0.75)] before:absolute before:left-0 before:right-0 before:text-center before:content-['Lay'] before:bottom-full before:px-[6px] before:py-[5px] before:text-[12px] before:text-[var(--xs-black)] before:font-bold max-md:before:text-[3.46667vw]",
-                                    "after:content-[''] after:absolute after:inset-[2px] after:rounded-[4px] after:border after:border-white after:bg-[var(--xs-red)] after:-z-[1] max-md:after:inset-[5px] last-of-type:after:hidden [&:nth-last-of-type(2)]:after:hidden",
+                                      "relative !bg-transparent before:absolute before:right-0 before:bottom-full before:left-0 before:px-[6px] before:py-[5px] before:text-center before:text-[12px] before:font-bold before:text-(--xs-black) before:content-['Lay'] max-md:bg-gradient-to-l max-md:from-(--xts-red) max-md:to-[rgba(247,205,214,0.75)] max-md:before:text-[3.46667vw]",
+                                    "after:absolute after:inset-[2px] after:-z-[1] after:rounded-[4px] after:border after:border-white after:bg-(--xs-red) after:content-[''] last-of-type:after:hidden max-md:after:inset-[5px] [&:nth-last-of-type(2)]:after:hidden",
                                     isInlineBookmaker &&
                                       active?.betType === 'LAY' &&
                                       isBestLay &&
-                                      '!bg-[var(--xs-red)] !shadow-none'
+                                      '!bg-(--xs-red) !shadow-none'
                                   )}
                                   onClick={() =>
                                     layCell?.price &&

@@ -15,9 +15,9 @@ export const PriorityTabs = memo(function PriorityTabs({
   )
 
   const wrapperCls = cx(
-    'flex justify-center items-center shadow-[inset_0_1px_0_0_rgba(var(--black-rgb),0.2)] bg-gradient-to-b from-[var(--md-lightest-navy)] from-[15%] to-[var(--lg-lightest-navy)] max-md:!shadow-none max-md:bg-none max-md:bg-[var(--smd-text-color)] max-md:justify-start max-md:py-[0.5vw] max-md:pl-[1.6vw]',
+    'flex justify-center items-center shadow-[inset_0_1px_0_0_rgba(var(--black-rgb),0.2)] bg-gradient-to-b from-(--md-lightest-navy) from-[15%] to-(--lg-lightest-navy) max-md:!shadow-none max-md:bg-none max-md:bg-(--smd-text-color) max-md:justify-start max-md:py-[0.5vw] max-md:pl-[1.6vw]',
     isSportBook &&
-      '!bg-gradient-to-b !from-[var(--xs-orange)] !from-[15%] !to-[var(--md-orange)] pb-[3px] max-md:!bg-[var(--orange)]'
+      '!bg-gradient-to-b !from-(--xs-orange) !from-[15%] !to-(--md-orange) pb-[3px] max-md:!bg-(--orange)'
   )
 
   const ulCls =
@@ -34,15 +34,14 @@ export const PriorityTabs = memo(function PriorityTabs({
             const liActive = isActive
               ? cx(
                   'bg-white hover:[&_a]:!no-underline max-md:rounded-[1.0666666667vw]',
-                  isSportBook &&
-                    'max-md:!bg-[var(--orange)] max-md:!rounded-none'
+                  isSportBook && 'max-md:!bg-(--orange) max-md:!rounded-none'
                 )
               : ''
             const aCls = cx(
-              'no-underline text-[var(--lg-lightest-navy)] max-md:text-white',
+              'no-underline text-(--lg-lightest-navy) max-md:text-white',
               isSportBook &&
                 'text-[rgba(var(--orange-rgba),0.85)] max-md:text-white',
-              isActive && 'max-md:!text-[var(--lg-lightest-navy)]'
+              isActive && 'max-md:!text-(--lg-lightest-navy)'
             )
 
             return (

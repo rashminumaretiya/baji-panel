@@ -135,10 +135,10 @@ function LogoutIcon() {
 }
 
 const menuItemClass =
-  'flex items-center justify-between px-[3.76vw] py-[2.13vw] bg-white border-b border-[var(--platinum-grey)] text-[var(--cyanBlue)] text-[4vw] leading-[1.6] font-bold cursor-pointer'
+  'flex items-center justify-between px-[3.76vw] py-[2.13vw] bg-white border-b border-(--platinum-grey) text-(--cyanBlue) text-[4vw] leading-[1.6] font-bold cursor-pointer'
 
 const rightArrowBtnClass =
-  'flex items-center justify-center w-[6.4vw] h-[6.4vw] rounded-[1.06vw] border border-[var(--platinum-grey)] text-[var(--dark-gray)]'
+  'flex items-center justify-center w-[6.4vw] h-[6.4vw] rounded-[1.06vw] border border-(--platinum-grey) text-(--dark-gray)'
 
 export default function Account() {
   const { t } = useTranslation()
@@ -167,28 +167,28 @@ export default function Account() {
 
   return (
     <div>
-      <div className="flex items-center justify-between bg-[var(--xl-black)] pl-[1.86vw] pr-0 border-t border-white">
+      <div className="flex items-center justify-between border-t border-white bg-(--xl-black) pr-0 pl-[1.86vw]">
         <div className="inline-flex items-center text-white">
           <i className="inline-flex items-center text-white">
             <UserIcon />
           </i>
-          <span className="inline-block ml-1 text-white text-[3.46vw] leading-[10.66vw] font-bold">
+          <span className="ml-1 inline-block text-[3.46vw] leading-[10.66vw] font-bold text-white">
             {userName}
           </span>
         </div>
-        <span className="px-[1.86vw] min-w-[21.33vw] ml-[1.86vw] border-l border-[var(--sm-black)] text-white text-[3.46vw] leading-[10.66vw] font-bold">
+        <span className="ml-[1.86vw] min-w-[21.33vw] border-l border-(--sm-black) px-[1.86vw] text-[3.46vw] leading-[10.66vw] font-bold text-white">
           GMT +05:30
         </span>
       </div>
 
-      <ul className="m-0 pl-0 mb-5 border-b border-[var(--sm-gray-blue)]">
+      <ul className="m-0 mb-5 border-b border-(--sm-gray-blue) pl-0">
         <li
-          className={`${menuItemClass} flex flex-row items-center [&_a]:inline-flex [&_a]:items-center [&_i]:inline-flex [&_svg]:w-[5.33vw] [&_svg]:h-[5.33vw]`}
+          className={`${menuItemClass} flex flex-row items-center [&_a]:inline-flex [&_a]:items-center [&_i]:inline-flex [&_svg]:h-[5.33vw] [&_svg]:w-[5.33vw]`}
         >
           <span className="whitespace-nowrap">
             {t('common.uplineContact', 'Upline Contact')} :
           </span>
-          <div className="flex ml-2 overflow-x-auto gap-[2.13vw]">
+          <div className="ml-2 flex gap-[2.13vw] overflow-x-auto">
             {uplineContacts
               ?.filter((c) => c?.link)
               ?.map((contact) => (
@@ -210,7 +210,7 @@ export default function Account() {
               href={item.to}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${menuItemClass} no-underline text-[var(--cyanBlue)]`}
+              className={`${menuItemClass} text-(--cyanBlue) no-underline`}
             >
               <span>{t(item.i18nKey, item.fallback)}</span>
               <i className={rightArrowBtnClass}>
@@ -224,10 +224,10 @@ export default function Account() {
       <button
         type="button"
         onClick={handleLogout}
-        className="w-full flex items-center justify-center h-[12.8vw] mb-[5.33vw] bg-gradient-to-b from-[#e93522] to-[#be2414] text-white border-y border-[#8a0011] font-bold text-[4.26vw] leading-[1.3]"
+        className="mb-[5.33vw] flex h-[12.8vw] w-full items-center justify-center border-y border-[#8a0011] bg-gradient-to-b from-[#e93522] to-[#be2414] text-[4.26vw] leading-[1.3] font-bold text-white"
       >
         {t('common.logout', 'Logout')}
-        <i className="inline-flex items-center ml-1.5 text-white">
+        <i className="ml-1.5 inline-flex items-center text-white">
           <LogoutIcon />
         </i>
       </button>

@@ -6,7 +6,7 @@ export default function Tabs({
 }) {
   return (
     <ul
-      className={`flex flex-nowrap justify-start pl-0 mb-0 border-b-4 border-[var(--text-color)] rounded-none max-md:bg-transparent max-md:overflow-x-auto max-md:overflow-y-hidden ${className}`.trim()}
+      className={`mb-0 flex flex-nowrap justify-start rounded-none border-b-4 border-(--text-color) pl-0 max-md:overflow-x-auto max-md:overflow-y-hidden max-md:bg-transparent ${className}`.trim()}
       role="tablist"
     >
       {tabs.map((tab, index) => {
@@ -24,10 +24,10 @@ export default function Tabs({
               role="tab"
               aria-selected={isActive}
               onClick={() => onChange?.(tab.id)}
-              className={`text-[15px] leading-[15px] font-semibold pt-[5px] pb-[7px] px-[10px] border border-b-0 rounded-t-[3px] cursor-pointer hover:no-underline max-md:text-[13px] max-md:py-3 max-md:px-[11px] max-md:mb-[2px] max-md:whitespace-nowrap ${
+              className={`cursor-pointer rounded-t-[3px] border border-b-0 px-[10px] pt-[5px] pb-[7px] text-[15px] leading-[15px] font-semibold hover:no-underline max-md:mb-[2px] max-md:px-[11px] max-md:py-3 max-md:text-[13px] max-md:whitespace-nowrap ${
                 isActive
-                  ? 'bg-[var(--text-color)] text-white border-[var(--light-navy)]'
-                  : 'bg-white text-[var(--text-color)] border-[var(--text-color)]'
+                  ? 'border-(--light-navy) bg-(--text-color) text-white'
+                  : 'border-(--text-color) bg-white text-(--text-color)'
               }`}
             >
               <span>{tab.label}</span>

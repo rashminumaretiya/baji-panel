@@ -32,13 +32,13 @@ const cx = (...classes) => classes.filter(Boolean).join(' ')
 // Ported from the original layout.scss .main-wrapper / .left-content /
 // .middle-content / .right-content / .scroll-wrap rules.
 const MAIN_WRAPPER_BASE =
-  'relative mx-auto bg-[var(--xs-gray)] lg:w-[calc(100%-40px)] mt-[105px] md:w-[calc(100%-25px)] max-md:mt-[14.67vw] max-md:w-full'
+  'relative mx-auto bg-(--xs-gray) lg:w-[calc(100%-40px)] mt-[105px] md:w-[calc(100%-25px)] max-md:mt-[14.67vw] max-md:w-full'
 
 const MAIN_WRAPPER_NO_HEADER =
-  'relative mx-auto bg-[var(--xs-gray)] w-[calc(100%-40px)] mt-[31px] max-md:mt-0 max-md:w-full'
+  'relative mx-auto bg-(--xs-gray) w-[calc(100%-40px)] mt-[31px] max-md:mt-0 max-md:w-full'
 
 const LEFT_CONTENT_BASE =
-  'absolute left-0 top-0 w-[17.36%] h-[calc(100vh-105px)] max-md:h-[calc(100vh-14.67vw)] bg-[var(--xl-black)]'
+  'absolute left-0 top-0 w-[17.36%] h-[calc(100vh-105px)] max-md:h-[calc(100vh-14.67vw)] bg-(--xl-black)'
 
 const LEFT_CONTENT_LIGHT =
   'absolute left-0 top-0 w-[17.36%] h-[calc(100vh-105px)] max-md:h-[calc(100vh-14.67vw)] bg-white md:w-[16.33%]'
@@ -136,12 +136,12 @@ export default function Layout() {
 
         <div className={middleContentClass}>
           {isFullScreenLoader && (
-            <div className="fixed inset-0 flex items-center justify-center z-[9999]">
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center">
               <Loader show message="common.loader.pleaseWait" />
             </div>
           )}
           {isMainScreenLoader && (
-            <div className="absolute inset-0 flex items-center justify-center z-[999]">
+            <div className="absolute inset-0 z-[999] flex items-center justify-center">
               <Loader show message="common.loader.loading" />
             </div>
           )}

@@ -76,14 +76,14 @@ const tabs = [
 
 // Ported from layout.scss .main-wrapper auth / no-header-wrapper.
 const MAIN_WRAPPER_AUTH =
-  'relative mx-auto bg-[var(--xs-gray)] w-[calc(100%-40px)] mt-[105px] min-[768px]:max-[1440px]:w-[calc(100%-25px)] max-md:mt-[14.67vw] max-md:w-full'
+  'relative mx-auto bg-(--xs-gray) w-[calc(100%-40px)] mt-[105px] min-[768px]:max-[1440px]:w-[calc(100%-25px)] max-md:mt-[14.67vw] max-md:w-full'
 const MAIN_WRAPPER_NO_HEADER =
-  'relative mx-auto bg-[var(--xs-gray)] w-[calc(100%-40px)] mt-[31px] max-md:mt-0 max-md:w-full'
+  'relative mx-auto bg-(--xs-gray) w-[calc(100%-40px)] mt-[31px] max-md:mt-0 max-md:w-full'
 
 const sidebarLiBase =
-  'list-none py-[5.5px] pl-2.5 pr-1.5 text-[12px] text-[var(--xl-gray)] cursor-pointer border-b border-[rgba(var(--white-rgb),0.1)] bg-[var(--xl-black)]'
+  'list-none py-[5.5px] pl-2.5 pr-1.5 text-[12px] text-(--xl-gray) cursor-pointer border-b border-[rgba(var(--white-rgb),0.1)] bg-(--xl-black)'
 const sidebarLiFirst =
-  'list-none py-[5.5px] pl-2.5 pr-1.5 text-[12px] cursor-pointer text-white border-b-0 text-right relative bg-[var(--primary)]'
+  'list-none py-[5.5px] pl-2.5 pr-1.5 text-[12px] cursor-pointer text-white border-b-0 text-right relative bg-(--primary)'
 
 export default function MyAccountLayout() {
   const { t } = useTranslation()
@@ -114,7 +114,7 @@ export default function MyAccountLayout() {
 
   // Sidebar item active background varies by theme.
   const activeBg = isYellowTheme
-    ? 'bg-gradient-to-b from-[#546d7d] to-[var(--text-color)] text-white'
+    ? 'bg-gradient-to-b from-[#546d7d] to-(--text-color) text-white'
     : isMcwCasinoTheme
       ? 'bg-[#e5ca3a] text-[#222222]'
       : 'bg-[#15805e99]! text-white'
@@ -122,30 +122,30 @@ export default function MyAccountLayout() {
     ? 'bg-transparent'
     : isMcwCasinoTheme
       ? 'bg-transparent'
-      : 'bg-[var(--xl-black)]'
+      : 'bg-(--xl-black)'
 
   return (
     <>
       <Header isAuthenticated />
       <div className={mainWrapperClass}>
-        <div className="max-w-[1349px] w-full mx-auto bg-[var(--xs-gray)] md:w-[calc(100%-40px)]">
+        <div className="mx-auto w-full max-w-[1349px] bg-(--xs-gray) md:w-[calc(100%-40px)]">
           <NewsLine />
-          <div className="relative w-full h-full">
+          <div className="relative h-full w-full">
             {showSidebar && (
               <div className="absolute top-0 left-0 w-[17.36%]">
                 <ul
-                  className={`mb-0 pl-0 ${sidebarBg} overflow-y-auto max-h-[calc(100svh-106px)] [scrollbar-width:none]`}
+                  className={`mb-0 pl-0 ${sidebarBg} max-h-[calc(100svh-106px)] [scrollbar-width:none] overflow-y-auto`}
                 >
                   <li className={sidebarLiFirst}>
                     {t('header.myAccount', 'My Account')}
                   </li>
                   <li
-                    className={`${sidebarLiBase} flex flex-row items-center gap-1.5 [&_a]:inline-flex [&_a]:items-center [&_i]:inline-flex [&_svg]:w-4 [&_svg]:h-4`}
+                    className={`${sidebarLiBase} flex flex-row items-center gap-1.5 [&_a]:inline-flex [&_a]:items-center [&_i]:inline-flex [&_svg]:h-4 [&_svg]:w-4`}
                   >
                     <span className="whitespace-nowrap text-white">
                       {t('common.uplineContact', 'Upline Contact')} :
                     </span>
-                    <div className="flex ml-2 overflow-x-auto gap-1.5">
+                    <div className="ml-2 flex gap-1.5 overflow-x-auto">
                       {uplineContacts
                         ?.filter((c) => c?.link)
                         ?.map((contact) => (
@@ -189,23 +189,23 @@ export default function MyAccountLayout() {
                 </ul>
               </div>
             )}
-            <div className="ml-[17.36%] h-full w-[calc(100%-17.36%)] pl-[15px] max-md:pl-0 overflow-y-auto max-h-[calc(100svh-130px)] max-md:ml-0 max-md:w-auto max-md:max-h-none">
+            <div className="ml-[17.36%] h-full max-h-[calc(100svh-130px)] w-[calc(100%-17.36%)] overflow-y-auto pl-[15px] max-md:ml-0 max-md:max-h-none max-md:w-auto max-md:pl-0">
               {isMobile && activeTab && (
-                <div className="flex items-center bg-gradient-to-t from-[#141e21] to-[#2f424d] border-t border-white">
+                <div className="flex items-center border-t border-white bg-gradient-to-t from-[#141e21] to-[#2f424d]">
                   <i
-                    className="w-[10.67vw] h-[10.67vw] border-r border-[#4b4b4b] text-white bg-[url(/img/svg/play-icon.svg)] bg-no-repeat bg-center bg-contain shrink-0"
+                    className="h-[10.67vw] w-[10.67vw] shrink-0 border-r border-[#4b4b4b] bg-[url(/img/svg/play-icon.svg)] bg-contain bg-center bg-no-repeat text-white"
                     role="button"
                     aria-label="Back to account"
                     onClick={goToAccountMobile}
                   />
-                  <ul className="pl-2 flex items-center mb-0 overflow-x-auto leading-[10.4vw]">
+                  <ul className="mb-0 flex items-center overflow-x-auto pl-2 leading-[10.4vw]">
                     <li
-                      className="whitespace-nowrap cursor-pointer text-white relative mr-[1.87vw] pr-[3.47vw] text-[3.47vw] after:absolute after:top-1/2 after:right-0 after:content-[''] after:w-[1.6vw] after:h-[2.67vw] after:bg-[url(/img/svg/next-arrow.svg)] after:bg-no-repeat after:bg-contain after:-mt-[1.33vw]"
+                      className="relative mr-[1.87vw] cursor-pointer pr-[3.47vw] text-[3.47vw] whitespace-nowrap text-white after:absolute after:top-1/2 after:right-0 after:-mt-[1.33vw] after:h-[2.67vw] after:w-[1.6vw] after:bg-[url(/img/svg/next-arrow.svg)] after:bg-contain after:bg-no-repeat after:content-['']"
                       onClick={goToAccountMobile}
                     >
                       {t('header.myAccount', 'My Account')}
                     </li>
-                    <li className="whitespace-nowrap text-white text-[3.47vw]">
+                    <li className="text-[3.47vw] whitespace-nowrap text-white">
                       {t(activeTab.i18nKey, activeTab.fallback)}
                     </li>
                   </ul>

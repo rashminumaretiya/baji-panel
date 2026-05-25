@@ -87,7 +87,7 @@ export default function BookFancyModal({
               ].map((label) => (
                 <th
                   key={label}
-                  className="w-[271px] h-8 text-center font-semibold bg-[rgb(34,34,34)] border border-[rgb(34,34,34)] text-[rgb(255,184,12)] max-md:h-[11vw]"
+                  className="h-8 w-[271px] border border-[rgb(34,34,34)] bg-[rgb(34,34,34)] text-center font-semibold text-[rgb(255,184,12)] max-md:h-[11vw]"
                 >
                   {label}
                 </th>
@@ -99,7 +99,7 @@ export default function BookFancyModal({
               <tr>
                 <td
                   colSpan={2}
-                  className="h-8 text-center border border-black bg-white font-semibold max-md:h-[11vw]"
+                  className="h-8 border border-black bg-white text-center font-semibold max-md:h-[11vw]"
                 >
                   {t('common.noData', 'No data')}
                 </td>
@@ -118,10 +118,10 @@ export default function BookFancyModal({
                 : (item?.name ?? '')
               return (
                 <tr key={`${name}-${idx}`} className={rowBg}>
-                  <td className="h-8 text-center border border-black font-semibold max-md:h-[11vw]">
+                  <td className="h-8 border border-black text-center font-semibold max-md:h-[11vw]">
                     {name}
                   </td>
-                  <td className="h-8 text-center border border-black font-semibold max-md:h-[11vw]">
+                  <td className="h-8 border border-black text-center font-semibold max-md:h-[11vw]">
                     {numberFormatter.format(exp)}
                   </td>
                 </tr>
@@ -133,7 +133,7 @@ export default function BookFancyModal({
       <div className="py-[10px] max-md:py-[1.86vw]">
         <button
           type="button"
-          className="w-full px-[10px] py-[4px] rounded-[4px] border border-[#aaa] bg-[linear-gradient(-180deg,#fff_0%,#eee_89%)] text-[14px] font-bold leading-[1.6] text-[#1e1e1e] cursor-pointer hover:opacity-90 max-md:rounded-[1.6vw] max-md:text-[4vw] max-md:leading-[2.6] max-md:p-0"
+          className="w-full cursor-pointer rounded-[4px] border border-[#aaa] bg-[linear-gradient(-180deg,#fff_0%,#eee_89%)] px-[10px] py-[4px] text-[14px] leading-[1.6] font-bold text-[#1e1e1e] hover:opacity-90 max-md:rounded-[1.6vw] max-md:p-0 max-md:text-[4vw] max-md:leading-[2.6]"
           onClick={onClose}
         >
           {t('common.ok', 'OK')}

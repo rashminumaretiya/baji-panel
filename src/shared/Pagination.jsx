@@ -1,11 +1,11 @@
 const linkBase =
-  'inline-block px-2.5 py-1 text-[12px] leading-3 border border-[var(--lg-gray)] rounded text-[var(--dark)] no-underline cursor-pointer bg-gradient-to-b from-white to-[var(--xs-gray)] shadow-[inset_0_2px_0_0_rgba(var(--white-rgb),0.5)] hover:bg-gradient-to-t hover:from-white hover:to-[var(--xs-gray)] focus:outline-none focus:shadow-[inset_0_2px_0_0_rgba(var(--white-rgb),0.5)]'
+  'inline-block px-2.5 py-1 text-[12px] leading-3 border border-(--lg-gray) rounded text-(--dark) no-underline cursor-pointer bg-gradient-to-b from-white to-(--xs-gray) shadow-[inset_0_2px_0_0_rgba(var(--white-rgb),0.5)] hover:bg-gradient-to-t hover:from-white hover:to-(--xs-gray) focus:outline-none focus:shadow-[inset_0_2px_0_0_rgba(var(--white-rgb),0.5)]'
 
 const linkDisabled =
-  'inline-block px-2.5 py-1 text-[12px] leading-3 border border-[var(--lg-gray)] rounded text-[var(--pagination-color)] no-underline pointer-events-none bg-[var(--pagination-bg)] shadow-none'
+  'inline-block px-2.5 py-1 text-[12px] leading-3 border border-(--lg-gray) rounded text-(--pagination-color) no-underline pointer-events-none bg-(--pagination-bg) shadow-none'
 
 const linkActive =
-  'inline-block px-2.5 py-1 text-[12px] leading-3 border border-[var(--lg-black)] rounded text-black no-underline cursor-pointer bg-[var(--md-yellow)] shadow-[inset_0_2px_0_0_rgba(var(--black-rgb),0.1)] hover:bg-[var(--md-yellow)]'
+  'inline-block px-2.5 py-1 text-[12px] leading-3 border border-(--lg-black) rounded text-black no-underline cursor-pointer bg-(--md-yellow) shadow-[inset_0_2px_0_0_rgba(var(--black-rgb),0.1)] hover:bg-(--md-yellow)'
 
 export default function Pagination({
   currentPage = 1,
@@ -25,9 +25,9 @@ export default function Pagination({
   }
 
   return (
-    <div className="py-4 flex items-center justify-center xl:flex-row flex-wrap">
+    <div className="flex flex-wrap items-center justify-center py-4 xl:flex-row">
       <nav role="navigation">
-        <ul className="flex gap-[5px] list-none p-0 m-0">
+        <ul className="m-0 flex list-none gap-[5px] p-0">
           <li>
             <a
               aria-label="Previous"

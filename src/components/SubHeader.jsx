@@ -108,8 +108,8 @@ export default function SubHeader() {
   // higher specificity); mcw-casino gets the gold gradient.
   const wrapperClass = classes(
     'mb-px shadow-[inset_0_1px_3px_0_rgba(var(--black-rgb),0.4)]',
-    !isYellowTheme && !isMcwCasinoTheme && 'bg-[var(--md-black)]',
-    isYellowTheme && 'bg-[var(--dark)]',
+    !isYellowTheme && !isMcwCasinoTheme && 'bg-(--md-black)',
+    isYellowTheme && 'bg-(--dark)',
     isMcwCasinoTheme && 'bg-gradient-to-b from-[#e8d877] to-[#c9a43e]'
   )
 
@@ -124,11 +124,11 @@ export default function SubHeader() {
   const betCheckBase =
     'cursor-pointer h-[33px] pl-[7px] pr-3 pt-0.5 -mt-[3px] border-t-[3px] border-r border-r-white/15'
   const betCheckDefault = isOneClickBet
-    ? 'border-t-[var(--sm-yellow)] bg-gradient-to-t from-[var(--sm-primary)] to-[var(--md-primary)] hover:bg-gradient-to-b hover:from-[var(--sm-primary)] hover:to-[var(--md-primary)]'
-    : 'border-t-[var(--sm-yellow)] bg-gradient-to-b from-[var(--sm-black)] to-[var(--black)] hover:bg-gradient-to-t hover:from-[var(--sm-black)] hover:to-[var(--black)]'
+    ? 'border-t-(--sm-yellow) bg-gradient-to-t from-(--sm-primary) to-(--md-primary) hover:bg-gradient-to-b hover:from-(--sm-primary) hover:to-(--md-primary)'
+    : 'border-t-(--sm-yellow) bg-gradient-to-b from-(--sm-black) to-(--black) hover:bg-gradient-to-t hover:from-(--sm-black) hover:to-(--black)'
   const betCheckYellow = isOneClickBet
-    ? 'border-t-[var(--light-green)] bg-gradient-to-b from-[#4e9600] to-[#386a02] hover:bg-gradient-to-t hover:from-[#4e9600] hover:to-[#386a02]'
-    : 'border-t-[var(--light-green)] bg-gradient-to-b from-[var(--sm-black)] to-[var(--black)] hover:bg-gradient-to-t hover:from-[var(--sm-black)] hover:to-[var(--black)]'
+    ? 'border-t-(--light-green) bg-gradient-to-b from-[#4e9600] to-[#386a02] hover:bg-gradient-to-t hover:from-[#4e9600] hover:to-[#386a02]'
+    : 'border-t-(--light-green) bg-gradient-to-b from-(--sm-black) to-(--black) hover:bg-gradient-to-t hover:from-(--sm-black) hover:to-(--black)'
   const betCheckMcw = isOneClickBet
     ? 'border-t-[#d56525] bg-gradient-to-b from-[#b43807] to-[#912b06] hover:bg-gradient-to-t hover:from-[#b43807] hover:to-[#912b06]'
     : 'border-t-[#d56525] bg-gradient-to-t from-[#4b4b4b] to-[#1e1e1e]'
@@ -144,7 +144,7 @@ export default function SubHeader() {
   const checkboxBase =
     'cursor-pointer appearance-none rounded-[3px] focus:shadow-none focus:outline-none align-middle'
   const checkboxDefault =
-    'h-[18px] w-[18px] border border-[var(--sm-yellow)] bg-transparent checked:bg-[var(--md-black)] checked:bg-[url(/img/check.svg)] checked:bg-no-repeat checked:bg-center checked:bg-[length:12px_12px]'
+    'h-[18px] w-[18px] border border-(--sm-yellow) bg-transparent checked:bg-(--md-black) checked:bg-[url(/img/check.svg)] checked:bg-no-repeat checked:bg-center checked:bg-[length:12px_12px]'
   const checkboxYellow =
     'h-4 w-4 border-0 bg-white/15 checked:bg-white/15 checked:border checked:border-white/40 checked:bg-[url(/img/check.svg)] checked:bg-no-repeat checked:bg-center checked:bg-[length:11px_11px]'
   const checkboxMcw =
@@ -183,7 +183,7 @@ export default function SubHeader() {
   return (
     <div className={wrapperClass}>
       <div className="relative mx-auto h-[calc(100%-105px)] max-w-[calc(100%-40px)] min-w-0">
-        <div className="flex items-center justify-between h-full">
+        <div className="flex h-full items-center justify-between">
           <ul className={ulClass}>
             {pages
               .filter((p) => !p.isHidden)
@@ -203,14 +203,14 @@ export default function SubHeader() {
 
           <div className={rightWrapClass}>
             {!isMcwCasinoTheme && !isYellowTheme && (
-              <div className="inline-flex items-center text-white mr-2">
+              <div className="mr-2 inline-flex items-center text-white">
                 <span>{t('common.timeZone', 'Time Zone')} : </span>
                 <strong className="mb-0 ml-1">GMT+5:30</strong>
               </div>
             )}
 
             <div className={betCheckClass}>
-              <div className="flex items-center min-h-[1.5rem]">
+              <div className="flex min-h-[1.5rem] items-center">
                 <input
                   id="oneClickBet"
                   type="checkbox"
@@ -241,7 +241,7 @@ export default function SubHeader() {
 
       <Overlay show={stakeOpen} target={stakeTarget} placement="bottom-end">
         <Popover className="max-w-[282px]">
-          <Popover.Body className="min-h-[100px] bg-[var(--light-bg)] text-[11px] text-[var(--text-color)] p-2.5 font-[Tahoma,Helvetica,sans-serif]">
+          <Popover.Body className="min-h-[100px] bg-(--light-bg) p-2.5 font-[Tahoma,Helvetica,sans-serif] text-[11px] text-(--text-color)">
             <Stake onCancel={closeStake} />
           </Popover.Body>
         </Popover>
@@ -304,13 +304,13 @@ const SubHeaderTab = function SubHeaderTab({
     >
       {label}
       {showLiveChip ? (
-        <div className="absolute top-0 right-[3px] -translate-y-1/2 h-3 rounded-[3px] shadow-[0_1px_3px_0_rgba(0,0,0,0.5)] inline-flex overflow-hidden z-[9]">
-          <div className="h-3 bg-white px-1 py-[2px] leading-[0] flex items-center justify-center before:animate-pulse before:content-[''] before:bg-[url(/img/svg/live-icon.svg)] before:bg-no-repeat before:bg-contain before:h-2 before:w-3.5" />
-          <p className="text-[10px] leading-[0.8] mb-0 px-[5px] py-[2px] bg-[var(--red,#e83623)] text-white tracking-[0.4px] font-bold">
+        <div className="absolute top-0 right-[3px] z-[9] inline-flex h-3 -translate-y-1/2 overflow-hidden rounded-[3px] shadow-[0_1px_3px_0_rgba(0,0,0,0.5)]">
+          <div className="flex h-3 items-center justify-center bg-white px-1 py-[2px] leading-[0] before:h-2 before:w-3.5 before:animate-pulse before:bg-[url(/img/svg/live-icon.svg)] before:bg-contain before:bg-no-repeat before:content-['']" />
+          <p className="mb-0 bg-[var(--red,#e83623)] px-[5px] py-[2px] text-[10px] leading-[0.8] font-bold tracking-[0.4px] text-white">
             {page.count ?? 0}
           </p>
         </div>
-      ): null}
+      ) : null}
     </li>
   )
 }

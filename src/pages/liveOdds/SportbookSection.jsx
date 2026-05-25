@@ -25,7 +25,7 @@ export default function SportbookSection({
 
   if (!markets.length) {
     return (
-      <div className="text-center p-3 text-[var(--sm-text-color)] text-[12px] bg-white">
+      <div className="bg-white p-3 text-center text-[12px] text-(--sm-text-color)">
         No sportsbook markets
       </div>
     )
@@ -47,23 +47,23 @@ export default function SportbookSection({
           const isCollapsed =
             collapsed[id] === undefined ? i > 5 : collapsed[id]
           return (
-            <div key={id} className="md:mb-1 mb-0">
-              <h2 className="bg-[linear-gradient(180deg,var(--xts-blue)_0%,var(--xts-blue)_100%)] shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] text-white">
+            <div key={id} className="mb-0 md:mb-1">
+              <h2 className="bg-[linear-gradient(180deg,var(--xts-blue)_0%,var(--xts-blue)_100%)] text-white shadow-[0_2px_0_rgba(var(--white-rgb),0.1)]">
                 <button
                   type="button"
-                  className={`pl-0 flex items-center w-full text-left max-md:bg-[var(--text-color)] max-md:px-0 max-md:pl-[1.8666666667vw] max-md:leading-[8.6vw] max-md:border-b max-md:border-b-[var(--sm-text-color)] max-md:text-white bg-right bg-no-repeat ${isCollapsed ? 'md:bg-[url("/img/grediant-slip-plus.png")]' : 'md:bg-[url("/img/grediant-slip-minus.png")]'}`}
+                  className={`flex w-full items-center bg-right bg-no-repeat pl-0 text-left max-md:border-b max-md:border-b-(--sm-text-color) max-md:bg-(--text-color) max-md:px-0 max-md:pl-[1.8666666667vw] max-md:leading-[8.6vw] max-md:text-white ${isCollapsed ? 'md:bg-[url("/img/grediant-slip-plus.png")]' : 'md:bg-[url("/img/grediant-slip-minus.png")]'}`}
                   onClick={() => toggle(id)}
                 >
-                  <i className="md:mr-1 inline-flex items-center justify-center bg-gradient-to-b from-[var(--xl-blue)] to-[var(--xs-black)] h-[25px] w-[25px] text-center leading-[22px] text-[var(--sm-white)] hover:bg-gradient-to-b hover:from-[var(--xs-black)] hover:to-[var(--xl-blue)] hover:text-[var(--xs-shadow-primary)] [&_svg]:h-[16px] [&_svg]:w-[18px] max-md:rounded-full max-md:h-[6.6666666667vw] max-md:w-[6.6666666667vw] max-md:leading-normal max-md:bg-[var(--xs-dark)] max-md:mr-[1.4vw] max-md:[&_svg]:w-[4.6666666667vw] max-md:[&_svg]:h-[4.6666666667vw]">
+                  <i className="inline-flex h-[25px] w-[25px] items-center justify-center bg-gradient-to-b from-(--xl-blue) to-(--xs-black) text-center leading-[22px] text-(--sm-white) hover:bg-gradient-to-b hover:from-(--xs-black) hover:to-(--xl-blue) hover:text-(--xs-shadow-primary) max-md:mr-[1.4vw] max-md:h-[6.6666666667vw] max-md:w-[6.6666666667vw] max-md:rounded-full max-md:bg-(--xs-dark) max-md:leading-normal md:mr-1 [&_svg]:h-[16px] [&_svg]:w-[18px] max-md:[&_svg]:h-[4.6666666667vw] max-md:[&_svg]:w-[4.6666666667vw]">
                     <PinSvg />
                   </i>
-                  <span className="text-[14px] font-bold max-md:text-[3.4666666667vw] max-md:leading-[1.5] max-md:flex-1">
+                  <span className="text-[14px] font-bold max-md:flex-1 max-md:text-[3.4666666667vw] max-md:leading-[1.5]">
                     {market.market}
                   </span>
                 </button>
               </h2>
               {!isCollapsed && (
-                <div className="w-full flex flex-col flex-wrap relative">
+                <div className="relative flex w-full flex-col flex-wrap">
                   {market.runners.map((runner) => {
                     const isSuspended =
                       market.status === '1' && runner.status !== '1'
@@ -74,13 +74,13 @@ export default function SportbookSection({
                       <Fragment key={runner.selectionId}>
                         <div
                           className={cx(
-                            'w-full flex items-center min-h-[40px] border-b border-[var(--sm-text-color)] relative hover:bg-[var(--hover-bg)] max-md:min-h-0 bg-white',
+                            'relative flex min-h-[40px] w-full items-center border-b border-(--sm-text-color) bg-white hover:bg-(--hover-bg) max-md:min-h-0',
                             isSuspended && 'z-[9]'
                           )}
                           onClick={() => !isSuspended && onPick(market, runner)}
                           role="button"
                         >
-                          <p className="m-0 flex-[0_0_60%] w-[60%] py-1 pl-[10px] pr-[5px] max-md:flex-1 max-md:w-auto max-md:font-bold max-md:py-[1.3333333333vw] max-md:px-[1.8666666667vw] max-md:leading-[7vw]">
+                          <p className="m-0 w-[60%] flex-[0_0_60%] py-1 pr-[5px] pl-[10px] max-md:w-auto max-md:flex-1 max-md:px-[1.8666666667vw] max-md:py-[1.3333333333vw] max-md:leading-[7vw] max-md:font-bold">
                             <span className="font-bold">
                               {titleCase(runner.runnerName)}
                             </span>
@@ -97,22 +97,22 @@ export default function SportbookSection({
                               />
                             </span>
                           </p>
-                          <div className="flex items-center flex-[0_0_40%] max-md:flex-[0_0_37.3333333333vw]">
+                          <div className="flex flex-[0_0_40%] items-center max-md:flex-[0_0_37.3333333333vw]">
                             <span
                               className={cx(
-                                'relative cursor-pointer min-h-[39px] block border border-transparent text-center leading-[34px] max-md:min-h-[11vw] max-md:leading-[10vw] [&_b]:max-md:text-[2.9333333333vw] [&_b]:max-md:font-normal w-full bg-[var(--xs-green)]',
+                                'relative block min-h-[39px] w-full cursor-pointer border border-transparent bg-(--xs-green) text-center leading-[34px] max-md:min-h-[11vw] max-md:leading-[10vw] [&_b]:max-md:text-[2.9333333333vw] [&_b]:max-md:font-normal',
                                 isActive &&
-                                  'text-white !bg-[var(--lg-green-bg)] shadow-[inset_0_1px_3px_rgba(var(--black-rgb),0.5)]'
+                                  '!bg-(--lg-green-bg) text-white shadow-[inset_0_1px_3px_rgba(var(--black-rgb),0.5)]'
                               )}
                             >
                               {isSuspended && (
-                                <div className="absolute inset-[-1px] bg-[rgba(var(--black-rgb),0.435)] [backdrop-filter:blur(2px)] text-white flex items-center justify-center cursor-default">
+                                <div className="absolute inset-[-1px] flex cursor-default items-center justify-center bg-[rgba(var(--black-rgb),0.435)] text-white [backdrop-filter:blur(2px)]">
                                   Suspended
                                 </div>
                               )}
                               <b>{runner.back?.[0]?.price || ''}</b>
                             </span>
-                            <span className="md:inline-block max-md:hidden w-full" />
+                            <span className="w-full max-md:hidden md:inline-block" />
                           </div>
                         </div>
                         {isActive && (

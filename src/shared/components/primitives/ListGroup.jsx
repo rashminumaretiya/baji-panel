@@ -3,7 +3,7 @@
 function ListGroup({ as: As = 'ul', className = '', children, ...rest }) {
   return (
     <As
-      className={`flex flex-col rounded-md overflow-hidden ${className}`}
+      className={`flex flex-col overflow-hidden rounded-md ${className}`}
       {...rest}
     >
       {children}
@@ -20,9 +20,9 @@ function Item({
   ...rest
 }) {
   const base =
-    'px-3 py-2 border-b border-[var(--light-border)] last:border-b-0 bg-white'
-  const interactive = action ? 'cursor-pointer hover:bg-[var(--hover-bg)]' : ''
-  const activeCls = active ? 'bg-[var(--primary)] text-white' : ''
+    'px-3 py-2 border-b border-(--light-border) last:border-b-0 bg-white'
+  const interactive = action ? 'cursor-pointer hover:bg-(--hover-bg)' : ''
+  const activeCls = active ? 'bg-(--primary) text-white' : ''
   return (
     <As
       className={`${base} ${interactive} ${activeCls} ${className}`}

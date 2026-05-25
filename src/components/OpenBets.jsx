@@ -44,21 +44,21 @@ function formatDateTime(value) {
   return `${y}-${m}-${d} ${h}:${min}:${s} `
 }
 const TH_BASE =
-  'relative px-1.5 py-2 font-medium leading-[14px] text-[11px] whitespace-nowrap border-b border-white text-[var(--dark)] max-md:text-[2.93333vw] max-md:leading-[1.3] max-md:py-[1.8vw] max-md:px-[1.86667vw] max-md:text-[var(--dark)] after:content-[""] after:absolute after:w-px after:h-1/2 after:top-1/2 after:right-0 after:-translate-y-1/2 after:rounded-[1px]'
+  'relative px-1.5 py-2 font-medium leading-[14px] text-[11px] whitespace-nowrap border-b border-white text-(--dark) max-md:text-[2.93333vw] max-md:leading-[1.3] max-md:py-[1.8vw] max-md:px-[1.86667vw] max-md:text-(--dark) after:content-[""] after:absolute after:w-px after:h-1/2 after:top-1/2 after:right-0 after:-translate-y-1/2 after:rounded-[1px]'
 const TD_BASE =
   'font-medium px-1.5 py-2 text-[11px] align-middle overflow-hidden text-center bg-transparent border-b border-white max-md:py-[1.33333vw] max-md:px-[1.86667vw] max-md:[&_p]:text-[3.46667vw] max-md:[&_p]:leading-[1.3]'
 const ODD_TYPE_CHIP =
-  'm-0 px-1 py-[3px] rounded text-[var(--dark)] w-8 text-center odd-type max-md:rounded-[1.06667vw] max-md:text-[3.46667vw] max-md:leading-[7vw] max-md:w-[12vw] max-md:p-0'
+  'm-0 px-1 py-[3px] rounded text-(--dark) w-8 text-center odd-type max-md:rounded-[1.06667vw] max-md:text-[3.46667vw] max-md:leading-[7vw] max-md:w-[12vw] max-md:p-0'
 const ROW_LIGHT_BACK =
-  'bg-[var(--md-blue-bg)] [&_.odd-type]:bg-[var(--xs-blue)] max-md:[&_td]:border-b max-md:[&_td]:border-[var(--xs-blue)]'
+  'bg-(--md-blue-bg) [&_.odd-type]:bg-(--xs-blue) max-md:[&_td]:border-b max-md:[&_td]:border-(--xs-blue)'
 const ROW_LIGHT_LAY =
-  'bg-[var(--md-red-bg)] [&_.odd-type]:bg-[var(--xs-red)] max-md:[&_td]:border-b max-md:[&_td]:border-[var(--xs-red)]'
+  'bg-(--md-red-bg) [&_.odd-type]:bg-(--xs-red) max-md:[&_td]:border-b max-md:[&_td]:border-(--xs-red)'
 
 function NoOpenBets({ isYellowTheme }) {
   const { t } = useTranslation()
   if (isYellowTheme) {
     return (
-      <div className="text-center mt-3 flex flex-col items-center [&>p]:m-0 [&>p]:text-[17px]">
+      <div className="mt-3 flex flex-col items-center text-center [&>p]:m-0 [&>p]:text-[17px]">
         <p>{t('openBets.noBetsPlaced', 'No bets placed')}</p>
         <p>{t('openBets.youHaveNoOpenBets', 'You have no open bets')}</p>
       </div>
@@ -66,7 +66,7 @@ function NoOpenBets({ isYellowTheme }) {
   }
 
   return (
-    <p className="text-center my-4 text-xs max-[991px]:text-[12px]">
+    <p className="my-4 text-center text-xs max-[991px]:text-[12px]">
       {t('openBets.noOpenBetsAvailable', 'No open bets available.')}
     </p>
   )
@@ -87,18 +87,18 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
   if (!backBets.length) return null
 
   return (
-    <table className="w-full mb-0">
+    <table className="mb-0 w-full">
       <thead>
         <tr>
           {isFancy ? (
             <>
               <th
                 colSpan={2}
-                className={`${TH_BASE} text-left w-[45%] max-md:w-[61%] max-md:font-semibold`}
+                className={`${TH_BASE} w-[45%] text-left max-md:w-[61%] max-md:font-semibold`}
               >
                 {t('odds.yes', 'Yes')}
               </th>
-              <th className={`${TH_BASE} text-center w-[20%]`}>
+              <th className={`${TH_BASE} w-[20%] text-center`}>
                 {t('common.runsOdds', 'Runs/Odds')}
               </th>
             </>
@@ -106,20 +106,20 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
             <>
               <th
                 colSpan={2}
-                className={`${TH_BASE} text-left w-[45%] max-md:w-[61%] max-md:font-semibold`}
+                className={`${TH_BASE} w-[45%] text-left max-md:w-[61%] max-md:font-semibold`}
               >
                 {t('odds.backBetFor', 'Back (Bet For)')}
               </th>
-              <th className={`${TH_BASE} text-center w-[20%]`}>
+              <th className={`${TH_BASE} w-[20%] text-center`}>
                 {t('common.odds', 'Odds')}
               </th>
             </>
           )}
-          <th className={`${TH_BASE} text-center w-[20%]`}>
+          <th className={`${TH_BASE} w-[20%] text-center`}>
             {t('common.stake', 'Stake')}
           </th>
           <th
-            className={`${TH_BASE} text-right w-[20%] whitespace-nowrap overflow-hidden text-ellipsis max-w-[52px]`}
+            className={`${TH_BASE} w-[20%] max-w-[52px] overflow-hidden text-right text-ellipsis whitespace-nowrap`}
           >
             {timeOrder
               ? t('common.profitLiability', 'Profit/Liability')
@@ -132,7 +132,7 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
           <Fragment key={`back-group-${index}`}>
             {betInfo && (
               <tr className="bg-[#beddf466]">
-                <td colSpan={5} className={`${TD_BASE} text-left w-[8%] pr-0`}>
+                <td colSpan={5} className={`${TD_BASE} w-[8%] pr-0 text-left`}>
                   <span>{t('common.ref', 'Ref')}: </span>
                   <span>{formatDateTime(openBet.betPlacedAt)}</span>
                 </td>
@@ -151,15 +151,15 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
               <td className={TD_BASE}>
                 <div className="flex flex-col items-start text-left">
                   {isSportsBook ? (
-                    <span className="m-0 w-[100px] [-webkit-line-clamp:2] [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden text-ellipsis font-semibold text-[12px] text-[var(--lg-blue)] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:block max-md:text-[var(--dark)] max-md:w-[19.038vw]">
+                    <span className="m-0 [display:-webkit-box] w-[100px] overflow-hidden text-[12px] font-semibold text-ellipsis text-(--lg-blue) [-webkit-box-orient:vertical] [-webkit-line-clamp:2] max-md:block max-md:w-[19.038vw] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:text-(--dark)">
                       {eventType}
                     </span>
                   ) : (
                     <>
-                      <span className="m-0 w-[100px] [-webkit-line-clamp:2] [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden text-ellipsis font-semibold text-[12px] text-[var(--lg-blue)] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:block max-md:text-[var(--dark)] max-md:w-[19.038vw]">
+                      <span className="m-0 [display:-webkit-box] w-[100px] overflow-hidden text-[12px] font-semibold text-ellipsis text-(--lg-blue) [-webkit-box-orient:vertical] [-webkit-line-clamp:2] max-md:block max-md:w-[19.038vw] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:text-(--dark)">
                         {openBet?.selection?.name}
                       </span>
-                      <p className="m-0 text-[var(--xls-black)] opacity-50 max-md:text-[3.46667vw] max-md:leading-[1.3]">
+                      <p className="m-0 text-(--xls-black) opacity-50 max-md:text-[3.46667vw] max-md:leading-[1.3]">
                         {subLabel}
                       </p>
                     </>
@@ -204,18 +204,18 @@ function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
   if (!layBets.length) return null
 
   return (
-    <table className="w-full mb-0">
+    <table className="mb-0 w-full">
       <thead>
         <tr>
           {isFancy ? (
             <>
               <th
                 colSpan={2}
-                className={`${TH_BASE} text-left w-[45%] max-md:w-[61%] max-md:font-semibold`}
+                className={`${TH_BASE} w-[45%] text-left max-md:w-[61%] max-md:font-semibold`}
               >
                 {t('odds.no', 'No')}
               </th>
-              <th className={`${TH_BASE} text-center w-[20%]`}>
+              <th className={`${TH_BASE} w-[20%] text-center`}>
                 {t('common.runsOdds', 'Runs/Odds')}
               </th>
             </>
@@ -223,20 +223,20 @@ function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
             <>
               <th
                 colSpan={2}
-                className={`${TH_BASE} text-left w-[45%] max-md:w-[61%] max-md:font-semibold`}
+                className={`${TH_BASE} w-[45%] text-left max-md:w-[61%] max-md:font-semibold`}
               >
                 {t('odds.layBetAgainst', 'Lay (Bet Against)')}
               </th>
-              <th className={`${TH_BASE} text-center w-[20%]`}>
+              <th className={`${TH_BASE} w-[20%] text-center`}>
                 {t('common.odds', 'Odds')}
               </th>
             </>
           )}
-          <th className={`${TH_BASE} text-center w-[20%]`}>
+          <th className={`${TH_BASE} w-[20%] text-center`}>
             {t('common.stake', 'Stake')}
           </th>
           <th
-            className={`${TH_BASE} text-right w-[20%] whitespace-nowrap overflow-hidden text-ellipsis max-w-[52px]`}
+            className={`${TH_BASE} w-[20%] max-w-[52px] overflow-hidden text-right text-ellipsis whitespace-nowrap`}
           >
             {timeOrder
               ? t('common.profitLiability', 'Profit/Liability')
@@ -249,7 +249,7 @@ function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
           <Fragment key={`lay-group-${index}`}>
             {betInfo && (
               <tr className="bg-[#faeff2]">
-                <td colSpan={5} className={`${TD_BASE} text-left w-[8%] pr-0`}>
+                <td colSpan={5} className={`${TD_BASE} w-[8%] pr-0 text-left`}>
                   <span>{t('common.ref', 'Ref')}: </span>
                   <span>{formatDateTime(openBet.betPlacedAt)}</span>
                 </td>
@@ -268,15 +268,15 @@ function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
               <td className={TD_BASE}>
                 <div className="flex flex-col items-start text-left">
                   {isSportsBook ? (
-                    <span className="m-0 w-[100px] [-webkit-line-clamp:2] [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden text-ellipsis font-semibold text-[12px] text-[var(--lg-blue)] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:block max-md:text-[var(--dark)] max-md:w-[19.038vw]">
+                    <span className="m-0 [display:-webkit-box] w-[100px] overflow-hidden text-[12px] font-semibold text-ellipsis text-(--lg-blue) [-webkit-box-orient:vertical] [-webkit-line-clamp:2] max-md:block max-md:w-[19.038vw] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:text-(--dark)">
                       {eventType}
                     </span>
                   ) : (
                     <>
-                      <span className="m-0 w-[100px] [-webkit-line-clamp:2] [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden text-ellipsis font-semibold text-[12px] text-[var(--lg-blue)] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:block max-md:text-[var(--dark)] max-md:w-[19.038vw]">
+                      <span className="m-0 [display:-webkit-box] w-[100px] overflow-hidden text-[12px] font-semibold text-ellipsis text-(--lg-blue) [-webkit-box-orient:vertical] [-webkit-line-clamp:2] max-md:block max-md:w-[19.038vw] max-md:text-[3.46667vw] max-md:leading-[1.3] max-md:whitespace-nowrap max-md:text-(--dark)">
                         {openBet?.selection?.name}
                       </span>
-                      <p className="m-0 text-[var(--xls-black)] opacity-50 max-md:text-[3.46667vw] max-md:leading-[1.3]">
+                      <p className="m-0 text-(--xls-black) opacity-50 max-md:text-[3.46667vw] max-md:leading-[1.3]">
                         {subLabel}
                       </p>
                     </>
@@ -348,7 +348,7 @@ function OpenBetsListBackLay({
           <div className="ml-2 flex">
             <div className="flex items-center">
               <input
-                className="h-5 w-5 border border-[#2789ce] shadow-[inset_0_3px_#00000040] rounded-full appearance-none cursor-pointer checked:bg-[#2789ce] checked:shadow-none"
+                className="h-5 w-5 cursor-pointer appearance-none rounded-full border border-[#2789ce] shadow-[inset_0_3px_#00000040] checked:bg-[#2789ce] checked:shadow-none"
                 type="checkbox"
                 id="radioDefault1"
                 checked={betInfo}
@@ -361,9 +361,9 @@ function OpenBetsListBackLay({
                 {t('common.betInfo', 'Bet info')}
               </label>
             </div>
-            <div className="flex items-center ml-2">
+            <div className="ml-2 flex items-center">
               <input
-                className="h-5 w-5 border border-[#2789ce] shadow-[inset_0_3px_#00000040] rounded-full appearance-none cursor-pointer checked:bg-[#2789ce] checked:shadow-none"
+                className="h-5 w-5 cursor-pointer appearance-none rounded-full border border-[#2789ce] shadow-[inset_0_3px_#00000040] checked:bg-[#2789ce] checked:shadow-none"
                 type="checkbox"
                 id="radioDefault2"
                 checked={timeOrder}
@@ -404,10 +404,10 @@ function OpenBetsDesktop({
       <div>
         <div>
           <div className="mb-0">
-            <div className="flex items-center bg-gradient-to-b from-[var(--xts-blue)] to-[var(--xts-blue)] [&_i]:h-[25px] [&_i]:w-[25px] [&_i]:leading-[20px] [&_i]:text-white [&_i]:text-center [&_i]:border-r [&_i]:border-[var(--tbl-border-color)] [&_i_svg]:h-4 [&_i_svg]:w-4">
+            <div className="flex items-center bg-gradient-to-b from-(--xts-blue) to-(--xts-blue) [&_i]:h-[25px] [&_i]:w-[25px] [&_i]:border-r [&_i]:border-(--tbl-border-color) [&_i]:text-center [&_i]:leading-[20px] [&_i]:text-white [&_i_svg]:h-4 [&_i_svg]:w-4">
               <SvgIcon
                 name="refreshIcon"
-                className="cursor-pointer text-white p-1 [&_svg]:h-4 [&_svg]:w-4 [&_svg]:text-white"
+                className="cursor-pointer p-1 text-white [&_svg]:h-4 [&_svg]:w-4 [&_svg]:text-white"
                 role="button"
                 tabIndex={0}
                 onClick={onRefresh}
@@ -419,11 +419,11 @@ function OpenBetsDesktop({
                 }}
                 aria-label={t('openBets.refreshOpenBets', 'Refresh open bets')}
               />
-              <h2 className="relative shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] m-0 w-full">
+              <h2 className="relative m-0 w-full shadow-[0_2px_0_rgba(var(--white-rgb),0.1)]">
                 <button
                   type="button"
                   className={cx(
-                    'w-full text-left px-2.5 text-white text-xs leading-[25px] shadow-[0_2px_0_rgba(var(--white-rgb),0.1)] bg-no-repeat bg-right bg-[length:auto_100%]',
+                    'w-full bg-[length:auto_100%] bg-right bg-no-repeat px-2.5 text-left text-xs leading-[25px] text-white shadow-[0_2px_0_rgba(var(--white-rgb),0.1)]',
                     isCollapsed
                       ? 'bg-[url(/img/grediant-slip-plus.png)]'
                       : 'bg-[url(/img/grediant-slip-minus.png)]'
@@ -438,9 +438,9 @@ function OpenBetsDesktop({
               <div className="p-0">
                 {hasList ? (
                   <div>
-                    <div className="py-2 px-1">
+                    <div className="px-1 py-2">
                       <select
-                        className="py-1 pl-1 pr-6 w-full border rounded truncate"
+                        className="w-full truncate rounded border py-1 pr-6 pl-1"
                         value={selectedIndex}
                         onChange={(e) =>
                           setSelectedIndex(Number(e.target.value))
@@ -488,8 +488,8 @@ function OpenBetsMobile({ openBetsList, isOpen, isMobile }) {
   if (detailsOpenBets && openBetsValue) {
     return (
       <div>
-        <div className="flex bg-[var(--dark)]">
-          <span className="py-[13px] pl-[9px] pr-[13px] pb-[15px] border-r border-[var(--md-black)] text-white max-md:p-0 max-md:flex max-md:justify-center max-md:items-center max-md:min-w-[10.66667vw] max-md:border-r max-md:border-[var(--sm-black)] [&_svg]:max-md:h-[5vw] [&_svg]:max-md:w-[5vw]">
+        <div className="flex bg-(--dark)">
+          <span className="border-r border-(--md-black) py-[13px] pr-[13px] pb-[15px] pl-[9px] text-white max-md:flex max-md:min-w-[10.66667vw] max-md:items-center max-md:justify-center max-md:border-r max-md:border-(--sm-black) max-md:p-0 [&_svg]:max-md:h-[5vw] [&_svg]:max-md:w-[5vw]">
             <SvgIcon
               name="backfilledArrow"
               role="button"
@@ -497,7 +497,7 @@ function OpenBetsMobile({ openBetsList, isOpen, isMobile }) {
               onClick={() => setDetailsOpenBets(false)}
             />
           </span>
-          <p className="m-0 py-[14px] px-[7px] whitespace-nowrap overflow-hidden text-ellipsis text-white max-md:py-0 max-md:pl-[1.86667vw] max-md:pr-[1.06667vw] max-md:leading-[10.66667vw]">
+          <p className="m-0 overflow-hidden px-[7px] py-[14px] text-ellipsis whitespace-nowrap text-white max-md:py-0 max-md:pr-[1.06667vw] max-md:pl-[1.86667vw] max-md:leading-[10.66667vw]">
             {openBetsValue.displayTitle}
           </p>
         </div>
@@ -516,21 +516,21 @@ function OpenBetsMobile({ openBetsList, isOpen, isMobile }) {
 
   if (hasList) {
     return (
-      <div className="overflow-y-auto max-h-[calc(100vh-50px)]">
+      <div className="max-h-[calc(100vh-50px)] overflow-y-auto">
         {openBetsList.map((item, index) => (
           <li
             key={index}
-            className="flex relative border-b border-[var(--lg-gray)]"
+            className="relative flex border-b border-(--lg-gray)"
             onClick={() => {
               setSelectedIndex(index)
               setDetailsOpenBets(true)
             }}
             role="presentation"
           >
-            <p className="m-0 pt-[17px] pb-[20px] pl-[33px] whitespace-nowrap overflow-hidden text-ellipsis max-w-[calc(100%-50px)] text-[var(--blue)] relative before:content-[''] before:absolute before:w-[15px] before:h-[15px] before:bg-[var(--xl-th-bg)] before:rounded-full before:border-[var(--black)] before:left-[9px] before:top-1/2 before:-translate-y-1/2 max-md:py-[2.13333vw] max-md:pl-[6.66667vw] max-md:pr-[9.06667vw] max-md:max-w-full max-md:leading-[1.6] max-md:text-[4vw] max-md:font-semibold max-md:before:w-[2.66667vw] max-md:before:h-[2.66667vw] max-md:before:border max-md:before:border-[rgba(var(--md-dark-rgb),0.4)]">
+            <p className="relative m-0 max-w-[calc(100%-50px)] overflow-hidden pt-[17px] pb-[20px] pl-[33px] text-ellipsis whitespace-nowrap text-(--blue) before:absolute before:top-1/2 before:left-[9px] before:h-[15px] before:w-[15px] before:-translate-y-1/2 before:rounded-full before:border-(--black) before:bg-(--xl-th-bg) before:content-[''] max-md:max-w-full max-md:py-[2.13333vw] max-md:pr-[9.06667vw] max-md:pl-[6.66667vw] max-md:text-[4vw] max-md:leading-[1.6] max-md:font-semibold max-md:before:h-[2.66667vw] max-md:before:w-[2.66667vw] max-md:before:border max-md:before:border-[rgba(var(--md-dark-rgb),0.4)]">
               {item.displayTitle}
             </p>
-            <span className="flex justify-center items-center w-[30px] h-[30px] border border-[var(--light-bg)] rounded-[2px] absolute right-[12px] top-1/2 -translate-y-1/2 [&_i]:leading-[0] max-md:h-[6.4vw] max-md:w-[6.4vw] max-md:rounded-[1.06667vw] [&_svg]:max-md:h-[6.4vw] [&_svg]:max-md:w-[6.4vw]">
+            <span className="absolute top-1/2 right-[12px] flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[2px] border border-(--light-bg) max-md:h-[6.4vw] max-md:w-[6.4vw] max-md:rounded-[1.06667vw] [&_i]:leading-[0] [&_svg]:max-md:h-[6.4vw] [&_svg]:max-md:w-[6.4vw]">
               <SvgIcon name="chevronRightArrow" />
             </span>
           </li>

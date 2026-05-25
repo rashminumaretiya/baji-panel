@@ -30,7 +30,7 @@ function ActionButton({ visible, icon, title, label, onClick }) {
     // 18px svg sizing scoped via [&_i_svg].
     <button
       type="button"
-      className="bg-transparent border-0 px-[6px] py-[4px] cursor-pointer inline-flex items-center gap-1 text-[var(--primary)] hover:text-[var(--lg-primary)] [&_i]:inline-flex [&_i]:leading-none [&_i_svg]:w-[18px] [&_i_svg]:h-[18px]"
+      className="inline-flex cursor-pointer items-center gap-1 border-0 bg-transparent px-[6px] py-[4px] text-(--primary) hover:text-(--lg-primary) [&_i]:inline-flex [&_i]:leading-none [&_i_svg]:h-[18px] [&_i_svg]:w-[18px]"
       onClick={onClick}
       title={title}
       aria-label={title}
@@ -56,21 +56,21 @@ function StatusPill({ value }) {
     slug === 'accept' ||
     slug === 'transfered'
   ) {
-    color = 'text-[var(--avocado-green)]'
+    color = 'text-(--avocado-green)'
   } else if (
     slug.includes('reject') ||
     slug.includes('decline') ||
     slug === 'suspend'
   ) {
-    color = 'text-[var(--failed-status)]'
+    color = 'text-(--failed-status)'
   } else if (slug.includes('pending') || slug.includes('initiated')) {
-    color = 'text-[var(--primary-yellow)]'
+    color = 'text-(--primary-yellow)'
   }
   // width:100%; border-radius:5px; position:relative; font-size:12px;
   // text-align:center; display:flex; align-items:center; text-transform:capitalize;
   return (
     <span
-      className={`w-full rounded-[5px] relative text-[12px] text-center flex items-center capitalize ${color}`}
+      className={`relative flex w-full items-center rounded-[5px] text-center text-[12px] capitalize ${color}`}
     >
       {value}
     </span>
@@ -166,8 +166,8 @@ export default function DepositHistory() {
 
   return (
     <>
-      <div className="flex justify-between items-center">
-        <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
+      <div className="flex items-center justify-between">
+        <p className="mb-1.5 pt-1.5 text-[13px] leading-5 font-bold text-[#1e1e1e]">
           {t('common.depositHistory', 'Deposit History')}
         </p>
       </div>

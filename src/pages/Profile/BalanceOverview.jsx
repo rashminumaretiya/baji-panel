@@ -128,7 +128,7 @@ export default function BalanceOverview() {
 
   return (
     <>
-      <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
+      <p className="mb-1.5 pt-1.5 text-[13px] leading-5 font-bold text-[#1e1e1e]">
         {t('balanceOverview.summary', 'Summary')}
       </p>
 
@@ -136,9 +136,9 @@ export default function BalanceOverview() {
         const value = summary[card.key] || {}
         return (
           <div className="mb-[15px]" key={card.key}>
-            <div className="flex bg-white py-[7px] px-[10px] border-b border-[var(--dark-gray)]">
-              <div className="pr-4 basis-[31.37255%] shrink-0 grow-0">
-                <p className="text-[15px] font-bold mb-[7px] text-[#3b5160]">
+            <div className="flex border-b border-(--dark-gray) bg-white px-[10px] py-[7px]">
+              <div className="shrink-0 grow-0 basis-[31.37255%] pr-4">
+                <p className="mb-[7px] text-[15px] font-bold text-[#3b5160]">
                   {t(card.titleKey, card.titleFallback)}
                 </p>
                 <p className="mb-0 text-[12px] text-[#7e97a7]">
@@ -148,11 +148,11 @@ export default function BalanceOverview() {
                   {value.currency || 'BDT'}
                 </p>
               </div>
-              <div className="px-[10px] pb-[3px] relative border-l border-[var(--xs-lightGray)]">
-                <h4 className="text-[15px] font-bold mb-[7px] text-[#3b5160]">
+              <div className="relative border-l border-(--xs-lightGray) px-[10px] pb-[3px]">
+                <h4 className="mb-[7px] text-[15px] font-bold text-[#3b5160]">
                   {t(card.headingKey, card.headingFallback)},
                 </h4>
-                <p className="mb-0 text-[#3b5160] text-[13px] leading-[18px] max-w-[570px]">
+                <p className="mb-0 max-w-[570px] text-[13px] leading-[18px] text-[#3b5160]">
                   {t(card.descriptionKey, card.descriptionFallback)}
                 </p>
               </div>

@@ -10,9 +10,9 @@ const RESEND_SECONDS = 60
 // AddBackupNumberModal — duplicated here so this modal is standalone.
 const labelClass = 'block text-[13px] text-[#1e1e1e] mb-[6px]'
 const inputBaseClass =
-  'block w-full px-3 py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded focus:outline-none focus:border-[var(--light-gray)]'
+  'block w-full px-3 py-[6px] text-[14px] leading-[1.5] text-[#212529] bg-white border border-[#ced4da] rounded focus:outline-none focus:border-(--light-gray)'
 const addNumberBtnClass =
-  'inline-block px-[18px] py-[6px] font-semibold text-white border border-[var(--lg-primary)] rounded bg-gradient-to-b from-[var(--xs-primary)] to-[var(--xxs-primary)] hover:from-[var(--xxs-primary)] hover:to-[var(--xs-primary)] hover:brightness-95 focus:from-[var(--xxs-primary)] focus:to-[var(--xs-primary)] focus:brightness-95 disabled:opacity-65 disabled:cursor-not-allowed'
+  'inline-block px-[18px] py-[6px] font-semibold text-white border border-(--lg-primary) rounded bg-gradient-to-b from-(--xs-primary) to-(--xxs-primary) hover:from-(--xxs-primary) hover:to-(--xs-primary) hover:brightness-95 focus:from-(--xxs-primary) focus:to-(--xs-primary) focus:brightness-95 disabled:opacity-65 disabled:cursor-not-allowed'
 const resendLinkClass = 'text-[#1e6fff] underline text-[13px]'
 const otpErrorClass = 'block text-[#d33] text-[12px] mt-[4px]'
 
@@ -127,7 +127,7 @@ export default function VerifyPrimaryNumberModal({
             <span className={otpErrorClass}>Otp is required</span>
           )}
         </div>
-        <div className="text-right mb-2">
+        <div className="mb-2 text-right">
           {timer > 0 ? (
             <a className={resendLinkClass}>Resend otp in {timer} Seconds</a>
           ) : (

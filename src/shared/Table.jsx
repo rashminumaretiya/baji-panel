@@ -31,26 +31,26 @@ export default function Table({
     <div>
       {title && (
         <div className="flex items-center justify-between">
-          <p className="text-[#1e1e1e] font-bold text-[13px] leading-5 pt-1.5 mb-1.5">
+          <p className="mb-1.5 pt-1.5 text-[13px] leading-5 font-bold text-[#1e1e1e]">
             {title}
           </p>
         </div>
       )}
       {tableTitle && (
         <TableTitleTag
-          className={`bg-[var(--text-color)] border-b border-[var(--sm-text-color)] text-white leading-6 font-bold px-2.5 mb-0 text-[12px] ${tableTitleClassName ?? ''}`}
+          className={`mb-0 border-b border-(--sm-text-color) bg-(--text-color) px-2.5 text-[12px] leading-6 font-bold text-white ${tableTitleClassName ?? ''}`}
         >
           {tableTitle}
         </TableTitleTag>
       )}
-      <table className="w-full mb-4 border-collapse">
+      <table className="mb-4 w-full border-collapse">
         <thead>
           <tr>
             {columns.map((col) => (
               <th
                 key={col.key}
                 scope="col"
-                className="border-y border-[var(--sm-text-color)] bg-[var(--th-bg)] text-[var(--light-navy)] text-[12px] font-bold px-2.5 py-2 align-middle whitespace-nowrap text-left last:text-right"
+                className="border-y border-(--sm-text-color) bg-(--th-bg) px-2.5 py-2 text-left align-middle text-[12px] font-bold whitespace-nowrap text-(--light-navy) last:text-right"
               >
                 {col.label}
               </th>
@@ -67,7 +67,7 @@ export default function Table({
                   return (
                     <td
                       key={col.key}
-                      className={`border-t border-[var(--xs-gray)] px-2.5 py-2 align-middle bg-white text-[12px] text-[var(--dark)] text-left last:text-right ${cellClassName}`.trim()}
+                      className={`border-t border-(--xs-gray) bg-white px-2.5 py-2 text-left align-middle text-[12px] text-(--dark) last:text-right ${cellClassName}`.trim()}
                     >
                       {col.render
                         ? col.render(value, row, rowIndex)
