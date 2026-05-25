@@ -2871,7 +2871,7 @@ function SportbookSection({
                               {titleCase(runner.runnerName)}
                             </span>
                             {exposureByMarket?.get(String(market.marketId)) && (
-                              <span className="inline-flex items-center w-full">
+                              <span className="inline-flex w-full items-center">
                                 <BetExposureCell
                                   selectionId={runner.selectionId}
                                   marketId={market.marketId}

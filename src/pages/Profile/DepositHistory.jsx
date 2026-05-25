@@ -7,7 +7,7 @@ import {
   selectDepositHistory,
 } from '../../store/slices/accountSlice.js'
 import { selectCurrency } from '../../store/slices/authSlice.js'
-import { Icon } from './depositIcons.jsx'
+import { iconMap } from '../../components/icons.jsx'
 
 const PER_PAGE = 10
 
@@ -25,6 +25,7 @@ function formatDate(value) {
 // Angular's `conditionField` option.
 function ActionButton({ visible, icon, title, label, onClick }) {
   if (!visible) return null
+  const ActionIcon = iconMap[icon]
   return (
     // .deposit-action-btn: transparent bg, primary text, 4/6 padding,
     // 18px svg sizing scoped via [&_i_svg].
@@ -35,7 +36,7 @@ function ActionButton({ visible, icon, title, label, onClick }) {
       title={title}
       aria-label={title}
     >
-      <Icon name={icon} />
+      {ActionIcon && <ActionIcon />}
       {label && <span>{label}</span>}
     </button>
   )

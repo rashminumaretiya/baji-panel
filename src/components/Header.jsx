@@ -28,7 +28,12 @@ import MyAccountPopup from './MyAccountPopup.jsx'
 import OpenBets from './OpenBets.jsx'
 import Stake from './Stake.jsx'
 import SubHeader from './SubHeader.jsx'
-import SvgIcon from './SvgIcon.jsx'
+import {
+  ClosePopoverIcon,
+  DollarCoinIcon,
+  RefreshIcon,
+  SettingIcon,
+} from './icons.jsx'
 
 const DEFAULT_WALLET = { balance: 0, exposure: 0 }
 const DEFAULT_CURRENCY = 'BDT'
@@ -222,8 +227,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                   tabIndex={0}
                   onKeyDown={(e) => e.key === 'Enter' && openBetsClick()}
                 >
-                  <SvgIcon
-                    name="dollarCoin"
+                  <DollarCoinIcon
                     className="max-md:[&_svg]:h-[5.33333vw] max-md:[&_svg]:w-[5.33333vw]"
                   />
                   <p className="ms-lg-2 mb-0 max-md:ml-[1.33vw]">
@@ -240,14 +244,13 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                   )}
                 >
                   <div className={stakeHeaderClass}>
-                    <div className="flex items-center text-white flex-1 max-md:px-[1.87vw] max-md:leading-[2.6] max-md:border-r max-md:border-white/30 max-md:[&_svg]:w-[6.33vw]! max-md:[&_svg]:h-[6.33vw]! [&_svg]:mr-[1.33vw]">
-                      <SvgIcon name="dollarCoin" />
-                      <span className="max-md:text-[4vw] font-bold">
+                    <div className="flex flex-1 items-center text-white max-md:border-r max-md:border-white/30 max-md:px-[1.87vw] max-md:leading-[2.6] [&_svg]:mr-[1.33vw] max-md:[&_svg]:h-[6.33vw]! max-md:[&_svg]:w-[6.33vw]!">
+                      <DollarCoinIcon />
+                      <span className="font-bold max-md:text-[4vw]">
                         {t('openBets.title', 'Open Bets')}
                       </span>
                     </div>
-                    <SvgIcon
-                      name="closePopover"
+                    <ClosePopoverIcon
                       className="cursor-pointer px-[3vw] leading-[2.2] [&_svg]:h-[3.8vw] [&_svg]:w-[3.8vw] [&_svg_path]:fill-white"
                       role="button"
                       tabIndex={0}
@@ -299,7 +302,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                     </span>
                     <span
                       className={cx(
-                        'value text-white px-1.5 py-px',
+                        'value px-1.5 py-px text-white',
                         !isYellowTheme && isExposure && 'text-[#ff4040]!'
                       )}
                     >
@@ -319,7 +322,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
               )}
               onClick={balanceRefresh}
             >
-              <SvgIcon name="refreshIcon" />
+              <RefreshIcon />
             </button>
           </div>
 
@@ -343,7 +346,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
             tabIndex={0}
             onKeyDown={(e) => e.key === 'Enter' && openMobileStake(e)}
           >
-            <SvgIcon name="settingIcon" />
+            <SettingIcon />
           </div>
         )}
       </header>

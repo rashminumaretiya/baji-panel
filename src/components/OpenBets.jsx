@@ -13,8 +13,12 @@ import {
 } from '../store/slices/betSlipSlice.js'
 import { selectIsAuthenticated } from '../store/slices/authSlice.js'
 import Collapse from '../shared/components/primitives/Collapse.jsx'
-import SvgIcon from './SvgIcon.jsx'
 import { formatAmount as formatNumber } from '../utils/customFunction.js'
+import {
+  BackfilledArrowIcon,
+  ChevronRightArrowIcon,
+  RefreshIcon,
+} from './icons.jsx'
 
 function cx(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -318,7 +322,7 @@ function OpenBetsListBackLay({
 
   return (
     <>
-      <h6 className="md:p-2 px-2 m-0 text-[12px] font-bold bg-[var(--xl-th-bg)] max-md:px-[1.86667vw] max-md:bg-[image:linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] max-md:text-[3.73333vw] max-md:leading-[2.2] max-md:text-white max-md:font-semibold">
+      <h6 className="m-0 bg-[var(--xl-th-bg)] px-2 text-[12px] font-bold max-md:bg-[image:linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] max-md:px-[1.86667vw] max-md:text-[3.73333vw] max-md:leading-[2.2] max-md:font-semibold max-md:text-white md:p-2">
         {t('common.matched', 'Matched')}
       </h6>
       <div className={`overflow-x-auto ${wrapperClass}`}>
@@ -399,8 +403,7 @@ function OpenBetsDesktop({
         <div>
           <div className="mb-0">
             <div className="flex items-center bg-gradient-to-b from-(--xts-blue) to-(--xts-blue) [&_i]:h-[25px] [&_i]:w-[25px] [&_i]:border-r [&_i]:border-(--tbl-border-color) [&_i]:text-center [&_i]:leading-[20px] [&_i]:text-white [&_i_svg]:h-4 [&_i_svg]:w-4">
-              <SvgIcon
-                name="refreshIcon"
+              <RefreshIcon
                 className="cursor-pointer p-1 text-white [&_svg]:h-4 [&_svg]:w-4 [&_svg]:text-white"
                 role="button"
                 tabIndex={0}
@@ -484,8 +487,7 @@ function OpenBetsMobile({ openBetsList, isOpen, isMobile }) {
       <div>
         <div className="flex bg-(--dark)">
           <span className="border-r border-(--md-black) py-[13px] pr-[13px] pb-[15px] pl-[9px] text-white max-md:flex max-md:min-w-[10.66667vw] max-md:items-center max-md:justify-center max-md:border-r max-md:border-(--sm-black) max-md:p-0 [&_svg]:max-md:h-[5vw] [&_svg]:max-md:w-[5vw]">
-            <SvgIcon
-              name="backfilledArrow"
+            <BackfilledArrowIcon
               role="button"
               tabIndex={0}
               onClick={() => setDetailsOpenBets(false)}
@@ -525,7 +527,7 @@ function OpenBetsMobile({ openBetsList, isOpen, isMobile }) {
               {item.displayTitle}
             </p>
             <span className="absolute top-1/2 right-[12px] flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[2px] border border-(--light-bg) max-md:h-[6.4vw] max-md:w-[6.4vw] max-md:rounded-[1.06667vw] [&_i]:leading-[0] [&_svg]:max-md:h-[6.4vw] [&_svg]:max-md:w-[6.4vw]">
-              <SvgIcon name="chevronRightArrow" />
+              <ChevronRightArrowIcon />
             </span>
           </li>
         ))}

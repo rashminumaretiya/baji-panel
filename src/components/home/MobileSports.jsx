@@ -11,7 +11,7 @@ import {
   selectIsYellowTheme,
 } from '../../store/slices/commonSlice.js'
 import MobileSearchEvent from '../MobileSearchEvent.jsx'
-import SvgIcon from '../SvgIcon.jsx'
+import { LiveChipIcon, iconMap } from '../icons.jsx'
 
 // Maps sport ID → registry key for the larger, sport-specific SVG used by the
 // mobile-sport-header tab strip in the live project. Falls back to the API's
@@ -201,20 +201,17 @@ export default function MobileSports() {
                     onClick={() => handleTabClick(tab)}
                     onKeyDown={(e) => onKeyActivate(e, tab)}
                   >
-                    {iconKey && (
-                      <SvgIcon
-                        name={iconKey}
-                        className="inline-flex align-middle"
-                      />
-                    )}
+                    {(() => {
+                      const TabIcon = iconKey ? iconMap[iconKey] : null
+                      return TabIcon ? (
+                        <TabIcon className="inline-flex align-middle" />
+                      ) : null
+                    })()}
                     <span>{tab.label ? t(tab.label, tab.name) : tab.name}</span>
                     {tab.count != null && (
                       <div className={LIVE_CHIP_CLASS}>
                         <div className={LIVE_CHIP_ICON}>
-                          <SvgIcon
-                            name="liveChipIcon"
-                            className="inline-flex align-top"
-                          />
+                          <LiveChipIcon className="inline-flex align-top" />
                         </div>
                         <p className={LIVE_CHIP_NUMBER}>{tab.count}</p>
                       </div>

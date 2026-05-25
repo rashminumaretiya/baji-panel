@@ -47,7 +47,7 @@ function normalizeNews(item) {
 
 export const MOBILE_MEDIA_QUERY = '(max-width: 767px)'
 
-export function readIsMobileViewport() {
+function readIsMobileViewport() {
   if (typeof window === 'undefined' || !window.matchMedia) return false
   return window.matchMedia(MOBILE_MEDIA_QUERY).matches
 }
@@ -136,20 +136,8 @@ const commonSlice = createSlice({
     setMainScreenLoader(s, { payload }) {
       s.isMainScreenLoader = !!payload
     },
-    setAuthModalType(s, { payload }) {
-      s.authModalType = payload
-    },
     setCaptcha(s, { payload }) {
       s.captcha = payload
-    },
-    triggerCaptchaRefresh(s) {
-      s.captchaRefresh += 1
-    },
-    setSelectedTheme(s, { payload }) {
-      s.selectedTheme = payload
-    },
-    setIsMaintenance(s, { payload }) {
-      s.isMaintenance = payload
     },
     setIsIPBanned(s, { payload }) {
       s.isIPBanned = payload
@@ -160,33 +148,8 @@ const commonSlice = createSlice({
     setIsPlayLiveStream(s, { payload }) {
       s.isPlayLiveStream = !!payload
     },
-    setPromoCode(s, { payload }) {
-      s.promoCode = payload || ''
-    },
-    setKeyword(s, { payload }) {
-      s.keyword = payload || ''
-    },
     setCurrentSiteName(s, { payload }) {
       s.currentSiteName = payload || ''
-    },
-    setPanelTheme(s, { payload }) {
-      s.panelTheme = payload || PanelTheme.BAJI
-    },
-    setLogo(s, { payload }) {
-      // Allow callers to clear the logo by passing `null` / `undefined`.
-      s.logo = payload || null
-    },
-    setFavicon(s, { payload }) {
-      s.favicon = payload || DEFAULT_FAVICON
-    },
-    setDomainCurrency(s, { payload }) {
-      s.domainCurrency = payload || DEFAULT_CURRENCY
-    },
-    setNews(s, { payload }) {
-      s.news = normalizeNews(payload)
-    },
-    setGlobalNews(s, { payload }) {
-      s.globalNews = normalizeNews(payload)
     },
   },
   extraReducers: (b) => {
@@ -230,23 +193,11 @@ export const {
   setIsMobile,
   setFullScreenLoader,
   setMainScreenLoader,
-  setAuthModalType,
   setCaptcha,
-  triggerCaptchaRefresh,
-  setSelectedTheme,
-  setIsMaintenance,
   setIsIPBanned,
   setStreamUrlAvailable,
   setIsPlayLiveStream,
-  setPromoCode,
-  setKeyword,
   setCurrentSiteName,
-  setPanelTheme,
-  setLogo,
-  setFavicon,
-  setDomainCurrency,
-  setNews,
-  setGlobalNews,
 } = commonSlice.actions
 
 export default commonSlice.reducer
@@ -255,38 +206,18 @@ export const selectIsMobile = (s) => s.common.isMobile
 export const selectIsFullScreenLoader = (s) => s.common.isFullScreenLoader
 export const selectIsMainScreenLoader = (s) => s.common.isMainScreenLoader
 export const selectPanelTheme = (s) => s.common.panelTheme
-export const selectSelectedTheme = (s) => s.common.selectedTheme
 export const selectIsYellowTheme = (s) => {
   const t = s.common.panelTheme
   return t === null || t === PanelTheme.BETJILI
 }
 export const selectIsMcvYellowTheme = (s) =>
   s.common.panelTheme === PanelTheme.MCV
-export const selectIsIPBanned = (s) => s.common.isIPBanned
-export const selectIsShowSabaSportBook = (s) => s.common.isShowSabaSportBook
-export const selectIsShowE1Sport = (s) => s.common.isShowE1Sport
-export const selectIsStreamUrlAvailable = (s) => s.common.isStreamUrlAvailable
 export const selectIsPlayLiveStream = (s) => s.common.isPlayLiveStream
-export const selectCaptcha = (s) => s.common.captcha
-export const selectAuthModalType = (s) => s.common.authModalType
-export const selectIsMaintenance = (s) => s.common.isMaintenance
 export const selectCurrentSiteName = (s) => s.common.currentSiteName
-export const selectKeyword = (s) => s.common.keyword
-export const selectPromoCode = (s) => s.common.promoCode
 export const selectLogo = (s) => s.common.logo
 export const selectFavicon = (s) => s.common.favicon
-export const selectDomainCurrency = (s) => s.common.domainCurrency
-export const selectAvailableCurrencies = (s) => s.common.availableCurrencies
-export const selectDefaultLanguage = (s) => s.common.defaultLanguage
 export const selectNews = (s) => s.common.news
 export const selectGlobalNews = (s) => s.common.globalNews
-export const selectIsSelfSignupAllowed = (s) => s.common.isSelfSignupAllowed
-export const selectIsCasinoSuspend = (s) => s.common.isCasinoSuspend
-export const selectRedirectUrl = (s) => s.common.redirectUrl
-export const selectIsAffiliateSystemAvailable = (s) =>
-  s.common.isAffiliateSystemAvailable
-export const selectAffiliateUrl = (s) => s.common.affiliateUrl
-export const selectAppDownloadLink = (s) => s.common.appDownloadLink
 export const selectIsDepositOnePage = (s) => s.common.isDepositOnePage
 export const selectRegistrationBonus = (s) => s.common.registrationBonus
 export const selectUserLoginAllowDomains = (s) => s.common.userLoginAllowDomains

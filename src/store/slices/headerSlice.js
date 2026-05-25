@@ -69,22 +69,7 @@ function deriveRacingFlags(tabs) {
 const headerSlice = createSlice({
   name: 'header',
   initialState,
-  reducers: {
-    setRacingListShow(s, { payload }) {
-      s.racingListShow = {
-        ...s.racingListShow,
-        ...(payload || {}),
-      }
-    },
-    resetSportTabs(s) {
-      s.sportTabs = []
-      s.sportTabsLoadedAt = 0
-      s.racingListShow = {
-        isHorseRacingAllowed: false,
-        isGreyhoundRacingAllowed: false,
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (b) => {
     b.addCase(fetchSportLiveCount.pending, (s) => {
       s.isLoadingSportTabs = true
@@ -104,10 +89,8 @@ const headerSlice = createSlice({
   },
 })
 
-export const { setRacingListShow, resetSportTabs } = headerSlice.actions
 export default headerSlice.reducer
 
 export const selectSportTabs = (s) => s.header.sportTabs
 export const selectRacingListShow = (s) => s.header.racingListShow
-export const selectIsLoadingSportTabs = (s) => s.header.isLoadingSportTabs
 export const selectSportTabsLoadedAt = (s) => s.header.sportTabsLoadedAt

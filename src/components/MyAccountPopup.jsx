@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Overlay, Popover } from '../shared/components/primitives/Popover.jsx'
 import { selectUplineContacts } from '../store/slices/accountSlice.js'
-import SvgIcon from './SvgIcon.jsx'
+import { DropdownIcon, UserIcon, iconMap } from './icons.jsx'
 
 // Translation keys per menu entry — labels are resolved at render time so we
 // can keep the array module-level + still localise the labels.
@@ -93,13 +93,13 @@ export default function MyAccountPopup({
         tabIndex={0}
         onKeyDown={(e) => e.key === 'Enter' && handleToggle(e)}
       >
-        <SvgIcon name="userIcon" className="user-icon" />
+       <UserIcon className="user-icon" />
         {!isMobile && (
           <>
             <span className="mx-1 inline-block">
               {t('common.myAccount', 'My Account')}
             </span>
-            <SvgIcon name="dropdown" className="dropdown-icon" />
+           <DropdownIcon className="dropdown-icon" />
           </>
         )}
       </div>
@@ -127,17 +127,20 @@ export default function MyAccountPopup({
                 <div className="ml-2 flex gap-1.5 overflow-x-auto [&_a]:inline-flex [&_a]:items-center [&_i]:inline-flex [&_svg]:h-4 [&_svg]:w-4">
                   {uplineContacts
                     ?.filter((c) => c?.link)
-                    ?.map((contact) => (
-                      <a
-                        key={contact?.label}
-                        href={contact?.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title={contact?.link}
-                      >
-                        <SvgIcon name={contact?.label} />
-                      </a>
-                    ))}
+                    ?.map((contact) => {
+                      const ContactIcon = iconMap[contact?.label]
+                      return (
+                        <a
+                          key={contact?.label}
+                          href={contact?.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={contact?.link}
+                        >
+                          {ContactIcon && <ContactIcon />}
+                        </a>
+                      )
+                    })}
                 </div>
               </li>
               {MENU_ITEMS.map((item) => (

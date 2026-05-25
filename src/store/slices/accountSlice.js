@@ -23,20 +23,6 @@ function pageFromRes(res) {
   }
 }
 
-// ─── Activity Log ───────────────────────────────────────────────────────
-// GET /user/activity-logs
-export const fetchActivityLogs = createAsyncThunk(
-  'account/fetchActivityLogs',
-  async (params, { rejectWithValue }) => {
-    try {
-      const res = await http.get('user/activity-logs', { params })
-      return pageFromRes(res)
-    } catch (err) {
-      return rejectWithValue(rejectErr(err))
-    }
-  }
-)
-
 // ─── Deposit ────────────────────────────────────────────────────────────
 // GET /self-deposit/payment-methods → returns
 // { paymentMethods: [{ method_id, payment_method, types: [{type, status, is_available, min, max}] }],
@@ -77,19 +63,6 @@ export const fetchPromotion = createAsyncThunk(
       const path = getState().auth?.user ? 'promotion/list' : 'promotion'
       const res = await http.get(path)
       return res.data?.data?.data ?? res.data?.data ?? []
-    } catch (err) {
-      return rejectWithValue(rejectErr(err))
-    }
-  }
-)
-
-// GET /self-payment/PBU → currency conversion preview (pbu/base).
-export const fetchAmount = createAsyncThunk(
-  'account/fetchAmount',
-  async (params, { rejectWithValue }) => {
-    try {
-      const res = await http.get('self-payment/PBU', { params })
-      return res.data?.data ?? null
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
@@ -165,32 +138,6 @@ export const fetchDepositHistory = createAsyncThunk(
       const res = await http.get('self-payment', { params })
       const page = pageFromRes(res)
       return { ...page, data: mapDepositHistoryRows(page.data) }
-    } catch (err) {
-      return rejectWithValue(rejectErr(err))
-    }
-  }
-)
-
-// DELETE /self-payment/:id
-export const deletePaymentHistory = createAsyncThunk(
-  'account/deletePaymentHistory',
-  async (id, { rejectWithValue }) => {
-    try {
-      const res = await http.delete(`self-payment/${id}`)
-      return res.data?.data ?? null
-    } catch (err) {
-      return rejectWithValue(rejectErr(err))
-    }
-  }
-)
-
-// POST /self-payment/complaint/:trxId
-export const sendDepositComplaint = createAsyncThunk(
-  'account/sendDepositComplaint',
-  async ({ trxId, payload }, { rejectWithValue }) => {
-    try {
-      const res = await http.post(`self-payment/complaint/${trxId}`, payload)
-      return res.data?.data ?? null
     } catch (err) {
       return rejectWithValue(rejectErr(err))
     }
@@ -314,7 +261,8 @@ export const fetchWithdrawalHistory = createAsyncThunk(
 // ─── Upline Contacts (Archive parity: AccountService.getAdminContactInfo)
 // GET /user/admin-contact-info → { whatsapp:{commonContact}, gmail, facebook,
 // messenger, telegram, ... }. We reshape into [{ label, link }] where `label`
-// is the SvgIcon key and `link` is the destination URL (wa.me / mailto / raw).
+// is the iconMap key (see src/components/icons.jsx) and `link` is the
+// destination URL (wa.me / mailto / raw).
 export const fetchUplineContacts = createAsyncThunk(
   'account/fetchUplineContacts',
   async (_, { rejectWithValue }) => {
@@ -349,7 +297,6 @@ export const fetchUplineContacts = createAsyncThunk(
 // ─── Slice ──────────────────────────────────────────────────────────────
 
 const initialState = {
-  activityLogs: emptyList(),
   depositHistory: emptyList(),
   withdrawalHistory: emptyList(),
 
@@ -414,13 +361,11 @@ const accountSlice = createSlice({
     },
   },
   extraReducers: (b) => {
-    applyListCases(b, fetchActivityLogs, 'activityLogs')
     applyListCases(b, fetchDepositHistory, 'depositHistory')
     applyListCases(b, fetchWithdrawalHistory, 'withdrawalHistory')
 
     applySingleCases(b, fetchDepositPaymentMethods, 'depositPaymentMethods')
     applySingleCases(b, fetchPaymentMode, 'paymentMode')
-    applySingleCases(b, fetchAmount, 'amount')
     applySingleCases(b, submitDeposit, 'depositSubmit')
     applySingleCases(b, submitSelfDeposit, 'selfDepositSubmit')
     applySingleCases(b, verifySelfDeposit, 'selfDepositVerify')
@@ -476,14 +421,12 @@ export const { resetDepositSubmit, resetWithdrawRequest } = accountSlice.actions
 export default accountSlice.reducer
 
 // ─── Selectors ──────────────────────────────────────────────────────────
-export const selectActivityLogs = (s) => s.account.activityLogs
 export const selectDepositHistory = (s) => s.account.depositHistory
 export const selectWithdrawalHistory = (s) => s.account.withdrawalHistory
 export const selectDepositPaymentMethods = (s) =>
   s.account.depositPaymentMethods
 export const selectPaymentMode = (s) => s.account.paymentMode
 export const selectPromotion = (s) => s.account.promotion
-export const selectAmount = (s) => s.account.amount
 export const selectDepositSubmit = (s) => s.account.depositSubmit
 export const selectSelfDepositSubmit = (s) => s.account.selfDepositSubmit
 export const selectSelfDepositVerify = (s) => s.account.selfDepositVerify

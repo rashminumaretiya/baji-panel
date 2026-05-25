@@ -1,9 +1,6 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { http } from '../../core/http/client.js'
-import {
-  RACING_SPORTS,
-  SPORT_TAB_EXCLUDE,
-} from '../../core/constant/constants.js'
+import { SPORT_TAB_EXCLUDE } from '../../core/constant/constants.js'
 import { fetchSportLiveCount } from './headerSlice.js'
 
 const SIDEBAR_SPORTS_TTL_MS = 60_000
@@ -108,14 +105,8 @@ const sportSlice = createSlice({
   name: 'sport',
   initialState,
   reducers: {
-    setSportTabs(s, { payload }) {
-      s.sportTabs = payload || []
-    },
     setActiveSportId(s, { payload }) {
       s.activeSportId = payload != null ? String(payload) : null
-    },
-    setSidebarSports(s, { payload }) {
-      s.sidebarSports = payload || []
     },
     mergeOddsUpdate(state, { payload }) {
       const { eventId, sportId, odds, isInPlay } = payload ?? {}
@@ -201,18 +192,15 @@ const sportSlice = createSlice({
 })
 
 export const {
-  setSportTabs,
   setActiveSportId,
-  setSidebarSports,
   mergeOddsUpdate,
 } = sportSlice.actions
 
 export default sportSlice.reducer
 
-export const selectSportTabsRaw = (s) => s.sport.sportTabs
+const selectSportTabsRaw = (s) => s.sport.sportTabs
 export const selectActiveSportId = (s) => s.sport.activeSportId
 export const selectSidebarSports = (s) => s.sport.sidebarSports
-export const selectSidebarLoading = (s) => s.sport.sidebarLoading
 
 export const selectSportTabs = createSelector([selectSportTabsRaw], (tabs) =>
   tabs.filter((t) => !SPORT_TAB_EXCLUDE.has(t.route))
@@ -232,9 +220,6 @@ export const selectGamesStatusForActiveSport = createSelector(
   [selectGamesById, selectActiveSportId],
   (byId, id) => (id ? (byId[id]?.status ?? 'idle') : 'idle')
 )
-
-export const selectIsRacingSport = (s) =>
-  RACING_SPORTS.has(s.sport.activeSportId ?? '')
 
 export const selectInplayMap = (s) => s.sport.inplayMap
 export const selectInplayStatus = (s) => s.sport.inplayStatus

@@ -8,14 +8,14 @@
 
 import { http } from '../../core/http/client.js'
 
-export const MARKET_NAME = {
+const MARKET_NAME = {
   MATCH_ODDS: 'MATCH_ODDS',
   BOOKMAKER: 'BOOKMAKER',
   FANCY: 'FANCY',
   SPORTS_BOOK: 'SPORTS_BOOK',
 }
 
-export function buildBetPayload(slip, context = {}) {
+function buildBetPayload(slip, context = {}) {
   const marketName = slip.marketName ?? ''
   const size = slip.size == null ? null : Number(slip.size)
   const payload = {

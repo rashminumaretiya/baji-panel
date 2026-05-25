@@ -117,9 +117,6 @@ const betSlipSlice = createSlice({
     setOpenBets(s, { payload }) {
       s.openBets = payload || []
     },
-    openBetRefresh(s) {
-      s.openBetRefreshTick += 1
-    },
     setOneClickBetStake(s, { payload }) {
       s.oneClickBetStake = payload
     },
@@ -168,7 +165,6 @@ const betSlipSlice = createSlice({
 export const {
   setActiveBetSlip,
   setOpenBets,
-  openBetRefresh,
   setOneClickBetStake,
   setPreExposure,
   setFancyProgress,

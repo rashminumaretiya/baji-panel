@@ -8,7 +8,13 @@ import {
   selectCasinoGameImages,
 } from '../../store/slices/casinoSlice.js'
 import { resolveCasinoImgUrl } from '../../shared/services/casino-img-url.js'
-import SvgIcon from '../../components/SvgIcon.jsx'
+import {
+  CrossIcon,
+  LeftBigArrowIcon,
+  SearchIconSolidIcon,
+  SlotAwcIcon,
+  iconMap,
+} from '../../components/icons.jsx'
 
 export default function PlatformGames() {
   const { t } = useTranslation()
@@ -49,13 +55,11 @@ export default function PlatformGames() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <SvgIcon
-            name="searchIconSolid"
+          <SearchIconSolidIcon
             className="absolute top-1/2 left-[24px] -translate-y-1/2 text-[#633] [&_svg]:h-5 [&_svg]:w-5"
           />
           {search && (
-            <SvgIcon
-              name="cross"
+            <CrossIcon
               onClick={() => setSearch('')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -78,8 +82,7 @@ export default function PlatformGames() {
             onClick={() => navigate('/platform')}
             role="presentation"
           >
-            <SvgIcon
-              name="leftBigArrow"
+            <LeftBigArrowIcon
               className="inline-block mr-1 text-white [&_svg]:h-[30px] [&_svg]:w-[30px]"
             />
             <span className="font-bold text-base text-white">{selectedGame?.label}</span>
@@ -108,10 +111,13 @@ export default function PlatformGames() {
                 role="presentation"
               >
                 <div className="flex items-center justify-between bg-[url('/img/platform/bg-game-purple.webp')] bg-[length:100%_auto] bg-no-repeat pl-4 md:pl-8 pr-1 text-white">
-                  <SvgIcon
-                    name={selectedGame?.icon || 'slotAWC'}
-                    className="inline-flex text-white [&_svg]:h-4 [&_svg]:w-4"
-                  />
+                  {(() => {
+                    const GameIcon =
+                      iconMap[selectedGame?.icon] || SlotAwcIcon
+                    return (
+                      <GameIcon className="inline-flex text-white [&_svg]:h-4 [&_svg]:w-4" />
+                    )
+                  })()}
                   <span className="text-[10px] whitespace-nowrap overflow-hidden text-ellipsis max-w-[80px] md:max-w-none">
                     {selectedGame?.label}
                   </span>

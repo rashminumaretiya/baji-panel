@@ -14,7 +14,7 @@ import {
   fetchUplineContacts,
   selectUplineContacts,
 } from '../store/slices/accountSlice.js'
-import SvgIcon from '../components/SvgIcon.jsx'
+import { iconMap } from '../components/icons.jsx'
 
 function cx(...cs) {
   return cs.filter(Boolean).join(' ')
@@ -142,17 +142,20 @@ export default function MyAccountLayout() {
                     <div className="ml-2 flex gap-1.5 overflow-x-auto">
                       {uplineContacts
                         ?.filter((c) => c?.link)
-                        ?.map((contact) => (
-                          <a
-                            key={contact?.label}
-                            href={contact?.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            title={contact?.link}
-                          >
-                            <SvgIcon name={contact?.label} />
-                          </a>
-                        ))}
+                        ?.map((contact) => {
+                          const ContactIcon = iconMap[contact?.label]
+                          return (
+                            <a
+                              key={contact?.label}
+                              href={contact?.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title={contact?.link}
+                            >
+                              {ContactIcon && <ContactIcon />}
+                            </a>
+                          )
+                        })}
                     </div>
                   </li>
                   {tabs.map((tab, idx) => {

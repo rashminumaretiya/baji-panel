@@ -19,7 +19,7 @@ import {
   selectSportTabsLoadedAt,
 } from '../store/slices/headerSlice.js'
 import Stake from './Stake.jsx'
-import SvgIcon from './SvgIcon.jsx'
+import { SettingIcon } from './icons.jsx'
 import {
   SUB_HEADER_HEAD_PAGES,
   SUB_HEADER_TAIL_PAGES,
@@ -233,7 +233,7 @@ export default function SubHeader() {
               aria-disabled={!isAuthenticated}
             >
               <p className="mb-0">{t('common.settings', 'Settings')}</p>
-              <SvgIcon name="settingIcon" className="inline-flex" />
+              <SettingIcon className="inline-flex" />
             </div>
           </div>
         </div>

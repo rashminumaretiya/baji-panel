@@ -172,9 +172,6 @@ const authSlice = createSlice({
         state.isOneClickBet = false
       }
     },
-    setWallet(state, { payload }) {
-      state.wallet = payload
-    },
     setIsOneClickBet(state, { payload }) {
       state.isOneClickBet = !!payload
       if (payload) localStorageService.setItem(LOCALSTORAGE.ONE_CLICK_BET, true)
@@ -182,15 +179,6 @@ const authSlice = createSlice({
     },
     setLoginWindow(state, { payload }) {
       state.isLoginWindow = !!payload
-    },
-    setStakesData(state, { payload }) {
-      state.stakesData = payload || []
-    },
-    setSelectedLanguage(state, { payload }) {
-      state.selectedLanguage = payload
-    },
-    refreshBalance(state) {
-      state.isRefreshBalance = {}
     },
   },
   extraReducers: (b) => {
@@ -228,12 +216,8 @@ const authSlice = createSlice({
 
 export const {
   setUser,
-  setWallet,
   setIsOneClickBet,
   setLoginWindow,
-  setStakesData,
-  setSelectedLanguage,
-  refreshBalance,
 } = authSlice.actions
 
 export default authSlice.reducer
@@ -244,24 +228,10 @@ export const selectToken = (s) => s.auth.user?.token
 export const selectCurrency = (s) => s.auth.user?.currency
 export const selectWallet = (s) => s.auth.wallet
 
-export const selectMaxAvailBalance = (s) => {
-  const wallet = s.auth.wallet ?? s.auth.user?.wallet ?? null
-  if (!wallet) return 0
-  const balance = Number(wallet.balance) || 0
-  const held = Number(wallet.betPlaceHoldAmount) || 0
-  return Math.max(0, balance - held)
-}
 export const selectIsOneClickBet = (s) => s.auth.isOneClickBet
 export const selectIsLoginWindow = (s) => s.auth.isLoginWindow
-export const selectSelectedLanguage = (s) => s.auth.selectedLanguage
-export const selectIsUserNameWithHash = (s) =>
-  s.auth.user?.profileDetails?.userName?.startsWith('#') ?? false
-export const selectIsSelfSignUp = (s) => !!s.auth.user?.isSelfSignUp
 export const selectStakesData = (s) => s.auth.stakesData
 export const selectOneClickBetStakes = createSelector(
   [selectStakesData],
   (d) => ({ 1: d[0] || 10, 2: d[1] || 20, 3: d[2] || 50, 4: d[3] || 100 })
 )
-
-export const selectIsShowHeader = (s) =>
-  !!s.auth.user || s.common?.serverEnv === 'development'

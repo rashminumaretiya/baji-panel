@@ -20,10 +20,6 @@ export function bindSocketHandlers({ onOddsUpdate }) {
   ensureSocket()
 }
 
-export function getSocket() {
-  return socket
-}
-
 export function subscribeEvents(eventIds) {
   const s = ensureSocket()
   if (!eventIds?.length) return

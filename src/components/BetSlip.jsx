@@ -18,8 +18,8 @@ import {
 import FancyProgress from '../shared/components/FancyProgress.jsx'
 import { resolveApiMessage } from '../shared/services/alert.js'
 import Loader from '../shared/components/Loader.jsx'
-import SvgIcon from './SvgIcon.jsx'
 import { formatAmount as formatNumber } from '../utils/customFunction.js'
+import { CrossIcon } from './icons.jsx'
 
 const DEFAULT_AVAILABLE_STAKE = [100, 200, 500, 1000, 2000, 5000]
 
@@ -196,8 +196,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
               <tr className={rowBg}>
                 <td className="w-[43.23529%] overflow-hidden bg-transparent px-1.5 py-1 align-middle text-[11px] font-medium">
                   <div className="flex items-center">
-                    <SvgIcon
-                      name="cross"
+                    <CrossIcon
                       className="[&_svg]:text- mr-1 flex h-[15px] items-center [&_svg]:h-2.5 [&_svg]:w-2.5 [&_svg]:rounded-[3px] [&_svg]:bg-red-600 [&_svg]:p-0.5"
                     />
                     <div className="ml-1 flex flex-col">

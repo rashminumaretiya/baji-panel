@@ -11,7 +11,7 @@ import {
   updateStakes,
 } from '../store/slices/authSlice.js'
 import { alertService } from '../shared/services/alert.js'
-import SvgIcon from './SvgIcon.jsx'
+import { ClosePopoverIcon, SettingIcon } from './icons.jsx'
 
 const QUICK_STAKE_SLOTS = [1, 2, 3, 4, 5, 6, 7, 8]
 
@@ -122,18 +122,16 @@ export default function Stake({
         >
           {isMobile ? (
             <>
-              <div className="flex items-center justify-between [&>div]:flex [&>div]:items-center bg-primary">
-                <div className="px-[1.8666666667vw] text-white leading-[2.6] border-r flex-1 border-white/20">
-                  <SvgIcon
-                    name="settingIcon"
-                    className="w-[6.3333333333vw] h-[6.3333333333vw] mr-[1.3333333333vw]"
+              <div className="bg-primary flex items-center justify-between [&>div]:flex [&>div]:items-center">
+                <div className="flex-1 border-r border-white/20 px-[1.8666666667vw] leading-[2.6] text-white">
+                  <SettingIcon
+                    className="mr-[1.3333333333vw] h-[6.3333333333vw] w-[6.3333333333vw]"
                   />
                   <span className="text-[4vw] font-bold">
                     {t('common.settings', 'Setting')}
                   </span>
                 </div>
-                <SvgIcon
-                  name="closePopover"
+                <ClosePopoverIcon
                   className="cursor-pointer px-[3vw] text-white!"
                   role="button"
                   tabIndex={0}
@@ -141,10 +139,7 @@ export default function Stake({
                   onKeyDown={(e) => e.key === 'Enter' && onCancel?.()}
                 />
               </div>
-              <h3
-                className="mb-0 bg-[linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)]
- text-white px-[1.86667vw] md:py-[1.86667vw] text-[3.73333vw] font-bold leading-[2.2]"
-              >
+              <h3 className="mb-0 bg-[linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] px-[1.86667vw] text-[3.73333vw] leading-[2.2] font-bold text-white md:py-[1.86667vw]">
                 {t('common.stake', 'Stake')}
               </h3>
             </>
@@ -162,7 +157,7 @@ export default function Stake({
               <input
                 id="stake-default"
                 type="number"
-                className="leading-5 px-[5px] mx-[5px] w-[29.16666%] text-[11px] border border-[var(--input-group-border)] rounded max-md:w-[29.66667vw] max-md:px-[1.86667vw] max-md:py-[2vw] max-md:mx-[1.6666vw] max-md:my-0 max-md:h-auto max-md:text-[4vw] max-md:leading-normal max-md:border-[var(--xxl-gray)] max-md:rounded-[1.6vw] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(var(--black-rgb),0.1)] max-md:text-right focus:max-md:shadow-[inset_0_0.26667vw_1.33333vw_rgba(var(--xss-yellow),0.6)] focus:max-md:border-[var(--coffee)] bg-white"
+                className="mx-[5px] w-[29.16666%] rounded border border-[var(--input-group-border)] bg-white px-[5px] text-[11px] leading-5 max-md:mx-[1.6666vw] max-md:my-0 max-md:h-auto max-md:w-[29.66667vw] max-md:rounded-[1.6vw] max-md:border-[var(--xxl-gray)] max-md:px-[1.86667vw] max-md:py-[2vw] max-md:text-right max-md:text-[4vw] max-md:leading-normal max-md:shadow-[inset_0_0.53333vw_0_0_rgba(var(--black-rgb),0.1)] focus:max-md:border-[var(--coffee)] focus:max-md:shadow-[inset_0_0.26667vw_1.33333vw_rgba(var(--xss-yellow),0.6)]"
                 min={0}
                 value={defaultStake}
                 onChange={(e) => setDefaultStake(e.target.value)}
@@ -175,7 +170,7 @@ export default function Stake({
               <div className="max-md:mr-[-1.86667vw]">
                 <h6
                   className={cx(
-                    'block md:hidden leading-[2.2] text-[3.7333333333vw]',
+                    'block text-[3.7333333333vw] leading-[2.2] md:hidden',
                     isMobile && TITLE_ODDS_OVERRIDE
                   )}
                 >

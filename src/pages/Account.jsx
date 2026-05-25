@@ -9,7 +9,12 @@ import {
 } from '../store/slices/authSlice.js'
 import { selectIsMobile } from '../store/slices/commonSlice.js'
 import { selectUplineContacts } from '../store/slices/accountSlice.js'
-import SvgIcon from '../components/SvgIcon.jsx'
+import {
+  ChevronRightArrowIcon,
+  LogInIcon,
+  UserIcon2,
+  iconMap,
+} from '../components/icons.jsx'
 
 // Ported from sbex-user-fe/src/app/features/components/my-account-mobile.
 // Mobile-only menu page mounted at /account.
@@ -82,58 +87,6 @@ const MENU_ITEMS = [
   },
 ]
 
-function UserIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-    >
-      <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.42 0-8 2.69-8 6v2h16v-2c0-3.31-3.58-6-8-6Z" />
-    </svg>
-  )
-}
-
-function RightArrowIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="9 6 15 12 9 18" />
-    </svg>
-  )
-}
-
-function LogoutIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-      <polyline points="16 17 21 12 16 7" />
-      <line x1="21" y1="12" x2="9" y2="12" />
-    </svg>
-  )
-}
-
 const menuItemClass =
   'flex items-center justify-between px-[3.76vw] py-[2.13vw] bg-white border-b border-(--platinum-grey) text-(--cyanBlue) text-[4vw] leading-[1.6] font-bold cursor-pointer'
 
@@ -170,7 +123,7 @@ export default function Account() {
       <div className="flex items-center justify-between border-t border-white bg-(--xl-black) pr-0 pl-[1.86vw]">
         <div className="inline-flex items-center text-white">
           <i className="inline-flex items-center text-white">
-            <SvgIcon name="userIcon2" />
+            <UserIcon2 />
           </i>
           <span className="ml-1 inline-block text-[3.46vw] leading-[10.66vw] font-bold text-white">
             {userName}
@@ -191,17 +144,20 @@ export default function Account() {
           <div className="ml-2 flex gap-[2.13vw] overflow-x-auto">
             {uplineContacts
               ?.filter((c) => c?.link)
-              ?.map((contact) => (
-                <a
-                  key={contact?.label}
-                  href={contact?.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={contact?.link}
-                >
-                  <SvgIcon name={contact?.label} />
-                </a>
-              ))}
+              ?.map((contact) => {
+                const ContactIcon = iconMap[contact?.label]
+                return (
+                  <a
+                    key={contact?.label}
+                    href={contact?.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={contact?.link}
+                  >
+                    {ContactIcon && <ContactIcon />}
+                  </a>
+                )
+              })}
           </div>
         </li>
         {MENU_ITEMS.map((item) => (
@@ -214,7 +170,7 @@ export default function Account() {
             >
               <span>{t(item.i18nKey, item.fallback)}</span>
               <i className={rightArrowBtnClass}>
-              <SvgIcon name="chevronRightArrow" />
+              <ChevronRightArrowIcon />
               </i>
             </a>
           </li>
@@ -228,7 +184,7 @@ export default function Account() {
       >
         {t('common.logout', 'Logout')}
         <i className="ml-1.5 inline-flex items-center text-white">
-          <SvgIcon name="logInIcon" />
+          <LogInIcon />
         </i>
       </button>
     </div>

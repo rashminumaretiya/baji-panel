@@ -24,7 +24,15 @@ import {
   WITHDRAW_PAYMENT_METHODS,
   onlyDigitsRegex,
 } from '../../shared/types/common.js'
-import { Icon } from './depositIcons.jsx'
+import {
+  BkashIcon,
+  CloseIcon,
+  CopyIcon,
+  MobileBankingIcon,
+  NagadIcon,
+  RocketIcon,
+  iconMap,
+} from '../../components/icons.jsx'
 
 // Trx-id regex per payment method, ported from sbex-user-fe types/dw.ts.
 const TRX_VALIDATORS = {
@@ -598,7 +606,10 @@ export default function Deposit({ showTitle = true }) {
                 onKeyDown={(e) => e.key === 'Enter' && openPromotionModal()}
               >
                 <div className="mr-[12px] flex h-[24px] w-[24px] items-center justify-center [&_i]:text-[18px]">
-                  <Icon name="giftBox" />
+                  {(() => {
+                    const GiftBoxIcon = iconMap.giftBox
+                    return GiftBoxIcon ? <GiftBoxIcon /> : <i className="svg-icon" />
+                  })()}
                 </div>
                 <div className="flex flex-1 items-center justify-between">
                   <div>
@@ -613,7 +624,14 @@ export default function Deposit({ showTitle = true }) {
                   </div>
                 </div>
                 <div className="text-[14px] text-white">
-                  <Icon name="rightArrowIcon" />
+                  {(() => {
+                    const RightArrowIcon = iconMap.rightArrowIcon
+                    return RightArrowIcon ? (
+                      <RightArrowIcon />
+                    ) : (
+                      <i className="svg-icon" />
+                    )
+                  })()}
                 </div>
               </div>
             </div>
@@ -844,7 +862,7 @@ export default function Deposit({ showTitle = true }) {
                     tabIndex={0}
                     onClick={() => copyToClipboard(values.amount)}
                   >
-                    <Icon name="copyIcon" />
+                    <CopyIcon />
                   </span>
                 </div>
 
@@ -869,7 +887,7 @@ export default function Deposit({ showTitle = true }) {
                       copyToClipboard(selfDepositTx?.receiver_number)
                     }
                   >
-                    <Icon name="copyIcon" />
+                    <CopyIcon />
                   </span>
                 </div>
 
@@ -976,11 +994,11 @@ export default function Deposit({ showTitle = true }) {
                 className="btn btn-primary mt-3 inline-flex w-full items-center justify-center gap-2 text-[14px] font-medium disabled:cursor-not-allowed disabled:opacity-65 [&_i_svg]:h-[18px] [&_i_svg]:w-[18px]"
                 disabled={!!promotionLimitError || submitting}
               >
-                <Icon name="bkash" />
-                <Icon name="nagad" />
+                <BkashIcon />
+                <NagadIcon />
                 {t('deposit.makePayment', 'Make Payment')}
-                <Icon name="rocket" />
-                <Icon name="mobileBanking" />
+                <RocketIcon />
+                <MobileBankingIcon />
               </button>
             )}
           </div>
@@ -1003,7 +1021,7 @@ export default function Deposit({ showTitle = true }) {
                 onClick={closePromotionModal}
                 aria-label={t('deposit.closePromotions', 'Close promotions')}
               >
-                <Icon name="close" />
+                <CloseIcon />
               </button>
             </div>
             <PromotionListItems

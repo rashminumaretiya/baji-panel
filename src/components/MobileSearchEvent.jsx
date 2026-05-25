@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { http } from '../core/http/client.js'
 import { getSportSlug } from '../core/constant/constants.js'
-import SvgIcon from './SvgIcon.jsx'
+import { SearchIcon } from './icons.jsx'
 
 const SEARCH_DEBOUNCE_MS = 250
 
@@ -153,7 +153,7 @@ export default function MobileSearchEvent() {
         onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && toggle()}
         aria-label="Open search"
       >
-        <SvgIcon name="searchIcon" />
+        <SearchIcon />
       </span>
 
       {/* `.search-events` ─ fullscreen overlay */}

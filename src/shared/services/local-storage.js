@@ -31,20 +31,20 @@ function decryptValue(value) {
   }
 }
 
-export function setItem(key, data) {
+function setItem(key, data) {
   localStorage.setItem(encryptKey(key), encryptValue(data))
 }
 
-export function getItem(key) {
+function getItem(key) {
   const raw = localStorage.getItem(encryptKey(key))
   return raw === null ? null : decryptValue(raw)
 }
 
-export function removeItem(key) {
+function removeItem(key) {
   localStorage.removeItem(encryptKey(key))
 }
 
-export function encryptPayload(data) {
+function encryptPayload(data) {
   const str = typeof data === 'string' ? data : JSON.stringify(data ?? {})
   return CryptoJS.AES.encrypt(
     str,

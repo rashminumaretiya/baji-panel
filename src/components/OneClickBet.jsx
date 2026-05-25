@@ -16,7 +16,7 @@ import { setOneClickBetStake } from '../store/slices/betSlipSlice.js'
 import { LOCALSTORAGE } from '../shared/types/common.js'
 import { localStorageService } from '../shared/services/local-storage.js'
 import { alertService, resolveApiMessage } from '../shared/services/alert.js'
-import SvgIcon from './SvgIcon.jsx'
+import { EditIcon } from './icons.jsx'
 
 const STAKE_SLOTS = [1, 2, 3, 4]
 
@@ -238,7 +238,7 @@ export default function OneClickBet() {
                 {!isEdit ? (
                   <span>
                     {t('common.edit', 'Edit')}{' '}
-                    <SvgIcon className="inline-flex" name="editIcon" />
+                    <EditIcon className="inline-flex" />
                   </span>
                 ) : (
                   <p className="m-0">{t('common.save', 'Save')}</p>

@@ -5,13 +5,6 @@ export const LOCALSTORAGE = Object.freeze({
   DEVICE_ID: 'deviceId',
 })
 
-export const AuthModalType = Object.freeze({
-  LOGIN: 'login',
-  SIGNUP: 'signup',
-  FORGOT_PASSWORD: 'forgot-password',
-  RESET_PASSWORD: 'reset-password',
-})
-
 //need to change in future when get dynamic
 export const PanelTheme = Object.freeze({
   MCV: 'BAJI',
@@ -41,32 +34,6 @@ export const CURRENCY_TYPE = Object.freeze({
   BDT: 'BDT',
   INR: 'INR',
 })
-
-export const PAYMENT_TYPE = Object.freeze({
-  UDDOKTAPAY: 'UDDOKTAPAY',
-  CATOPAY: 'CATOPAY',
-})
-
-export const PAYMENT_LIST = [
-  {
-    name: 'agent',
-    img: '/img/payment/agent.png',
-    value: 'AGENT',
-    isHidden: false,
-  },
-  {
-    name: 'merchant',
-    img: '/img/payment/merchant.png',
-    value: 'MERCHANT',
-    isHidden: false,
-  },
-  {
-    name: 'personal',
-    img: '/img/payment/personal.png',
-    value: 'PERSONAL',
-    isHidden: false,
-  },
-]
 
 export const WITHDRAW_PAYMENT_METHODS = [
   { name: 'bkash', img: '/img/payment/BKash_logo.svg', value: 'BKASH' },

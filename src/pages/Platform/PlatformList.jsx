@@ -7,7 +7,12 @@ import {
   launchCasinogame,
   selectCasinoProviders,
 } from '../../store/slices/casinoSlice.js'
-import SvgIcon from '../../components/SvgIcon.jsx'
+import {
+  HorizontleListIcon,
+  SearchIcon,
+  VerticleListIcon,
+  iconMap,
+} from '../../components/icons.jsx'
 
 const PROVIDER_ICONS = {
   spribe: 'kingmaker',
@@ -109,17 +114,14 @@ export default function PlatformList() {
               onClick={() => setIsGridView(false)}
               role="presentation"
             >
-              <SvgIcon name="verticleList" className={toggleClass(!isGridView)} />
+              <VerticleListIcon className={toggleClass(!isGridView)} />
             </li>
             <li
               onClick={() => setIsGridView(true)}
               role="presentation"
               className="pl-2"
             >
-              <SvgIcon
-                name="horizontleList"
-                className={toggleClass(isGridView)}
-              />
+              <HorizontleListIcon className={toggleClass(isGridView)} />
             </li>
           </ul>
           <div className="relative pl-2 max-w-[268px] max-[575px]:max-w-[55%]">
@@ -131,10 +133,7 @@ export default function PlatformList() {
               onChange={(e) => setSearch(e.target.value)}
             />
             {isMobile && (
-              <SvgIcon
-                name="searchIcon"
-                className="absolute top-1/2 right-3 -translate-y-1/2 text-white! [&_svg]:h-5 [&_svg]:w-5 [&_svg]:[stroke-width:2px] [&_svg]:stroke-current"
-              />
+              <SearchIcon className="absolute top-1/2 right-3 -translate-y-1/2 text-white! [&_svg]:h-5 [&_svg]:w-5 [&_svg]:[stroke-width:2px] [&_svg]:stroke-current" />
             )}
           </div>
         </div>
@@ -168,10 +167,12 @@ export default function PlatformList() {
                   </div>
                   <div className="flex flex-col justify-between items-end">
                     <div className="inline-flex items-center">
-                      <SvgIcon
-                        name={providerIcon(game.provider)}
-                        className="ml-1 text-white! [&_svg]:h-5 [&_svg]:w-5 inline-flex"
-                      />
+                      {(() => {
+                        const ProviderIcon = iconMap[providerIcon(game.provider)]
+                        return ProviderIcon ? (
+                          <ProviderIcon className="ml-1 text-white! [&_svg]:h-5 [&_svg]:w-5 inline-flex" />
+                        ) : null
+                      })()}
                     </div>
                     <div className="cursor-pointer">
                       <img
@@ -210,10 +211,12 @@ export default function PlatformList() {
                   />
                   <div className="absolute left-0 right-0 bottom-0 h-6 px-1 flex items-center justify-between bg-black/60">
                     <div className="inline-flex items-center">
-                      <SvgIcon
-                        name={providerIcon(game.provider)}
-                        className="inline-flex mx-1 text-white [&_svg]:h-4 [&_svg]:w-4"
-                      />
+                      {(() => {
+                        const ProviderIcon = iconMap[providerIcon(game.provider)]
+                        return ProviderIcon ? (
+                          <ProviderIcon className="inline-flex mx-1 text-white [&_svg]:h-4 [&_svg]:w-4" />
+                        ) : null
+                      })()}
                     </div>
                     <img
                       src={

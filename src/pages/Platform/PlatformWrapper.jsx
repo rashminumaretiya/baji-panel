@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { selectUser } from '../../store/slices/authSlice.js'
 import { ensureCasinoDataLoaded } from '../../store/slices/casinoSlice.js'
-import SvgIcon from '../../components/SvgIcon.jsx'
+import { iconMap } from '../../components/icons.jsx'
 
 const FOOTER_TABS = [
   {
@@ -115,6 +115,7 @@ export default function PlatformWrapper() {
         <ul className="flex items-center mb-0 pl-0">
           {FOOTER_TABS.map((tab) => {
             const isActive = selectedTab === tab.key
+            const TabIcon = iconMap[tab.icon]
             return (
               <li
                 key={tab.key}
@@ -122,14 +123,15 @@ export default function PlatformWrapper() {
                 onClick={() => !tab.isDisabled && setSelectedTab(tab.key)}
                 role="presentation"
               >
-                <SvgIcon
-                  name={tab.icon}
-                  className={
-                    isActive
-                      ? 'flex items-center justify-center mx-auto rounded-full text-white! border-4 border-white bg-[linear-gradient(to_bottom,var(--coffie-xs),var(--coffie-md),var(--coffie-lg))] h-[52px] w-[52px] -translate-y-[11px] [&_svg]:h-8 [&_svg]:w-8'
-                      : 'flex items-center justify-center mx-auto rounded-full text-[var(--gray-text-2)]! h-[44px] w-[44px] [&_svg]:h-8 [&_svg]:w-8'
-                  }
-                />
+                {TabIcon && (
+                  <TabIcon
+                    className={
+                      isActive
+                        ? 'flex items-center justify-center mx-auto rounded-full text-white! border-4 border-white bg-[linear-gradient(to_bottom,var(--coffie-xs),var(--coffie-md),var(--coffie-lg))] h-[52px] w-[52px] -translate-y-[11px] [&_svg]:h-8 [&_svg]:w-8'
+                        : 'flex items-center justify-center mx-auto rounded-full text-[var(--gray-text-2)]! h-[44px] w-[44px] [&_svg]:h-8 [&_svg]:w-8'
+                    }
+                  />
+                )}
                 <span
                   className={
                     isActive

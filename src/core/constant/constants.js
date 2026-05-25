@@ -40,7 +40,7 @@ export const GAME_LIST_FILTERS = {
 
 export const SPORT_TAB_EXCLUDE = new Set(['parlay-market'])
 
-export const SPORTS = [
+const SPORTS = [
   { id: '1', name: 'Soccer' },
   { id: '2', name: 'Tennis' },
   { id: '7522', name: 'Basketball' },

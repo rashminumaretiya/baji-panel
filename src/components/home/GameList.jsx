@@ -12,7 +12,14 @@ import {
 import { useIsMobile } from '../../hooks/useMediaQuery.js'
 import NoData from '../../shared/NoData.jsx'
 import { selectIsAuthenticated } from '../../store/slices/authSlice.js'
-import SvgIcon from '../SvgIcon.jsx'
+import {
+  AlarmIcon,
+  BoldIcon,
+  FIcon,
+  PIcon,
+  PinIcon,
+  PlayIcon,
+} from '../icons.jsx'
 
 const EMPTY_GAMES = Object.freeze([])
 const ODDS_SPARK_DURATION_MS = 800
@@ -102,34 +109,34 @@ const MarketChips = memo(function MarketChips({ game, isAuthenticated }) {
       {game.isInPlay && (
         <span className={`${WRAPPER_BASE} ${WRAPPER_BLUE_DARK}`}>
           <div className={TEXT_CHIP_CLASS}>
-            <SvgIcon name="playIcon" />
+            <PlayIcon />
           </div>
         </span>
       )}
       {isCricket && game.isFancy && (
         <span className={`${CURRENT_CHIP_BASE} ${CURRENT_CHIP_LIGHTEST} pl-0`}>
           <span className={ALARM_ICON_CLASS}>
-            <SvgIcon name="alarmIcon" />
+            <AlarmIcon />
           </span>
           <div className={TEXT_CHIP_CLASS}>
-            <SvgIcon name="fIcon" />
+            <FIcon />
           </div>
         </span>
       )}
       {game.isBookmaker && (
         <div className={`${CURRENT_CHIP_BASE} ${CURRENT_CHIP_BLUE_DARK} pl-0`}>
           <span className={ALARM_ICON_CLASS}>
-            <SvgIcon name="alarmIcon" />
+            <AlarmIcon />
           </span>
           <div className={TEXT_CHIP_CLASS}>
-            <SvgIcon name="boldIcon" />
+            <BoldIcon />
           </div>
         </div>
       )}
       {game.isSportbook && isAuthenticated && (
         <span className={`${WRAPPER_BASE} ${WRAPPER_ORANGE}`}>
           <div className={TEXT_CHIP_CLASS}>
-            <SvgIcon name="pIcon" />
+            <PIcon />
           </div>
         </span>
       )}
@@ -380,7 +387,7 @@ const MobileGameCard = memo(function MobileGameCard({
           </div>
         </div>
         <span className={`${ICON_PIN_CLASS} cursor-pointer`}>
-          <SvgIcon name="pinIcon" />
+          <PinIcon />
         </span>
       </div>
     </div>

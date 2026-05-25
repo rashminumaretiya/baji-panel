@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
-import { useIsMobile } from '../../hooks/useMediaQuery.js'
 import { selectToken } from '../../store/slices/authSlice.js'
 import AddBackupNumberModal from './AddBackupNumberModal.jsx'
 import AddWhatsAppModal from './AddWhatsAppModal.jsx'
@@ -50,7 +49,6 @@ function ActionCell({ children, onClick }) {
 export default function Profile() {
   const { t } = useTranslation()
   const token = useSelector(selectToken)
-  const isMobile = useIsMobile()
   const [user, setUser] = useState(null)
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false)
   const [isBackupModalOpen, setIsBackupModalOpen] = useState(false)

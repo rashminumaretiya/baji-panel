@@ -57,24 +57,7 @@ const initialState = {
 const layoutSlice = createSlice({
   name: 'layout',
   initialState,
-  reducers: {
-    setDomainConfig(s, { payload }) {
-      s.domainConfig = payload
-    },
-    setBanners(s, { payload }) {
-      s.banners =
-        payload && typeof payload === 'object' ? payload : emptyBanners()
-    },
-    setFooterData(s, { payload }) {
-      s.footerData = payload
-    },
-    setAnnouncements(s, { payload }) {
-      s.announcements = payload || []
-    },
-    setNewsList(s, { payload }) {
-      s.newsList = payload || []
-    },
-  },
+  reducers: {},
   extraReducers: (b) => {
     b.addCase(fetchDomainConfiguration.fulfilled, (s, { payload }) => {
       s.domainConfig = payload ?? null
@@ -83,29 +66,6 @@ const layoutSlice = createSlice({
   },
 })
 
-export const {
-  setDomainConfig,
-  setBanners,
-  setFooterData,
-  setAnnouncements,
-  setNewsList,
-} = layoutSlice.actions
-
 export default layoutSlice.reducer
 
 export const selectLayoutedRoutes = (s) => s.layout.layoutedRoutes
-export const selectDomainConfig = (s) => s.layout.domainConfig
-export const selectAllBanners = (s) => s.layout.banners
-export const selectNewsList = (s) => s.layout.newsList
-export const selectAnnouncements = (s) => s.layout.announcements
-
-// Returns the banner array for a given bucket / mode / language, falling back
-// to "en" then any available language when the requested locale is missing.
-export const selectBannerList = (bucket, mode, language) => (s) => {
-  const entry = s.layout.banners?.[bucket]?.[mode]
-  if (!entry || typeof entry !== 'object') return []
-  if (Array.isArray(entry[language])) return entry[language]
-  if (Array.isArray(entry.en)) return entry.en
-  const firstAvailable = Object.values(entry).find((v) => Array.isArray(v))
-  return firstAvailable || []
-}

@@ -31,10 +31,6 @@ const SPORT_LABEL_KEYS = {
   Fancybet: 'titles.games.fancybet',
 }
 
-function cx(...cs) {
-  return cs.filter(Boolean).join(' ')
-}
-
 // The /sport/all payload has no sport name at the top level — derive it from
 // the first event inside the bucket (every event in a bucket shares one sport).
 function readBucketSport(bucket) {

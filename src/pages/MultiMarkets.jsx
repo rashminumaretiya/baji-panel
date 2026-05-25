@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '../hooks/useMediaQuery.js'
-import SvgIcon from '../components/SvgIcon.jsx'
+import { IconNoDataIcon } from '../components/icons.jsx'
 
 export default function MultiMarkets() {
   const { t } = useTranslation()
@@ -13,7 +13,7 @@ export default function MultiMarkets() {
           <div className="mx-[2.66667vw] my-[5.33333vw] rounded-[1.6vw] border border-(--sm-text-color) bg-white px-[1.86667vw] pt-[2.66667vw] pb-[5.33333vw] text-center text-[4.26667vw] text-(--sm-text-color)">
             <div className="mb-[1.33333vw] flex items-center justify-center border-b border-(--light-bg) py-[1.86667vw]">
               <i className="[&_svg]:h-[6vw] [&_svg]:w-[5.8vw]">
-                <SvgIcon name="iconNoData" />
+                <IconNoDataIcon />
               </i>
               <h3 className="mb-0 text-[5.33333vw] leading-[2.2] font-bold text-(--sm-text-color)">
                 {t('multiMarkets.noFollowed')}
