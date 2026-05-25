@@ -2815,14 +2815,6 @@ function SportbookSection({
   const [collapsed, setCollapsed] = useState({})
   const toggle = (id) => setCollapsed((prev) => ({ ...prev, [id]: !prev[id] }))
 
-  if (!markets.length) {
-    return (
-      <div className="bg-white p-3 text-center text-[12px] text-(--sm-text-color)">
-        No sportsbook markets
-      </div>
-    )
-  }
-
   return (
     <>
       <PriorityTabs
@@ -2832,6 +2824,11 @@ function SportbookSection({
         variant="sport-book"
       />
 
+      {!markets.length ? (
+        <div className="bg-white p-3 text-center text-[12px] text-(--sm-text-color)">
+          No sportsbook markets
+        </div>
+      ) : (
       <div>
         {markets.map((market, i) => {
           if (!market.runners?.length) return null
@@ -2942,6 +2939,7 @@ function SportbookSection({
           )
         })}
       </div>
+      )}
     </>
   )
 }
