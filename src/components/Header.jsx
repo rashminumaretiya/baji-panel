@@ -78,7 +78,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
 
   const isAccountRoute = location.pathname.includes('my-account')
   const showMobileBetsBtn = isAuth && isMob && !isAccountRoute
-  const showSearch = !isMob && !isAccountRoute
+  const showSearch = !isMob
   const showAccountPopup = isAuth && !isMob
   const showMobileStake = isMob && !isAccountRoute
   const showLiveStreamBtn = isAuth && isMob && isStreamAvailable
