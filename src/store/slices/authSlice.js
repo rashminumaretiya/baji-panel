@@ -1,4 +1,3 @@
-// Mirrors sbex-user-fe/src/app/features/services/auth.ts state surface + login flow.
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { http } from '../../core/http/client.js'
 import { fetchDomainConfiguration, setCaptcha } from './commonSlice.js'
@@ -31,8 +30,6 @@ const initialState = {
   selectedLanguage: persistedUser?.language || 'en',
 }
 
-// Ports authService.getValidationCode() — POST /auth/captcha.
-// Stores the captcha into common.captcha (so Header can render the code).
 export const getValidationCode = createAsyncThunk(
   'auth/getValidationCode',
   async (_, { dispatch, rejectWithValue }) => {
@@ -47,9 +44,6 @@ export const getValidationCode = createAsyncThunk(
   }
 )
 
-// Ports app.ts handleTokenAuthentication() — when the URL carries ?token=...,
-// fetch the user via GET /user with an explicit Bearer header, persist as the
-// authenticated user, and strip the token from the URL.
 export const autoLoginFromUrlToken = createAsyncThunk(
   'auth/autoLoginFromUrlToken',
   async (_, { getState, dispatch, rejectWithValue }) => {
@@ -64,7 +58,6 @@ export const autoLoginFromUrlToken = createAsyncThunk(
       return null
     }
 
-    // Clear any stale session, mirror Angular's setIsAuthenticated() (no-arg).
     dispatch(setUser(null))
 
     try {
@@ -93,8 +86,6 @@ function stripTokenFromUrl() {
   )
 }
 
-// Ports authService.login() — POST /auth/sign-in with {userName, password, code, captchaId}.
-// On success the user is persisted (encrypted) and isAuthenticated becomes true.
 export const login = createAsyncThunk(
   'auth/login',
   async (payload, { dispatch, rejectWithValue }) => {
@@ -107,29 +98,25 @@ export const login = createAsyncThunk(
       }
       return rejectWithValue(res.data)
     } catch (err) {
-      // Angular re-fetches captcha on login failure.
       dispatch(getValidationCode())
       return rejectWithValue(err.response?.data || err.message)
     }
   }
 )
 
-// Ports authService.logOut() — POST /auth/logout, then clear state regardless
-// of the API response (mirrors Angular's behavior: always reset auth on logout).
 export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { dispatch }) => {
     try {
       await http.post('auth/logout', {})
     } catch {
-      // Ignore — proceed to clear local state anyway.
+      /* ignore */
     }
     dispatch(setUser(null))
     return null
   }
 )
 
-// Mirrors authService.getBalance() — GET user/balance
 export const fetchBalance = createAsyncThunk(
   'auth/fetchBalance',
   async (_, { rejectWithValue }) => {
@@ -142,7 +129,6 @@ export const fetchBalance = createAsyncThunk(
   }
 )
 
-// Mirrors UserService.getStake() — GET /api/user/stake
 export const loadStakes = createAsyncThunk(
   'auth/loadStakes',
   async (_, { getState, rejectWithValue }) => {
@@ -156,9 +142,6 @@ export const loadStakes = createAsyncThunk(
   }
 )
 
-// Mirrors updateStakes() — PUT /api/user/stake.
-// The PUT response already includes the updated stake array, so we use it
-// directly instead of firing a follow-up GET.
 export const updateStakes = createAsyncThunk(
   'auth/updateStakes',
   async (stake, { getState, rejectWithValue }) => {
@@ -255,12 +238,19 @@ export const {
 
 export default authSlice.reducer
 
-// Selectors mirroring Angular's computed signals.
 export const selectUser = (s) => s.auth.user
 export const selectIsAuthenticated = (s) => !!s.auth.user
 export const selectToken = (s) => s.auth.user?.token
 export const selectCurrency = (s) => s.auth.user?.currency
 export const selectWallet = (s) => s.auth.wallet
+
+export const selectMaxAvailBalance = (s) => {
+  const wallet = s.auth.wallet ?? s.auth.user?.wallet ?? null
+  if (!wallet) return 0
+  const balance = Number(wallet.balance) || 0
+  const held = Number(wallet.betPlaceHoldAmount) || 0
+  return Math.max(0, balance - held)
+}
 export const selectIsOneClickBet = (s) => s.auth.isOneClickBet
 export const selectIsLoginWindow = (s) => s.auth.isLoginWindow
 export const selectSelectedLanguage = (s) => s.auth.selectedLanguage
@@ -272,6 +262,6 @@ export const selectOneClickBetStakes = createSelector(
   [selectStakesData],
   (d) => ({ 1: d[0] || 10, 2: d[1] || 20, 3: d[2] || 50, 4: d[3] || 100 })
 )
-// isShowHeader: authed OR development server (mirrors Angular).
+
 export const selectIsShowHeader = (s) =>
   !!s.auth.user || s.common?.serverEnv === 'development'

@@ -492,6 +492,15 @@ select:focus {
   }
 }
 
+@keyframes fancy-progress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
 .btn {
   font-size: 11px;
   font-weight: 700;

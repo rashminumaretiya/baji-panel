@@ -14,6 +14,7 @@ import {
   selectCurrency,
   selectIsAuthenticated,
   selectIsOneClickBet,
+  selectMaxAvailBalance,
   setLoginWindow,
 } from '../store/slices/authSlice.js'
 import {
@@ -58,6 +59,7 @@ export default function RacingOdds() {
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const isOneClickBet = useSelector(selectIsOneClickBet)
   const oneClickBetStake = useSelector(selectOneClickBetStake)
+  const maxAvailBalance = useSelector(selectMaxAvailBalance)
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const currency = useSelector(selectCurrency)
   const activeBetSlip = useSelector(selectActiveBetSlip)
@@ -99,14 +101,11 @@ export default function RacingOdds() {
     }
   }, [isAuthenticated, eventId, marketId, openBetRefreshTick])
 
-  // Gated read — avoids leaking the previous event's exposure when the user
-  // navigates away / logs out, without an in-effect setState.
   const visibleRacingExposure = useMemo(() => {
     if (!isAuthenticated || !eventId || !marketId) return []
     return racingExposure
   }, [isAuthenticated, eventId, marketId, racingExposure])
 
-  // ── Load default odds (POST sport/default-odds with marketId).
   const loadDefaultOdds = useCallback(
     async (signal) => {
       if (!sportId || !eventId || !marketId) return
@@ -140,15 +139,13 @@ export default function RacingOdds() {
     [sportId, eventId, marketId, dispatch, navigate, t]
   )
 
-  // Initial load
   useEffect(() => {
     const controller = new AbortController()
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+
     void loadDefaultOdds(controller.signal)
     return () => controller.abort()
   }, [loadDefaultOdds])
 
-  // ── Socket subscribe/listen for MARKET_ODDS (racing payload = {sportId, marketId}).
   useEffect(() => {
     if (!sportId || !marketId) return undefined
     const payload = { sportId, marketId }
@@ -168,7 +165,6 @@ export default function RacingOdds() {
     }
   }, [sportId, marketId])
 
-  // ── Visibility change → re-emit to rejoin server room.
   useEffect(() => {
     const onVisibility = () => {
       if (document.visibilityState === 'visible' && sportId && marketId) {
@@ -179,17 +175,11 @@ export default function RacingOdds() {
     return () => document.removeEventListener('visibilitychange', onVisibility)
   }, [sportId, marketId])
 
-  // ── Refresh markets (re-fetch default odds) — driven by the Refresh chip below.
   const refresh = useCallback(() => {
     const controller = new AbortController()
     void loadDefaultOdds(controller.signal)
   }, [loadDefaultOdds])
 
-  // ── onMatchOddClick: mirrors Archive racing flow.
-  // - Suspended / no price → no-op (handled by MatchOddMarket bgLine)
-  // - Not logged in → show login modal
-  // - One-click bet ON → place bet immediately with the one-click stake
-  // - Otherwise → open the right-side BetSlip (desktop) / inline (mobile)
   const onPick = useCallback(
     (runner, odd, betType) => {
       if (!odd?.price) return
@@ -200,8 +190,7 @@ export default function RacingOdds() {
 
       const slip = {
         marketId: runner._marketId || marketId,
-        // Technical identifier — must match `BetExposureCell`'s `marketName`
-        // prop so the live preExposure preview shows under the right runner.
+
         marketName: 'MATCH_ODDS',
         marketDisplayName: runner._marketName || 'Match Odds',
         eventTitle: runner._eventTitle || '',
@@ -221,6 +210,16 @@ export default function RacingOdds() {
         if (!stake || Number.isNaN(stake)) {
           alertService.error(
             t('errors.invalidStake', 'Set a one-click stake first')
+          )
+          return
+        }
+        if (stake > maxAvailBalance) {
+          alertService.error(
+            t(
+              'errors.insufficientFund',
+              `Insufficient fund, max available balance ${maxAvailBalance}`,
+              { balance: maxAvailBalance }
+            )
           )
           return
         }
@@ -253,6 +252,7 @@ export default function RacingOdds() {
       isAuthenticated,
       isOneClickBet,
       oneClickBetStake,
+      maxAvailBalance,
       marketId,
       matchOdds,
       eventId,
@@ -264,30 +264,20 @@ export default function RacingOdds() {
   )
 
   const handlePlaceBet = useCallback(
-    async (slip, onDone) => {
-      try {
-        await dispatch(
-          placeBet({
-            slip,
-            context: {
-              sport: sportSlug ?? '',
-              eventId: String(eventId ?? ''),
-              eventTitle: matchOdds?.eventName ?? '',
-              runners: matchOdds?.runners ?? [],
-            },
-          })
-        ).unwrap()
-        alertService.success(t('common.betPlaced', 'Bet placed'))
-        onDone?.()
-      } catch (msg) {
-        alertService.error(
-          typeof msg === 'string'
-            ? msg
-            : t('errors.placeBetFailed', 'Failed to place bet')
-        )
-      }
+    (slip) => {
+      return dispatch(
+        placeBet({
+          slip,
+          context: {
+            sport: sportSlug ?? '',
+            eventId: String(eventId ?? ''),
+            eventTitle: matchOdds?.eventName ?? '',
+            runners: matchOdds?.runners ?? [],
+          },
+        })
+      ).unwrap()
     },
-    [dispatch, sportSlug, eventId, matchOdds, t]
+    [dispatch, sportSlug, eventId, matchOdds]
   )
 
   const onCancelMatchOdds = useCallback(
@@ -295,7 +285,6 @@ export default function RacingOdds() {
     [dispatch]
   )
 
-  // Only highlight the active back/lay cell if it belongs to THIS market.
   const activeForThisMarket =
     activeBetSlip?.marketName === 'Match Odds' &&
     String(activeBetSlip?.marketId) === String(matchOdds?.marketId || marketId)

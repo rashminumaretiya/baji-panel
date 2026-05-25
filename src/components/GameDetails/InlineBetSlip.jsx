@@ -1,54 +1,18 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { useIsMobile } from '../../hooks/useMediaQuery.js'
+import FancyProgress from '../../shared/components/FancyProgress.jsx'
 import { resolveApiMessage } from '../../shared/services/alert.js'
+import {
+  selectMaxAvailBalance,
+  selectStakesData,
+} from '../../store/slices/authSlice.js'
 
-// Auto-dismiss delay for the inline feedback banner.
-const FEEDBACK_AUTOCLOSE_MS = {
-  success: 2500,
+const FEEDBACK_TIMEPERIOD = {
+  success: 5000,
   warning: 3500,
-  error: 4500,
-}
-
-const CloseIconSvg = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    width="12"
-    height="12"
-    aria-hidden="true"
-  >
-    <path d="M20,2H4C2.9,2,2,2.9,2,4v16c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2z M16.9,15.6L15.5,17l-3.5-3.5L8.4,17 L7,15.6l3.5-3.5L7,8.5l1.4-1.4l3.5,3.5l3.5-3.5l1.4,1.4L13.4,12L16.9,15.6z" />
-  </svg>
-)
-
-// Angular `.fancy-warning` banner — colour flips on `type`. Sits across the
-// full width of the bet slip with a close icon on the right.
-function FancyWarning({ type = 'warning', message, onClose }) {
-  const variantBg = {
-    warning: 'bg-[#fff3cd] text-[#856404] border-y border-[#ffeeba]',
-    success: 'bg-[#d4edda] text-[#155724] border-y border-[#c3e6cb]',
-    error: 'bg-[#f8d7da] text-[#721c24] border-y border-[#f5c6cb]',
-  }[type]
-
-  return (
-    <div
-      role="status"
-      aria-live="polite"
-      className={`relative text-center px-8 py-2 text-[12px] font-medium ${variantBg}`}
-    >
-      <p className="mb-0">{message}</p>
-      <button
-        type="button"
-        aria-label="Close"
-        className="absolute right-2 top-1/2 -translate-y-1/2 text-current cursor-pointer p-1 leading-none [&_svg]:w-3 [&_svg]:h-3"
-        onClick={onClose}
-      >
-        {CloseIconSvg}
-      </button>
-    </div>
-  )
+  failed: 4500,
 }
 
 const MarketName = {
@@ -58,7 +22,7 @@ const MarketName = {
   BOOKMAKER: 'BOOKMAKER',
 }
 
-const DEFAULT_STAKES = [10, 20, 50, 100, 200, 500, 1000, 2000]
+const DEFAULT_STAKES = [100, 200, 500, 1000, 2000, 5000]
 
 const MinusIcon = (
   <svg
@@ -111,17 +75,16 @@ function stepOdds(value, direction) {
   return Math.max(0, +(current - 0.01).toFixed(2))
 }
 
-// Desktop stake buttons (`.stake button`).
 const DESKTOP_STAKE_BTN =
-  'p-0 m-0.5 mb-px border border-[#bbb] rounded text-[#1e1e1e] text-[11px] leading-[18px] font-normal w-1/6 bg-gradient-to-t from-[#f3f3f3] to-[#fbfbfb] hover:text-[var(--primary)] min-[768px]:w-full min-[768px]:text-[13px] min-[768px]:h-[25px] min-[768px]:max-w-[100px] min-[768px]:bg-gradient-to-b min-[768px]:from-white min-[768px]:to-[#eee] min-[768px]:border min-[768px]:border-[#bbb] min-[768px]:rounded min-[768px]:max-[1199px]:w-auto min-[768px]:max-[1199px]:px-2 min-[768px]:max-[1199px]:text-[11px]'
+  'btn btn-white max-w-[100px] w-full ml-2 cursor-pointer'
 
-// Mobile stake buttons (`.mobile-stake button`).
 const MOBILE_STAKE_BTN =
   'text-white bg-transparent border-0 flex-1 p-0 max-md:text-[var(--white)] max-md:bg-white max-md:w-auto max-md:px-1 max-md:py-[3px] max-md:bg-[linear-gradient(-180deg,#32617f_20%,#1f4258_91%)] max-md:p-0! max-md:leading-[1.76] max-md:text-[3.7vw]'
 
-function StakeButtons({ isMobile, onStakeClick }) {
-  const stakes = isMobile ? DEFAULT_STAKES.slice(0, 5) : DEFAULT_STAKES
-  // Wrapper differs: desktop `.stake`, mobile `.mobile-stake` (with full bg).
+function StakeButtons({ isMobile, onStakeClick, stakes: stakesProp }) {
+  const source =
+    Array.isArray(stakesProp) && stakesProp.length ? stakesProp : DEFAULT_STAKES
+  const stakes = isMobile ? source.slice(0, 5) : source
   const wrapperClass = isMobile
     ? 'flex justify-end items-center text-white border-r border-[#4a4a4a] py-2 px-1 max-md:bg-[image:linear-gradient(-180deg,#32617f_20%,#1f4258_91%)] max-md:p-0 max-md:leading-[2.46] max-md:text-[3.46667vw] max-md:border-r max-md:border-[rgba(var(--black-rgb),0.15)]'
     : 'flex justify-end'
@@ -157,7 +120,6 @@ const BackspaceIcon = (
   </svg>
 )
 
-// Common keypad button (`.keypad-wrapper .btn`).
 const KEYPAD_BTN =
   'w-full cursor-pointer text-[18px] py-[6px] px-1 rounded-none border border-[var(--tbl-border-color)] border-l-0 text-[var(--header-primary)] bg-white max-md:text-[4vw] max-md:text-[#1e1e1e] max-md:leading-[10.4vw] max-md:p-0 max-md:bg-white max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:!border-b max-md:!border-b-[#aaa] [&_svg]:max-md:w-[4.8vw] [&_svg]:max-md:h-[3.2vw]'
 
@@ -172,7 +134,7 @@ function Keypad({ onValueChanged }) {
               key={key}
               className={cx(
                 'w-1/6',
-                // Top two rows lose their bottom border on desktop.
+
                 idx < 6 && '[&_button]:border-b-0'
               )}
             >
@@ -233,35 +195,24 @@ export default function InlineBetSlip({
 }) {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
+
+  const stakesData = useSelector(selectStakesData)
+  const maxAvailBalance = useSelector(selectMaxAvailBalance)
   const [isMatchChecked, setIsMatchChecked] = useState(false)
-  // Inline feedback banner (Angular `.fancy-warning`). One of:
-  //   { type: 'warning'|'success'|'error', message: string }
-  const [feedback, setFeedback] = useState(null)
-  const feedbackTimerRef = useRef(null)
 
-  // Cleanup the auto-close timer on unmount so a late tick doesn't try to
-  // setFeedback on an unmounted slip.
-  useEffect(
-    () => () => {
-      if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current)
-    },
-    []
-  )
+  const [fancyConfig, setFancyConfig] = useState(null)
+  const closeSlipAfterRef = useRef(false)
 
-  const clearFeedback = () => {
-    if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current)
-    setFeedback(null)
+  const clearFancyConfig = () => {
+    const shouldCancelSlip = closeSlipAfterRef.current
+    closeSlipAfterRef.current = false
+    setFancyConfig(null)
+    if (shouldCancelSlip) onCancel?.()
   }
 
-  // `closeSlipAfter` — when truthy, runs `onCancel()` once the auto-close
-  // timer fires. Used for the success case so the slip clears itself.
-  const showFeedback = ({ type, message, closeSlipAfter = false }) => {
-    if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current)
-    setFeedback({ type, message })
-    feedbackTimerRef.current = setTimeout(() => {
-      setFeedback(null)
-      if (closeSlipAfter) onCancel?.()
-    }, FEEDBACK_AUTOCLOSE_MS[type] ?? 3500)
+  const updateFancyLoader = (data, { closeSlipAfter = false } = {}) => {
+    closeSlipAfterRef.current = closeSlipAfter
+    setFancyConfig({ timePeriod: FEEDBACK_TIMEPERIOD.warning, ...data })
   }
 
   const handlePlace = async () => {
@@ -269,9 +220,9 @@ export default function InlineBetSlip({
     const stake = Number(betSlipDetails?.stake) || 0
     const min = Number(betSlipDetails?.min) || 0
     if (!stake) {
-      showFeedback({
-        type: 'warning',
-        message: t(
+      updateFancyLoader({
+        warning: true,
+        errMsg: t(
           'betSlip.enterStake',
           'Please enter a stake to place the bet.'
         ),
@@ -279,32 +230,50 @@ export default function InlineBetSlip({
       return
     }
     if (min && stake < min) {
-      showFeedback({
-        type: 'warning',
-        message: t(
+      updateFancyLoader({
+        warning: true,
+        errMsg: t(
           'betSlip.belowMinimum',
           'The stake you have entered are below the minimum.'
         ),
       })
       return
     }
+    if (stake > maxAvailBalance) {
+      updateFancyLoader({
+        failed: true,
+        errMsg: t(
+          'errors.insufficientFund',
+          `Insufficient fund, max available balance ${maxAvailBalance}`,
+          { balance: maxAvailBalance }
+        ),
+        timePeriod: FEEDBACK_TIMEPERIOD.failed,
+      })
+      return
+    }
     try {
-      const result = await onPlaceBet?.(betSlipDetails)
-      // result = { data: { key, message, data }, slip } from the placeBet thunk.
-      const message = resolveApiMessage(
-        t,
-        result?.data,
-        t('betSlip.betPlaced', 'Bet placed successfully.')
+      await onPlaceBet?.(betSlipDetails)
+
+      updateFancyLoader(
+        {
+          success: true,
+          odd: betSlipDetails?.odds,
+          size: betSlipDetails?.size,
+          timePeriod: FEEDBACK_TIMEPERIOD.success,
+        },
+        { closeSlipAfter: true }
       )
-      showFeedback({ type: 'success', message, closeSlipAfter: true })
     } catch (err) {
-      // err is the rejectWithValue body — { key, message } or { message }.
       const message = resolveApiMessage(
         t,
         err,
         t('betSlip.placeFailed', 'Failed to place bet.')
       )
-      showFeedback({ type: 'error', message })
+      updateFancyLoader({
+        failed: true,
+        errMsg: message,
+        timePeriod: FEEDBACK_TIMEPERIOD.failed,
+      })
     }
   }
 
@@ -351,24 +320,13 @@ export default function InlineBetSlip({
     onChange?.({ ...betSlipDetails, stake: Number(current) || 0 })
   }
 
-  // Single-state UX: render exactly one thing at a time.
-  //   1. Placing  → render nothing (parent shows <PlacingBetStrip />).
-  //   2. Feedback → render only the <FancyWarning /> banner.
-  //   3. Idle     → render the full bet-slip controls.
   if (isPlacing) return null
 
-  if (feedback) {
-    return (
-      <FancyWarning
-        type={feedback.type}
-        message={feedback.message}
-        onClose={clearFeedback}
-      />
-    )
+  if (fancyConfig) {
+    return <FancyProgress config={fancyConfig} onClose={clearFancyConfig} />
   }
 
   if (isMobile) {
-    // Mobile last-row backgrounds (`.mobile-betslip-wrapper.light-back / light-lay`).
     const lastRowBg = isBack
       ? '[&_tr:last-of-type_td]:bg-[#c7dbe9]'
       : '[&_tr:last-of-type_td]:bg-[#ebd5db]'
@@ -384,9 +342,9 @@ export default function InlineBetSlip({
               className="bg-transparent max-md:pt-[10px] max-md:px-[1.86667vw] max-md:pb-[1.86667vw]"
             >
               <div className="flex items-end justify-around">
-                <div className="text-center md:flex-1 mr-[1.86667vw] max-md:[&:last-of-type]:mr-0 max-md:flex-[1_1_47.2vw]">
+                <div className="text-center md:flex-1 mr-[1.86667vw] max-md:last-of-type:mr-0 max-md:flex-[1_1_47.2vw]">
                   {isSportsBook && (
-                    <p className="text-[var(--dark-gray)] text-[14px] mb-0 mr-[2vw] max-md:text-[2.93333vw] max-md:text-[#1e1e1e] max-md:leading-[1.3]">
+                    <p className="text-(--dark-gray) text-[14px] mb-0 mr-[2vw] max-md:text-[2.93333vw] max-md:text-[#1e1e1e] max-md:leading-[1.3]">
                       {t('common.odds', 'Odds')}
                     </p>
                   )}
@@ -395,14 +353,14 @@ export default function InlineBetSlip({
                       <>
                         <button
                           type="button"
-                          className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-l-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-gradient-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-r max-md:border-[#aaa] max-md:rounded-tl-[1.6vw] max-md:rounded-bl-[1.6vw] max-md:rounded-tr-none max-md:rounded-br-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]"
+                          className="bg-[#bfbfbf] text-(--primary) border border-[#bfbfbf] rounded-l-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-linear-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-r max-md:border-[#aaa] max-md:rounded-tl-[1.6vw] max-md:rounded-bl-[1.6vw] max-md:rounded-tr-none max-md:rounded-br-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]"
                           onClick={() => updateField('odds', 'DEC')}
                         >
                           {MinusIcon}
                         </button>
                         <input
                           type="text"
-                          className="p-1 text-center max-w-[63px] bg-[#d9d9d9] text-[var(--primary)] h-[34px] rounded-none border border-[#4a4a4a] border-t-0 border-b-0 text-[20px] max-md:h-[10.66667vw] max-md:border-0 max-md:p-0 max-md:text-[#1e1e1e] max-md:text-[4vw] max-md:leading-[10.13333vw] max-md:font-bold max-md:bg-white max-md:shadow-[inset_0_0.53333vw_0_0_rgba(0,0,0,0.1)] max-md:max-w-none max-md:flex-1"
+                          className="p-1 text-center max-w-[63px] bg-[#d9d9d9] text-(--primary) h-[34px] rounded-none border border-[#4a4a4a] border-t-0 border-b-0 text-[20px] max-md:h-[10.66667vw] max-md:border-0 max-md:p-0 max-md:text-[#1e1e1e] max-md:text-[4vw] max-md:leading-[10.13333vw] max-md:font-bold max-md:bg-white max-md:shadow-[inset_0_0.53333vw_0_0_rgba(0,0,0,0.1)] max-md:max-w-none max-md:flex-1"
                           value={betSlipDetails?.odds ?? ''}
                           onKeyDown={(e) => e.preventDefault()}
                           inputMode="none"
@@ -410,28 +368,28 @@ export default function InlineBetSlip({
                         />
                         <button
                           type="button"
-                          className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-r-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-gradient-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:rounded-tr-[1.6vw] max-md:rounded-br-[1.6vw] max-md:rounded-tl-none max-md:rounded-bl-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]"
+                          className="bg-[#bfbfbf] text-(--primary) border border-[#bfbfbf] rounded-r-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-linear-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:rounded-tr-[1.6vw] max-md:rounded-br-[1.6vw] max-md:rounded-tl-none max-md:rounded-bl-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]"
                           onClick={() => updateField('odds', 'INC')}
                         >
                           {PlusIcon}
                         </button>
                       </>
                     ) : (
-                      <p className="m-0 flex items-center justify-center bg-[#dcdcdc] text-[var(--dark-gray)] border-[#dcdcdc] w-full max-md:h-[10.66667vw] max-md:p-0 max-md:border-0 max-md:rounded-[1.6vw]">
+                      <p className="m-0 flex items-center justify-center bg-[#dcdcdc] text-(--dark-gray) border-[#dcdcdc] w-full max-md:h-[10.66667vw] max-md:p-0 max-md:border-0 max-md:rounded-[1.6vw]">
                         {oddDisplay}
                       </p>
                     )}
                   </div>
                 </div>
 
-                <div className="text-center md:flex-1 mr-[1.86667vw] max-md:[&:last-of-type]:mr-0 max-md:flex-[1_1_47.2vw]">
-                  <p className="text-[var(--dark-gray)] text-[14px] mb-0 mr-[2vw] max-md:text-[2.93333vw] max-md:text-[#1e1e1e] max-md:leading-[1.3]">
+                <div className="text-center md:flex-1 mr-[1.86667vw] max-md:last-of-type:mr-0 max-md:flex-[1_1_47.2vw]">
+                  <p className="text-(--dark-gray) text-[14px] mb-0 mr-[2vw] max-md:text-[2.93333vw] max-md:text-[#1e1e1e] max-md:leading-[1.3]">
                     {t('common.minBet', 'Min Bet')} : {betSlipDetails?.min || 1}
                   </p>
                   <div className="flex items-center border border-[#4a4a4a] rounded-md max-md:border-[#aaa] max-md:justify-between max-md:bg-white max-md:rounded-[1.6vw]">
                     <button
                       type="button"
-                      className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-l-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-gradient-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-r max-md:border-[#aaa] max-md:rounded-tl-[1.6vw] max-md:rounded-bl-[1.6vw] max-md:rounded-tr-none max-md:rounded-br-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw] [&_svg]:mx-auto
+                      className="bg-[#bfbfbf] text-(--primary) border border-[#bfbfbf] rounded-l-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-linear-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-r max-md:border-[#aaa] max-md:rounded-tl-[1.6vw] max-md:rounded-bl-[1.6vw] max-md:rounded-tr-none max-md:rounded-br-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]
 [&_svg]:mx-auto"
                       onClick={() => updateField('stake', 'DEC')}
                     >
@@ -439,7 +397,7 @@ export default function InlineBetSlip({
                     </button>
                     <input
                       type="text"
-                      className="p-1 text-center max-w-[63px] bg-[var(--xs-secondary)] shadow-[inset_0_0.26667vw_1.33333vw_var(--primary)] text-[var(--primary)] h-[34px] rounded-none border border-[#4a4a4a] border-t-0 border-b-0 text-[20px] max-md:h-[10.66667vw] max-md:border-0 max-md:p-0 max-md:text-[#1e1e1e] max-md:text-[4vw] max-md:leading-[10.13333vw] max-md:font-bold max-md:max-w-none max-md:flex-1 w-full"
+                      className="p-1 text-center max-w-[63px] bg-(--xs-secondary) shadow-[inset_0_0.26667vw_1.33333vw_var(--primary)] text-(--primary) h-[34px] rounded-none border border-[#4a4a4a] border-t-0 border-b-0 text-[20px] max-md:h-[10.66667vw] max-md:border-0 max-md:p-0 max-md:text-[#1e1e1e] max-md:text-[4vw] max-md:leading-[10.13333vw] max-md:font-bold max-md:max-w-none max-md:flex-1 w-full"
                       inputMode="none"
                       min={0}
                       value={betSlipDetails?.stake ?? ''}
@@ -447,7 +405,7 @@ export default function InlineBetSlip({
                     />
                     <button
                       type="button"
-                      className="bg-[#bfbfbf] text-[var(--primary)] border border-[#bfbfbf] rounded-r-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-gradient-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:rounded-tr-[1.6vw] max-md:rounded-br-[1.6vw] max-md:rounded-tl-none max-md:rounded-bl-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw] [&_svg]:mx-auto
+                      className="bg-[#bfbfbf] text-(--primary) border border-[#bfbfbf] rounded-r-md max-md:h-[10.66667vw] max-md:w-[12vw] max-md:bg-linear-to-t max-md:from-[#eee] max-md:to-white max-md:p-0 max-md:border-0 max-md:border-l max-md:border-[#aaa] max-md:rounded-tr-[1.6vw] max-md:rounded-br-[1.6vw] max-md:rounded-tl-none max-md:rounded-bl-none [&_svg]:max-md:w-[7.5vw] [&_svg]:max-md:h-[7.5vw]
 [&_svg]:mx-auto"
                       onClick={() => updateField('stake', 'INC')}
                     >
@@ -460,11 +418,12 @@ export default function InlineBetSlip({
           </tr>
 
           <tr>
-            <td
-              colSpan={2}
-              className="p-0 bg-transparent bg-[#103c59] border border-white"
-            >
-              <StakeButtons isMobile onStakeClick={updateStake} />
+            <td colSpan={2} className="p-0 bg-[#103c59] border border-white">
+              <StakeButtons
+                isMobile
+                onStakeClick={updateStake}
+                stakes={stakesData}
+              />
             </td>
           </tr>
 
@@ -482,8 +441,8 @@ export default function InlineBetSlip({
                 <button
                   type="button"
                   className={cx(
-                    'bg-gradient-to-b from-white to-[#eeeeee] text-[12px] border border-[#bbb] rounded p-0 min-w-0 w-full max-w-[75px] leading-[31px] font-semibold flex-1 py-2',
-                    'max-md:text-[4vw] max-md:font-bold max-md:leading-[2.6] max-md:text-[#1e1e1e] max-md:!p-0 max-md:!max-w-none max-md:rounded-[1.6vw] max-md:w-1/2 max-md:mr-[1.86667vw]',
+                    'bg-linear-to-b from-white to-[#eeeeee] text-[12px] border border-[#bbb] rounded p-0 min-w-0 w-full max-w-[75px] leading-[31px] font-semibold flex-1 py-2',
+                    'max-md:text-[4vw] max-md:font-bold max-md:leading-[2.6] max-md:text-[#1e1e1e] max-md:p-0! max-md:max-w-none! max-md:rounded-[1.6vw] max-md:w-1/2 max-md:mr-[1.86667vw]',
                     isPlacing && 'opacity-60 cursor-not-allowed'
                   )}
                   onClick={onCancel}
@@ -494,7 +453,7 @@ export default function InlineBetSlip({
                 <button
                   type="button"
                   className={cx(
-                    'text-[4vw]! font-bold leading-[2.6] !text-white !p-0 !max-w-none rounded-[1.6vw]! btn btn-primary w-1/2 py-2 max-w-[120px]',
+                    'text-[4vw]! font-bold leading-[2.6] text-white! p-0! rounded-[1.6vw]! btn btn-primary w-1/2 py-2 max-w-[120px]',
                     isPlacing && 'opacity-60 cursor-not-allowed'
                   )}
                   onClick={handlePlace}
@@ -527,7 +486,7 @@ export default function InlineBetSlip({
                   <div
                     className={cx(
                       'relative max-md:h-[4.8vw] max-md:w-[4.8vw] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(0,0,0,0.4)] max-md:bg-white max-md:rounded-[1.06667vw]',
-                      isMatchChecked && 'max-md:bg-[var(--spanish-yellow)]'
+                      isMatchChecked && 'max-md:bg-(--spanish-yellow)'
                     )}
                   >
                     <i
@@ -546,7 +505,7 @@ export default function InlineBetSlip({
                       type="checkbox"
                       checked={isMatchChecked}
                       onChange={() => setIsMatchChecked((v) => !v)}
-                      className="max-md:h-[4.8vw] max-md:w-[4.8vw] max-md:opacity-0 max-md:absolute max-md:top-0 max-md:left-0 max-md:z-[2]"
+                      className="max-md:h-[4.8vw] max-md:w-[4.8vw] max-md:opacity-0 max-md:absolute max-md:top-0 max-md:left-0 max-md:z-2"
                     />
                   </div>
                   <label
@@ -589,7 +548,7 @@ export default function InlineBetSlip({
                 <button
                   type="button"
                   className={cx(
-                    'ml-2 bg-gradient-to-b from-white to-[#eeeeee] text-[12px] border border-[#bbb] rounded p-0 min-w-0 w-full max-w-[75px] leading-[31px] font-semibold',
+                    'ml-2 bg-linear-to-b from-white to-[#eeeeee] text-[12px] border border-[#bbb] rounded p-0 min-w-0 w-full max-w-[75px] leading-[31px] font-semibold',
                     isPlacing && 'opacity-60 cursor-not-allowed'
                   )}
                   onClick={onCancel}
@@ -653,7 +612,11 @@ export default function InlineBetSlip({
                 betTypeClass
               )}
             >
-              <StakeButtons isMobile={false} onStakeClick={updateStake} />
+              <StakeButtons
+                isMobile={false}
+                onStakeClick={updateStake}
+                stakes={stakesData}
+              />
             </td>
           </tr>
         </tbody>

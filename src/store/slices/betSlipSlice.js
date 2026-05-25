@@ -64,6 +64,13 @@ const initialState = {
   // runner. Shape: { selectionId, profit, liability, betType } | null.
   // Cleared whenever activeBetSlip is cleared.
   preExposure: null,
+  // Per-selection FancyProgress feedback for in-flight / settled bets — same
+  // role as Angular `commonService.fancyProgress` signal. Keyed by selectionId,
+  // value matches the Angular fancy-progress config shape:
+  //   { progress | success | failed | warning, errMsg, odd, size, timePeriod, marketName }
+  // Match-odds entries are rendered inside the right-side BetSlip header (not
+  // inline on the row). Other markets render the banner inline.
+  fancyProgressMap: {},
 }
 
 // Fetch open bets — optional `eventId` param scopes the result to one event
@@ -116,6 +123,17 @@ const betSlipSlice = createSlice({
     setOneClickBetStake(s, { payload }) {
       s.oneClickBetStake = payload
     },
+    // Mirrors Angular `commonService.updateFancyLoader(selection, data)`.
+    setFancyProgress(s, { payload }) {
+      const { selectionId, config } = payload || {}
+      if (!selectionId) return
+      s.fancyProgressMap[selectionId] = config
+    },
+    clearFancyProgress(s, { payload }) {
+      const selectionId = payload
+      if (!selectionId) return
+      delete s.fancyProgressMap[selectionId]
+    },
   },
   extraReducers: (b) => {
     b.addCase(placeBet.pending, (s, { meta }) => {
@@ -153,6 +171,8 @@ export const {
   openBetRefresh,
   setOneClickBetStake,
   setPreExposure,
+  setFancyProgress,
+  clearFancyProgress,
 } = betSlipSlice.actions
 export default betSlipSlice.reducer
 
@@ -168,3 +188,14 @@ export const selectOpenBetRefreshTick = (s) => s.betSlip.openBetRefreshTick
 export const selectIsPlacingBet = (s) => s.betSlip.isPlacingBet
 export const selectPlacingSelectionId = (s) => s.betSlip.placingSelectionId
 export const selectOneClickBetStake = (s) => s.betSlip.oneClickBetStake
+export const selectFancyProgressMap = (s) => s.betSlip.fancyProgressMap
+// For the right-side BetSlip header — returns the most-recent MATCH_ODDS
+// fancy-progress config (if any). The slip uses this to render the same
+// FancyProgress banner that other markets show inline.
+export const selectMatchOddsFancyProgress = (s) => {
+  const map = s.betSlip.fancyProgressMap
+  for (const id in map) {
+    if (map[id]?.marketName === 'MATCH_ODDS') return { selectionId: id, config: map[id] }
+  }
+  return null
+}

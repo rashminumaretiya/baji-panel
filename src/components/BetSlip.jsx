@@ -3,16 +3,23 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Collapse from '../shared/components/primitives/Collapse.jsx'
 import { selectIsYellowTheme } from '../store/slices/commonSlice.js'
-import { selectStakesData } from '../store/slices/authSlice.js'
 import {
+  selectMaxAvailBalance,
+  selectStakesData,
+} from '../store/slices/authSlice.js'
+import {
+  clearFancyProgress,
   placeBet,
   selectActiveBetSlip,
   selectIsPlacingBet,
+  selectMatchOddsFancyProgress,
   selectPlacingSelectionId,
   setActiveBetSlip,
+  setFancyProgress,
   setPreExposure,
 } from '../store/slices/betSlipSlice.js'
-import { alertService, resolveApiMessage } from '../shared/services/alert.js'
+import FancyProgress from '../shared/components/FancyProgress.jsx'
+import { resolveApiMessage } from '../shared/services/alert.js'
 import Loader from '../shared/components/Loader.jsx'
 import SvgIcon from './SvgIcon.jsx'
 
@@ -57,6 +64,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const submitting = useSelector(selectIsPlacingBet)
+  const maxAvailBalance = useSelector(selectMaxAvailBalance)
   const isBack = activeMatchOdd?.betType === 'BACK'
   const [odds, setOdds] = useState(activeMatchOdd?.odd ?? '')
   const [stake, setStake] = useState('')
@@ -106,8 +114,33 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
 
   const onPlaceBet = async () => {
     if (submitting) return
+    const selectionId = activeMatchOdd?.selectionId
+    const writeFancyProgress = (config) =>
+      dispatch(
+        setFancyProgress({
+          selectionId,
+          config: { ...config, marketName: 'MATCH_ODDS' },
+        })
+      )
+
     if (!numericOdds || !numericStake) {
-      alertService.error('Please enter odds and stake')
+      writeFancyProgress({
+        warning: true,
+        errMsg: t('betSlip.enterOddsStake', 'Please enter odds and stake'),
+        timePeriod: 3500,
+      })
+      return
+    }
+    if (numericStake > maxAvailBalance) {
+      writeFancyProgress({
+        failed: true,
+        errMsg: t(
+          'errors.insufficientFund',
+          `Insufficient fund, max available balance ${maxAvailBalance}`,
+          { balance: maxAvailBalance }
+        ),
+        timePeriod: 4500,
+      })
       return
     }
     const slip = {
@@ -122,13 +155,21 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
       eventTitle: activeMatchOdd?.eventTitle ?? '',
       runners: activeMatchOdd?.runners ?? [],
     }
+    writeFancyProgress({ progress: true, timePeriod: 5000 })
     try {
-      const result = await dispatch(placeBet({ slip, context })).unwrap()
-      alertService.success(
-        resolveApiMessage(t, result?.data, 'Bet placed successfully')
-      )
+      await dispatch(placeBet({ slip, context })).unwrap()
+      writeFancyProgress({
+        success: true,
+        odd: numericOdds,
+        size: activeMatchOdd?.size,
+        timePeriod: 5000,
+      })
     } catch (err) {
-      alertService.error(resolveApiMessage(t, err, 'Failed to place bet'))
+      writeFancyProgress({
+        failed: true,
+        errMsg: resolveApiMessage(t, err, 'Failed to place bet'),
+        timePeriod: 4500,
+      })
     }
   }
 
@@ -324,11 +365,15 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
 
 export default function BetSlip() {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
   const activeMatchOdd = useSelector(selectActiveBetSlip)
   const stakesData = useSelector(selectStakesData)
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const isPlacingBet = useSelector(selectIsPlacingBet)
   const placingSelectionId = useSelector(selectPlacingSelectionId)
+  // Match-odds bets surface their FancyProgress feedback here (not inline on
+  // the row). Picks up the most recent MATCH_ODDS entry from the global map.
+  const matchOddsFancyProgress = useSelector(selectMatchOddsFancyProgress)
 
   const [isCollapsed, setIsCollapsed] = useState(false)
 
@@ -372,6 +417,14 @@ export default function BetSlip() {
                 fallback="Placing bet please wait..."
               />
             </div>
+          )}
+          {matchOddsFancyProgress && (
+            <FancyProgress
+              config={matchOddsFancyProgress.config}
+              onClose={() =>
+                dispatch(clearFancyProgress(matchOddsFancyProgress.selectionId))
+              }
+            />
           )}
           <div>
             {isOpen ? (

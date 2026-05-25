@@ -21,6 +21,7 @@ import {
   selectCurrency,
   selectIsAuthenticated,
   selectIsOneClickBet,
+  selectMaxAvailBalance,
   setLoginWindow,
 } from '../store/slices/authSlice.js'
 import {
@@ -34,6 +35,9 @@ import {
   selectActiveBetSlip,
   selectIsPlacingBet,
   selectOneClickBetStake,
+  selectFancyProgressMap,
+  setFancyProgress,
+  clearFancyProgress,
   selectOpenBetRefreshTick,
   selectPlacingSelectionId,
   selectPreExposureMarketName,
@@ -41,10 +45,11 @@ import {
   setPreExposure,
 } from '../store/slices/betSlipSlice.js'
 import InlineBetSlip from '../components/GameDetails/InlineBetSlip.jsx'
+import FancyProgress from '../shared/components/FancyProgress.jsx'
 import BetExposureCell from '../components/GameDetails/BetExposureCell.jsx'
 import BookFancyModal from '../components/GameDetails/BookFancyModal.jsx'
 import Modal from '../shared/components/Modal.jsx'
-import { alertService } from '../shared/services/alert.js'
+import { alertService, resolveApiMessage } from '../shared/services/alert.js'
 
 const SPARK_TTL_MS = 750
 const PIP_SCROLL_THRESHOLD = 300
@@ -322,6 +327,7 @@ export default function LiveOdds() {
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const isOneClickBet = useSelector(selectIsOneClickBet)
   const oneClickBetStake = useSelector(selectOneClickBetStake)
+  const maxAvailBalance = useSelector(selectMaxAvailBalance)
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const currency = useSelector(selectCurrency)
 
@@ -358,6 +364,17 @@ export default function LiveOdds() {
   const [activeFancyBet, setActiveFancyBet] = useState(null)
   const [activeSportBook, setActiveSportBook] = useState(null)
   const [bookFancyTarget, setBookFancyTarget] = useState(null)
+
+  const fancyProgressMap = useSelector(selectFancyProgressMap)
+  const setFancyProgressFor = useCallback(
+    (selectionId, config) =>
+      dispatch(setFancyProgress({ selectionId, config })),
+    [dispatch]
+  )
+  const clearFancyProgressFor = useCallback(
+    (selectionId) => dispatch(clearFancyProgress(selectionId)),
+    [dispatch]
+  )
 
   const [postExposureByMarket, setPostExposureByMarket] = useState(
     () => new Map()
@@ -751,13 +768,36 @@ export default function LiveOdds() {
   const tryOneClickPlace = useCallback(
     (slip) => {
       if (!isOneClickBet) return false
+      const selectionId = slip?.selectionId
+      const marketName = slip?.marketName
       const stake = Number(oneClickBetStake)
       if (!stake || Number.isNaN(stake)) {
-        alertService.error(
-          t('errors.invalidStake', 'Set a one-click stake first')
-        )
+        setFancyProgressFor(selectionId, {
+          failed: true,
+          errMsg: t('errors.invalidStake', 'Set a one-click stake first'),
+          timePeriod: 4500,
+          marketName,
+        })
         return true
       }
+      if (stake > maxAvailBalance) {
+        setFancyProgressFor(selectionId, {
+          failed: true,
+          errMsg: t(
+            'errors.insufficientFund',
+            `Insufficient fund, max available balance ${maxAvailBalance}`,
+            { balance: maxAvailBalance }
+          ),
+          timePeriod: 4500,
+          marketName,
+        })
+        return true
+      }
+      setFancyProgressFor(selectionId, {
+        progress: true,
+        timePeriod: 5000,
+        marketName,
+      })
       dispatch(
         placeBet({
           slip: { ...slip, stake },
@@ -770,24 +810,39 @@ export default function LiveOdds() {
         })
       )
         .unwrap()
-        .then(() => alertService.success(t('common.betPlaced', 'Bet placed')))
+        .then(() =>
+          setFancyProgressFor(selectionId, {
+            success: true,
+            odd: slip?.odd ?? slip?.odds,
+            size: slip?.size,
+            timePeriod: 5000,
+            marketName,
+          })
+        )
         .catch((msg) =>
-          alertService.error(
-            typeof msg === 'string'
-              ? msg
-              : t('errors.placeBetFailed', 'Failed to place bet')
-          )
+          setFancyProgressFor(selectionId, {
+            failed: true,
+            errMsg: resolveApiMessage(
+              t,
+              msg,
+              t('errors.placeBetFailed', 'Failed to place bet')
+            ),
+            timePeriod: 4500,
+            marketName,
+          })
         )
       return true
     },
     [
       isOneClickBet,
       oneClickBetStake,
+      maxAvailBalance,
       dispatch,
       t,
       sportSlug,
       eventId,
       matchOddsArray,
+      setFancyProgressFor,
     ]
   )
 
@@ -849,6 +904,9 @@ export default function LiveOdds() {
       max: Number(bookmaker.max ?? bookmakerSetting.max ?? 10000),
     }
     if (tryOneClickPlace(slip)) return
+    // Only one inline slip open at a time across markets.
+    setActiveFancyBet(null)
+    setActiveSportBook(null)
     setActiveBookmaker(slip)
   }
   const onFancyClick = (item, betType) => {
@@ -876,6 +934,9 @@ export default function LiveOdds() {
       gtype: item.gtype,
     }
     if (tryOneClickPlace(slip)) return
+    // Only one inline slip open at a time across markets.
+    setActiveBookmaker(null)
+    setActiveSportBook(null)
     setActiveFancyBet(slip)
   }
   const onSportbookClick = (market, runner) => {
@@ -907,6 +968,9 @@ export default function LiveOdds() {
       max: 5000,
     }
     if (tryOneClickPlace(slip)) return
+    // Only one inline slip open at a time across markets.
+    setActiveBookmaker(null)
+    setActiveFancyBet(null)
     setActiveSportBook(slip)
   }
 
@@ -1059,6 +1123,8 @@ export default function LiveOdds() {
                 String(placingSelectionId) ===
                   String(activeBookmaker?.selectionId ?? '')
               }
+              fancyProgressMap={fancyProgressMap}
+              onFancyProgressClose={clearFancyProgressFor}
             />
           )}
 
@@ -1092,6 +1158,8 @@ export default function LiveOdds() {
                   }
                   exposureData={visibleExposureByMarket.get('0') ?? null}
                   onBookClick={setBookFancyTarget}
+                  fancyProgressMap={fancyProgressMap}
+                  onFancyProgressClose={clearFancyProgressFor}
                 />
               )}
 
@@ -1110,6 +1178,8 @@ export default function LiveOdds() {
                       String(activeSportBook?.selectionId ?? '')
                   }
                   exposureByMarket={visibleExposureByMarket}
+                  fancyProgressMap={fancyProgressMap}
+                  onFancyProgressClose={clearFancyProgressFor}
                 />
               )}
             </div>
@@ -1950,6 +2020,8 @@ function BookmakerSection({
   onPick,
   onPlaceBet,
   isPlacingActive,
+  fancyProgressMap,
+  onFancyProgressClose,
 }) {
   const { t } = useTranslation()
 
@@ -2206,6 +2278,18 @@ function BookmakerSection({
                       </td>
                     </tr>
                   )}
+                  {fancyProgressMap?.[bookmaker.selectionId] && (
+                    <tr>
+                      <td colSpan={7} className="p-0">
+                        <FancyProgress
+                          config={fancyProgressMap[bookmaker.selectionId]}
+                          onClose={() =>
+                            onFancyProgressClose?.(bookmaker.selectionId)
+                          }
+                        />
+                      </td>
+                    </tr>
+                  )}
                 </Fragment>
               )
             })}
@@ -2414,6 +2498,8 @@ function FancySection({
   isPlacingActive,
   exposureData,
   onBookClick,
+  fancyProgressMap,
+  onFancyProgressClose,
 }) {
   const { t } = useTranslation()
   if (!items.length) {
@@ -2646,6 +2732,18 @@ function FancySection({
                       </td>
                     </tr>
                   )}
+                  {fancyProgressMap?.[item.SelectionId] && (
+                    <tr>
+                      <td colSpan={isMobile ? 3 : 5} className="p-0">
+                        <FancyProgress
+                          config={fancyProgressMap[item.SelectionId]}
+                          onClose={() =>
+                            onFancyProgressClose?.(item.SelectionId)
+                          }
+                        />
+                      </td>
+                    </tr>
+                  )}
                 </Fragment>
               )
             })}
@@ -2703,6 +2801,8 @@ function SportbookSection({
   onPlaceBet,
   isPlacingActive,
   exposureByMarket,
+  fancyProgressMap,
+  onFancyProgressClose,
 }) {
   const [collapsed, setCollapsed] = useState({})
   const toggle = (id) => setCollapsed((prev) => ({ ...prev, [id]: !prev[id] }))
@@ -2809,6 +2909,16 @@ function SportbookSection({
                                 onPlaceBet?.(slip, () => onActiveChange(null))
                               }
                               isPlacing={isPlacingActive}
+                            />
+                          </div>
+                        )}
+                        {fancyProgressMap?.[runner.selectionId] && (
+                          <div className="w-full">
+                            <FancyProgress
+                              config={fancyProgressMap[runner.selectionId]}
+                              onClose={() =>
+                                onFancyProgressClose?.(runner.selectionId)
+                              }
                             />
                           </div>
                         )}
