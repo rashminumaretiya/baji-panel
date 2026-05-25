@@ -1,4 +1,4 @@
-import { Suspense, useMemo } from 'react'
+import { Suspense, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation } from 'react-router-dom'
 import {
@@ -7,6 +7,7 @@ import {
   selectIsOneClickBet,
   setLoginWindow,
 } from '../store/slices/authSlice'
+import { fetchUplineContacts } from '../store/slices/accountSlice'
 import {
   selectIsFullScreenLoader,
   selectIsMainScreenLoader,
@@ -94,6 +95,10 @@ export default function Layout() {
 
   const showRightContent = !isMobile && !isAccountRoute
   const showMobileNavigation = isMobile && !isPlatformPage
+
+  useEffect(() => {
+    if (isAuthenticated) dispatch(fetchUplineContacts())
+  }, [isAuthenticated, dispatch])
 
   const mainWrapperClass = isAuthenticated
     ? MAIN_WRAPPER_BASE

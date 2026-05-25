@@ -311,6 +311,41 @@ export const fetchWithdrawalHistory = createAsyncThunk(
   }
 )
 
+// ─── Upline Contacts (Archive parity: AccountService.getAdminContactInfo)
+// GET /user/admin-contact-info → { whatsapp:{commonContact}, gmail, facebook,
+// messenger, telegram, ... }. We reshape into [{ label, link }] where `label`
+// is the SvgIcon key and `link` is the destination URL (wa.me / mailto / raw).
+export const fetchUplineContacts = createAsyncThunk(
+  'account/fetchUplineContacts',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await http.get('user/admin-contact-info')
+      const data = res.data?.data ?? {}
+      const reshaped = {
+        whatsapp: data.whatsapp
+          ? `https://wa.me/${data.whatsapp.commonContact ?? ''}`
+          : '',
+        gmail: data.gmail ? `mailto:${data.gmail}` : '',
+        facebook: data.facebook || '',
+        messenger: data.messenger || '',
+        telegram: data.telegram || '',
+      }
+      return Object.entries(reshaped).map(([label, link]) => ({ label, link }))
+    } catch (err) {
+      return rejectWithValue(rejectErr(err))
+    }
+  },
+  {
+    // Dedupe across layouts: every layout dispatches on auth but the request
+    // only fires once per session (CLAUDE.md: prefer `condition` over call-site
+    // guards). Pass `{ force: true }` to re-fetch (e.g. after re-login).
+    condition: (_, { getState }) => {
+      const status = getState().account?.uplineContacts?.status
+      return status !== 'loading' && status !== 'succeeded'
+    },
+  }
+)
+
 // ─── Slice ──────────────────────────────────────────────────────────────
 
 const initialState = {
@@ -328,6 +363,8 @@ const initialState = {
 
   withdrawDetails: { data: null, status: 'idle', error: null },
   withdrawRequest: { data: null, status: 'idle', error: null },
+
+  uplineContacts: { data: [], status: 'idle', error: null },
 }
 
 function applyListCases(builder, thunk, key) {
@@ -403,6 +440,20 @@ const accountSlice = createSlice({
         s.promotion.error = payload?.message || 'Request failed'
       })
 
+    // Upline contacts: store the reshaped [{ label, link }] array under .data.
+    b.addCase(fetchUplineContacts.pending, (s) => {
+      s.uplineContacts.status = 'loading'
+      s.uplineContacts.error = null
+    })
+      .addCase(fetchUplineContacts.fulfilled, (s, { payload }) => {
+        s.uplineContacts.status = 'succeeded'
+        s.uplineContacts.data = Array.isArray(payload) ? payload : []
+      })
+      .addCase(fetchUplineContacts.rejected, (s, { payload }) => {
+        s.uplineContacts.status = 'failed'
+        s.uplineContacts.error = payload?.message || 'Request failed'
+      })
+
     // Both gateway variants share the same withdrawRequest slot.
     ;[createWithdrawRequest, createCatopayWithdrawRequest].forEach((thunk) => {
       b.addCase(thunk.pending, (s) => {
@@ -438,3 +489,4 @@ export const selectSelfDepositSubmit = (s) => s.account.selfDepositSubmit
 export const selectSelfDepositVerify = (s) => s.account.selfDepositVerify
 export const selectWithdrawDetails = (s) => s.account.withdrawDetails
 export const selectWithdrawRequest = (s) => s.account.withdrawRequest
+export const selectUplineContacts = (s) => s.account.uplineContacts.data

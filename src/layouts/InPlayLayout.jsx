@@ -1,6 +1,7 @@
-import { Suspense, useMemo } from 'react'
+import { Suspense, useEffect, useMemo } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import { fetchUplineContacts } from '../store/slices/accountSlice.js'
 import BetSlip from '../components/BetSlip.jsx'
 import Header from '../components/Header.jsx'
 import MobileNavigation from '../components/MobileNavigation.jsx'
@@ -37,6 +38,10 @@ export default function InPlayLayout() {
   )
   const showNewsLine = isAuthenticated && !isPlatformPage && !isYellowTheme
   const showMobileNavigation = isMobile && !isPlatformPage
+
+  useEffect(() => {
+    if (isAuthenticated) dispatch(fetchUplineContacts())
+  }, [isAuthenticated, dispatch])
 
   return (
     <div>

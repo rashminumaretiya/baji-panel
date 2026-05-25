@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Overlay, Popover } from '../shared/components/primitives/Popover.jsx'
+import { selectUplineContacts } from '../store/slices/accountSlice.js'
 import SvgIcon from './SvgIcon.jsx'
 
 // Translation keys per menu entry — labels are resolved at render time so we
@@ -68,6 +70,7 @@ export default function MyAccountPopup({
   const [show, setShow] = useState(false)
   const [target, setTarget] = useState(null)
   const navigate = useNavigate()
+  const uplineContacts = useSelector(selectUplineContacts)
 
   const handleToggle = (e) => {
     setTarget(e.currentTarget)
@@ -115,7 +118,21 @@ export default function MyAccountPopup({
                 <span className="whitespace-nowrap">
                   {t('common.uplineContact', 'Upline Contact')}:
                 </span>
-                <div className="flex ml-2 overflow-x-auto" />
+                <div className="flex ml-2 overflow-x-auto gap-1.5 [&_a]:inline-flex [&_a]:items-center [&_i]:inline-flex [&_svg]:w-4 [&_svg]:h-4">
+                  {uplineContacts
+                    ?.filter((c) => c?.link)
+                    ?.map((contact) => (
+                      <a
+                        key={contact?.label}
+                        href={contact?.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={contact?.link}
+                      >
+                        <SvgIcon name={contact?.label} />
+                      </a>
+                    ))}
+                </div>
               </li>
               {MENU_ITEMS.map((item) => (
                 <li

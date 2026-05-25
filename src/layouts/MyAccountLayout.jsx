@@ -1,7 +1,7 @@
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Header from '../components/Header.jsx'
 import NewsLine from '../components/NewsLine.jsx'
 import Loader from '../shared/components/Loader.jsx'
@@ -11,6 +11,11 @@ import {
   selectIsYellowTheme,
 } from '../store/slices/commonSlice.js'
 import { selectIsAuthenticated } from '../store/slices/authSlice.js'
+import {
+  fetchUplineContacts,
+  selectUplineContacts,
+} from '../store/slices/accountSlice.js'
+import SvgIcon from '../components/SvgIcon.jsx'
 
 function cx(...cs) {
   return cs.filter(Boolean).join(' ')
@@ -84,10 +89,16 @@ export default function MyAccountLayout() {
   const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const isMobile = useIsMobile()
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
   const isAuthenticated = useSelector(selectIsAuthenticated)
+  const uplineContacts = useSelector(selectUplineContacts)
+
+  useEffect(() => {
+    if (isAuthenticated) dispatch(fetchUplineContacts())
+  }, [isAuthenticated, dispatch])
 
   const activeTab = tabs.find((tab) => tab.path === location.pathname)
   const showSidebar = !isMobile
@@ -127,6 +138,28 @@ export default function MyAccountLayout() {
                 >
                   <li className={sidebarLiFirst}>
                     {t('header.myAccount', 'My Account')}
+                  </li>
+                  <li
+                    className={`${sidebarLiBase} flex flex-row items-center gap-1.5 [&_a]:inline-flex [&_a]:items-center [&_i]:inline-flex [&_svg]:w-4 [&_svg]:h-4`}
+                  >
+                    <span className="whitespace-nowrap text-white">
+                      {t('common.uplineContact', 'Upline Contact')} :
+                    </span>
+                    <div className="flex ml-2 overflow-x-auto gap-1.5">
+                      {uplineContacts
+                        ?.filter((c) => c?.link)
+                        ?.map((contact) => (
+                          <a
+                            key={contact?.label}
+                            href={contact?.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={contact?.link}
+                          >
+                            <SvgIcon name={contact?.label} />
+                          </a>
+                        ))}
+                    </div>
                   </li>
                   {tabs.map((tab, idx) => {
                     const isActive = location.pathname === tab.path

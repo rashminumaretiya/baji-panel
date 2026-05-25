@@ -8,6 +8,8 @@ import {
   selectUser,
 } from '../store/slices/authSlice.js'
 import { selectIsMobile } from '../store/slices/commonSlice.js'
+import { selectUplineContacts } from '../store/slices/accountSlice.js'
+import SvgIcon from '../components/SvgIcon.jsx'
 
 // Ported from sbex-user-fe/src/app/features/components/my-account-mobile.
 // Mobile-only menu page mounted at /account.
@@ -145,6 +147,7 @@ export default function Account() {
   const isMobile = useSelector(selectIsMobile)
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const user = useSelector(selectUser)
+  const uplineContacts = useSelector(selectUplineContacts)
 
   // Mirrors Angular's authGuard: /account is mobile-only — desktop hits the
   // standard /my-account route instead.
@@ -179,6 +182,28 @@ export default function Account() {
       </div>
 
       <ul className="m-0 pl-0 mb-5 border-b border-[var(--sm-gray-blue)]">
+        <li
+          className={`${menuItemClass} flex flex-row items-center [&_a]:inline-flex [&_a]:items-center [&_i]:inline-flex [&_svg]:w-[5.33vw] [&_svg]:h-[5.33vw]`}
+        >
+          <span className="whitespace-nowrap">
+            {t('common.uplineContact', 'Upline Contact')} :
+          </span>
+          <div className="flex ml-2 overflow-x-auto gap-[2.13vw]">
+            {uplineContacts
+              ?.filter((c) => c?.link)
+              ?.map((contact) => (
+                <a
+                  key={contact?.label}
+                  href={contact?.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={contact?.link}
+                >
+                  <SvgIcon name={contact?.label} />
+                </a>
+              ))}
+          </div>
+        </li>
         {MENU_ITEMS.map((item) => (
           <li key={item.id} className="list-none">
             <a
