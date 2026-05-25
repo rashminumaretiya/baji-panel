@@ -44,7 +44,7 @@ const BTN_WRAPPER = 'w-1/2 max-md:flex-1 max-md:w-auto'
 
 // `.btn` inside `.btn-wrapper` — 90% wide on desktop, full on mobile.
 const FOOTER_BTN_BASE =
-  'w-[90%] max-md:h-[10.93333vw] max-md:w-full max-md:text-[4vw] max-md:rounded-[1.6vw] text-[11px] font-bold leading-[23px] p-0 border rounded'
+  'w-[90%] max-md:h-[10.93333vw] max-md:w-full max-md:text-[4vw]! max-md:rounded-[1.6vw] text-[11px] font-bold leading-[23px] p-0 border rounded'
 
 export default function Stake({
   isMobile = false,
@@ -122,21 +122,29 @@ export default function Stake({
         >
           {isMobile ? (
             <>
-              <div className="flex items-center justify-between [&>div]:flex [&>div]:items-center">
-                <div>
-                  <SvgIcon name="settingIcon" />
-                  <span>{t('common.settings', 'Setting')}</span>
+              <div className="flex items-center justify-between [&>div]:flex [&>div]:items-center bg-primary">
+                <div className="px-[1.8666666667vw] text-white leading-[2.6] border-r flex-1 border-white/20">
+                  <SvgIcon
+                    name="settingIcon"
+                    className="w-[6.3333333333vw] h-[6.3333333333vw] mr-[1.3333333333vw]"
+                  />
+                  <span className="text-[4vw] font-bold">
+                    {t('common.settings', 'Setting')}
+                  </span>
                 </div>
                 <SvgIcon
                   name="closePopover"
-                  className="cursor-pointer"
+                  className="cursor-pointer px-[3vw] text-white!"
                   role="button"
                   tabIndex={0}
                   onClick={onCancel}
                   onKeyDown={(e) => e.key === 'Enter' && onCancel?.()}
                 />
               </div>
-              <h3 className="mb-0 bg-[var(--xxl-blue)] text-white px-[1.86667vw] py-[1.86667vw] text-[3.73333vw] font-bold leading-[2.2]">
+              <h3
+                className="mb-0 bg-[linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)]
+ text-white px-[1.86667vw] md:py-[1.86667vw] text-[3.73333vw] font-bold leading-[2.2]"
+              >
                 {t('common.stake', 'Stake')}
               </h3>
             </>
@@ -154,7 +162,7 @@ export default function Stake({
               <input
                 id="stake-default"
                 type="number"
-                className="h-5 leading-5 px-[5px] mx-[5px] w-[29.16666%] text-[11px] border border-[var(--input-group-border)] rounded max-md:w-[29.66667vw] max-md:px-[1.86667vw] max-md:py-[2.66667vw] max-md:mx-[1.6666vw] max-md:my-0 max-md:h-auto max-md:text-[4vw] max-md:leading-normal max-md:border-[var(--xxl-gray)] max-md:rounded-[1.6vw] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(var(--black-rgb),0.1)] max-md:text-right focus:max-md:shadow-[inset_0_0.26667vw_1.33333vw_rgba(var(--xss-yellow),0.6)] focus:max-md:border-[var(--coffee)] bg-white"
+                className="leading-5 px-[5px] mx-[5px] w-[29.16666%] text-[11px] border border-[var(--input-group-border)] rounded max-md:w-[29.66667vw] max-md:px-[1.86667vw] max-md:py-[2vw] max-md:mx-[1.6666vw] max-md:my-0 max-md:h-auto max-md:text-[4vw] max-md:leading-normal max-md:border-[var(--xxl-gray)] max-md:rounded-[1.6vw] max-md:shadow-[inset_0_0.53333vw_0_0_rgba(var(--black-rgb),0.1)] max-md:text-right focus:max-md:shadow-[inset_0_0.26667vw_1.33333vw_rgba(var(--xss-yellow),0.6)] focus:max-md:border-[var(--coffee)] bg-white"
                 min={0}
                 value={defaultStake}
                 onChange={(e) => setDefaultStake(e.target.value)}
@@ -167,8 +175,7 @@ export default function Stake({
               <div className="max-md:mr-[-1.86667vw]">
                 <h6
                   className={cx(
-                    'block md:hidden',
-                    TITLE_CLASS,
+                    'block md:hidden leading-[2.2] text-[3.7333333333vw]',
                     isMobile && TITLE_ODDS_OVERRIDE
                   )}
                 >

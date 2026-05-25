@@ -2868,18 +2868,20 @@ function SportbookSection({
                             <span className="font-bold">
                               {titleCase(runner.runnerName)}
                             </span>
-                            <span className="inline-flex items-center w-full">
-                              <BetExposureCell
-                                selectionId={runner.selectionId}
-                                marketId={market.marketId}
-                                exposureData={
-                                  exposureByMarket?.get(
-                                    String(market.marketId)
-                                  ) ?? null
-                                } //marketExposure
-                                marketName="SPORTS_BOOK"
-                              />
-                            </span>
+                            {exposureByMarket?.get(String(market.marketId)) && (
+                              <span className="inline-flex items-center w-full">
+                                <BetExposureCell
+                                  selectionId={runner.selectionId}
+                                  marketId={market.marketId}
+                                  exposureData={
+                                    exposureByMarket?.get(
+                                      String(market.marketId)
+                                    ) ?? null
+                                  } //marketExposure
+                                  marketName="SPORTS_BOOK"
+                                />
+                              </span>
+                            )}
                           </p>
                           <div className="flex items-center flex-[0_0_40%] max-md:flex-[0_0_37.3333333333vw]">
                             <span

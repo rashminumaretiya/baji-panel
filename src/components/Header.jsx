@@ -129,14 +129,9 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
       dispatch(setOpenBets([]))
       return undefined
     }
-    const params = openBetsEventId
-      ? { eventId: String(openBetsEventId) }
-      : {}
+    const params = openBetsEventId ? { eventId: String(openBetsEventId) } : {}
     dispatch(fetchOpenBets(params))
-    const intervalId = setInterval(
-      () => dispatch(fetchOpenBets(params)),
-      15000
-    )
+    const intervalId = setInterval(() => dispatch(fetchOpenBets(params)), 15000)
     return () => clearInterval(intervalId)
   }, [isAuth, dispatch, openBetsEventId, openBetRefreshTick])
 
@@ -244,9 +239,11 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                   )}
                 >
                   <div className={stakeHeaderClass}>
-                    <div className="flex items-center text-white flex-1 max-md:px-[1.87vw] max-md:leading-[2.6] max-md:border-r max-md:border-white/30 [&_svg]:max-md:w-[6.33vw] [&_svg]:max-md:h-[6.33vw] [&_svg]:mr-[1.33vw]">
+                    <div className="flex items-center text-white flex-1 max-md:px-[1.87vw] max-md:leading-[2.6] max-md:border-r max-md:border-white/30 max-md:[&_svg]:w-[6.33vw]! max-md:[&_svg]:h-[6.33vw]! [&_svg]:mr-[1.33vw]">
                       <SvgIcon name="dollarCoin" />
-                      <span>{t('openBets.title', 'Open Bets')}</span>
+                      <span className="max-md:text-[4vw] font-bold">
+                        {t('openBets.title', 'Open Bets')}
+                      </span>
                     </div>
                     <SvgIcon
                       name="closePopover"
@@ -302,8 +299,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
                     <span
                       className={cx(
                         'value text-white px-1.5 py-px',
-                        isExposure && 'text-[#d0021b] !important rounded-md',
-                        !isYellowTheme && isExposure && 'text-[#ff4040]'
+                        !isYellowTheme && isExposure && 'text-[#ff4040]!'
                       )}
                     >
                       {isExposure

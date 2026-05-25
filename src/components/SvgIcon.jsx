@@ -10,7 +10,7 @@ export default function SvgIcon({
   if (!html) return null
   return (
     <Tag
-      className={className}
+      className={['svg-icon', className].filter(Boolean).join(' ')}
       dangerouslySetInnerHTML={{ __html: html }}
       aria-hidden={rest.onClick ? undefined : true}
       {...rest}

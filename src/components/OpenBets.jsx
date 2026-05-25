@@ -324,7 +324,7 @@ function OpenBetsListBackLay({
 
   return (
     <>
-      <h6 className="p-2 m-0 text-[12px] font-bold bg-[var(--xl-th-bg)] max-md:px-[1.86667vw] max-md:bg-[image:linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] max-md:text-[3.73333vw] max-md:leading-[2.2] max-md:text-white max-md:font-semibold">
+      <h6 className="md:p-2 px-2 m-0 text-[12px] font-bold bg-[var(--xl-th-bg)] max-md:px-[1.86667vw] max-md:bg-[image:linear-gradient(-180deg,var(--xl-blue)_0%,var(--xxl-blue)_82%)] max-md:text-[3.73333vw] max-md:leading-[2.2] max-md:text-white max-md:font-semibold">
         {t('common.matched', 'Matched')}
       </h6>
       <div className={`overflow-x-auto ${wrapperClass}`}>
