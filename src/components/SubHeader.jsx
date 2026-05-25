@@ -303,14 +303,14 @@ const SubHeaderTab = function SubHeaderTab({
       tabIndex={0}
     >
       {label}
-      {showLiveChip && (
+      {showLiveChip ? (
         <div className="absolute top-0 right-[3px] -translate-y-1/2 h-3 rounded-[3px] shadow-[0_1px_3px_0_rgba(0,0,0,0.5)] inline-flex overflow-hidden z-[9]">
           <div className="h-3 bg-white px-1 py-[2px] leading-[0] flex items-center justify-center before:animate-pulse before:content-[''] before:bg-[url(/img/svg/live-icon.svg)] before:bg-no-repeat before:bg-contain before:h-2 before:w-3.5" />
           <p className="text-[10px] leading-[0.8] mb-0 px-[5px] py-[2px] bg-[var(--red,#e83623)] text-white tracking-[0.4px] font-bold">
             {page.count ?? 0}
           </p>
         </div>
-      )}
+      ): null}
     </li>
   )
 }
