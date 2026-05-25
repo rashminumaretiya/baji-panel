@@ -143,52 +143,75 @@ export default function ProfitLoss() {
     [t]
   )
 
-  const CASINO_COLUMNS = useMemo(
-    () => [
+  const CASINO_COLUMNS = useMemo(() => {
+    const statusChipClass = (status) => {
+      const base =
+        'inline-block rounded-[3px] px-[6px] py-[2px] text-[11px] font-semibold uppercase'
+      switch (status) {
+        case 'WON':
+          return `${base} bg-[#d4edda] text-[#155724]`
+        case 'LOST':
+          return `${base} bg-[#f8d7da] text-[#721c24]`
+        case 'PENDING':
+          return `${base} bg-[#fff3cd] text-[#856404]`
+        default:
+          return base
+      }
+    }
+    return [
       {
         key: 'id',
-        label: t('common.id', 'ID'),
-        render: (_v, row) => row?.plId ?? row?._id ?? '--',
+        label: t('myBets.id', 'ID'),
+        render: (_v, row) => row?._id ?? '--',
       },
       {
         key: 'platform',
-        label: t('common.platform', 'Platform'),
-        render: (_v, row) => row?.provider?.platform ?? row?.platform ?? '--',
+        label: t('myBets.platform', 'Platform'),
+        render: (_v, row) => {
+          const root = row?.provider?.rootProvider ?? row?.rootProvider
+          const name = row?.provider?.name ?? row?.providerName ?? row?.name
+          if (root && name) return `${root} > ${name}`
+          return root ?? name ?? '--'
+        },
       },
       {
         key: 'transactionId',
-        label: t('common.transactionId', 'Transaction Id'),
-        render: (_v, row) => row?.transactionId ?? row?.gameId ?? '--',
+        label: t('myBets.transactionID', 'Transaction Id'),
+        render: (_v, row) => row?.transactionId ?? '--',
       },
       {
         key: 'roundId',
-        label: t('common.roundId', 'Round Id'),
+        label: t('myBets.roundID', 'Round Id'),
         render: (_v, row) => row?.roundId ?? '--',
       },
       {
         key: 'betAmount',
-        label: t('common.betAmount', 'Bet Amount'),
+        label: t('myBets.betAmount', 'Bet Amount'),
         render: (_v, row) => row?.betAmount ?? '--',
       },
       {
         key: 'winAmount',
-        label: t('common.winAmount', 'Win Amount'),
+        label: t('myBets.winAmount', 'Win Amount'),
         render: (_v, row) => row?.winAmount ?? '--',
       },
       {
         key: 'betPlaced',
-        label: t('myBets.betPlaced', 'Bet placed'),
+        label: t('myBets.placedDate', 'Bet placed'),
         render: (_v, row) =>
           row?.betPlacedAt ? new Date(row.betPlacedAt).toLocaleString() : '--',
       },
       {
         key: 'status',
-        label: t('common.status', 'Status'),
-        render: (_v, row) => row?.status ?? '--',
+        label: t('myBets.status', 'Status'),
+        render: (_v, row) =>
+          row?.status ? (
+            <span className={statusChipClass(row.status)}>{row.status}</span>
+          ) : (
+            '--'
+          ),
       },
-    ],
-    [t]
-  )
+    ]
+  }, [t])
 
   const marketTabs = useMemo(
     () =>
