@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -9,15 +9,11 @@ import {
 import {
   fetchOpenBets,
   selectActiveBetSlip,
-  selectOpenBetRefreshTick,
   selectOpenBets,
-  setOpenBets,
 } from '../store/slices/betSlipSlice.js'
 import { selectIsAuthenticated } from '../store/slices/authSlice.js'
 import Collapse from '../shared/components/primitives/Collapse.jsx'
 import SvgIcon from './SvgIcon.jsx'
-
-const OPEN_BETS_POLL_MS = 15000
 
 function cx(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -527,7 +523,6 @@ export default function OpenBets() {
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const openBetsList = useSelector(selectOpenBets) ?? []
   const isAuthenticated = useSelector(selectIsAuthenticated)
-  const refreshTick = useSelector(selectOpenBetRefreshTick)
 
   const { eventId } = useParams()
 
@@ -536,43 +531,6 @@ export default function OpenBets() {
     const params = eventId ? { eventId: String(eventId) } : {}
     dispatch(fetchOpenBets(params))
   }, [dispatch, isAuthenticated, eventId])
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      dispatch(setOpenBets([]))
-      return undefined
-    }
-    const params = eventId ? { eventId: String(eventId) } : {}
-
-    dispatch(fetchOpenBets(params))
-
-    let id = null
-    const start = () => {
-      if (id != null) return
-      id = setInterval(() => {
-        dispatch(fetchOpenBets(params))
-      }, OPEN_BETS_POLL_MS)
-    }
-    const stop = () => {
-      if (id != null) clearInterval(id)
-      id = null
-    }
-    if (typeof document === 'undefined' || !document.hidden) start()
-
-    const onVisibility = () => {
-      if (document.hidden) {
-        stop()
-      } else {
-        dispatch(fetchOpenBets(params))
-        start()
-      }
-    }
-    document?.addEventListener?.('visibilitychange', onVisibility)
-    return () => {
-      stop()
-      document?.removeEventListener?.('visibilitychange', onVisibility)
-    }
-  }, [dispatch, isAuthenticated, eventId, refreshTick])
 
   if (isMobile) {
     return (

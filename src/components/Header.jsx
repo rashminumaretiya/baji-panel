@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -18,6 +18,11 @@ import {
   setIsPlayLiveStream,
   selectLogo,
 } from '../store/slices/commonSlice.js'
+import {
+  fetchOpenBets,
+  selectOpenBetRefreshTick,
+  setOpenBets,
+} from '../store/slices/betSlipSlice.js'
 import EventSearch from './EventSearch.jsx'
 import MyAccountPopup from './MyAccountPopup.jsx'
 import OpenBets from './OpenBets.jsx'
@@ -65,6 +70,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
   const isPlayLiveStream = useSelector(selectIsPlayLiveStream)
+  const openBetRefreshTick = useSelector(selectOpenBetRefreshTick)
 
   const wallet = walletFromStore ?? user?.wallet ?? DEFAULT_WALLET
   const currency = currencyFromStore ?? user?.currency ?? DEFAULT_CURRENCY
@@ -112,6 +118,27 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
     const intervalId = setInterval(() => dispatch(fetchBalance()), 15000)
     return () => clearInterval(intervalId)
   }, [isAuth, dispatch])
+
+  const openBetsEventId = useMemo(() => {
+    const segments = location.pathname.split('/').filter(Boolean)
+    return segments[0] === 'odds' ? segments[1] : null
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (!isAuth) {
+      dispatch(setOpenBets([]))
+      return undefined
+    }
+    const params = openBetsEventId
+      ? { eventId: String(openBetsEventId) }
+      : {}
+    dispatch(fetchOpenBets(params))
+    const intervalId = setInterval(
+      () => dispatch(fetchOpenBets(params)),
+      15000
+    )
+    return () => clearInterval(intervalId)
+  }, [isAuth, dispatch, openBetsEventId, openBetRefreshTick])
 
   const refreshTimerRef = useRef(null)
   useEffect(
