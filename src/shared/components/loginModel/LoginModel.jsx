@@ -27,11 +27,12 @@ export default function LoginModel({ isOpen, onClose }) {
   return (
     <Modal
       isOpen={!!isOpen}
-      onClose={onClose}
-      size="md"
+      size="xs"
       centered
       closeOnBackdrop={false}
       closeOnEscape={false}
+      hideClose
+      innerClass="shadow-[0_4px_5px_rgba(var(--black-rgb),0.5)]!"
     >
       {/* `.no-login` container — SCSS: `max-width: 320px; margin: 0 auto;`.
           The `.no-login .modal-content { box-shadow }` rule targeted bootstrap's

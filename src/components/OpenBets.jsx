@@ -414,7 +414,7 @@ function OpenBetsDesktop({
                   <div>
                     <div className="py-2 px-1">
                       <select
-                        className="p-1 w-full border rounded"
+                        className="py-1 pl-1 pr-6 w-full border rounded truncate"
                         value={selectedIndex}
                         onChange={(e) =>
                           setSelectedIndex(Number(e.target.value))

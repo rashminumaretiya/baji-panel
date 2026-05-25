@@ -130,7 +130,7 @@ export default function BookFancyModal({
           </tbody>
         </table>
       )}
-      <div className="p-[10px] max-md:p-[1.86vw]">
+      <div className="py-[10px] max-md:py-[1.86vw]">
         <button
           type="button"
           className="w-full px-[10px] py-[4px] rounded-[4px] border border-[#aaa] bg-[linear-gradient(-180deg,#fff_0%,#eee_89%)] text-[14px] font-bold leading-[1.6] text-[#1e1e1e] cursor-pointer hover:opacity-90 max-md:rounded-[1.6vw] max-md:text-[4vw] max-md:leading-[2.6] max-md:p-0"

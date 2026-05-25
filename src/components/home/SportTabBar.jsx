@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 const TAB_LIST_CLASS =
-  'flex rounded-none gap-[5px] justify-start border-b-0 m-0 px-[10px] pt-0 pb-px bg-[var(--xl-dark-green)] list-none'
+  'flex rounded-none gap-[5px] flex-wrap justify-start border-b-0 m-0 px-[10px] pt-0 pb-px bg-[var(--xl-dark-green)] list-none'
 
 const TAB_ITEM_CLASS = 'flex-none ml-0'
 

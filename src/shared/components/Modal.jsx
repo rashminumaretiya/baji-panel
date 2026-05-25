@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom'
 // Hand-rolled replacement for the previous react-bootstrap Modal. Keeps the
 // same public API (NgbModal defaults: backdrop='static', keyboard=false).
 const SIZE_CLASS = {
+  xs: 'max-w-[320px]',
   sm: 'max-w-[300px]',
   md: 'max-w-[500px]',
   lg: 'max-w-[800px]',
@@ -22,6 +23,7 @@ export default function Modal({
   // Opt-in header variants — defaults keep the existing left-title + close X look.
   centerTitle = false,
   hideClose = false,
+  innerClass = '',
 }) {
   useEffect(() => {
     if (!isOpen || !closeOnEscape) return
@@ -60,37 +62,39 @@ export default function Modal({
         className={`mx-auto my-[1.75rem] ${centered ? 'min-h-[calc(100%-3.5rem)] flex items-center' : ''}`}
       >
         <div
-          className={`relative mx-auto w-full ${sizeClass} bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.2)]`}
+          className={`relative mx-auto w-full ${sizeClass} bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.2)] ${innerClass}`}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex items-center justify-between border-b border-[#e5e5e5] px-4 py-3">
-            <h4
-              className={`m-0 text-base font-bold text-[#3b5160] font-[Tahoma,Helvetica,sans-serif] ${centerTitle ? 'flex-1 text-center' : ''}`}
-            >
-              {title}
-            </h4>
-            {!hideClose && (
-              <span
-                className="cursor-pointer leading-none text-[#3b5160]"
-                onClick={onClose}
-                role="button"
-                aria-label="Close"
+          {title && (
+            <div className="flex items-center justify-between border-b border-[#e5e5e5] px-4 py-3">
+              <h4
+                className={`m-0 text-base font-bold text-[#3b5160] font-[Tahoma,Helvetica,sans-serif] ${centerTitle ? 'flex-1 text-center' : ''}`}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
+                {title}
+              </h4>
+              {!hideClose && (
+                <span
+                  className="cursor-pointer leading-none text-[#3b5160]"
+                  onClick={onClose}
+                  role="button"
+                  aria-label="Close"
                 >
-                  <path
-                    d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z"
-                    fillRule="evenodd"
-                  />
-                </svg>
-              </span>
-            )}
-          </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z"
+                      fillRule="evenodd"
+                    />
+                  </svg>
+                </span>
+              )}
+            </div>
+          )}
           <div className="p-4">{children}</div>
         </div>
       </div>
