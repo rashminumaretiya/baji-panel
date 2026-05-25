@@ -128,7 +128,7 @@ export default function CurrentBets() {
         key: 'betPlaced',
         label: t('myBets.betPlaced', 'Bet Placed'),
         render: (_v, row) =>
-          row?.createdAt ? new Date(row.createdAt).toLocaleString() : '--',
+          row?.betPlacedAt ? new Date(row.betPlacedAt).toLocaleString() : '--',
       },
       {
         key: 'stake',
@@ -138,7 +138,7 @@ export default function CurrentBets() {
       {
         key: 'avgOddMatched',
         label: t('myBets.avgOddMatched', 'Avg. Odd Matched'),
-        render: (_v, row) => row?.avgOddMatched ?? row?.odds ?? '--',
+        render: (_v, row) => row?.avgOddMatched ?? row?.odd ?? '--',
       },
       {
         key: 'actions',
@@ -150,16 +150,17 @@ export default function CurrentBets() {
   )
 
   const [marketCategory, setMarketCategory] = useState('EXCHANGE')
-  const [betStatus, setBetStatus] = useState('MATCHED')
+  const [betStatus, setBetStatus] = useState('ALL')
   const [orderBy, setOrderBy] = useState({ betPlaced: true, market: false })
   const [bets, setBets] = useState([])
 
   useEffect(() => {
     if (!token) return
     let cancelled = false
+    const orderByKey = orderBy?.market ? 'market' : 'betPlaced'
     http
       .get(
-        `bet/history?page=1&perPage=10&betStatus=${betStatus}&marketCategory=${marketCategory}`,
+        `bet/history?page=1&perPage=10&betStatus=${betStatus}&marketCategory=${marketCategory}&orderBy=${orderByKey}`,
         { headers: { Authorization: `Bearer ${token}` } }
       )
       .then((res) => {
@@ -170,7 +171,7 @@ export default function CurrentBets() {
     return () => {
       cancelled = true
     }
-  }, [token, marketCategory, betStatus])
+  }, [token, marketCategory, betStatus, orderBy])
 
   return (
     <MarketTabs value={marketCategory} onChange={setMarketCategory}>

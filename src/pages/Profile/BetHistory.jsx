@@ -103,7 +103,7 @@ export default function BetHistory() {
         key: 'betPlaced',
         label: t('myBets.betPlaced', 'Bet Placed'),
         render: (_v, row) =>
-          row?.createdAt ? new Date(row.createdAt).toLocaleString() : '--',
+          row?.betPlacedAt ? new Date(row.betPlacedAt).toLocaleString() : '--',
       },
       {
         key: 'stake',
@@ -113,7 +113,7 @@ export default function BetHistory() {
       {
         key: 'avgOddMatched',
         label: t('myBets.avgOddMatched', 'Avg. Odd Matched'),
-        render: (_v, row) => row?.avgOddMatched ?? row?.odds ?? '--',
+        render: (_v, row) => row?.avgOddMatched ?? row?.odd ?? '--',
       },
       {
         key: 'profitLoss',
