@@ -35,7 +35,7 @@ const MAIN_WRAPPER_BASE =
   'relative mx-auto bg-(--xs-gray) lg:w-[calc(100%-40px)] mt-[105px] md:w-[calc(100%-25px)] max-md:mt-[14.67vw] max-md:w-full'
 
 const MAIN_WRAPPER_NO_HEADER =
-  'relative mx-auto bg-(--xs-gray) w-[calc(100%-40px)] mt-[31px] max-md:mt-0 max-md:w-full'
+  'relative mx-auto bg-(--xs-gray) w-[calc(100%-40px)] max-md:w-full'
 
 const LEFT_CONTENT_BASE =
   'absolute left-0 top-0 w-[17.36%] h-[calc(100vh-105px)] max-md:h-[calc(100vh-14.67vw)] bg-(--xl-black)'

@@ -9,16 +9,12 @@ import {
   selectIsMcvYellowTheme,
   selectIsYellowTheme,
 } from '../store/slices/commonSlice.js'
-import { selectIsAuthenticated } from '../store/slices/authSlice.js'
 import {
   fetchUplineContacts,
   selectUplineContacts,
 } from '../store/slices/accountSlice.js'
 import { iconMap } from '../components/icons.jsx'
-
-function cx(...cs) {
-  return cs.filter(Boolean).join(' ')
-}
+import { cx } from '../utils/cx.js'
 
 const tabs = [
   {
@@ -73,11 +69,8 @@ const tabs = [
   },
 ]
 
-// Ported from layout.scss .main-wrapper auth / no-header-wrapper.
-const MAIN_WRAPPER_AUTH =
+const MAIN_WRAPPER =
   'relative mx-auto bg-(--xs-gray) w-[calc(100%-40px)] mt-[105px] min-[768px]:max-[1440px]:w-[calc(100%-25px)] max-md:mt-[14.67vw] max-md:w-full'
-const MAIN_WRAPPER_NO_HEADER =
-  'relative mx-auto bg-(--xs-gray) w-[calc(100%-40px)] mt-[31px] max-md:mt-0 max-md:w-full'
 
 const sidebarLiBase =
   'list-none py-[5.5px] pl-2.5 pr-1.5 text-[12px] text-(--xl-gray) cursor-pointer border-b border-[rgba(var(--white-rgb),0.1)] bg-(--xl-black)'
@@ -91,21 +84,15 @@ export default function MyAccountLayout() {
   const dispatch = useDispatch()
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
-  const isAuthenticated = useSelector(selectIsAuthenticated)
   const uplineContacts = useSelector(selectUplineContacts)
 
   useEffect(() => {
-    if (isAuthenticated) dispatch(fetchUplineContacts())
-  }, [isAuthenticated, dispatch])
-
+    dispatch(fetchUplineContacts())
+  }, [dispatch])
 
   const handleSelect = (path) => {
     if (location.pathname !== path) navigate(path)
   }
-
-  const mainWrapperClass = isAuthenticated
-    ? MAIN_WRAPPER_AUTH
-    : MAIN_WRAPPER_NO_HEADER
 
   // Sidebar item active background varies by theme.
   const activeBg = isYellowTheme
@@ -121,8 +108,8 @@ export default function MyAccountLayout() {
 
   return (
     <>
-      <Header isAuthenticated />
-      <div className={mainWrapperClass}>
+      <Header />
+      <div className={MAIN_WRAPPER}>
         <div className="mx-auto w-[1350px] bg-(--xs-gray)">
           <NewsLine />
           <div className="relative h-full w-full">
