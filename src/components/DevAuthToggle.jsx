@@ -14,7 +14,7 @@ import {
 
 // Reusable Tailwind class strings (kept here so each variant stays readable).
 const panelClass =
-  'fixed bottom-3 right-3 z-[9999] bg-[rgba(15,23,42,0.92)] text-white px-2.5 py-2 rounded-md text-[12px] font-[system-ui,sans-serif] shadow-[0_4px_14px_rgba(0,0,0,0.25)] flex flex-col gap-1.5 min-w-[200px]'
+  'fixed bottom-20 right-2 z-[9999] bg-[rgba(15,23,42,0.92)] text-white px-2.5 py-2 rounded-md text-[12px] font-[system-ui,sans-serif] shadow-[0_4px_14px_rgba(0,0,0,0.25)] flex flex-col gap-1.5 min-w-[200px]'
 const rowClass = 'flex items-center gap-1.5'
 const inputClass =
   'flex-1 py-[3px] px-1.5 rounded-[3px] border border-[#475569] bg-[#0f172a] text-white text-[12px]'
