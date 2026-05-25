@@ -83,9 +83,10 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   const [stakeTarget, setStakeTarget] = useState(null)
 
   const isAccountRoute = location.pathname.includes('my-account')
+  const useDesktopHeader = !isMob || isAccountRoute
   const showMobileBetsBtn = isAuth && isMob && !isAccountRoute
-  const showSearch = !isMob
-  const showAccountPopup = isAuth && !isMob
+  const showSearch = useDesktopHeader
+  const showAccountPopup = isAuth && useDesktopHeader
   const showMobileStake = isMob && !isAccountRoute
   const showLiveStreamBtn = isAuth && isMob && isStreamAvailable
 
@@ -172,7 +173,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   return (
     <div className="fixed top-0 right-0 left-0 z-[1000]">
       <header className={headerClass}>
-        {!isMob ? (
+        {useDesktopHeader ? (
           <div className="inline-flex items-center sm:flex-1">
             {logo && (
               <div className="me-0 sm:me-2 xl:me-3 [&_img]:h-auto [&_img]:max-h-[50px] [&_img]:w-auto [&_img]:max-w-[100px] [&_img]:object-cover">
@@ -324,6 +325,7 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
 
           {showAccountPopup && (
             <MyAccountPopup
+              isMobile={isMob && !isAccountRoute}
               userName={user?.fullName || user?.userName || 'User'}
             />
           )}

@@ -18,6 +18,9 @@ const PL_MARKET_TABS = [
   { id: 'ROYAL', i18nKey: 'common.royal', fallback: 'Royal' },
 ]
 
+// Tabs that show the static help text only — no API call.
+const STATIC_TABS = new Set(['ROYAL', 'MINI_GAME', 'SABA', 'BPOKER'])
+
 const pad = (n) => String(n).padStart(2, '0')
 const toIsoDate = (d) =>
   `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
@@ -169,8 +172,23 @@ export default function ProfitLoss() {
     setRefreshKey((k) => k + 1)
   }
 
+  const handleMarketChange = (id) => {
+    setMarketCategory(id)
+    setRows([])
+  }
+
   const fetchPnl = useCallback(() => {
     if (!token) return
+    if (STATIC_TABS.has(marketCategory)) return
+    const authHeaders = { headers: { Authorization: `Bearer ${token}` } }
+    const handle = (res) => {
+      const payload = res.data?.data
+      setRows(payload?.data ?? (Array.isArray(payload) ? payload : []))
+    }
+    if (marketCategory === 'CASINO') {
+      http.get('bet/casino-bets?page=1&perPage=10', authHeaders).then(handle)
+      return
+    }
     const periodStartDate = istStartIso(fromDate)
     const periodEndDate = istEndIso(toDate)
     const query = new URLSearchParams({
@@ -180,14 +198,7 @@ export default function ProfitLoss() {
       periodEndDate,
       marketCategory,
     }).toString()
-    http
-      .get(`bet/profit-loss?${query}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => {
-        const payload = res.data?.data
-        setRows(payload?.data ?? (Array.isArray(payload) ? payload : []))
-      })
+    http.get(`bet/profit-loss?${query}`, authHeaders).then(handle)
   }, [token, marketCategory, fromDate, toDate])
 
   useEffect(() => {
@@ -215,7 +226,7 @@ export default function ProfitLoss() {
       <Tabs
         tabs={marketTabs}
         activeId={marketCategory}
-        onChange={setMarketCategory}
+        onChange={handleMarketChange}
       />
 
       <div className={filterContainerClass}>

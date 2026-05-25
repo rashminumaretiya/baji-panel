@@ -85,17 +85,23 @@ export default function MyAccountPopup({
   return (
     <>
       <div
-        className="flex h-[26px] cursor-pointer items-center justify-center rounded-[3px] border border-black/40 bg-black/30 px-1.5 text-[12px] font-normal whitespace-nowrap text-(--header-balance-color) shadow-[inset_0_1px_0_0_rgba(var(--dark-alpha),0.5)] max-md:h-[9.6vw] max-md:w-[9.6vw] sm:ms-2 lg:ms-4 [&_.dropdown-icon_svg]:w-[9px] [&_.user-icon_svg]:h-[18px] [&_.user-icon_svg]:w-[18px]"
+        className={`flex h-[26px] cursor-pointer items-center justify-center rounded-[3px] border border-black/40 bg-black/30 px-1.5 text-[12px] font-normal whitespace-nowrap text-(--header-balance-color) shadow-[inset_0_1px_0_0_rgba(var(--dark-alpha),0.5)] sm:ms-2 lg:ms-4 [&_.dropdown-icon_svg]:w-[9px] [&_.user-icon_svg]:h-[18px] [&_.user-icon_svg]:w-[18px] ${
+          isMobile ? 'max-md:h-[9.6vw] max-md:w-[9.6vw]' : ''
+        }`}
         onClick={handleToggle}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => e.key === 'Enter' && handleToggle(e)}
       >
         <SvgIcon name="userIcon" className="user-icon" />
-        <span className="mx-1 inline-block max-md:hidden">
-          {t('common.myAccount', 'My Account')}
-        </span>
-        {!isMobile && <SvgIcon name="dropdown" className="dropdown-icon" />}
+        {!isMobile && (
+          <>
+            <span className="mx-1 inline-block">
+              {t('common.myAccount', 'My Account')}
+            </span>
+            <SvgIcon name="dropdown" className="dropdown-icon" />
+          </>
+        )}
       </div>
       <Overlay
         show={show}
