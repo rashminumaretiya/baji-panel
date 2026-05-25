@@ -282,7 +282,13 @@ export default function InlineBetSlip({
     onChange?.({ ...betSlipDetails, stake: Number(current) || 0 })
   }
 
-  if (isPlacing) return null
+  if (isPlacing && !fancyConfig) {
+    return (
+      <FancyProgress
+        config={{ progress: true, timePeriod: FEEDBACK_TIMEPERIOD.success }}
+      />
+    )
+  }
 
   if (fancyConfig) {
     return <FancyProgress config={fancyConfig} onClose={clearFancyConfig} />

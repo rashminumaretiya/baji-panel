@@ -2283,7 +2283,6 @@ function BookmakerSection({
                           onPlaceBet={onPlaceBet}
                           isPlacing={isPlacingActive}
                         />
-                        {isPlacingActive && <PlacingBetStrip />}
                       </td>
                     </tr>
                   )}
@@ -2736,7 +2735,6 @@ function FancySection({
                           onPlaceBet={onPlaceBet}
                           isPlacing={isPlacingActive}
                         />
-                        {isPlacingActive && <PlacingBetStrip />}
                       </td>
                     </tr>
                   )}
@@ -2761,43 +2759,6 @@ function FancySection({
     </>
   )
 }
-
-const PlacingBetStrip = memo(function PlacingBetStrip({ durationMs = 5000 }) {
-  const [elapsedMs, setElapsedMs] = useState(0)
-
-  useEffect(() => {
-    const start = Date.now()
-    const id = setInterval(() => {
-      const e = Date.now() - start
-      setElapsedMs(e)
-      if (e >= durationMs) clearInterval(id)
-    }, 100)
-    return () => clearInterval(id)
-  }, [durationMs])
-
-  const progress = Math.min((elapsedMs / durationMs) * 100, 100)
-  const remainingSec = Math.max((durationMs - elapsedMs) / 1000, 0).toFixed(1)
-
-  return (
-    <div
-      role="status"
-      aria-live="polite"
-      className="relative flex h-7 items-center justify-between overflow-hidden bg-(--xl-light-bg) px-3 text-(--dark)"
-    >
-      <span
-        aria-hidden="true"
-        className="absolute top-0 bottom-0 left-0 bg-(--xs-green-primary) transition-[width] duration-100 ease-linear"
-        style={{ width: `${progress}%` }}
-      />
-      <span className="relative z-1 text-[12px] font-medium">
-        Placing bet please wait...
-      </span>
-      <span className="relative z-1 text-[12px] font-medium tabular-nums">
-        {remainingSec} sec remaining
-      </span>
-    </div>
-  )
-})
 
 function SportbookSection({
   markets,
