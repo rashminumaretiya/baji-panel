@@ -9,7 +9,7 @@ import {
 } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { getSportIdFromSlug, getSportName } from '../core/constant/constants.js'
 import { http } from '../core/http/client.js'
@@ -316,6 +316,7 @@ export default function LiveOdds() {
   const { eventId, sport: sportSlug } = useParams()
   const sportId = getSportIdFromSlug(sportSlug)
 
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const isMobile = useIsMobile()
   const isAuthenticated = useSelector(selectIsAuthenticated)
@@ -403,8 +404,18 @@ export default function LiveOdds() {
           { signal }
         )
         const payload = response?.data?.data ?? response?.data ?? {}
+        const matchOdds = Array.isArray(payload.match_odds)
+          ? payload.match_odds
+          : []
+        if (!matchOdds.length) {
+          alertService.error(
+            t('errors.noMarketData', 'No market data available for this game.')
+          )
+          navigate(-1)
+          return
+        }
         previousMatchOddsRef.current.clear()
-        setMatchOddsList(processMatchOddsList(payload.match_odds ?? []))
+        setMatchOddsList(processMatchOddsList(matchOdds))
         setBookmakerOdds(payload.bookmaker ?? [])
         setFancy(payload.fancy ?? [])
         setPremium(payload.premium ?? payload.sportBook ?? [])
@@ -423,7 +434,7 @@ export default function LiveOdds() {
         dispatch(setMainScreenLoader(false))
       }
     },
-    [sportId, eventId, processMatchOddsList, dispatch]
+    [sportId, eventId, processMatchOddsList, dispatch, navigate, t]
   )
 
   useEffect(() => {
