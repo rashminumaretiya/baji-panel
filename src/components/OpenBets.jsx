@@ -14,16 +14,10 @@ import {
 import { selectIsAuthenticated } from '../store/slices/authSlice.js'
 import Collapse from '../shared/components/primitives/Collapse.jsx'
 import SvgIcon from './SvgIcon.jsx'
+import { formatAmount as formatNumber } from '../utils/customFunction.js'
 
 function cx(...classes) {
   return classes.filter(Boolean).join(' ')
-}
-
-function formatNumber(value) {
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value ?? 0)
 }
 
 function titleCaseBetType(t) {

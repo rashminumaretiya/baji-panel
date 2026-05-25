@@ -646,6 +646,41 @@ export default function LiveOdds() {
     preExposureMarket,
   ])
 
+  // ── Bookmaker preExposure publication.
+  const bmSelectionId = activeBookmaker?.selectionId
+  const bmMarketId = activeBookmaker?.marketId
+  const bmBetType = activeBookmaker?.betType ?? activeBookmaker?.type
+  const bmOdds = Number(activeBookmaker?.odds) || 0
+  const bmStake = Number(activeBookmaker?.stake) || 0
+  useEffect(() => {
+    if (bmSelectionId && bmStake > 0 && bmOdds > 0) {
+      const isBack = bmBetType === 'BACK'
+      const pnl = Number(((bmOdds * bmStake) / 100).toFixed(2))
+      const profit = (isBack ? 1 : -1) * pnl
+      const liability = (isBack ? -1 : 1) * bmStake
+      dispatch(
+        setPreExposure({
+          selectionId: bmSelectionId,
+          marketId: bmMarketId,
+          profit,
+          liability,
+          betType: bmBetType,
+          marketName: 'BOOKMAKER',
+        })
+      )
+    } else if (preExposureMarket === 'BOOKMAKER') {
+      dispatch(setPreExposure(null))
+    }
+  }, [
+    dispatch,
+    bmSelectionId,
+    bmMarketId,
+    bmBetType,
+    bmOdds,
+    bmStake,
+    preExposureMarket,
+  ])
+
   const fancyBuckets = useMemo(() => groupFancyByType(fancy), [fancy])
   const sportbookBuckets = useMemo(
     () => groupSportbookByCategory(premium),
@@ -1088,6 +1123,7 @@ export default function LiveOdds() {
                 String(placingSelectionId) ===
                   String(activeBookmaker?.selectionId ?? '')
               }
+              exposureByMarket={visibleExposureByMarket}
               fancyProgressMap={fancyProgressMap}
               onFancyProgressClose={clearFancyProgressFor}
             />
@@ -1978,6 +2014,7 @@ function BookmakerSection({
   onPick,
   onPlaceBet,
   isPlacingActive,
+  exposureByMarket,
   fancyProgressMap,
   onFancyProgressClose,
 }) {
@@ -2131,7 +2168,15 @@ function BookmakerSection({
                           {bookmaker.runnerName}
                         </span>
                         <div className="flex items-center">
-                          {/* bet-exposure slot (Angular: <app-bet-exposure />) */}
+                          <BetExposureCell
+                            selectionId={bookmaker.selectionId}
+                            marketId={bookmaker.mid}
+                            exposureData={
+                              exposureByMarket?.get(String(bookmaker.mid)) ??
+                              null
+                            }
+                            marketName="BOOKMAKER"
+                          />
                         </div>
                       </div>
                     </td>

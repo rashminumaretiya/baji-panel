@@ -19,18 +19,12 @@ import FancyProgress from '../shared/components/FancyProgress.jsx'
 import { resolveApiMessage } from '../shared/services/alert.js'
 import Loader from '../shared/components/Loader.jsx'
 import SvgIcon from './SvgIcon.jsx'
+import { formatAmount as formatNumber } from '../utils/customFunction.js'
 
 const DEFAULT_AVAILABLE_STAKE = [100, 200, 500, 1000, 2000, 5000]
 
 function cx(...classes) {
   return classes.filter(Boolean).join(' ')
-}
-
-function formatNumber(value) {
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value ?? 0)
 }
 
 function NoBetSlip({ isShowLoader }) {

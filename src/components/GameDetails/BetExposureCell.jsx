@@ -30,15 +30,11 @@
 //   value <  0  →  liability (red, parenthesised number)
 import { useSelector } from 'react-redux'
 import { selectPreExposure } from '../../store/slices/betSlipSlice.js'
-
-const numberFormatter = new Intl.NumberFormat('en-US', {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-})
+import { formatAmount } from '../../utils/customFunction.js'
 
 function formatExposure(value) {
-  if (value >= 0) return numberFormatter.format(value)
-  return `( ${numberFormatter.format(-1 * value)} )`
+  if (value >= 0) return formatAmount(value)
+  return `( ${formatAmount(-1 * value)} )`
 }
 
 function ImplyIcon({ className }) {
