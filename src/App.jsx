@@ -9,6 +9,7 @@ import InPlayLayout from './layouts/InPlayLayout.jsx'
 import Home from './pages/Home.jsx'
 import { selectIsAuthenticated } from './store/slices/authSlice.js'
 
+const Account = lazy(() => import('./pages/Account.jsx'))
 const Cricket = lazy(() => import('./pages/Cricket.jsx'))
 const Soccer = lazy(() => import('./pages/Soccer.jsx'))
 const Tennis = lazy(() => import('./pages/Tennis.jsx'))
@@ -61,6 +62,7 @@ function App() {
         <Route path="horse-racing" element={<HorseRacing />} />
         <Route path="greyhound-racing" element={<GreyhoundRacing />} />
         <Route path="multi-markets" element={<MultiMarkets />} />
+        <Route path="account" element={<Account />} />
       </Route>
 
       <Route element={<InPlayLayout />}>

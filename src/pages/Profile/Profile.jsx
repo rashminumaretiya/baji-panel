@@ -7,7 +7,7 @@ import { selectToken } from '../../store/slices/authSlice.js'
 import AddBackupNumberModal from './AddBackupNumberModal.jsx'
 import AddWhatsAppModal from './AddWhatsAppModal.jsx'
 import VerifyPrimaryNumberModal from './VerifyPrimaryNumberModal.jsx'
-import { EditIcon } from './icons.jsx'
+import { EditIcon, VerifiedIcon } from './icons.jsx'
 
 function formatDate(value) {
   if (!value) return '--'
@@ -249,12 +249,20 @@ export default function Profile() {
                           {t('profile.primaryNumber', 'Primary Number')}
                         </td>
                         <td className={tdValueClass}>{primaryNumber}</td>
-                        <ActionCell onClick={openVerifyPrimaryModal}>
-                          <span className="cursor-pointer ml-1">
-                            {t('common.verify', 'Verify')}{' '}
-                          </span>
-                          <EditIcon />
-                        </ActionCell>
+                        {contact.isVerified ? (
+                          <td className={tdValueClass}>
+                            <div className="flex items-center justify-end">
+                              <VerifiedIcon />
+                            </div>
+                          </td>
+                        ) : (
+                          <ActionCell onClick={openVerifyPrimaryModal}>
+                            <span className="cursor-pointer ml-1">
+                              {t('common.verify', 'Verify')}{' '}
+                            </span>
+                            <EditIcon />
+                          </ActionCell>
+                        )}
                       </tr>
                       <tr className={trClass}>
                         <td className={tdLabelClass}>

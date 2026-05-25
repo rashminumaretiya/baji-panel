@@ -54,11 +54,12 @@ export default function MobileNavigation() {
   }
   const goToAccount = () => {
     if (!isAuthenticated) return
-    navigate('/my-account')
+    navigate('/account')
   }
 
   const isHome = pathname === '/'
-  const isAccount = pathname.startsWith('/my-account')
+  const isAccount =
+    pathname === '/account' || pathname.startsWith('/my-account')
 
   return (
     <div

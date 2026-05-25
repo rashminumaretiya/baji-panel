@@ -49,6 +49,30 @@ export function SendIcon() {
   )
 }
 
+export function VerifiedIcon() {
+  return (
+    <i className="leading-none inline-flex">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+      >
+        <circle cx="8" cy="8" r="8" fill="#1e88f0" />
+        <path
+          d="M4.5 8.2l2.3 2.3 4.7-4.8"
+          stroke="#ffffff"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+      </svg>
+    </i>
+  )
+}
+
 export function CheckmarkIcon() {
   return (
     <i>
