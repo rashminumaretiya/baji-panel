@@ -4,7 +4,11 @@ import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
 import Table from '../../shared/Table.jsx'
+import Modal from '../../shared/components/Modal.jsx'
+import { alertService, resolveApiMessage } from '../../shared/services/alert.js'
+import { ComplaintIcon } from '../../components/icons.jsx'
 import MarketTabs from './MarketTabs.jsx'
+import { betTypeColorClass } from './betType.js'
 
 const BET_STATUS_OPTIONS = [
   { value: 'ALL', i18nKey: 'filters.all', fallback: 'All' },
@@ -88,6 +92,56 @@ export default function CurrentBets() {
   const [betStatus, setBetStatus] = useState('ALL')
   const [orderBy, setOrderBy] = useState({ betPlaced: true, market: false })
   const [bets, setBets] = useState([])
+  const [complaintBet, setComplaintBet] = useState(null)
+  const [complaintText, setComplaintText] = useState('')
+  const [complaintTouched, setComplaintTouched] = useState(false)
+  const [complaintSubmitting, setComplaintSubmitting] = useState(false)
+
+  const openComplaint = (row) => {
+    setComplaintBet(row)
+    setComplaintText('')
+    setComplaintTouched(false)
+  }
+  const closeComplaint = () => {
+    setComplaintBet(null)
+    setComplaintText('')
+    setComplaintTouched(false)
+    setComplaintSubmitting(false)
+  }
+  const submitComplaint = () => {
+    const text = complaintText.trim()
+    if (!text) {
+      setComplaintTouched(true)
+      return
+    }
+    const betId = complaintBet?._id ?? complaintBet?.betId
+    setComplaintSubmitting(true)
+    http
+      .post(
+        'bet/unsettled-bets-complains',
+        { betId, complaint: text },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then((res) => {
+        const msg = resolveApiMessage(
+          t,
+          res?.data,
+          t('myBets.complaintSent', 'Complaint sent successfully')
+        )
+        if (msg) alertService.success(msg)
+        closeComplaint()
+      })
+      .catch((err) => {
+        alertService.error(
+          resolveApiMessage(
+            t,
+            err,
+            t('errors.complaintFailed', 'Failed to send complaint')
+          )
+        )
+        setComplaintSubmitting(false)
+      })
+  }
 
   const COLUMNS = useMemo(
     () => [
@@ -128,14 +182,19 @@ export default function CurrentBets() {
         key: 'type',
         label: t('myBets.type', 'Type'),
         // Fancy bets show the matched odd alongside the bet type
-        // ("{betType} - {odd}"); other market categories keep just betType.
+        // ("{betType} > {odd}"); other market categories keep just betType.
+        // Text colour mirrors Angular's `.type-back/.type-yes` → --blue,
+        // `.type-lay/.type-no` → --red rules from styles.scss.
         render: (_v, row) => {
           const betType = row?.betType ?? row?.type ?? '--'
+          let label = betType
           if (marketCategory === 'FANCY') {
             const odd = row?.odd ?? row?.avgOddMatched
-            if (odd != null && odd !== '') return `${betType} > ${odd}`
+            if (odd != null && odd !== '') label = `${betType} > ${odd}`
           }
-          return betType
+          return (
+            <span className={betTypeColorClass(betType)}>{label}</span>
+          )
         },
       },
       {
@@ -157,7 +216,24 @@ export default function CurrentBets() {
       {
         key: 'actions',
         label: t('common.actions', 'Actions'),
-        render: () => '--',
+        render: (_v, row) => (
+          <div className="flex justify-end">
+            <ComplaintIcon
+              className="mx-1 cursor-pointer text-[#3b5160]"
+              title={t('myBets.complaint', 'Complaint')}
+              aria-label={t('myBets.complaint', 'Complaint')}
+              role="button"
+              tabIndex={0}
+              onClick={() => openComplaint(row)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  openComplaint(row)
+                }
+              }}
+            />
+          </div>
+        ),
       },
     ],
     [t, marketCategory]
@@ -193,6 +269,50 @@ export default function CurrentBets() {
       {bets.length > 0 && (
         <Table columns={COLUMNS} data={bets} rowKey="_id" />
       )}
+
+      <Modal
+        isOpen={!!complaintBet}
+        onClose={closeComplaint}
+        title={t('myBets.sendComplaint', 'Send Complaint')}
+        size="md"
+        closeOnEscape
+      >
+        <div className="form-group">
+          <label
+            htmlFor="complaint"
+            className="mb-2 block text-[12px] font-medium text-[#3b5160]"
+          >
+            {t('myBets.complaint', 'Complaint')}
+          </label>
+          <textarea
+            id="complaint"
+            className="w-full rounded border border-[#aaa] bg-white p-2 text-[13px] focus:border-(--cyanBlue) focus:outline-none"
+            rows={4}
+            placeholder={t(
+              'myBets.complaintPlaceholder',
+              'Enter your complaint'
+            )}
+            value={complaintText}
+            onChange={(e) => setComplaintText(e.target.value)}
+            onBlur={() => setComplaintTouched(true)}
+          />
+          {complaintTouched && !complaintText.trim() && (
+            <span className="mt-1 block text-[12px] text-(--red)">
+              {t('myBets.complaintRequired', 'Complaint is required')}
+            </span>
+          )}
+        </div>
+        <div className="mt-3 text-center">
+          <button
+            type="button"
+            className="btn btn-primary px-3 py-1 text-[12px]!"
+            disabled={complaintSubmitting}
+            onClick={submitComplaint}
+          >
+            {t('myBets.sendComplaint', 'Send Complaint')}
+          </button>
+        </div>
+      </Modal>
     </MarketTabs>
   )
 }

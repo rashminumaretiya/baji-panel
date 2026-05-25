@@ -5,6 +5,7 @@ import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
 import Table from '../../shared/Table.jsx'
 import MarketTabs from './MarketTabs.jsx'
+import { betTypeColorClass } from './betType.js'
 
 const BET_STATUS_OPTIONS = [
   { value: 'SETTLED', i18nKey: 'myBets.settled', fallback: 'Settled' },
@@ -97,7 +98,17 @@ export default function BetHistory() {
       {
         key: 'type',
         label: t('myBets.type', 'Type'),
-        render: (_v, row) => row?.betType ?? '--',
+        render: (_v, row) => {
+          const betType = row?.betType ?? row?.type ?? '--'
+          let label = betType
+          if (marketCategory === 'FANCY') {
+            const odd = row?.odd ?? row?.avgOddMatched
+            if (odd != null && odd !== '') label = `${betType} > ${odd}`
+          }
+          return (
+            <span className={betTypeColorClass(betType)}>{label}</span>
+          )
+        },
       },
       {
         key: 'betPlaced',
@@ -121,7 +132,7 @@ export default function BetHistory() {
         render: (_v, row) => row?.profitLoss ?? '--',
       },
     ],
-    [t]
+    [t, marketCategory]
   )
 
   const setJustForToday = () => {

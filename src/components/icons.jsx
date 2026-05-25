@@ -534,6 +534,15 @@ export function CopyIcon({ className = '', as: Tag = 'i', ...rest }) {
   )
 }
 
+export function ComplaintIcon({ className = '', as: Tag = 'i', ...rest }) {
+  const { classes, ariaHidden } = makeProps(rest, className)
+  return (
+    <Tag className={classes} aria-hidden={ariaHidden} {...rest}>
+      <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24"><g><g><path d="M12.004,3C7.029,3,3,6.641,3,11.13c0,1.617,0.525,3.124,1.425,4.39c0.036,0.039,0.101,0.145,0.143,0.215c0.088,0.16,0.144,0.339,0.144,0.533c0,0.073-0.839,3.056-0.839,3.056c-0.061,0.231,0.099,0.469,0.356,0.526c0.038,0.012,0.075,0.012,0.113,0.012c0.061,0,0.117-0.012,0.173-0.026l0.076-0.032l2.373-1.158c0.042-0.021,0.422-0.186,0.469-0.205c0.159-0.063,0.338-0.096,0.526-0.096c0.168,0,0.333,0.026,0.483,0.079c0.004,0,0.009,0,0.009,0.005c0.023,0.012,0.047,0.016,0.071,0.026c1.083,0.416,2.27,0.543,3.522,0.543c4.972,0,8.956-3.377,8.956-7.866C21.006,6.641,16.977,3,12.004,3z M12,16c-0.552,0-1-0.447-1-1s0.448-1,1-1c0.555,0,1,0.447,1,1S12.555,16,12,16z M13,11c0,0.553-0.445,1-1,1c-0.552,0-1-0.447-1-1V7c0-0.553,0.448-1,1-1c0.555,0,1,0.447,1,1V11z" fill="currentColor" /></g></g></svg>
+    </Tag>
+  )
+}
+
 // eslint-disable-next-line react-refresh/only-export-components
 export const iconMap = {
   "searchIcon": SearchIcon,
@@ -594,6 +603,7 @@ export const iconMap = {
   "mobileBanking": MobileBankingIcon,
   "arrowRoundBox": ArrowRoundBoxIcon,
   "copyIcon": CopyIcon,
+  "complaint": ComplaintIcon,
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
