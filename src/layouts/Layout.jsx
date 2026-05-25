@@ -38,19 +38,31 @@ const MAIN_WRAPPER_NO_HEADER =
   'relative mx-auto bg-(--xs-gray) w-[calc(100%-40px)] max-md:w-full'
 
 const LEFT_CONTENT_BASE =
-  'absolute left-0 top-0 w-[17.36%] h-[calc(100vh-105px)] max-md:h-[calc(100vh-14.67vw)] bg-(--xl-black)'
+  'absolute left-0 top-0 w-[17.36%] max-md:h-[calc(100vh-14.67vw)] bg-(--xl-black)'
 
 const LEFT_CONTENT_LIGHT =
-  'absolute left-0 top-0 w-[17.36%] h-[calc(100vh-105px)] max-md:h-[calc(100vh-14.67vw)] bg-white md:w-[16.33%]'
+  'absolute left-0 top-0 w-[17.36%] max-md:h-[calc(100vh-14.67vw)] bg-white md:w-[16.33%]'
 
 const LEFT_CONTENT_MCW =
-  'absolute left-0 top-0 w-[17.36%] h-[calc(100vh-105px)] max-md:h-[calc(100vh-14.67vw)] bg-white'
+  'absolute left-0 top-0 w-[17.36%] max-md:h-[calc(100vh-14.67vw)] bg-white'
+
+// Same convention as `MIDDLE_CONTENT_HEIGHT_*`: 105px gutter under the full
+// header (authed), 31px gutter under the sub-header strip (unauthed).
+const LEFT_CONTENT_HEIGHT_AUTH = 'h-[calc(100vh-105px)]'
+const LEFT_CONTENT_HEIGHT_NO_AUTH = 'h-[calc(100vh-31px)]'
 
 const MIDDLE_CONTENT_BASE =
-  'relative ml-[17.36%] mr-[26.04%] px-[15px] h-[calc(100svh-105px)] overflow-y-auto max-md:ml-0 max-md:mr-0 max-md:px-0'
+  'relative ml-[17.36%] mr-[26.04%] px-[15px] overflow-y-auto max-md:ml-0 max-md:mr-0 max-md:px-0'
 
 const MIDDLE_CONTENT_YELLOW =
-  'relative md:ml-[16.36%] ml-[17.36%] mr-[26.04%] px-[15px] h-[calc(100svh-105px)] overflow-y-auto max-md:ml-0 max-md:mr-0 max-md:px-0'
+  'relative md:ml-[16.36%] ml-[17.36%] mr-[26.04%] px-[15px] overflow-y-auto max-md:ml-0 max-md:mr-0 max-md:px-0'
+
+// Height matches the top-margin of `MAIN_WRAPPER_*`: 105px when the full
+// header is rendered (authed), 31px when only the sub-header strip shows
+// (unauthed). Keeps the middle column flush with the bottom of the viewport
+// instead of overshooting and forcing extra scroll when logged out.
+const MIDDLE_CONTENT_HEIGHT_AUTH = 'h-[calc(100svh-105px)]'
+const MIDDLE_CONTENT_HEIGHT_NO_AUTH = 'h-[calc(100vh-31px)]'
 
 const MIDDLE_CONTENT_MOBILE_ROUTER = 'max-md:pb-[18vw]'
 
@@ -104,14 +116,20 @@ export default function Layout() {
     ? MAIN_WRAPPER_BASE
     : MAIN_WRAPPER_NO_HEADER
 
-  const leftContentClass = isYellowTheme
-    ? LEFT_CONTENT_LIGHT
-    : isMcwCasinoTheme
-      ? LEFT_CONTENT_MCW
-      : LEFT_CONTENT_BASE
+  const leftContentClass = cx(
+    isYellowTheme
+      ? LEFT_CONTENT_LIGHT
+      : isMcwCasinoTheme
+        ? LEFT_CONTENT_MCW
+        : LEFT_CONTENT_BASE,
+    isAuthenticated ? LEFT_CONTENT_HEIGHT_AUTH : LEFT_CONTENT_HEIGHT_NO_AUTH
+  )
 
   const middleContentClass = cx(
     isYellowTheme ? MIDDLE_CONTENT_YELLOW : MIDDLE_CONTENT_BASE,
+    isAuthenticated
+      ? MIDDLE_CONTENT_HEIGHT_AUTH
+      : MIDDLE_CONTENT_HEIGHT_NO_AUTH,
     isMobile && MIDDLE_CONTENT_MOBILE_ROUTER
   )
 

@@ -14,7 +14,10 @@ import {
   selectUplineContacts,
 } from '../store/slices/accountSlice.js'
 import { iconMap } from '../components/icons.jsx'
-import { cx } from '../utils/cx.js'
+
+function cx(...cs) {
+  return cs.filter(Boolean).join(' ')
+}
 
 const tabs = [
   {

@@ -23,6 +23,7 @@ import {
   selectSportTabs,
 } from '../store/slices/sportSlice.js'
 import { setFullScreenLoader } from '../store/slices/commonSlice.js'
+import { selectIsAuthenticated } from '../store/slices/authSlice.js'
 import { alertService } from '../shared/services/alert.js'
 
 const EventTime = {
@@ -60,7 +61,13 @@ const TAB_LINK_ACTIVE =
   'max-md:bg-white max-md:text-[color:var(--text-color)]'
 
 const SECOND_PART_WRAPPER =
-  'max-h-[calc(100vh-198px)] overflow-y-auto min-h-[200px] max-md:max-h-none max-md:min-h-0 max-md:overflow-y-visible'
+  'overflow-y-auto min-h-[200px] max-md:max-h-none max-md:min-h-0 max-md:overflow-y-visible'
+
+// Max-height tracks the header gutter: 198px when the full header is rendered
+// (authed), 78px when only the sub-header strip shows (unauthed) — same auth
+// split applied to Layout's middle/left columns.
+const SECOND_PART_MAX_H_AUTH = 'max-h-[calc(100vh-198px)]'
+const SECOND_PART_MAX_H_NO_AUTH = 'max-h-[calc(100vh-78px)]'
 
 const GAME_DETAILS_ROW =
   'flex items-center border-b border-[color:var(--light-bg)] pl-[10px] pr-[6px] py-0 hover:bg-(--hover-bg)'
@@ -136,6 +143,7 @@ export default function InPlay() {
   const sportTabs = useSelector(selectSportTabs)
   const sportsEventMap = useSelector(selectInplayMap)
   const inplayStatus = useSelector(selectInplayStatus)
+  const isAuthenticated = useSelector(selectIsAuthenticated)
 
   const [activeTab, setActiveTab] = useState(EventTime.IN_PLAY)
 
@@ -476,7 +484,11 @@ export default function InPlay() {
           </ul>
           {isMobile && <MobileSearchEvent />}
         </div>
-        <div className={SECOND_PART_WRAPPER}>{renderTabContent(activeTab)}</div>
+        <div
+          className={`${SECOND_PART_WRAPPER} ${isAuthenticated ? SECOND_PART_MAX_H_AUTH : SECOND_PART_MAX_H_NO_AUTH}`}
+        >
+          {renderTabContent(activeTab)}
+        </div>
       </div>
     </div>
   )
