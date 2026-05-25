@@ -143,6 +143,53 @@ export default function ProfitLoss() {
     [t]
   )
 
+  const CASINO_COLUMNS = useMemo(
+    () => [
+      {
+        key: 'id',
+        label: t('common.id', 'ID'),
+        render: (_v, row) => row?.plId ?? row?._id ?? '--',
+      },
+      {
+        key: 'platform',
+        label: t('common.platform', 'Platform'),
+        render: (_v, row) => row?.provider?.platform ?? row?.platform ?? '--',
+      },
+      {
+        key: 'transactionId',
+        label: t('common.transactionId', 'Transaction Id'),
+        render: (_v, row) => row?.transactionId ?? row?.gameId ?? '--',
+      },
+      {
+        key: 'roundId',
+        label: t('common.roundId', 'Round Id'),
+        render: (_v, row) => row?.roundId ?? '--',
+      },
+      {
+        key: 'betAmount',
+        label: t('common.betAmount', 'Bet Amount'),
+        render: (_v, row) => row?.betAmount ?? '--',
+      },
+      {
+        key: 'winAmount',
+        label: t('common.winAmount', 'Win Amount'),
+        render: (_v, row) => row?.winAmount ?? '--',
+      },
+      {
+        key: 'betPlaced',
+        label: t('myBets.betPlaced', 'Bet placed'),
+        render: (_v, row) =>
+          row?.betPlacedAt ? new Date(row.betPlacedAt).toLocaleString() : '--',
+      },
+      {
+        key: 'status',
+        label: t('common.status', 'Status'),
+        render: (_v, row) => row?.status ?? '--',
+      },
+    ],
+    [t]
+  )
+
   const marketTabs = useMemo(
     () =>
       PL_MARKET_TABS.map((tab) => ({
@@ -287,7 +334,11 @@ export default function ProfitLoss() {
       </div>
 
       {rows.length > 0 ? (
-        <Table columns={COLUMNS} data={rows} rowKey="_id" />
+        <Table
+          columns={marketCategory === 'CASINO' ? CASINO_COLUMNS : COLUMNS}
+          data={rows}
+          rowKey="_id"
+        />
       ) : (
         <div className="bg-white pt-[10px] text-[12px] leading-[1.6] text-[#1e1e1e]">
           <p className="m-0">
