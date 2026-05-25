@@ -22,6 +22,7 @@ import {
   setLoginWindow,
 } from '../store/slices/authSlice.js'
 import {
+  selectIsPlayLiveStream,
   selectIsYellowTheme,
   setIsPlayLiveStream,
   setMainScreenLoader,
@@ -324,6 +325,7 @@ export default function LiveOdds() {
   const isOneClickBet = useSelector(selectIsOneClickBet)
   const oneClickBetStake = useSelector(selectOneClickBetStake)
   const isYellowTheme = useSelector(selectIsYellowTheme)
+  const isLiveStreamOn = useSelector(selectIsPlayLiveStream)
   const currency = useSelector(selectCurrency)
 
   const activeRightSideBet = useSelector(selectActiveBetSlip)
@@ -340,7 +342,6 @@ export default function LiveOdds() {
   const [marketSettings, setMarketSettings] = useState(null)
   const [liveStreamUrl, setLiveStreamUrl] = useState(null)
   const [scoreIframeUrl, setScoreIframeUrl] = useState(null)
-  const [isLiveStreamOn, setIsLiveStreamOn] = useState(true)
   const [scrolledPastPip, setScrolledPastPip] = useState(false)
   const [selectedFancy, setSelectedFancy] = useState(MAIN_FANCY.FANCY_BET)
   const [selectedFancyPriority, setSelectedFancyPriority] = useState(
@@ -437,7 +438,6 @@ export default function LiveOdds() {
         setScoreIframeUrl(payload.iframeScore || payload.iframeScoreV2 || null)
         dispatch(setStreamUrlAvailable(!!tvUrl))
         dispatch(setIsPlayLiveStream(!!tvUrl))
-        if (tvUrl) setIsLiveStreamOn(true)
       } catch (err) {
         if (err?.name === 'CanceledError' || err?.code === 'ERR_CANCELED')
           return
@@ -753,8 +753,14 @@ export default function LiveOdds() {
     void loadDefaultOdds(controller.signal)
   }, [loadDefaultOdds])
 
-  const toggleLiveStream = useCallback(() => setIsLiveStreamOn((on) => !on), [])
-  const closeLiveStream = useCallback(() => setIsLiveStreamOn(false), [])
+  const toggleLiveStream = useCallback(
+    () => dispatch(setIsPlayLiveStream(!isLiveStreamOn)),
+    [dispatch, isLiveStreamOn]
+  )
+  const closeLiveStream = useCallback(
+    () => dispatch(setIsPlayLiveStream(false)),
+    [dispatch]
+  )
   const toggleBetLimit = useCallback(() => setBetLimitOpen((v) => !v), [])
   const toggleBookmakerInfo = useCallback(
     () => setBookmakerInfoOpen((v) => !v),

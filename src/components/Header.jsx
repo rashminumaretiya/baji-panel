@@ -14,6 +14,7 @@ import {
 import {
   selectIsMcvYellowTheme,
   selectIsPlayLiveStream,
+  selectIsStreamUrlAvailable,
   selectIsYellowTheme,
   setIsPlayLiveStream,
   selectLogo,
@@ -61,7 +62,7 @@ const HEADER_BASE =
 const HEADER_YELLOW = 'bg-gradient-to-b from-[#ffcb2e] to-[#ffb80c]'
 const HEADER_MCW = 'bg-gradient-to-b from-[#2f2f2f] to-[#010101]'
 
-export default function Header({ logo: logoProp, isStreamAvailable = false }) {
+export default function Header({ logo: logoProp, isStreamAvailable: isStreamAvailableProp }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -75,6 +76,8 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
   const isYellowTheme = useSelector(selectIsYellowTheme)
   const isMcwCasinoTheme = useSelector(selectIsMcvYellowTheme)
   const isPlayLiveStream = useSelector(selectIsPlayLiveStream)
+  const isStreamUrlAvailable = useSelector(selectIsStreamUrlAvailable)
+  const isStreamAvailable = isStreamAvailableProp ?? isStreamUrlAvailable
   const openBetRefreshTick = useSelector(selectOpenBetRefreshTick)
 
   const wallet = walletFromStore ?? user?.wallet ?? DEFAULT_WALLET
@@ -200,9 +203,10 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
               <button
                 type="button"
                 className={cx(
-                  'relative w-[11.2vw] rounded-none border border-[#948800] bg-[#beaf0d] px-[1.87vw] py-[1.87vw] pb-[1.33vw] text-white shadow-[inset_0_0.27vw_0_0_rgba(255,255,255,0.4)] before:inline-block before:h-[5.27vw] before:w-[5.6vw] before:bg-[url(/img/svg/mobile-live-icon.svg)] before:bg-contain before:bg-center before:align-middle before:content-[""]',
-                  isPlayLiveStream &&
-                    'border-(--mds-orange) bg-(--lg-orange) before:bg-[url(/img/svg/mobile-close-icon.svg)]'
+                  'relative w-[11.2vw] rounded-none border px-[1.87vw] py-[1.87vw] pb-[1.33vw] text-white shadow-[inset_0_0.27vw_0_0_rgba(255,255,255,0.4)] before:inline-block before:h-[5.27vw] before:w-[5.6vw] before:bg-contain before:bg-center before:align-middle before:content-[""]',
+                  isPlayLiveStream
+                    ? 'border-(--mds-orange) bg-(--lg-orange) before:bg-[url(/img/svg/mobile-close-icon.svg)]'
+                    : 'border-[#948800] bg-[#beaf0d] before:bg-[url(/img/svg/mobile-live-icon.svg)]'
                 )}
                 onClick={toggleLiveStream}
               />
@@ -211,9 +215,10 @@ export default function Header({ logo: logoProp, isStreamAvailable = false }) {
               <>
                 <span
                   className={cx(
-                    'flex max-w-fit min-w-0 items-center justify-center text-base max-md:w-auto max-md:max-w-[31.2vw] max-md:min-w-[29.33vw] max-md:rounded-r-[1.07vw] max-md:border-l-0 max-md:px-0 max-md:pt-[1.87vw] max-md:pb-[1.33vw] max-md:text-[3.47vw] max-md:font-bold max-md:text-white',
-                    isStreamAvailable &&
-                      'max-md:max-w-[21.2vw] max-md:min-w-[18.03vw]',
+                    'flex max-w-fit min-w-0 items-center justify-center text-base max-md:w-auto max-md:rounded-r-[1.07vw] max-md:border-l-0 max-md:px-0 max-md:pt-[1.87vw] max-md:pb-[1.33vw] max-md:text-[3.47vw] max-md:font-bold max-md:text-white',
+                    isStreamAvailable
+                      ? 'max-md:max-w-[21.2vw] max-md:min-w-[18.03vw]'
+                      : 'max-md:max-w-[31.2vw] max-md:min-w-[29.33vw]',
                     !isYellowTheme &&
                       !isMcwCasinoTheme &&
                       'max-md:border max-md:border-black/40 max-md:bg-black/10 max-md:shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.3)]',

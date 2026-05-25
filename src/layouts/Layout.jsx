@@ -134,7 +134,7 @@ export default function Layout() {
           </div>
         )}
 
-        <div className={middleContentClass}>
+        <div className={cx('middle-content', middleContentClass)}>
           {isFullScreenLoader && (
             <div className="fixed inset-0 z-[9999] flex items-center justify-center">
               <Loader show message="common.loader.pleaseWait" />
