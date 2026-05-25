@@ -1,7 +1,7 @@
 // Mirrors sbex-user-fe/src/app/features/services/auth.ts state surface + login flow.
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { http } from '../../core/http/client.js'
-import { setCaptcha } from './commonSlice.js'
+import { fetchDomainConfiguration, setCaptcha } from './commonSlice.js'
 import { localStorageService } from '../../shared/services/local-storage.js'
 import { LOCALSTORAGE } from '../../shared/types/common.js'
 
@@ -235,6 +235,10 @@ const authSlice = createSlice({
     })
     b.addCase(updateStakes.fulfilled, (state, { payload }) => {
       if (payload?.data?.length) state.stakesData = payload.data
+    })
+    b.addCase(fetchDomainConfiguration.fulfilled, (state, { payload }) => {
+      const lang = payload?.defaultLanguage
+      if (lang && !state.user) state.selectedLanguage = lang
     })
   },
 })

@@ -1,16 +1,28 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import {
+  selectGlobalNews,
+  selectNews,
+} from '../store/slices/commonSlice.js'
 import AnnouncementsModal from './AnnouncementsModal.jsx'
 
-const DEFAULT_MESSAGE =
-  'সম্মানিত Baji36 এর ইউজার আমাদের উইথড্র সকাল ৯ টা থেকে রাত ১২ টা পর্যন্ত দেয়া হয়। রাত ১২ টার পরে সে সকল উইথড্র আসবে সেগুলা সকাল ৯ টার পরে দেয়া হবে। Baji36 এর সাথে থাকার জন্য ধন্যবাদ    |    Welcome to our exchange!'
-
 const TICKER_SPEED_PX_PER_SEC = 70
+const NEWS_SEPARATOR = ' &nbsp;&nbsp; | &nbsp;&nbsp; '
 
-export default function NewsLine({ message = DEFAULT_MESSAGE, onClick }) {
+export default function NewsLine({ onClick }) {
   const { t } = useTranslation()
+  const news = useSelector(selectNews)
+  const globalNews = useSelector(selectGlobalNews)
   const tickerRef = useRef(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const message = useMemo(() => {
+    const combined = [news?.message, globalNews?.message]
+      .filter(Boolean)
+      .join(NEWS_SEPARATOR)
+    return combined || t('news.welcomeOurExchange')
+  }, [news, globalNews, t])
 
   const handleClick = (e) => {
     onClick?.(e)
