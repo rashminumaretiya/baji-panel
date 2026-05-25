@@ -7,6 +7,7 @@ import {
   selectFavicon,
   setCurrentSiteName,
 } from '../store/slices/commonSlice.js'
+import { fetchCasinoInfo } from '../store/slices/casinoSlice.js'
 
 function applyFavicon(href) {
   if (typeof document === 'undefined' || !href) return
@@ -53,6 +54,7 @@ export function useDomainConfiguration() {
 
   useEffect(() => {
     dispatch(fetchDomainConfiguration())
+    dispatch(fetchCasinoInfo())
     const siteName = titleCase(getSecondLevelDomain())
     if (siteName) dispatch(setCurrentSiteName(siteName))
   }, [dispatch])

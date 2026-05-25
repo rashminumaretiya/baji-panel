@@ -12,4 +12,5 @@ export const environment = {
   awcCasinoUrl: 'https://api-cas-staging.gioexch.com/api/',
   gscCasinoUrl: 'https://gscplussino.mytenapi.com/api/',
   qtechCasinoUrl: 'https://api-cas-stagingqtech.gioexch.com/api/',
+  casinor2Url: 'https://cdbapi.node1manager.com/',
 }

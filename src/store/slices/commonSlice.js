@@ -98,6 +98,7 @@ const initialState = {
   isDepositOnePage: false,
   registrationBonus: null,
   userLoginAllowDomains: [],
+  allowedSbGames: [],
   isDomainConfigLoaded: false,
   isDomainConfigLoading: false,
 }
@@ -217,6 +218,7 @@ const commonSlice = createSlice({
       s.userLoginAllowDomains = Array.isArray(d.userLoginAllowDomains)
         ? d.userLoginAllowDomains
         : []
+      s.allowedSbGames = Array.isArray(d.allowedSbGames) ? d.allowedSbGames : []
 
       s.isDomainConfigLoaded = true
       s.isDomainConfigLoading = false
@@ -288,4 +290,5 @@ export const selectAppDownloadLink = (s) => s.common.appDownloadLink
 export const selectIsDepositOnePage = (s) => s.common.isDepositOnePage
 export const selectRegistrationBonus = (s) => s.common.registrationBonus
 export const selectUserLoginAllowDomains = (s) => s.common.userLoginAllowDomains
+export const selectAllowedSbGames = (s) => s.common.allowedSbGames
 export const selectIsDomainConfigLoaded = (s) => s.common.isDomainConfigLoaded

@@ -88,3 +88,9 @@ export function getSportIdFromSlug(slug) {
 export function isRacingSport(sportId) {
   return sportId ? RACING_SPORTS.has(String(sportId)) : false
 }
+
+// AWC is the default deployment; flip these per build if we ever ship a
+// GSC- or QT-only domain.
+export const IS_AWC_CASINO = true
+export const IS_GSC_CASINO = false
+export const IS_QT_CASINO = false

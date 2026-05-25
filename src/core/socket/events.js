@@ -4,4 +4,5 @@ export const SOCKET_EVENTS = {
   ODDS_LEAVE: 'odds-leave',
   PREMIUM_FANCY_ODDS: 'premium-fancy-odds',
   ADMIN_SETTINGS_CHANGED: 'admin-settings-changed',
+  CASINO_LAUNCHED: 'casino-launched',
 }

@@ -38,6 +38,12 @@ const WithdrawHistory = lazy(
   () => import('./pages/Profile/WithdrawHistory.jsx')
 )
 
+const PlatformWrapper = lazy(
+  () => import('./pages/Platform/PlatformWrapper.jsx')
+)
+const PlatformList = lazy(() => import('./pages/Platform/PlatformList.jsx'))
+const PlatformGames = lazy(() => import('./pages/Platform/PlatformGames.jsx'))
+
 function RequireAuth() {
   const isAuthenticated = useSelector(selectIsAuthenticated)
   return isAuthenticated ? <Outlet /> : <Navigate to="/" replace />
@@ -83,6 +89,10 @@ function App() {
           <Route path="deposit-history" element={<DepositHistory />} />
           <Route path="withdraw" element={<Withdraw />} />
           <Route path="withdraw-history" element={<WithdrawHistory />} />
+        </Route>
+        <Route path="/platform" element={<PlatformWrapper />}>
+          <Route index element={<PlatformList />} />
+          <Route path=":provider" element={<PlatformGames />} />
         </Route>
       </Route>
 
