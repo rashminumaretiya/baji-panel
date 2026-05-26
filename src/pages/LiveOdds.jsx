@@ -65,7 +65,7 @@ const FANCY_TYPE_TABS = [
   { type: FANCY_TYPES.ALL, label: 'All' },
   { type: FANCY_TYPES.SESSION, label: 'Session' },
   { type: FANCY_TYPES.FANCY1, label: 'Fancy1' },
-  { type: FANCY_TYPES.ODD_EVEN, label: 'Odd Even' },
+  { type: FANCY_TYPES.ODD_EVEN, label: 'Odd/Even' },
 ]
 
 const SPORTSBOOK_CATEGORIES = {
@@ -2468,10 +2468,9 @@ const PriorityTabs = memo(function PriorityTabs({
                 )
               : ''
             const aCls = cx(
-              'no-underline  max-md:text-white',
+              'no-underline  max-md:text-white text-(--lg-lightest-navy)',
               isSportBook &&
-                'text-[rgba(var(--orange-rgba),0.85)] max-md:!text-white',
-              isActive && 'max-md:!text-(--lg-lightest-navy)'
+                'text-[rgba(var(--orange-rgba),0.85)] max-md:!text-white'
             )
 
             return (

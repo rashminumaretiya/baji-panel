@@ -208,14 +208,14 @@ export default function MobileSports() {
                       ) : null
                     })()}
                     <span>{tab.label ? t(tab.label, tab.name) : tab.name}</span>
-                    {tab.count != null && (
+                    {tab.count ? (
                       <div className={LIVE_CHIP_CLASS}>
                         <div className={LIVE_CHIP_ICON}>
                           <LiveChipIcon className="inline-flex align-top" />
                         </div>
                         <p className={LIVE_CHIP_NUMBER}>{tab.count}</p>
                       </div>
-                    )}
+                    ) : null}
                   </button>
                 </li>
               )
