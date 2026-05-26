@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, memo, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -378,7 +378,7 @@ function OpenBetsListBackLay({
   )
 }
 
-function OpenBetsDesktop({
+const OpenBetsDesktop = memo(function OpenBetsDesktop({
   openBetsList,
   isOpen,
   isMobile,
@@ -467,9 +467,9 @@ function OpenBetsDesktop({
       </div>
     </div>
   )
-}
+})
 
-function OpenBetsMobile({ openBetsList, isOpen, isMobile }) {
+const OpenBetsMobile = memo(function OpenBetsMobile({ openBetsList, isOpen, isMobile }) {
   const [detailsOpenBets, setDetailsOpenBets] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [betInfo, setBetInfo] = useState(false)
@@ -533,9 +533,9 @@ function OpenBetsMobile({ openBetsList, isOpen, isMobile }) {
   }
 
   return <NoOpenBets isYellowTheme={isYellowTheme} />
-}
+})
 
-export default function OpenBets() {
+function OpenBets() {
   const dispatch = useDispatch()
   const isMobile = useSelector(selectIsMobile)
   const isOpen = useSelector(selectActiveBetSlip)
@@ -571,3 +571,5 @@ export default function OpenBets() {
     />
   )
 }
+
+export default memo(OpenBets)

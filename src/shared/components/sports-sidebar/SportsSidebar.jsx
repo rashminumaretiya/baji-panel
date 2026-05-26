@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, memo, useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -137,7 +137,7 @@ function liClass({
   return parts.filter(Boolean).join(' ')
 }
 
-export default function SportsSidebar() {
+function SportsSidebar() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -475,3 +475,5 @@ export default function SportsSidebar() {
     </div>
   )
 }
+
+export default memo(SportsSidebar)

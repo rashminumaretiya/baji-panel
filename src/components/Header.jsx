@@ -196,19 +196,22 @@ export default function Header({
       <header className={headerClass}>
         {useDesktopHeader ? (
           <div className="inline-flex items-center sm:flex-1">
-            {logo && (
-              <div className="me-0 sm:me-2 xl:me-3 [&_img]:h-auto [&_img]:max-h-[50px] [&_img]:w-auto [&_img]:max-w-[100px] [&_img]:object-cover">
+            <div className="me-0 flex h-[50px] w-[100px] items-center sm:me-2 xl:me-3">
+              {logo && (
                 <img
                   src={logo}
                   alt="logo"
+                  width="100"
+                  height="50"
+                  className="h-auto max-h-[50px] w-auto max-w-[100px] object-contain"
                   onClick={navigateToHome}
                   onKeyDown={(e) => e.key === 'Enter' && navigateToHome()}
                   role="button"
                   tabIndex={0}
                   decoding="async"
                 />
-              </div>
-            )}
+              )}
+            </div>
             {showSearch && <EventSearch />}
           </div>
         ) : (

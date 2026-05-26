@@ -483,7 +483,7 @@ function LoadingState() {
   const { t } = useTranslation()
   return (
     <div
-      className="flex items-center justify-center p-3 text-gray-500"
+      className="flex min-h-[70vh] items-center justify-center p-3 text-gray-500"
       role="status"
       aria-live="polite"
     >

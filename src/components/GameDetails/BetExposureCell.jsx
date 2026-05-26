@@ -31,6 +31,7 @@
 import { useSelector } from 'react-redux'
 import { selectPreExposure } from '../../store/slices/betSlipSlice.js'
 import { formatAmount } from '../../utils/customFunction.js'
+import { memo } from 'react'
 
 function formatExposure(value) {
   if (value >= 0) return formatAmount(value)
@@ -91,7 +92,7 @@ function computePreviewDelta(preExposure, sid, marketName, marketId) {
   return Number.isFinite(delta) ? delta : null
 }
 
-export default function BetExposureCell({
+export default memo(function BetExposureCell({
   selectionId,
   marketId,
   exposureData,
@@ -129,4 +130,4 @@ export default function BetExposureCell({
       {hasPreview && <ExposureValue value={previewValue} withIcon />}
     </span>
   )
-}
+})
