@@ -31,9 +31,9 @@ export async function loadCasinoData() {
         ])
       cache = {
         MERCHANT_PROVIDER_GAMES: registryMod.buildMerchantProviderGames({
-          AWC: awcMod,
-          GSC: gscMod,
-          QTECH: qtechMod,
+          AWC: awcMod ?? {},
+          GSC: gscMod ?? {},
+          QTECH: qtechMod ?? {},
         }),
         sbAviatorCasinoGames: sbMod.sbAviatorCasinoGames,
         sbLotteryCasinoGames: sbMod.sbLotteryCasinoGames,
