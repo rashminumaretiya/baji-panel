@@ -146,7 +146,7 @@ export default function Layout() {
 
       <div className={mainWrapperClass}>
         {showSportSidebar && (
-          <div className={leftContentClass}>
+          <div className={leftContentClass} aria-label="Sports navigation">
             <SportsSidebar />
           </div>
         )}
@@ -176,7 +176,7 @@ export default function Layout() {
         {showMobileNavigation && <MobileNavigation />}
 
         {showRightContent && (
-          <div className={RIGHT_CONTENT}>
+          <div className={RIGHT_CONTENT} aria-label="Bet slip and open bets">
             <BetSlip />
             {isAuthenticated && <OpenBets />}
           </div>

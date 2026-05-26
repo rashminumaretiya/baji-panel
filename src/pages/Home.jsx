@@ -54,7 +54,8 @@ export default function Home() {
           <img
             className={LANDING_IMG_CLASS}
             src="/img/home_banner.jpg"
-            alt="Cricket Landing Image"
+            alt="home banner"
+            role="presentation"
             width="1200"
             height="194"
             fetchPriority="high"
@@ -66,7 +67,11 @@ export default function Home() {
             activeSportId={activeSportId}
             onSelect={selectTab}
           />
-          <div className={`relative ${GAMES_AREA_MIN_HEIGHT}`}>
+          <div
+            id="home-game-list-panel"
+            role="tabpanel"
+            className={`relative ${GAMES_AREA_MIN_HEIGHT}`}
+          >
             {isRacing && sportBanner && (
               <RacingBanner src={sportBanner} sportName={activeSport?.name} />
             )}

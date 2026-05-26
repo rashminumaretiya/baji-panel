@@ -439,6 +439,7 @@ const OpenBetsDesktop = memo(function OpenBetsDesktop({
                         onChange={(e) =>
                           setSelectedIndex(Number(e.target.value))
                         }
+                        aria-label={t('openBets.selectBet', 'Select open bet')}
                       >
                         {openBetsList.map((openBet, index) => (
                           <option key={index} value={index}>

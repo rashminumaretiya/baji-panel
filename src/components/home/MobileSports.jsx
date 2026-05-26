@@ -201,16 +201,28 @@ export default function MobileSports() {
                     {(() => {
                       const TabIcon = iconKey ? iconMap[iconKey] : null
                       return TabIcon ? (
-                        <TabIcon className="inline-flex align-middle" />
+                        <TabIcon
+                          className="inline-flex align-middle"
+                          aria-hidden="true"
+                        />
                       ) : null
                     })()}
                     <span>{tab.label ? t(tab.label, tab.name) : tab.name}</span>
                     {tab.count ? (
-                      <div className={LIVE_CHIP_CLASS}>
-                        <div className={LIVE_CHIP_ICON}>
+                      <div
+                        className={LIVE_CHIP_CLASS}
+                        aria-label={t(
+                          'common.liveEventsCount',
+                          `${tab.count} live events`,
+                          { count: tab.count }
+                        )}
+                      >
+                        <div className={LIVE_CHIP_ICON} aria-hidden="true">
                           <LiveChipIcon className="inline-flex align-top" />
                         </div>
-                        <p className={LIVE_CHIP_NUMBER}>{tab.count}</p>
+                        <p className={LIVE_CHIP_NUMBER} aria-hidden="true">
+                          {tab.count}
+                        </p>
                       </div>
                     ) : null}
                   </button>

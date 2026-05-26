@@ -175,6 +175,7 @@ export default function MobileSearchEvent() {
               role="combobox"
               aria-autocomplete="list"
               aria-expanded={showPanel}
+              aria-label="Search events"
               autoCorrect="off"
               autoCapitalize="off"
               autoComplete="off"

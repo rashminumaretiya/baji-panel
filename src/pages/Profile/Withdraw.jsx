@@ -304,10 +304,11 @@ export default function Withdraw({ showTitle = true }) {
             </div>
 
             <div className="mb-3">
-              <label htmlFor="paymentType" className={formLabelRequiredClass}>
+              <label htmlFor="withdrawCurrency" className={formLabelRequiredClass}>
                 {t('common.currency', 'Currency')}
               </label>
               <select
+                id="withdrawCurrency"
                 className={formSelectClass}
                 value={values.currency}
                 onChange={(event) => setField('currency', event.target.value)}
@@ -338,6 +339,7 @@ export default function Withdraw({ showTitle = true }) {
               <div>
                 {details.data?.accountNumbers?.length ? (
                   <select
+                    id="AccountNo"
                     className={formSelectClass}
                     value={effectiveAccountNumber}
                     onChange={(event) =>

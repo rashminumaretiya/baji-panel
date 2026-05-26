@@ -200,7 +200,7 @@ export default function Header({
               {logo && (
                 <img
                   src={logo}
-                  alt="logo"
+                  alt={t('common.homeLogoAlt', 'Site logo — go to home')}
                   width="100"
                   height="50"
                   className="h-auto max-h-[50px] w-auto max-w-[100px] object-contain"
@@ -276,6 +276,7 @@ export default function Header({
                       tabIndex={0}
                       onClick={() => setShowBets(false)}
                       onKeyDown={(e) => e.key === 'Enter' && setShowBets(false)}
+                      aria-label={t('common.close', 'Close')}
                     />
                   </div>
                   {showBets && <OpenBets showBets={showBets} />}
@@ -341,6 +342,7 @@ export default function Header({
                 isYellowTheme && '!bg-transparent [&_svg]:brightness-0'
               )}
               onClick={balanceRefresh}
+              aria-label={t('header.refreshBalance', 'Refresh balance')}
             >
               <RefreshIcon />
             </button>
@@ -365,6 +367,7 @@ export default function Header({
             role="button"
             tabIndex={0}
             onKeyDown={(e) => e.key === 'Enter' && openMobileStake(e)}
+            aria-label={t('header.openStakeSettings', 'Open stake settings')}
           >
             <SettingIcon />
           </div>

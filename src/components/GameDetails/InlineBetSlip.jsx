@@ -334,6 +334,7 @@ export default function InlineBetSlip({
                           onKeyDown={(e) => e.preventDefault()}
                           inputMode="none"
                           readOnly
+                          aria-label={t('betSlip.odds', 'Odds')}
                         />
                         <button
                           type="button"
@@ -370,6 +371,7 @@ export default function InlineBetSlip({
                       min={0}
                       value={betSlipDetails?.stake ?? ''}
                       onChange={(e) => updateStake(e.target.value)}
+                      aria-label={t('betSlip.stake', 'Stake')}
                     />
                     <button
                       type="button"
@@ -543,6 +545,7 @@ export default function InlineBetSlip({
                     onChange={(e) => updateStake(e.target.value)}
                     inputMode="none"
                     disabled={isPlacing}
+                    aria-label={t('betSlip.stake', 'Stake')}
                   />
                 </div>
 

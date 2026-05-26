@@ -216,6 +216,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
                       value={odds}
                       onChange={(e) => setOdds(e.target.value)}
                       onKeyDown={(e) => e.preventDefault()}
+                      aria-label={t('betSlip.odds', 'Odds')}
                     />
                   </div>
                 </td>
@@ -227,6 +228,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
                       min={0}
                       value={stake}
                       onChange={(e) => setStake(e.target.value)}
+                      aria-label={t('betSlip.stake', 'Stake')}
                     />
                   </div>
                 </td>

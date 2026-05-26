@@ -130,12 +130,13 @@ export default function AddWhatsAppModal({ isOpen, onClose, onSuccess }) {
       {step === 'add' ? (
         <form onSubmit={handleAdd}>
           <div className="mb-3">
-            <label className={labelClass}>Phone Number :</label>
+            <label className={labelClass} htmlFor="waPhoneNumber">Phone Number :</label>
             <div className="relative flex items-stretch">
               <select
                 className={countryCodeSelectClass}
                 value={countryCode}
                 onChange={(e) => setCountryCode(e.target.value)}
+                aria-label="Country code"
               >
                 {COUNTRY_CODES.map((c) => (
                   <option key={c.code} value={c.code}>
@@ -144,6 +145,7 @@ export default function AddWhatsAppModal({ isOpen, onClose, onSuccess }) {
                 ))}
               </select>
               <input
+                id="waPhoneNumber"
                 type="tel"
                 className={phoneInputClass}
                 placeholder="Enter Contact number"
@@ -167,8 +169,9 @@ export default function AddWhatsAppModal({ isOpen, onClose, onSuccess }) {
       ) : (
         <form onSubmit={handleVerify}>
           <div className="mb-3">
-            <label className={labelClass}>Enter Otp :</label>
+            <label className={labelClass} htmlFor="waOtp">Enter Otp :</label>
             <input
+              id="waOtp"
               type="text"
               className={inputBaseClass}
               placeholder="Enter Otp"

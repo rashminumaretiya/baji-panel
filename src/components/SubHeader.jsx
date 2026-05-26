@@ -300,6 +300,7 @@ const SubHeaderTab = function SubHeaderTab({
       onKeyDown={(e) => e.key === 'Enter' && onActivate()}
       role="button"
       tabIndex={0}
+      aria-current={active ? 'page' : undefined}
     >
       {label}
       {showLiveChip ? (

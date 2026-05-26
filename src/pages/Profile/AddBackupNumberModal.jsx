@@ -62,12 +62,13 @@ export default function AddBackupNumberModal({ isOpen, onClose, onSuccess }) {
     >
       <form onSubmit={handleAdd}>
         <div className="mb-3">
-          <label className={labelClass}>Backup Number :</label>
+          <label className={labelClass} htmlFor="backupPhoneNumber">Backup Number :</label>
           <div className="relative flex items-stretch">
             <select
               className={countryCodeSelectClass}
               value={countryCode}
               onChange={(e) => setCountryCode(e.target.value)}
+              aria-label="Country code"
             >
               {COUNTRY_CODES.map((c) => (
                 <option key={c.code} value={c.code}>
@@ -76,6 +77,7 @@ export default function AddBackupNumberModal({ isOpen, onClose, onSuccess }) {
               ))}
             </select>
             <input
+              id="backupPhoneNumber"
               type="tel"
               className={phoneInputClass}
               placeholder="Enter Contact number"

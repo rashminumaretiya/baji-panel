@@ -113,8 +113,9 @@ export default function VerifyPrimaryNumberModal({
     >
       <form onSubmit={handleVerify}>
         <div className="mb-2">
-          <label className={labelClass}>Enter Otp :</label>
+          <label className={labelClass} htmlFor="verifyPrimaryOtp">Enter Otp :</label>
           <input
+            id="verifyPrimaryOtp"
             type="text"
             className={inputBaseClass}
             placeholder="Enter Otp"

@@ -179,10 +179,11 @@ export default function BetHistory() {
     <MarketTabs value={marketCategory} onChange={setMarketCategory}>
       <div className={filterContainerClass}>
         <div className={filterRowClass}>
-          <label className={filterLabelClass}>
+          <label className={filterLabelClass} htmlFor="betHistoryStatus">
             {t('common.betStatus', 'Bet Status')}
           </label>
           <select
+            id="betHistoryStatus"
             className={betStatusSelectClass}
             value={betStatus}
             onChange={(e) => setBetStatus(e.target.value)}
@@ -195,20 +196,23 @@ export default function BetHistory() {
           </select>
 
           {/* Bootstrap `.ms-3` (= 1rem left margin). */}
-          <label className={`${filterLabelClass} ml-4`}>
+          <label className={`${filterLabelClass} ml-4`} htmlFor="betHistoryFromDate">
             {t('filters.period', 'Period')}
           </label>
           <input
+            id="betHistoryFromDate"
             type="date"
             className={dateInputClass}
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
+            aria-label={t('filters.fromDate', 'From date')}
           />
           <input
             type="text"
             className={timeInputClass}
             value="09 : 00"
             readOnly
+            aria-label={t('filters.fromTime', 'From time')}
           />
           <span className={periodSepClass}>{t('filters.to', 'to')}</span>
           <input
@@ -216,12 +220,14 @@ export default function BetHistory() {
             className={dateInputClass}
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
+            aria-label={t('filters.toDate', 'To date')}
           />
           <input
             type="text"
             className={timeInputClass}
             value="08 : 59"
             readOnly
+            aria-label={t('filters.toTime', 'To time')}
           />
         </div>
 

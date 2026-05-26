@@ -25,10 +25,8 @@ const SportTab = memo(function SportTab({ tab, navId, isActive, onSelect }) {
         id={navId}
         role="tab"
         aria-selected={isActive}
-        aria-disabled="false"
-        {...(isActive
-          ? { 'aria-controls': `${navId}-panel` }
-          : { tabIndex: -1 })}
+        aria-controls="home-game-list-panel"
+        tabIndex={isActive ? 0 : -1}
         onClick={() => onSelect(tab.id)}
       >
         <span>{tab.label ? t(tab.label) : tab.name}</span>

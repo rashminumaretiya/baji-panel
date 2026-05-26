@@ -112,6 +112,7 @@ export default function EventSearch() {
           role="combobox"
           aria-autocomplete="list"
           aria-expanded={showDropdown}
+          aria-label={t('header.searchEvents', 'Search Events')}
           placeholder={t('header.searchEvents', 'Search Events')}
           value={query}
           onChange={(e) => {

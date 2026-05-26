@@ -195,6 +195,11 @@ export default function Stake({
                             onChange={(e) =>
                               updateQuickStake(slot, e.target.value)
                             }
+                            aria-label={t(
+                              'stake.quickStakeSlot',
+                              `Quick stake ${slot}`,
+                              { slot }
+                            )}
                           />
                         </div>
                       ))}
