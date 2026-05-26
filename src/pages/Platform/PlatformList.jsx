@@ -148,7 +148,7 @@ export default function PlatformList() {
               className="w-full md:w-1/3 xl:w-1/4"
             >
               <div
-                className="mx-2 mb-3 cursor-pointer bg-[url('/img/platform/bg-platform.jpg')] bg-cover"
+                className="mx-2 mb-3 cursor-pointer bg-[url('/img/platform/bg-platform.webp')] bg-cover"
                 onClick={() => handleProviderClick(game)}
                 role="presentation"
               >
@@ -183,7 +183,7 @@ export default function PlatformList() {
                         decoding="async"
                         src={
                           game.games?.length > 1
-                            ? '/img/platform/btn-more.png'
+                            ? '/img/platform/btn-more.webp'
                             : '/img/platform/btn-playnow.webp'
                         }
                         alt="btn-image"
@@ -208,7 +208,7 @@ export default function PlatformList() {
                 onClick={() => handleProviderClick(game)}
                 role="presentation"
               >
-                <div className="relative bg-[url('/img/platform/bg-platform.jpg')] bg-cover bg-no-repeat">
+                <div className="relative bg-[url('/img/platform/bg-platform.webp')] bg-cover bg-no-repeat">
                   <img
                     loading="lazy"
                     decoding="async"
@@ -231,7 +231,7 @@ export default function PlatformList() {
                       decoding="async"
                       src={
                         game.games?.length > 1
-                          ? '/img/platform/btn-more.png'
+                          ? '/img/platform/btn-more.webp'
                           : '/img/platform/btn-playnow.webp'
                       }
                       alt="btn-image"

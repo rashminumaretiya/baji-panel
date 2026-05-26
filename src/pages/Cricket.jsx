@@ -3,6 +3,6 @@ import SportPage from './SportPage.jsx'
 
 export default function Cricket() {
   return (
-    <SportPage sportId={SPORT_IDS.CRICKET} bannerSrc="/img/cricket-img.jpg" />
+    <SportPage sportId={SPORT_IDS.CRICKET} bannerSrc="/img/cricket-img.webp" />
   )
 }

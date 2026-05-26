@@ -64,17 +64,17 @@ const LOGO_BY_NAME = {
     acc[m.value] = m.img
     return acc
   }, {}),
-  BKASH: '/img/bkash_icon.png',
-  NAGAD: '/img/nagad_icon.png',
+  BKASH: '/img/bkash_icon.webp',
+  NAGAD: '/img/nagad_icon.webp',
 }
 
 // Image lookup for Step-2 paymentType cards (agent / personal / merchant).
 // Re-uses the original PAYMENT_LIST icons from when paymentType was the
 // single-selection grid — keeps the visual consistent with the prior UI.
 const PAYMENT_TYPE_IMAGES = {
-  agent: '/img/payment/agent.png',
-  personal: '/img/payment/personal.png',
-  merchant: '/img/payment/merchant.png',
+  agent: '/img/payment/agent.webp',
+  personal: '/img/payment/personal.webp',
+  merchant: '/img/payment/merchant.webp',
 }
 
 // Mirrors Angular's `| titlecase` pipe.

@@ -37,8 +37,8 @@ export const CURRENCY_TYPE = Object.freeze({
 
 export const WITHDRAW_PAYMENT_METHODS = [
   { name: 'bkash', img: '/img/payment/BKash_logo.svg', value: 'BKASH' },
-  { name: 'nagad', img: '/img/payment/Nagad.jpeg', value: 'NAGAD' },
-  { name: 'rocket', img: '/img/payment/rocket.png', value: 'ROCKET' },
+  { name: 'nagad', img: '/img/payment/Nagad.webp', value: 'NAGAD' },
+  { name: 'rocket', img: '/img/payment/rocket.webp', value: 'ROCKET' },
 ]
 
 export const onlyDigitsRegex = /^[0-9]+(\.[0-9]+)?$/

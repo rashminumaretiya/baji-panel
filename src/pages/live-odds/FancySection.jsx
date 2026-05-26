@@ -192,7 +192,7 @@ export function FancySection({
 
       {!isMobile && (
         <MatchHeader>
-          <div className="flex items-center justify-center pr-3 [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center md:[&_.icon-wrapper_i]:mr-[6px] md:[&_.icon-wrapper_i]:h-[28px] md:[&_.icon-wrapper_i]:w-[29px] md:[&_.icon-wrapper_i]:bg-[url('/img/main-s1aea395e8c.png')] md:[&_.icon-wrapper_i]:bg-position-[-385px_-833px] md:[&_.icon-wrapper_i]:bg-no-repeat md:[&_.icon-wrapper_svg]:hidden">
+          <div className="flex items-center justify-center pr-3 [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center md:[&_.icon-wrapper_i]:mr-[6px] md:[&_.icon-wrapper_i]:h-[28px] md:[&_.icon-wrapper_i]:w-[29px] md:[&_.icon-wrapper_i]:bg-[url('/img/main-s1aea395e8c.webp')] md:[&_.icon-wrapper_i]:bg-position-[-385px_-833px] md:[&_.icon-wrapper_i]:bg-no-repeat md:[&_.icon-wrapper_svg]:hidden">
             <span className="icon-wrapper">
               <i>
                 <PinSvg />

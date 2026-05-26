@@ -70,7 +70,7 @@ export default function PlatformGames() {
           )}
         </div>
       )}
-      <div className="relative z-[9] cursor-pointer bg-[url('/img/platform/bg-default.jpg')] bg-cover px-5 py-[10px] md:min-h-[110px]">
+      <div className="relative z-[9] cursor-pointer bg-[url('/img/platform/bg-default.webp')] bg-cover px-5 py-[10px] md:min-h-[110px]">
         <div className="relative mx-auto flex w-full max-w-[80rem] justify-between md:min-h-[90px]">
           <div
             className="mt-2 flex h-full cursor-pointer items-center md:mt-0"

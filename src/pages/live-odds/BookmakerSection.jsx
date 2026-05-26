@@ -82,7 +82,7 @@ export function BookmakerSection({
   return (
     <div>
       <MatchHeader>
-        <div className="flex items-center justify-center [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center [&_.icon-wrapper]:max-md:pl-[1.86667vw] md:[&_.icon-wrapper_i]:mr-[6px] md:[&_.icon-wrapper_i]:h-[28px] md:[&_.icon-wrapper_i]:w-[29px] md:[&_.icon-wrapper_i]:bg-[url('/img/main-s1aea395e8c.png')] md:[&_.icon-wrapper_i]:bg-position-[-385px_-833px] md:[&_.icon-wrapper_i]:bg-no-repeat max-md:[&_.icon-wrapper_svg]:block max-md:[&_.icon-wrapper_svg]:h-[6.66667vw] max-md:[&_.icon-wrapper_svg]:w-[6.66667vw] md:[&_.icon-wrapper_svg]:hidden">
+        <div className="flex items-center justify-center [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center [&_.icon-wrapper]:max-md:pl-[1.86667vw] md:[&_.icon-wrapper_i]:mr-[6px] md:[&_.icon-wrapper_i]:h-[28px] md:[&_.icon-wrapper_i]:w-[29px] md:[&_.icon-wrapper_i]:bg-[url('/img/main-s1aea395e8c.webp')] md:[&_.icon-wrapper_i]:bg-position-[-385px_-833px] md:[&_.icon-wrapper_i]:bg-no-repeat max-md:[&_.icon-wrapper_svg]:block max-md:[&_.icon-wrapper_svg]:h-[6.66667vw] max-md:[&_.icon-wrapper_svg]:w-[6.66667vw] md:[&_.icon-wrapper_svg]:hidden">
           <span className="icon-wrapper">
             <i>
               <PinSvg />

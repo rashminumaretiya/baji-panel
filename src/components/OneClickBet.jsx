@@ -144,9 +144,9 @@ export default function OneClickBet() {
   // banner, yellow-theme uses the yellow banner, mcw-casino uses the red one.
   const stakeRowClass = cx(
     'flex items-center justify-center absolute left-1/2 -translate-x-1/2 w-[414px] h-[31px] gap-[3px] bg-no-repeat bg-center',
-    !isYellowTheme && !isMcwCasinoTheme && 'bg-[url(/img/main-bg-shape.png)]',
-    isYellowTheme && 'bg-[url(/img/stake-1click.png)]',
-    isMcwCasinoTheme && 'bg-[url(/img/red-stake-banner.png)]'
+    !isYellowTheme && !isMcwCasinoTheme && 'bg-[url(/img/main-bg-shape.webp)]',
+    isYellowTheme && 'bg-[url(/img/stake-1click.webp)]',
+    isMcwCasinoTheme && 'bg-[url(/img/red-stake-banner.webp)]'
   )
 
   // Stake input — common style, then "active" highlight when not in edit mode.

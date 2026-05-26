@@ -65,7 +65,7 @@ export function SportbookSection({
                 <h2 className="bg-[linear-gradient(180deg,var(--xts-blue)_0%,var(--xts-blue)_100%)] text-white shadow-[0_2px_0_rgba(var(--white-rgb),0.1)]">
                   <button
                     type="button"
-                    className={`flex w-full items-center bg-right bg-no-repeat pl-0 text-left max-md:border-b max-md:border-b-(--sm-text-color) max-md:bg-(--text-color) max-md:px-0 max-md:pl-[1.8666666667vw] max-md:leading-[8.6vw] max-md:text-white ${isCollapsed ? 'md:bg-[url("/img/grediant-slip-plus.png")]' : 'md:bg-[url("/img/grediant-slip-minus.png")]'}`}
+                    className={`flex w-full items-center bg-right bg-no-repeat pl-0 text-left max-md:border-b max-md:border-b-(--sm-text-color) max-md:bg-(--text-color) max-md:px-0 max-md:pl-[1.8666666667vw] max-md:leading-[8.6vw] max-md:text-white ${isCollapsed ? 'md:bg-[url("/img/grediant-slip-plus.webp")]' : 'md:bg-[url("/img/grediant-slip-minus.webp")]'}`}
                     onClick={() => toggle(id)}
                   >
                     <i className="inline-flex h-[25px] w-[25px] items-center justify-center bg-linear-to-b from-(--xl-blue) to-(--xs-black) text-center leading-[22px] text-(--sm-white) hover:bg-linear-to-b hover:from-(--xs-black) hover:to-(--xl-blue) hover:text-(--xs-shadow-primary) max-md:mr-[1.4vw] max-md:h-[6.6666666667vw] max-md:w-[6.6666666667vw] max-md:rounded-full max-md:bg-(--xs-dark) max-md:leading-normal md:mr-1 [&_svg]:h-[16px] [&_svg]:w-[18px] max-md:[&_svg]:h-[4.6666666667vw] max-md:[&_svg]:w-[4.6666666667vw]">

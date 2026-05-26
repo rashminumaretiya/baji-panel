@@ -286,7 +286,7 @@ export default function ProfitLoss() {
             <span>{userName}</span>
           </span>
           <span className={plMetaItemClass}>
-            <span className="inline-block h-4 w-4 bg-[url('/img/calender-icon.png')] bg-[position:100%_-189px]"></span>
+            <span className="inline-block h-4 w-4 bg-[url('/img/calender-icon.webp')] bg-[position:100%_-189px]"></span>
             <span>{generatedAt}</span>
           </span>
         </div>

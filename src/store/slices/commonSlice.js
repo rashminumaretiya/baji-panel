@@ -10,7 +10,7 @@ import {
 const DEFAULT_FAVICON = '/favicon.ico'
 const DEFAULT_CURRENCY = 'PBU'
 const DEFAULT_LANGUAGE = 'en'
-const NINE_WICKETS_LOGO = '/img/9wickets-logo.png'
+const NINE_WICKETS_LOGO = '/img/9wickets-logo.webp'
 const NINE_WICKETS_HOSTS = ['babu365', 'velkiex247']
 
 function shouldUseNineWicketsLogo() {

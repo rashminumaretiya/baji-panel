@@ -211,10 +211,10 @@ export const createCatopayWithdrawRequest = createAsyncThunk(
 // formats remainingAmount, and prepares the "View Note" link cell.
 const WITHDRAW_PAYMENT_IMAGES = {
   bkash: '/img/payment/BKash_logo.svg',
-  rocket: '/img/payment/rocket.png',
-  nagad: '/img/payment/Nagad.jpeg',
+  rocket: '/img/payment/rocket.webp',
+  nagad: '/img/payment/Nagad.webp',
   cellfin: '/img/payment/Cellfin.webp',
-  upay: '/img/payment/Upay.png',
+  upay: '/img/payment/Upay.webp',
 }
 
 function mapWithdrawHistoryRows(rows) {

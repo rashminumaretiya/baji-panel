@@ -419,8 +419,8 @@ const OpenBetsDesktop = memo(function OpenBetsDesktop({
                   className={cx(
                     'w-full bg-[length:auto_100%] bg-right bg-no-repeat px-2.5 text-left text-xs leading-[25px] text-white shadow-[0_2px_0_rgba(var(--white-rgb),0.1)]',
                     isCollapsed
-                      ? 'bg-[url(/img/grediant-slip-plus.png)]'
-                      : 'bg-[url(/img/grediant-slip-minus.png)]'
+                      ? 'bg-[url(/img/grediant-slip-plus.webp)]'
+                      : 'bg-[url(/img/grediant-slip-minus.webp)]'
                   )}
                   onClick={() => setIsCollapsed((prev) => !prev)}
                 >

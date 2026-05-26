@@ -3,6 +3,6 @@ import SportPage from './SportPage.jsx'
 
 export default function Tennis() {
   return (
-    <SportPage sportId={SPORT_IDS.TENNIS} bannerSrc="/img/tennis-img.jpg" />
+    <SportPage sportId={SPORT_IDS.TENNIS} bannerSrc="/img/tennis-img.webp" />
   )
 }

@@ -82,7 +82,7 @@ const SPORT_FILTER_WRAPPER =
   'relative flex items-center px-[10px] py-[10px] bg-(--light-bg) border-b border-[color:var(--sm-text-color)] mb-[10px]'
 
 const SPORT_FILTER_CHIP_BASE =
-  "bg-no-repeat bg-left pr-[6px] [&+&]:pl-[10px] [&+&]:bg-[url('/img/filter-dot.png')]"
+  "bg-no-repeat bg-left pr-[6px] [&+&]:pl-[10px] [&+&]:bg-[url('/img/filter-dot.webp')]"
 
 const BTN_WHITE_BASE =
   'inline-flex items-center justify-center text-[12px] font-normal rounded px-2 py-[4px] ' +

@@ -14,9 +14,9 @@ import { useEventSubscription } from './useSocket.js'
 import { RACING_SPORTS, SPORT_IDS } from '../core/constant/constants.js'
 
 const SPORT_BANNER = {
-  [SPORT_IDS.SOCCER]: '/img/soccer-img.jpg',
-  [SPORT_IDS.TENNIS]: '/img/tennis-img.jpg',
-  [SPORT_IDS.CRICKET]: '/img/cricket-img.jpg',
+  [SPORT_IDS.SOCCER]: '/img/soccer-img.webp',
+  [SPORT_IDS.TENNIS]: '/img/tennis-img.webp',
+  [SPORT_IDS.CRICKET]: '/img/cricket-img.webp',
   [SPORT_IDS.HORSE_RACING]: '/img/horse_racing_landing.webp',
   [SPORT_IDS.GREYHOUND_RACING]: '/img/greyhound_landing.webp',
 }

@@ -48,7 +48,7 @@ export const RED_MD_ACTIVE = `!bg-(--lay-0) !text-white ${ACTIVE_SHADOW}`
 export const RED_XXS_ACTIVE = `!bg-(--lay-1) !text-(--header-primary) ${ACTIVE_SHADOW}`
 
 export const BG_LINE =
-  '!bg-[url(/img/bg-line.png)] opacity-90 [filter:brightness(0.7)] [background-blend-mode:color-burn] !cursor-default pointer-events-none'
+  '!bg-[url(/img/bg-line.webp)] opacity-90 [filter:brightness(0.7)] [background-blend-mode:color-burn] !cursor-default pointer-events-none'
 
 export const BACK_SPARK = 'animate-[sparkBack_0.8s_ease-in-out]'
 export const LAY_SPARK = 'animate-[sparkLay_0.8s_ease-in-out]'

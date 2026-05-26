@@ -183,7 +183,7 @@ const ODDS_SPAN_LAY = 'bg-(--lay-0) hover:bg-(--lay-0-hover)'
 const ODDS_SPAN_DISABLED =
   'cursor-not-allowed relative ' +
   "before:content-[''] before:absolute before:inset-0 " +
-  "before:bg-[rgba(51,51,51,0.2)_url('/img/bg-line.png')]"
+  "before:bg-[rgba(51,51,51,0.2)_url('/img/bg-line.webp')]"
 
 const OddsCell = memo(function OddsCell({ value, isBack, disabled, onClick }) {
   const sparkClass = useOddsSpark(value, isBack)
@@ -251,8 +251,8 @@ const TOTAL_MATCHED_CLASS =
 const PIN_CHIP_CLASS =
   'h-full cursor-pointer min-w-[6%] w-auto text-center justify-center flex items-center'
 const PIN_ICON_CLASS =
-  'h-[21px] w-4 inline-block bg-[url(/img/pin-icon.png)] bg-no-repeat bg-center ' +
-  'cursor-pointer hover:bg-[url(/img/pin-icon-hover.png)]'
+  'h-[21px] w-4 inline-block bg-[url(/img/pin-icon.webp)] bg-no-repeat bg-center ' +
+  'cursor-pointer hover:bg-[url(/img/pin-icon-hover.webp)]'
 
 const DesktopGameRow = memo(function DesktopGameRow({
   game,
@@ -603,7 +603,7 @@ export default function GameList({
             >
               <Accordion.Header
                 variant="light"
-                className="[&_button]:row-reverse mb-0 flex items-center bg-gradient-to-t from-(--xxl-blue) to-(--xl-blue) px-[1.87vw] max-md:font-bold [&_button]:flex [&_button]:h-[8.19vw] [&_button]:items-center [&_button]:justify-center [&_button]:bg-right [&_button]:text-[3.73vw] [&_button]:leading-[1.2] [&_button]:text-white [&_buttton]:bg-[url(/img/collapse_icon.png)]!"
+                className="[&_button]:row-reverse mb-0 flex items-center bg-gradient-to-t from-(--xxl-blue) to-(--xl-blue) px-[1.87vw] max-md:font-bold [&_button]:flex [&_button]:h-[8.19vw] [&_button]:items-center [&_button]:justify-center [&_button]:bg-right [&_button]:text-[3.73vw] [&_button]:leading-[1.2] [&_button]:text-white [&_buttton]:bg-[url(/img/collapse_icon.webp)]!"
               >
                 {group.competitionName}
               </Accordion.Header>

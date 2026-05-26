@@ -218,7 +218,7 @@ export default function Stake({
                     {stakesLocked ? (
                       <>
                         <span>{t('common.edit', 'Edit')}</span>
-                        <div className="h-[9px] w-[9px] bg-[url('/img/icon-stake-edit.png')] bg-right bg-no-repeat max-md:ml-[1.33333vw] max-md:h-[4vw] max-md:w-[4vw] max-md:bg-[url('/img/svg/edit-big.svg')] max-md:bg-contain" />
+                        <div className="h-[9px] w-[9px] bg-[url('/img/icon-stake-edit.webp')] bg-right bg-no-repeat max-md:ml-[1.33333vw] max-md:h-[4vw] max-md:w-[4vw] max-md:bg-[url('/img/svg/edit-big.svg')] max-md:bg-contain" />
                       </>
                     ) : (
                       t('common.ok', 'OK')

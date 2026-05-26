@@ -75,7 +75,7 @@ export default function Home() {
         <>
           <img
             className={LANDING_IMG_CLASS}
-            src="/img/home_banner.jpg"
+            src="/img/home_banner.webp"
             alt="home banner"
             role="presentation"
             width="1200"

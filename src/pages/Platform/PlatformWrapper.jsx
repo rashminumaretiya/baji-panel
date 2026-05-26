@@ -62,7 +62,7 @@ export default function PlatformWrapper() {
 
   return (
     <div className="fixed inset-0 z-[9999] overflow-y-auto bg-[radial-gradient(circle,#262626_0%,#0a0a0a_100%)] transition-all duration-100 ease-in-out">
-      <div className="fixed top-0 right-0 left-0 z-[99] w-full bg-white bg-[url(/img/platform/bg-header.jpg)]">
+      <div className="fixed top-0 right-0 left-0 z-[99] w-full bg-white bg-[url(/img/platform/bg-header.webp)]">
         <div className="mx-auto flex w-full max-w-[1280px] items-center py-1 max-md:py-1">
           <img
             loading="lazy"

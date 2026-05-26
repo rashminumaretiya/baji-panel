@@ -55,8 +55,8 @@ const MatchedLiveBar = memo(function MatchedLiveBar({
           className={cx(
             "relative h-[23px] leading-[19px] rounded-[3px] text-white px-[7px] my-[3px] mx-[5px] text-[13px] before:content-[''] before:inline-block before:align-middle before:mr-[5px] before:h-[15px] before:w-[18px]",
             isLiveStreamOn
-              ? 'bg-gradient-to-b from-(--mds-orange) to-(--lg-orange) before:[background-image:url(/img/close-live.png)] before:[background-position:center]'
-              : 'bg-gradient-to-b from-(--md-cloud) to-(--lg-cloud) before:[background-image:url(/img/live-icons.png)] before:[background-position:-396px_-2453px]'
+              ? 'bg-gradient-to-b from-(--mds-orange) to-(--lg-orange) before:[background-image:url(/img/close-live.webp)] before:[background-position:center]'
+              : 'bg-gradient-to-b from-(--md-cloud) to-(--lg-cloud) before:[background-image:url(/img/live-icons.webp)] before:[background-position:-396px_-2453px]'
           )}
           onClick={onToggleLive}
         >
@@ -102,8 +102,8 @@ export function MatchOddsSection({
   const minMaxStr = `${fmt(marketSetting.min || 1)} / ${fmt(marketSetting.max || 100)}`
 
   const matchOddsTabClass = isYellowTheme
-    ? 'inline-block relative font-bold mr-0 max-md:!bg-gradient-to-t max-md:!from-[#ffa10c] max-md:!to-(--md-primary-yellow) max-md:border max-md:!border-(--coffee) max-md:!text-(--dark) max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-(--sm-white) md:text-(--xxl-blue) md:px-[2px] md:py-[8px_2px_7px_10px] md:py-2 md:pl-[10px] md:pr-[2px] md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.png)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
-    : 'inline-block relative font-bold mr-0 max-md:text-white max-md:border max-md:border-[rgba(var(--md-dark-rgb),0.3)] max-md:bg-gradient-to-b max-md:from-(--xs-primary) max-md:to-(--xxs-primary) max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-(--sm-white) md:text-(--xxl-blue) md:pl-[10px] md:pr-[2px] md:pb-[7px] md:pt-2 md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.png)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
+    ? 'inline-block relative font-bold mr-0 max-md:!bg-gradient-to-t max-md:!from-[#ffa10c] max-md:!to-(--md-primary-yellow) max-md:border max-md:!border-(--coffee) max-md:!text-(--dark) max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-(--sm-white) md:text-(--xxl-blue) md:px-[2px] md:py-[8px_2px_7px_10px] md:py-2 md:pl-[10px] md:pr-[2px] md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.webp)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
+    : 'inline-block relative font-bold mr-0 max-md:text-white max-md:border max-md:border-[rgba(var(--md-dark-rgb),0.3)] max-md:bg-gradient-to-b max-md:from-(--xs-primary) max-md:to-(--xxs-primary) max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-(--sm-white) md:text-(--xxl-blue) md:pl-[10px] md:pr-[2px] md:pb-[7px] md:pt-2 md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.webp)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
 
   return (
     <div className="md:mb-[30px]">
@@ -128,7 +128,7 @@ export function MatchOddsSection({
                 >
                   <i
                     className={cx(
-                      "mr-[5px] inline-block h-[15px] w-[15px] bg-[url('/img/main-s1aea395e8c.png')] align-middle",
+                      "mr-[5px] inline-block h-[15px] w-[15px] bg-[url('/img/main-s1aea395e8c.webp')] align-middle",
                       matchOdds.inplay
                         ? 'bg-position-[-399px_-2401px]'
                         : 'bg-position-[-399px_-2869px]'
@@ -296,7 +296,7 @@ export function MatchOddsSection({
                     >
                       <div className="flex flex-col">
                         <p className="mb-1 [display:-webkit-box] min-w-[150px] overflow-hidden font-bold text-ellipsis [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">
-                          <i className="mr-[5px] inline-block h-[15px] w-[15px] bg-[url('/img/main-s1aea395e8c.png')] bg-position-[-398px_-1968px] bg-no-repeat align-bottom" />
+                          <i className="mr-[5px] inline-block h-[15px] w-[15px] bg-[url('/img/main-s1aea395e8c.webp')] bg-position-[-398px_-1968px] bg-no-repeat align-bottom" />
                           {runner.runnerName || runner.runner}
                         </p>
                         <div className="flex items-center">
@@ -329,7 +329,7 @@ export function MatchOddsSection({
                             barred && BG_LINE,
                             isActive && backActiveClasses[idx],
                             showBackAllHeader &&
-                              "relative before:pointer-events-none before:absolute before:bottom-full before:left-1/2 before:h-[22px] before:w-full before:-translate-x-1/2 before:border-b before:border-white before:bg-[url('/img/main-s1aea395e8c.png')] before:bg-position-[-274px_-317px] before:bg-no-repeat before:leading-[23px] before:font-semibold before:text-(--xs-black) before:content-['Back_All']"
+                              "relative before:pointer-events-none before:absolute before:bottom-full before:left-1/2 before:h-[22px] before:w-full before:-translate-x-1/2 before:border-b before:border-white before:bg-[url('/img/main-s1aea395e8c.webp')] before:bg-position-[-274px_-317px] before:bg-no-repeat before:leading-[23px] before:font-semibold before:text-(--xs-black) before:content-['Back_All']"
                           )}
                           onClick={() =>
                             !barred && onPick(runnerExt, cell, 'BACK')
@@ -361,7 +361,7 @@ export function MatchOddsSection({
                             barred && BG_LINE,
                             isActive && layActiveClasses[idx],
                             showLayAllHeader &&
-                              "relative before:pointer-events-none before:absolute before:bottom-full before:left-1/2 before:h-[22px] before:w-full before:-translate-x-1/2 before:border-b before:border-white before:bg-[url('/img/main-s1aea395e8c.png')] before:bg-position-[100%_-399px] before:bg-no-repeat before:leading-[23px] before:font-semibold before:text-(--xs-black) before:content-['Lay_All']"
+                              "relative before:pointer-events-none before:absolute before:bottom-full before:left-1/2 before:h-[22px] before:w-full before:-translate-x-1/2 before:border-b before:border-white before:bg-[url('/img/main-s1aea395e8c.webp')] before:bg-position-[100%_-399px] before:bg-no-repeat before:leading-[23px] before:font-semibold before:text-(--xs-black) before:content-['Lay_All']"
                           )}
                           onClick={() =>
                             !barred && onPick(runnerExt, cell, 'LAY')

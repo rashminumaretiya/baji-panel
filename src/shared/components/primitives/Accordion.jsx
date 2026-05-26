@@ -70,8 +70,8 @@ const HEADER_VARIANTS = {
     header: 'bg-(--xts-blue)',
     headerCollapsedShadow: '',
     button: 'text-white px-2.5 font-medium bg-no-repeat bg-right',
-    iconOpen: 'bg-[url(/img/square-remove.png)]',
-    iconClosed: 'bg-[url(/img/square-add.png)]',
+    iconOpen: 'bg-[url(/img/square-remove.webp)]',
+    iconClosed: 'bg-[url(/img/square-add.webp)]',
   },
   light: {
     header: 'bg-(--xxs-text-color) pl-[7px]',
@@ -79,8 +79,8 @@ const HEADER_VARIANTS = {
       'shadow-[inset_0_2px_0_0_rgba(var(--black-rgb),0.1)]',
     button:
       'text-black pl-[14px] pr-2.5 font-semibold bg-no-repeat bg-left shadow-[0_2px_0_rgba(var(--white-rgb),0.1)]',
-    iconOpen: 'bg-[url(/img/collapse_icon.png)]',
-    iconClosed: 'bg-[url(/img/expand_icon.png)]',
+    iconOpen: 'bg-[url(/img/collapse_icon.webp)]',
+    iconClosed: 'bg-[url(/img/expand_icon.webp)]',
   },
 }
 
