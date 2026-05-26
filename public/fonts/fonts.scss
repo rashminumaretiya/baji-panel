@@ -1,0 +1,22 @@
+
+@font-face {
+	font-family: Tahoma, Helvetica, sans-serif;
+	src: url('/assets/fonts/tahoma-sans/TahomaRegular.eot');
+	src: url('/assets/fonts/tahoma-sans/TahomaRegular.woff') format('woff'),
+		url('/assets/fonts/tahoma-sans/TahomaRegular.woff2') format('woff2'),
+		url('/assets/fonts/tahoma-sans/TahomaRegular.ttf') format('truetype'),
+		url('/assets/fonts/tahoma-sans/TahomaRegular.svg') format('svg');
+	font-display: swap;
+	font-weight: 400;
+}
+
+@font-face {
+	font-family: Tahoma, Helvetica, sans-serif;
+	src: url('/assets/fonts/tahoma-sans/TahomaBold.eot');
+	src: url('/assets/fonts/tahoma-sans/TahomaBold.woff') format('woff'),
+		url('/assets/fonts/tahoma-sans/TahomaBold.woff2') format('woff2'),
+		url('/assets/fonts/tahoma-sans/TahomaBold.ttf') format('truetype'),
+		url('/assets/fonts/tahoma-sans/TahomaBold.svg') format('svg');
+	font-display: swap;
+	font-weight: 700;
+}

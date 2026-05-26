@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import '../public/fonts/product-sans/fonts.css';
+@import '../public/fonts/fonts.scss';
 
 /* ─── :root CSS variables (ported from variable.scss) ──────────────────────── */
 :root {
@@ -281,9 +281,6 @@
   --color-suspend: #ff0000;
   --color-profit: #508d0e;
   --color-liability: #d0021b;
-
-  --font-product-sans: 'Product Sans Regular', Tahoma, Helvetica, sans-serif;
-  --font-product-sans-bold: 'Product Sans Bold', Tahoma, Helvetica, sans-serif;
 }
 
 /* ─── Theme overrides (selected via body class in useTheme.js) ─────────────── */
