@@ -238,13 +238,11 @@ export default function Result() {
 
   const changeTab = (id) => {
     setActiveTab(id)
-    console.log('event :>> ', id)
   }
 
   const updateFilter = (event) => {
     const filterVal = event.target.value
     setSportFilter(filterVal)
-    console.log('filterVal :>> ', filterVal)
   }
 
   const outerSelectClass = [OUTER_SELECT, isYellowTheme && OUTER_SELECT_YELLOW]

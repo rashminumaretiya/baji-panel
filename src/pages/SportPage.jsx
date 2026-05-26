@@ -60,6 +60,7 @@ export default function SportPage({ sportId, bannerSrc, isRacing = false }) {
             className={LANDING_IMG_CLASS}
             src={bannerSrc}
             alt={`${sportName} Landing Image`}
+            decoding="async"
           />
         )}
 

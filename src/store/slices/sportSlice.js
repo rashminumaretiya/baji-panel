@@ -5,6 +5,7 @@ import { fetchSportLiveCount } from './headerSlice.js'
 
 const SIDEBAR_SPORTS_TTL_MS = 60_000
 const PINNED_TTL_MS = 30_000
+const INPLAY_MAP_TTL_MS = 30_000
 
 const initialState = {
   sportTabs: [],
@@ -18,6 +19,7 @@ const initialState = {
   pinnedLoadedAt: 0,
   inplayMap: {},
   inplayStatus: 'idle',
+  inplayLoadedAt: 0,
 }
 
 export const fetchSidebarSports = createAsyncThunk(
@@ -71,9 +73,26 @@ export const loadGamesForSport = createAsyncThunk(
 
 export const loadInplayMap = createAsyncThunk(
   'sport/loadInplayMap',
-  async (params = {}) => {
-    const res = await http.get('sport/list', { params })
-    return res.data?.data ?? {}
+  async (params = {}, { rejectWithValue }) => {
+    try {
+      const res = await http.get('sport/list', { params })
+      return res.data?.data ?? {}
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message)
+    }
+  },
+  {
+    condition: (_, { getState }) => {
+      const s = getState().sport
+      if (s.inplayStatus === 'loading') return false
+      if (
+        s.inplayLoadedAt &&
+        Date.now() - s.inplayLoadedAt < INPLAY_MAP_TTL_MS
+      ) {
+        return false
+      }
+      return true
+    },
   }
 )
 
@@ -186,6 +205,7 @@ const sportSlice = createSlice({
     b.addCase(loadInplayMap.fulfilled, (s, { payload }) => {
       s.inplayStatus = 'idle'
       s.inplayMap = payload && typeof payload === 'object' ? payload : {}
+      s.inplayLoadedAt = Date.now()
     })
     b.addCase(loadInplayMap.rejected, (s) => {
       s.inplayStatus = 'error'
@@ -207,10 +227,7 @@ const sportSlice = createSlice({
   },
 })
 
-export const {
-  setActiveSportId,
-  mergeOddsUpdate,
-} = sportSlice.actions
+export const { setActiveSportId, mergeOddsUpdate } = sportSlice.actions
 
 export default sportSlice.reducer
 

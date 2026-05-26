@@ -33,6 +33,7 @@ import {
   RocketIcon,
   iconMap,
 } from '../../components/icons.jsx'
+import { formatDateTimeStamp as formatDate } from '../../utils/format.js'
 
 // Trx-id regex per payment method, ported from sbex-user-fe types/dw.ts.
 const TRX_VALIDATORS = {
@@ -74,15 +75,6 @@ const PAYMENT_TYPE_IMAGES = {
   agent: '/img/payment/agent.png',
   personal: '/img/payment/personal.png',
   merchant: '/img/payment/merchant.png',
-}
-
-// Mirrors Angular's `| date : 'YYYY-MM-dd HH:mm:ss'` pipe.
-function formatDate(value) {
-  if (!value) return ''
-  const d = new Date(value)
-  if (Number.isNaN(d.getTime())) return value
-  const pad = (n) => String(n).padStart(2, '0')
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
 }
 
 // Mirrors Angular's `| titlecase` pipe.
@@ -608,7 +600,11 @@ export default function Deposit({ showTitle = true }) {
                 <div className="mr-[12px] flex h-[24px] w-[24px] items-center justify-center [&_i]:text-[18px]">
                   {(() => {
                     const GiftBoxIcon = iconMap.giftBox
-                    return GiftBoxIcon ? <GiftBoxIcon /> : <i className="svg-icon" />
+                    return GiftBoxIcon ? (
+                      <GiftBoxIcon />
+                    ) : (
+                      <i className="svg-icon" />
+                    )
                   })()}
                 </div>
                 <div className="flex flex-1 items-center justify-between">
@@ -748,6 +744,8 @@ export default function Deposit({ showTitle = true }) {
                         >
                           {m.logo && (
                             <img
+                              loading="lazy"
+                              decoding="async"
                               src={m.logo}
                               alt={m.name}
                               className="mx-auto h-10 w-auto max-md:h-[9.302vw] max-md:w-[9.302vw]"
@@ -808,7 +806,14 @@ export default function Deposit({ showTitle = true }) {
                           selectPaymentType(t.name)
                         }
                       >
-                        {img && <img src={img} alt={t.name} />}
+                        {img && (
+                          <img
+                            loading="lazy"
+                            decoding="async"
+                            src={img}
+                            alt={t.name}
+                          />
+                        )}
                       </div>
                     )
                   })}

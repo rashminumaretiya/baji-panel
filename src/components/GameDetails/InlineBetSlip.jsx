@@ -5,6 +5,7 @@ import { useIsMobile } from '../../hooks/useMediaQuery.js'
 import FancyProgress from '../../shared/components/FancyProgress.jsx'
 import { resolveApiMessage } from '../../shared/services/alert.js'
 import { selectStakesData } from '../../store/slices/authSlice.js'
+import { cx } from '../../utils/cx.js'
 
 const FEEDBACK_TIMEPERIOD = {
   success: 5000,
@@ -163,10 +164,6 @@ function Keypad({ onValueChanged }) {
       </div>
     </div>
   )
-}
-
-function cx(...classes) {
-  return classes.filter(Boolean).join(' ')
 }
 
 // Background colour for the bet-type row (back vs lay / premium sportsbook).
@@ -518,7 +515,7 @@ export default function InlineBetSlip({
                 <button
                   type="button"
                   className={cx(
-                    'ml-2 w-full max-w-[75px] min-w-0 rounded border border-[#bbb] bg-linear-to-b from-white to-[#eeeeee] p-0 text-[12px] leading-[31px] font-semibold',
+                    'btn btn-white ml-2 h-[31px] w-[85px] cursor-pointer text-xs!',
                     isPlacing && 'cursor-not-allowed opacity-60'
                   )}
                   onClick={onCancel}

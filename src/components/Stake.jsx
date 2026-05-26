@@ -12,12 +12,9 @@ import {
 } from '../store/slices/authSlice.js'
 import { alertService } from '../shared/services/alert.js'
 import { ClosePopoverIcon, SettingIcon } from './icons.jsx'
+import { cx } from '../utils/cx.js'
 
 const QUICK_STAKE_SLOTS = [1, 2, 3, 4, 5, 6, 7, 8]
-
-function cx(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
 
 // Section wrapper used for "Default Stake", "Stake/Quick Stakes",
 // "Odds", "Fancy Bet", "Sportsbook" and "Win Selection Forecast".

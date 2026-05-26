@@ -7,17 +7,9 @@ import {
   selectWithdrawalHistory,
 } from '../../store/slices/accountSlice.js'
 import { selectCurrency } from '../../store/slices/authSlice.js'
+import { formatDateTimeStamp as formatDate } from '../../utils/format.js'
 
 const PER_PAGE = 10
-
-// Mirrors Angular's `| date : 'YYYY-MM-dd HH:mm:ss'` pipe.
-function formatDate(value) {
-  if (!value) return ''
-  const d = new Date(value)
-  if (Number.isNaN(d.getTime())) return value
-  const pad = (n) => String(n).padStart(2, '0')
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
-}
 
 // The thunk attaches a `<img class="payment-img">` HTML string to each
 // row's `paymentType` field (mirrors Angular's `type: 'template'`).

@@ -205,6 +205,8 @@ export default commonSlice.reducer
 export const selectIsMobile = (s) => s.common.isMobile
 export const selectIsFullScreenLoader = (s) => s.common.isFullScreenLoader
 export const selectIsMainScreenLoader = (s) => s.common.isMainScreenLoader
+export const selectCaptcha = (s) => s.common.captcha
+export const selectIsStreamUrlAvailable = (s) => s.common.isStreamUrlAvailable
 export const selectPanelTheme = (s) => s.common.panelTheme
 export const selectIsYellowTheme = (s) => {
   const t = s.common.panelTheme

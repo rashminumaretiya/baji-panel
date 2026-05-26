@@ -12,6 +12,7 @@ import {
 } from '../../store/slices/commonSlice.js'
 import MobileSearchEvent from '../MobileSearchEvent.jsx'
 import { LiveChipIcon, iconMap } from '../icons.jsx'
+import { cx } from '../../utils/cx.js'
 
 // Maps sport ID → registry key for the larger, sport-specific SVG used by the
 // mobile-sport-header tab strip in the live project. Falls back to the API's
@@ -36,10 +37,6 @@ function resolveTabIcon(tab) {
     ]
   if (byName) return byName
   return tab?.icon || ''
-}
-
-function cx(...cs) {
-  return cs.filter(Boolean).join(' ')
 }
 
 function isBabu365Host() {

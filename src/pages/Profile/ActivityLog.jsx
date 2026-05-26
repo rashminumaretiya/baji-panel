@@ -4,18 +4,9 @@ import { useSelector } from 'react-redux'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
 import Table from '../../shared/Table.jsx'
+import { formatDateTimeStamp as formatDate } from '../../utils/format.js'
 
 const PER_PAGE = 10
-
-// Mirrors Angular's `| date : 'y-MM-dd H:mm:ss'` shared-table formatter
-// used for the `type: 'date'` column in baji-exchange-frontend.
-function formatDate(value) {
-  if (!value) return ''
-  const d = new Date(value)
-  if (Number.isNaN(d.getTime())) return value
-  const pad = (n) => String(n).padStart(2, '0')
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
-}
 
 // Ports baji-exchange-frontend's CommonService.getConvertedAddress —
 // flattens each activity row's nested `address.{city, state, country}` into

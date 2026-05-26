@@ -68,6 +68,8 @@ export default function MobileNavigation() {
       <ul className="m-0 flex justify-between bg-gradient-to-t from-(--xsm-blue) to-(--xxl-blue) p-0">
         <li className={promoteItem} onClick={showCasino} role="presentation">
           <img
+            loading="lazy"
+            decoding="async"
             src="/img/svg/game-card.svg"
             className="icon-promote"
             alt="Casino"
@@ -78,7 +80,12 @@ export default function MobileNavigation() {
           onClick={redirectToMainSite}
           role="presentation"
         >
-          <img src="/img/svg/home.svg" alt={t('common.home', 'Home')} />
+          <img
+            loading="lazy"
+            decoding="async"
+            src="/img/svg/home.svg"
+            alt={t('common.home', 'Home')}
+          />
           <span>{t('common.home', 'Home')}</span>
         </li>
         {MOBILE_MENUS.map((menu) => {
@@ -94,7 +101,12 @@ export default function MobileNavigation() {
                     : 'block h-full w-full'
                 }
               >
-                <img src={menu.icon} alt={label} />
+                <img
+                  loading="lazy"
+                  decoding="async"
+                  src={menu.icon}
+                  alt={label}
+                />
                 <span>{label}</span>
               </NavLink>
             </li>
@@ -106,6 +118,8 @@ export default function MobileNavigation() {
           role="presentation"
         >
           <img
+            loading="lazy"
+            decoding="async"
             src="/img/svg/user-profile.svg"
             alt={t('common.account', 'Account')}
           />

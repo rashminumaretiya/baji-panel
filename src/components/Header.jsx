@@ -14,12 +14,11 @@ import {
 import {
   selectIsMcvYellowTheme,
   selectIsPlayLiveStream,
+  selectIsStreamUrlAvailable,
   selectIsYellowTheme,
-  setIsPlayLiveStream,
   selectLogo,
+  setIsPlayLiveStream,
 } from '../store/slices/commonSlice.js'
-
-const selectIsStreamUrlAvailable = (s) => s.common.isStreamUrlAvailable
 import {
   fetchOpenBets,
   selectOpenBetRefreshTick,
@@ -36,14 +35,11 @@ import {
   RefreshIcon,
   SettingIcon,
 } from './icons.jsx'
+import { cx } from '../utils/cx.js'
 
 const DEFAULT_WALLET = { balance: 0, exposure: 0 }
 const DEFAULT_CURRENCY = 'BDT'
 const LOADING_BAR_ITEMS = [1, 2, 3, 4, 5, 6, 7, 8]
-
-function cx(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
 
 function formatBalance(value) {
   return new Intl.NumberFormat('en-US', {
@@ -63,7 +59,10 @@ const HEADER_BASE =
 const HEADER_YELLOW = 'bg-gradient-to-b from-[#ffcb2e] to-[#ffb80c]'
 const HEADER_MCW = 'bg-gradient-to-b from-[#2f2f2f] to-[#010101]'
 
-export default function Header({ logo: logoProp, isStreamAvailable: isStreamAvailableProp }) {
+export default function Header({
+  logo: logoProp,
+  isStreamAvailable: isStreamAvailableProp,
+}) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -134,6 +133,10 @@ export default function Header({ logo: logoProp, isStreamAvailable: isStreamAvai
     return segments[0] === 'odds' ? segments[1] : null
   }, [location.pathname])
 
+  // Open-bets polling: independent of openBetRefreshTick so a flurry of bet
+  // placements doesn't keep resetting the 15s window. The refresh-tick effect
+  // below fires a one-shot fetch on each placement; the interval here ticks
+  // predictably regardless.
   useEffect(() => {
     if (!isAuth) {
       dispatch(setOpenBets([]))
@@ -143,6 +146,15 @@ export default function Header({ logo: logoProp, isStreamAvailable: isStreamAvai
     dispatch(fetchOpenBets(params))
     const intervalId = setInterval(() => dispatch(fetchOpenBets(params)), 15000)
     return () => clearInterval(intervalId)
+  }, [isAuth, dispatch, openBetsEventId])
+
+  // One-shot refresh whenever betSlipSlice bumps openBetRefreshTick (after a
+  // successful bet placement). Skipped on first mount when tick is still 0 —
+  // the poll effect above already issued the initial fetch.
+  useEffect(() => {
+    if (!isAuth || openBetRefreshTick === 0) return
+    const params = openBetsEventId ? { eventId: String(openBetsEventId) } : {}
+    dispatch(fetchOpenBets(params))
   }, [isAuth, dispatch, openBetsEventId, openBetRefreshTick])
 
   const refreshTimerRef = useRef(null)
@@ -193,6 +205,7 @@ export default function Header({ logo: logoProp, isStreamAvailable: isStreamAvai
                   onKeyDown={(e) => e.key === 'Enter' && navigateToHome()}
                   role="button"
                   tabIndex={0}
+                  decoding="async"
                 />
               </div>
             )}
@@ -233,9 +246,7 @@ export default function Header({ logo: logoProp, isStreamAvailable: isStreamAvai
                   tabIndex={0}
                   onKeyDown={(e) => e.key === 'Enter' && openBetsClick()}
                 >
-                  <DollarCoinIcon
-                    className="max-md:[&_svg]:h-[5.33333vw] max-md:[&_svg]:w-[5.33333vw]"
-                  />
+                  <DollarCoinIcon className="max-md:[&_svg]:h-[5.33333vw] max-md:[&_svg]:w-[5.33333vw]" />
                   <p className="ms-lg-2 mb-0 max-md:ml-[1.33vw]">
                     {' '}
                     {t('header.bets', 'Bets')}

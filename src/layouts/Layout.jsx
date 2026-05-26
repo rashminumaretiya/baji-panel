@@ -26,8 +26,7 @@ import NewsLine from '../components/NewsLine'
 import Loader from '../shared/components/Loader.jsx'
 import LoginModel from '../shared/components/loginModel/LoginModel.jsx'
 import SportsSidebar from '../shared/components/sports-sidebar/SportsSidebar'
-
-const cx = (...classes) => classes.filter(Boolean).join(' ')
+import { cx } from '../utils/cx.js'
 
 // Ported from the original layout.scss .main-wrapper / .left-content /
 // .middle-content / .right-content / .scroll-wrap rules.

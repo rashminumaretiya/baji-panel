@@ -7,6 +7,7 @@ import Layout from './layouts/Layout.jsx'
 import MyAccountLayout from './layouts/MyAccountLayout.jsx'
 import InPlayLayout from './layouts/InPlayLayout.jsx'
 import Home from './pages/Home.jsx'
+import ErrorBoundary from './shared/components/ErrorBoundary.jsx'
 import { selectIsAuthenticated } from './store/slices/authSlice.js'
 
 const Account = lazy(() => import('./pages/Account.jsx'))
@@ -54,6 +55,7 @@ function App() {
   useTheme()
 
   return (
+    <ErrorBoundary>
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
@@ -98,6 +100,7 @@ function App() {
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </ErrorBoundary>
   )
 }
 

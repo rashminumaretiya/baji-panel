@@ -19,10 +19,7 @@ import {
   ChevronRightArrowIcon,
   RefreshIcon,
 } from './icons.jsx'
-
-function cx(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
+import { cx } from '../utils/cx.js'
 
 function titleCaseBetType(t) {
   if (!t) return ''

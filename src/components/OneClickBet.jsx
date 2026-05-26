@@ -17,12 +17,9 @@ import { LOCALSTORAGE } from '../shared/types/common.js'
 import { localStorageService } from '../shared/services/local-storage.js'
 import { alertService, resolveApiMessage } from '../shared/services/alert.js'
 import { EditIcon } from './icons.jsx'
+import { cx } from '../utils/cx.js'
 
 const STAKE_SLOTS = [1, 2, 3, 4]
-
-function cx(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
 
 function hasSeenOneClickAttention() {
   return !!localStorageService.getItem(LOCALSTORAGE.ONE_CLICK_ATTENTION)

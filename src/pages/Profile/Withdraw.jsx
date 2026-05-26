@@ -279,6 +279,8 @@ export default function Withdraw({ showTitle = true }) {
                       >
                         {icon && (
                           <img
+                            loading="lazy"
+                            decoding="async"
                             src={icon}
                             alt="method"
                             className={formCheckImgClass}

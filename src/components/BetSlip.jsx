@@ -20,12 +20,9 @@ import { resolveApiMessage } from '../shared/services/alert.js'
 import Loader from '../shared/components/Loader.jsx'
 import { formatAmount as formatNumber } from '../utils/customFunction.js'
 import { CrossIcon } from './icons.jsx'
+import { cx } from '../utils/cx.js'
 
 const DEFAULT_AVAILABLE_STAKE = [100, 200, 500, 1000, 2000, 5000]
-
-function cx(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
 
 function NoBetSlip({ isShowLoader }) {
   if (isShowLoader) {
@@ -62,8 +59,8 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
 
   const numericOdds = Number(odds) || 0
   const numericStake = Number(stake) || 0
-  const profitLiability = (numericOdds - 1) * numericStake
-  const liability = isBack ? numericStake : (numericOdds - 1) * numericStake
+  const exposureAmount = (numericOdds - 1) * numericStake
+  const liability = isBack ? numericStake : exposureAmount
 
   const selectionId = activeMatchOdd?.selectionId
   const marketId = activeMatchOdd?.marketId
@@ -74,7 +71,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
       dispatch(setPreExposure(null))
       return
     }
-    const pl = Number(((numericOdds - 1) * numericStake).toFixed(2))
+    const pl = Number(exposureAmount.toFixed(2))
     const profit = pl > 0 ? (isBack ? 1 : -1) * pl : 0
     const liabilityVal = numericStake > 0 ? (isBack ? -1 : 1) * numericStake : 0
     dispatch(
@@ -95,6 +92,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
     isBack,
     numericStake,
     numericOdds,
+    exposureAmount,
     marketName,
   ])
 
@@ -196,9 +194,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
               <tr className={rowBg}>
                 <td className="w-[43.23529%] overflow-hidden bg-transparent px-1.5 py-1 align-middle text-[11px] font-medium">
                   <div className="flex items-center">
-                    <CrossIcon
-                      className="[&_svg]:text- mr-1 flex h-[15px] items-center [&_svg]:h-2.5 [&_svg]:w-2.5 [&_svg]:rounded-[3px] [&_svg]:bg-red-600 [&_svg]:p-0.5"
-                    />
+                    <CrossIcon className="[&_svg]:text- mr-1 flex h-[15px] items-center [&_svg]:h-2.5 [&_svg]:w-2.5 [&_svg]:rounded-[3px] [&_svg]:bg-red-600 [&_svg]:p-0.5" />
                     <div className="ml-1 flex flex-col">
                       <span className="m-0 inline-block pr-1 whitespace-nowrap">
                         {activeMatchOdd?.selectionName}
@@ -236,7 +232,7 @@ function BetSlipForm({ activeMatchOdd, availableStake, isYellowTheme }) {
                 </td>
                 <td className="w-[24.11765%] overflow-hidden bg-transparent px-1.5 py-1 pr-3 align-middle text-[12px] font-medium">
                   <p className="mb-0 text-right text-[11px]">
-                    {formatNumber(profitLiability)}
+                    {formatNumber(exposureAmount)}
                   </p>
                 </td>
               </tr>

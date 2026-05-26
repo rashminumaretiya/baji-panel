@@ -57,6 +57,8 @@ export default function Home() {
             alt="Cricket Landing Image"
             width="1200"
             height="194"
+            fetchPriority="high"
+            decoding="async"
           />
           <DesktopGameFilter value={filterType} onChange={setFilterType} />
           <SportTabBar

@@ -250,13 +250,12 @@ export default function ProfitLoss() {
   const fetchPnl = useCallback(() => {
     if (!token) return
     if (STATIC_TABS.has(marketCategory)) return
-    const authHeaders = { headers: { Authorization: `Bearer ${token}` } }
     const handle = (res) => {
       const payload = res.data?.data
       setRows(payload?.data ?? (Array.isArray(payload) ? payload : []))
     }
     if (marketCategory === 'CASINO') {
-      http.get('bet/casino-bets?page=1&perPage=10', authHeaders).then(handle)
+      http.get('bet/casino-bets?page=1&perPage=10').then(handle)
       return
     }
     const periodStartDate = istStartIso(fromDate)
@@ -268,7 +267,7 @@ export default function ProfitLoss() {
       periodEndDate,
       marketCategory,
     }).toString()
-    http.get(`bet/profit-loss?${query}`, authHeaders).then(handle)
+    http.get(`bet/profit-loss?${query}`).then(handle)
   }, [token, marketCategory, fromDate, toDate])
 
   useEffect(() => {

@@ -9,6 +9,7 @@ import {
   setIsOneClickBet,
   setLoginWindow,
 } from '../store/slices/authSlice.js'
+import { setActiveBetSlip } from '../store/slices/betSlipSlice.js'
 import {
   selectIsMcvYellowTheme,
   selectIsYellowTheme,
@@ -26,12 +27,9 @@ import {
   isPageActive,
   sportTabToPage,
 } from './subHeader.config.js'
+import { cx } from '../utils/cx.js'
 
 const SPORT_LIVE_COUNT_TTL_MS = 60_000
-
-function classes(...cs) {
-  return cs.filter(Boolean).join(' ')
-}
 
 function useDerivedPages({ isAuthenticated, sportTabs }) {
   return useMemo(() => {
@@ -76,6 +74,7 @@ export default function SubHeader() {
         return
       }
       dispatch(setIsOneClickBet(next))
+      if (next) dispatch(setActiveBetSlip(null))
     },
     [dispatch, isAuthenticated]
   )
@@ -106,7 +105,7 @@ export default function SubHeader() {
   // Wrapper background: default md-black; isYellowTheme makes it `var(--dark)`
   // (the `.dark-row` override wins over the `.yellow-theme` green rule due to
   // higher specificity); mcw-casino gets the gold gradient.
-  const wrapperClass = classes(
+  const wrapperClass = cx(
     'mb-px shadow-[inset_0_1px_3px_0_rgba(var(--black-rgb),0.4)]',
     !isYellowTheme && !isMcwCasinoTheme && 'bg-(--md-black)',
     isYellowTheme && 'bg-(--dark)',
@@ -114,7 +113,7 @@ export default function SubHeader() {
   )
 
   // Right-inner-header gets margin-right: 20px when yellow-theme is active.
-  const rightWrapClass = classes(
+  const rightWrapClass = cx(
     'inline-flex items-center',
     isYellowTheme && 'mr-5'
   )
@@ -133,7 +132,7 @@ export default function SubHeader() {
     ? 'border-t-[#d56525] bg-gradient-to-b from-[#b43807] to-[#912b06] hover:bg-gradient-to-t hover:from-[#b43807] hover:to-[#912b06]'
     : 'border-t-[#d56525] bg-gradient-to-t from-[#4b4b4b] to-[#1e1e1e]'
 
-  const betCheckClass = classes(
+  const betCheckClass = cx(
     betCheckBase,
     !isYellowTheme && !isMcwCasinoTheme && betCheckDefault,
     isYellowTheme && betCheckYellow,
@@ -153,7 +152,7 @@ export default function SubHeader() {
       ? 'border border-[rgba(255,211,84,0.4)] checked:bg-black/15 checked:bg-[url(/img/yellow-check.svg)] checked:bg-no-repeat checked:bg-center checked:bg-[length:11px_11px]'
       : '')
 
-  const checkboxClass = classes(
+  const checkboxClass = cx(
     checkboxBase,
     !isYellowTheme && !isMcwCasinoTheme && checkboxDefault,
     isYellowTheme && checkboxYellow,
@@ -161,20 +160,20 @@ export default function SubHeader() {
   )
 
   // Label color: white by default, #ecca3d in mcw-casino theme
-  const labelClass = classes(
+  const labelClass = cx(
     'cursor-pointer font-bold ml-2.5 align-[-webkit-baseline-middle]',
     isMcwCasinoTheme ? 'text-[#ecca3d]' : 'text-white'
   )
 
   // Settings link
-  const settingClass = classes(
+  const settingClass = cx(
     'inline-flex items-center gap-[5px] font-bold px-2.5 leading-[30px] cursor-pointer hover:bg-white/10 [&_svg]:h-3.5 [&_svg]:w-3.5',
     isMcwCasinoTheme ? 'text-black' : 'text-white'
   )
 
   // ul margin-left: 0 default; -4px on yellow-theme; -10px on
   // mcw-casino + yellow-theme (legacy combo).
-  const ulClass = classes(
+  const ulClass = cx(
     'mb-0 pl-0 flex items-center',
     isYellowTheme && !isMcwCasinoTheme && '-ml-1',
     isYellowTheme && isMcwCasinoTheme && '-ml-2.5'

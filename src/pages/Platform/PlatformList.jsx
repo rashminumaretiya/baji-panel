@@ -98,22 +98,19 @@ export default function PlatformList() {
       : 'p-0 cursor-pointer text-white! [&_svg]:h-6 [&_svg]:w-6'
 
   return (
-    <div className="min-h-[calc(100vh-98px)] text-[#fadda6] bg-[radial-gradient(circle,#262626_0%,#0a0a0a_100%)] p-3 md:px-20">
-      <div className="sticky top-0 z-[9] bg-[#665030] p-[13px] mb-4 flex justify-between items-center">
-        <h6 className="text-white font-bold whitespace-nowrap min-w-[30%] flex-1 m-0 text-base">
+    <div className="min-h-[calc(100vh-98px)] bg-[radial-gradient(circle,#262626_0%,#0a0a0a_100%)] p-3 text-[#fadda6] md:px-20">
+      <div className="sticky top-0 z-[9] mb-4 flex items-center justify-between bg-[#665030] p-[13px]">
+        <h6 className="m-0 min-w-[30%] flex-1 text-base font-bold whitespace-nowrap text-white">
           {t('platform.title', 'Platform List')}
         </h6>
-        <div className="flex items-center pl-2 justify-end">
+        <div className="flex items-center justify-end pl-2">
           {!isMobile && (
-            <h6 className="text-white font-bold mr-3 m-0 text-base">
+            <h6 className="m-0 mr-3 text-base font-bold text-white">
               {t('platform.listMode', 'List Mode')}
             </h6>
           )}
-          <ul className="flex m-0 pl-0">
-            <li
-              onClick={() => setIsGridView(false)}
-              role="presentation"
-            >
+          <ul className="m-0 flex pl-0">
+            <li onClick={() => setIsGridView(false)} role="presentation">
               <VerticleListIcon className={toggleClass(!isGridView)} />
             </li>
             <li
@@ -124,58 +121,66 @@ export default function PlatformList() {
               <HorizontleListIcon className={toggleClass(isGridView)} />
             </li>
           </ul>
-          <div className="relative pl-2 max-w-[268px] max-[575px]:max-w-[55%]">
+          <div className="relative max-w-[268px] pl-2 max-[575px]:max-w-[55%]">
             <input
               type="text"
-              className="w-full max-w-full border-0 rounded-[25px] py-[10px] px-[14px] pr-[38px] bg-white text-base focus:outline-none max-md:text-white max-md:bg-[rgb(85_61_17)]"
+              className="w-full max-w-full rounded-[25px] border-0 bg-white px-[14px] py-[10px] pr-[38px] text-base focus:outline-none max-md:bg-[rgb(85_61_17)] max-md:text-white"
               placeholder={t('platform.searchPlaceholder', 'Search')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
             {isMobile && (
-              <SearchIcon className="absolute top-1/2 right-3 -translate-y-1/2 text-white! [&_svg]:h-5 [&_svg]:w-5 [&_svg]:[stroke-width:2px] [&_svg]:stroke-current" />
+              <SearchIcon className="absolute top-1/2 right-3 -translate-y-1/2 text-white! [&_svg]:h-5 [&_svg]:w-5 [&_svg]:stroke-current [&_svg]:[stroke-width:2px]" />
             )}
           </div>
         </div>
       </div>
 
       {visibleProviders.length === 0 ? (
-        <p className="text-center text-white opacity-60 mt-8">
+        <p className="mt-8 text-center text-white opacity-60">
           {t('noData.default', 'No data found')}
         </p>
       ) : !isGridView ? (
         <div className="flex flex-wrap pb-4">
           {visibleProviders.map((game, idx) => (
-            <div key={`${game.provider}-${idx}`} className="w-full md:w-1/3 xl:w-1/4">
+            <div
+              key={`${game.provider}-${idx}`}
+              className="w-full md:w-1/3 xl:w-1/4"
+            >
               <div
-                className="mb-3 mx-2 cursor-pointer bg-[url('/img/platform/bg-platform.jpg')] bg-cover"
+                className="mx-2 mb-3 cursor-pointer bg-[url('/img/platform/bg-platform.jpg')] bg-cover"
                 onClick={() => handleProviderClick(game)}
                 role="presentation"
               >
-                <div className="flex p-2 justify-between">
+                <div className="flex justify-between p-2">
                   <div className="flex items-center">
-                    <div className="rounded-full p-1 bg-[linear-gradient(to_right_top,#654302,#f7c972,#644202,#f7c972,#694809,#f7c972,#6f4d0c)]">
+                    <div className="rounded-full bg-[linear-gradient(to_right_top,#654302,#f7c972,#644202,#f7c972,#694809,#f7c972,#6f4d0c)] p-1">
                       <img
+                        loading="lazy"
+                        decoding="async"
                         src={game.image}
                         alt={game.label}
-                        className="rounded-full h-[68px] w-[68px] object-contain bg-[radial-gradient(circle,#262626_0%,#0a0a0a_100%)]"
+                        className="h-[68px] w-[68px] rounded-full bg-[radial-gradient(circle,#262626_0%,#0a0a0a_100%)] object-contain"
                       />
                     </div>
-                    <h6 className="font-bold pl-2 mb-0 text-[1rem]">
+                    <h6 className="mb-0 pl-2 text-[1rem] font-bold">
                       {game.label}
                     </h6>
                   </div>
-                  <div className="flex flex-col justify-between items-end">
+                  <div className="flex flex-col items-end justify-between">
                     <div className="inline-flex items-center">
                       {(() => {
-                        const ProviderIcon = iconMap[providerIcon(game.provider)]
+                        const ProviderIcon =
+                          iconMap[providerIcon(game.provider)]
                         return ProviderIcon ? (
-                          <ProviderIcon className="ml-1 text-white! [&_svg]:h-5 [&_svg]:w-5 inline-flex" />
+                          <ProviderIcon className="ml-1 inline-flex text-white! [&_svg]:h-5 [&_svg]:w-5" />
                         ) : null
                       })()}
                     </div>
                     <div className="cursor-pointer">
                       <img
+                        loading="lazy"
+                        decoding="async"
                         src={
                           game.games?.length > 1
                             ? '/img/platform/btn-more.png'
@@ -192,44 +197,49 @@ export default function PlatformList() {
           ))}
         </div>
       ) : (
-        <div className="flex flex-wrap -mx-[6px] pb-4">
+        <div className="-mx-[6px] flex flex-wrap pb-4">
           {visibleProviders.map((game, idx) => (
             <div
               key={`${game.provider}-${idx}`}
-              className="w-1/2 xl:w-1/6 px-[6px] mb-3"
+              className="mb-3 w-1/2 px-[6px] xl:w-1/6"
             >
               <div
-                className="cursor-pointer border-2 border-[#1c1813] rounded-md shadow-md"
+                className="cursor-pointer rounded-md border-2 border-[#1c1813] shadow-md"
                 onClick={() => handleProviderClick(game)}
                 role="presentation"
               >
-                <div className="relative bg-[url('/img/platform/bg-platform.jpg')] bg-no-repeat bg-cover">
+                <div className="relative bg-[url('/img/platform/bg-platform.jpg')] bg-cover bg-no-repeat">
                   <img
+                    loading="lazy"
+                    decoding="async"
                     src={providerGridCover(game.provider)}
                     alt={game.label}
-                    className="w-full h-[146px] object-cover object-top"
+                    className="h-[146px] w-full object-cover object-top"
                   />
-                  <div className="absolute left-0 right-0 bottom-0 h-6 px-1 flex items-center justify-between bg-black/60">
+                  <div className="absolute right-0 bottom-0 left-0 flex h-6 items-center justify-between bg-black/60 px-1">
                     <div className="inline-flex items-center">
                       {(() => {
-                        const ProviderIcon = iconMap[providerIcon(game.provider)]
+                        const ProviderIcon =
+                          iconMap[providerIcon(game.provider)]
                         return ProviderIcon ? (
-                          <ProviderIcon className="inline-flex mx-1 text-white [&_svg]:h-4 [&_svg]:w-4" />
+                          <ProviderIcon className="mx-1 inline-flex text-white [&_svg]:h-4 [&_svg]:w-4" />
                         ) : null
                       })()}
                     </div>
                     <img
+                      loading="lazy"
+                      decoding="async"
                       src={
                         game.games?.length > 1
                           ? '/img/platform/btn-more.png'
                           : '/img/platform/btn-playnow.webp'
                       }
                       alt="btn-image"
-                      className="absolute h-[6.3vw] md:h-[30px] w-auto -top-[3vw] md:-top-[13px] right-1"
+                      className="absolute -top-[3vw] right-1 h-[6.3vw] w-auto md:-top-[13px] md:h-[30px]"
                     />
                   </div>
                 </div>
-                <div className="my-2 text-center text-white text-[14px]">
+                <div className="my-2 text-center text-[14px] text-white">
                   {game.label}
                 </div>
               </div>

@@ -11,6 +11,7 @@ import {
   selectIsAuthenticated,
   selectUser,
 } from '../store/slices/authSlice.js'
+import { selectCaptcha } from '../store/slices/commonSlice.js'
 
 // Reusable Tailwind class strings (kept here so each variant stays readable).
 const panelClass =
@@ -34,7 +35,7 @@ function DevAuthPanel() {
   const dispatch = useDispatch()
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const user = useSelector(selectUser)
-  const captcha = useSelector((s) => s.common.captcha)
+  const captcha = useSelector(selectCaptcha)
 
   const [form, setForm] = useState({ userName: '', password: '', code: '' })
   const [busy, setBusy] = useState(false)
