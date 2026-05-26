@@ -1,5 +1,5 @@
 // Mirrors sbex-user-fe/src/app/shared/services/bet-slip.ts (state surface only).
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { http } from '../../core/http/client.js'
 import { placeBet as placeBetApi } from '../../shared/services/place-bet.js'
 import { fetchBalance } from './authSlice.js'
@@ -188,11 +188,30 @@ export const selectFancyProgressMap = (s) => s.betSlip.fancyProgressMap
 // For the right-side BetSlip header — returns the most-recent MATCH_ODDS
 // fancy-progress config (if any). The slip uses this to render the same
 // FancyProgress banner that other markets show inline.
-export const selectMatchOddsFancyProgress = (s) => {
-  const map = s.betSlip.fancyProgressMap
-  for (const id in map) {
-    if (map[id]?.marketName === 'MATCH_ODDS')
-      return { selectionId: id, config: map[id] }
+// Memoized: returns a fresh object literal, so inlining re-renders every
+// BetSlip subscriber on every store dispatch.
+export const selectMatchOddsFancyProgress = createSelector(
+  [selectFancyProgressMap],
+  (map) => {
+    for (const id in map) {
+      if (map[id]?.marketName === 'MATCH_ODDS')
+        return { selectionId: id, config: map[id] }
+    }
+    return null
   }
-  return null
-}
+)
+
+// LiveOdds reads progress for BOOKMAKER / FANCY / SPORTS_BOOK markets only;
+// MATCH_ODDS is owned by BetSlip via selectMatchOddsFancyProgress. Splitting
+// the subscriptions lets LiveOdds skip re-render on match-odds bet placement
+// (and vice versa). Pair with `shallowEqual` on the useSelector call.
+export const selectNonMatchOddsFancyProgress = createSelector(
+  [selectFancyProgressMap],
+  (map) => {
+    const out = {}
+    for (const id in map) {
+      if (map[id]?.marketName !== 'MATCH_ODDS') out[id] = map[id]
+    }
+    return out
+  }
+)

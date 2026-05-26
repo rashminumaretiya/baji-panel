@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -73,11 +73,14 @@ export default function Stake({
     if (!stakesData?.length) dispatch(loadStakes())
   }, [dispatch, stakesData?.length])
 
-  const availableStake =
-    editedStake ??
-    Object.fromEntries(
-      QUICK_STAKE_SLOTS.map((slot, i) => [slot, stakesData?.[i] ?? ''])
-    )
+  const availableStake = useMemo(
+    () =>
+      editedStake ??
+      Object.fromEntries(
+        QUICK_STAKE_SLOTS.map((slot, i) => [slot, stakesData?.[i] ?? ''])
+      ),
+    [editedStake, stakesData]
+  )
 
   const toggleStakeEdit = () => setIsStakeEditable((prev) => !prev)
 

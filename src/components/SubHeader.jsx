@@ -35,13 +35,13 @@ function classes(...cs) {
 
 function useDerivedPages({ isAuthenticated, sportTabs }) {
   return useMemo(() => {
-    const head = SUB_HEADER_HEAD_PAGES.map((page) => ({ ...page }))
     const middle = (sportTabs || []).map(sportTabToPage)
-    const tail = SUB_HEADER_TAIL_PAGES.map((page) => ({
-      ...page,
-      isHidden: page.isHidden || (page.authRequired && !isAuthenticated),
-    }))
-    return [...head, ...middle, ...tail]
+    const tail = SUB_HEADER_TAIL_PAGES.map((page) =>
+      !page.isHidden && page.authRequired && !isAuthenticated
+        ? { ...page, isHidden: true }
+        : page
+    )
+    return [...SUB_HEADER_HEAD_PAGES, ...middle, ...tail]
   }, [isAuthenticated, sportTabs])
 }
 

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useIsMobile } from '../../hooks/useMediaQuery.js'
@@ -79,9 +79,13 @@ const MOBILE_STAKE_BTN =
   'text-white bg-transparent border-0 flex-1 p-0 max-md:text-(--white) max-md:bg-white max-md:w-auto max-md:px-1 max-md:py-[3px] max-md:bg-[linear-gradient(-180deg,#32617f_20%,#1f4258_91%)] max-md:p-0! max-md:leading-[1.76] max-md:text-[3.7vw]'
 
 function StakeButtons({ isMobile, onStakeClick, stakes: stakesProp }) {
-  const source =
-    Array.isArray(stakesProp) && stakesProp.length ? stakesProp : DEFAULT_STAKES
-  const stakes = isMobile ? source.slice(0, 5) : source
+  const stakes = useMemo(() => {
+    const source =
+      Array.isArray(stakesProp) && stakesProp.length
+        ? stakesProp
+        : DEFAULT_STAKES
+    return isMobile ? source.slice(0, 5) : source
+  }, [stakesProp, isMobile])
   const wrapperClass = isMobile
     ? 'flex justify-end items-center text-white border-r border-[#4a4a4a] py-2 px-1 max-md:bg-[image:linear-gradient(-180deg,#32617f_20%,#1f4258_91%)] max-md:p-0 max-md:leading-[2.46] max-md:text-[3.46667vw] max-md:border-r max-md:border-[rgba(var(--black-rgb),0.15)]'
     : 'flex justify-end'

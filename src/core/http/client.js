@@ -9,6 +9,7 @@ import { attachSuccessInterceptor } from '../interceptor/success-interceptor.js'
 
 export const http = axios.create({
   baseURL: environment.apiUrl,
+  timeout: 30_000,
 })
 
 export function bindHttpInterceptors({

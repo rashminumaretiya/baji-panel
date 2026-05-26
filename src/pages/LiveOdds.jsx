@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getSportIdFromSlug, getSportName } from '../core/constant/constants.js'
 import { http } from '../core/http/client.js'
@@ -33,7 +33,7 @@ import {
   selectActiveBetSlip,
   selectIsPlacingBet,
   selectOneClickBetStake,
-  selectFancyProgressMap,
+  selectNonMatchOddsFancyProgress,
   setFancyProgress,
   clearFancyProgress,
   selectOpenBetRefreshTick,
@@ -116,6 +116,13 @@ const BG_LINE =
 
 const BACK_SPARK = 'animate-[sparkBack_0.8s_ease-in-out]'
 const LAY_SPARK = 'animate-[sparkLay_0.8s_ease-in-out]'
+
+const EMPTY_EXPOSURE_MAP = new Map()
+
+const DESKTOP_BACK_CLASSES = [BLUE_XXS, BLUE_MD, BLUE_XS]
+const DESKTOP_LAY_CLASSES = [RED_XS, RED_MD, RED_XXS]
+const MOBILE_BACK_CLASSES = [BLUE_XS]
+const MOBILE_LAY_CLASSES = [RED_XS]
 
 const RUNNER_FIRST_CELL =
   ' bg-white text-start px-[10px] py-[3px] text-(--header-primary) border-t border-(--tbl-border-color) max-md:bg-transparent max-md:px-[1.8666666667vw] max-md:py-[0.3333333333vw] max-md:h-[11.51vw] max-md:text-[4vw]'
@@ -361,7 +368,10 @@ export default function LiveOdds() {
   const [activeSportBook, setActiveSportBook] = useState(null)
   const [bookFancyTarget, setBookFancyTarget] = useState(null)
 
-  const fancyProgressMap = useSelector(selectFancyProgressMap)
+  const fancyProgressMap = useSelector(
+    selectNonMatchOddsFancyProgress,
+    shallowEqual
+  )
   const setFancyProgressFor = useCallback(
     (selectionId, config) =>
       dispatch(setFancyProgress({ selectionId, config })),
@@ -571,10 +581,8 @@ export default function LiveOdds() {
     }
   }, [isAuthenticated, eventId, openBetRefreshTick])
 
-  const visibleExposureByMarket = useMemo(() => {
-    if (!isAuthenticated || !eventId) return new Map()
-    return postExposureByMarket
-  }, [isAuthenticated, eventId, postExposureByMarket])
+  const visibleExposureByMarket =
+    !isAuthenticated || !eventId ? EMPTY_EXPOSURE_MAP : postExposureByMarket
 
   //
 
@@ -777,18 +785,25 @@ export default function LiveOdds() {
     [dispatch]
   )
 
+  // Ref so handlePlaceBet stays stable across socket ticks (it's only read
+  // at submit time, not per render).
+  const matchOddsListRef = useRef(matchOddsList)
+  useEffect(() => {
+    matchOddsListRef.current = matchOddsList
+  }, [matchOddsList])
+
   const handlePlaceBet = useCallback(
     (slip) => {
+      const list = matchOddsListRef.current
       const context = {
         sport: sportSlug ?? '',
         eventId: String(eventId ?? ''),
-        eventTitle:
-          matchOddsList?.[0]?.eventName || matchOddsList?.[0]?.eventTitle || '',
-        runners: matchOddsList?.[0]?.runners ?? [],
+        eventTitle: list?.[0]?.eventName || list?.[0]?.eventTitle || '',
+        runners: list?.[0]?.runners ?? [],
       }
       return dispatch(placeBet({ slip, context })).unwrap()
     },
-    [dispatch, sportSlug, eventId, matchOddsList]
+    [dispatch, sportSlug, eventId]
   )
 
   const toggleFullscreen = useCallback(() => {
@@ -1866,9 +1881,11 @@ export function MatchOddsSection({
                 : [back[2], back[1], back[0]]
               const layCells = isMobile ? [lay[0]] : [lay[0], lay[1], lay[2]]
               const backClasses = isMobile
-                ? [BLUE_XS]
-                : [BLUE_XXS, BLUE_MD, BLUE_XS]
-              const layClasses = isMobile ? [RED_XS] : [RED_XS, RED_MD, RED_XXS]
+                ? MOBILE_BACK_CLASSES
+                : DESKTOP_BACK_CLASSES
+              const layClasses = isMobile
+                ? MOBILE_LAY_CLASSES
+                : DESKTOP_LAY_CLASSES
 
               const isFirstRow = rowIdx === 0
 

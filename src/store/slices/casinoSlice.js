@@ -18,6 +18,8 @@ import { getCachedCasinoData, loadCasinoData } from '../../data/casino/loader.js
 import { selectIsMobile, selectAllowedSbGames } from './commonSlice.js'
 import { selectUser } from './authSlice.js'
 
+const CASINO_INFO_TTL_MS = 60_000
+
 const initialState = {
   activeProviders: [],
   blockedGameCodes: [],
@@ -26,6 +28,8 @@ const initialState = {
   casinoAgentBalance: null,
   isLaunching: false,
   isCasinoDataLoaded: false,
+  casinoInfoLoading: false,
+  casinoInfoLoadedAt: 0,
 }
 
 // Lazy-load the casino registry + provider config + SB games. Dispatched on
@@ -51,6 +55,19 @@ export const fetchCasinoInfo = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err?.response?.data || err?.message)
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const s = getState().casino
+      if (s.casinoInfoLoading) return false
+      if (
+        s.casinoInfoLoadedAt &&
+        Date.now() - s.casinoInfoLoadedAt < CASINO_INFO_TTL_MS
+      ) {
+        return false
+      }
+      return true
+    },
   }
 )
 
@@ -183,7 +200,12 @@ const casinoSlice = createSlice({
     b.addCase(ensureCasinoDataLoaded.fulfilled, (s) => {
       s.isCasinoDataLoaded = true
     })
+    b.addCase(fetchCasinoInfo.pending, (s) => {
+      s.casinoInfoLoading = true
+    })
     b.addCase(fetchCasinoInfo.fulfilled, (s, { payload }) => {
+      s.casinoInfoLoading = false
+      s.casinoInfoLoadedAt = Date.now()
       if (!payload) return
       const providers = (payload.domainProvider?.providers ?? []).map((p) => ({
         merchantName: p.merchantName,
@@ -196,6 +218,9 @@ const casinoSlice = createSlice({
       s.casinoGameImages = Array.isArray(payload.casinoGameImages)
         ? payload.casinoGameImages
         : []
+    })
+    b.addCase(fetchCasinoInfo.rejected, (s) => {
+      s.casinoInfoLoading = false
     })
     b.addCase(fetchCasinoAgentBalance.fulfilled, (s, { payload }) => {
       s.casinoAgentBalance = payload?.casinoAgentBalance ?? null
@@ -279,36 +304,48 @@ const selectSbGames = createSelector(
   }
 )
 
-// Mirrors Casino#allCasinoGames: per-merchant fallback, blocked-code filter,
-// spribe aviator suppression when SB aviator is in play, plus the SB games.
-export const selectAllCasinoGames = createSelector(
-  [
-    selectActiveProviderMap,
-    selectBlockedGameCodes,
-    selectAllowedSbGames,
-    selectSbGames,
-    selectIsCasinoDataLoaded,
-  ],
-  (activeProviderMap, blockedList, allowed, sbGames, isLoaded) => {
+// Stage 1: merchant→active-provider mapping + provider-enabled filter.
+// Recomputes only when activeProviderMap or the loaded-flag flips, NOT when
+// the block list / allowedSbGames mutate.
+const selectMerchantGamesFlat = createSelector(
+  [selectActiveProviderMap, selectIsCasinoDataLoaded],
+  (activeProviderMap, isLoaded) => {
     if (!isLoaded) return []
     const data = getCachedCasinoData()
     if (!data) return []
     const { MERCHANT_PROVIDER_GAMES } = data
-    const blocked = new Set(blockedList)
-    const useSbAviator = allowed.includes('aviator')
-
-    const regularGames = Object.keys(MERCHANT_PROVIDER_GAMES)
+    return Object.keys(MERCHANT_PROVIDER_GAMES)
       .flatMap((merchant) =>
         gamesForMerchant(merchant, activeProviderMap, MERCHANT_PROVIDER_GAMES)
       )
       .filter(
         (g) =>
+          (IS_AWC_CASINO && g.awcGameCode) ||
+          (IS_GSC_CASINO && g.gscGameCode) ||
+          (IS_QT_CASINO && g.qtGameCode)
+      )
+  }
+)
+
+// Stage 2: apply blocked-code filter + sb-aviator suppression + decorate.
+// Mirrors Casino#allCasinoGames.
+export const selectAllCasinoGames = createSelector(
+  [
+    selectMerchantGamesFlat,
+    selectBlockedGameCodes,
+    selectAllowedSbGames,
+    selectSbGames,
+  ],
+  (merchantGames, blockedList, allowed, sbGames) => {
+    const blocked = new Set(blockedList)
+    const useSbAviator = allowed.includes('aviator')
+
+    const regularGames = merchantGames
+      .filter(
+        (g) =>
           !blocked.has(g.awcGameCode) &&
           !blocked.has(g.gscGameCode) &&
           !blocked.has(g.qtGameCode) &&
-          ((IS_AWC_CASINO && g.awcGameCode) ||
-            (IS_GSC_CASINO && g.gscGameCode) ||
-            (IS_QT_CASINO && g.qtGameCode)) &&
           !(
             useSbAviator &&
             g.provider === 'spribe' &&

@@ -4,6 +4,7 @@ import { SPORT_TAB_EXCLUDE } from '../../core/constant/constants.js'
 import { fetchSportLiveCount } from './headerSlice.js'
 
 const SIDEBAR_SPORTS_TTL_MS = 60_000
+const PINNED_TTL_MS = 30_000
 
 const initialState = {
   sportTabs: [],
@@ -14,6 +15,7 @@ const initialState = {
   gamesById: {},
   pinned: [],
   pinnedStatus: 'idle',
+  pinnedLoadedAt: 0,
   inplayMap: {},
   inplayStatus: 'idle',
 }
@@ -75,11 +77,24 @@ export const loadInplayMap = createAsyncThunk(
   }
 )
 
+// Pass { force: true } to bypass the TTL — used by pinEvent/unpinEvent to
+// refresh the list immediately after a mutation.
 export const loadPinnedEvents = createAsyncThunk(
   'sport/loadPinnedEvents',
   async () => {
     const res = await http.get('sport/pinned-events')
     return res.data?.data ?? []
+  },
+  {
+    condition: (arg, { getState }) => {
+      if (arg?.force) return true
+      const s = getState().sport
+      if (s.pinnedStatus === 'loading') return false
+      if (s.pinnedLoadedAt && Date.now() - s.pinnedLoadedAt < PINNED_TTL_MS) {
+        return false
+      }
+      return true
+    },
   }
 )
 
@@ -87,7 +102,7 @@ export const pinEvent = createAsyncThunk(
   'sport/pinEvent',
   async ({ eventId, sportId, alias }, { dispatch }) => {
     const res = await http.post('sport/pin-event', { eventId, sportId, alias })
-    dispatch(loadPinnedEvents())
+    dispatch(loadPinnedEvents({ force: true }))
     return res.data?.data
   }
 )
@@ -96,7 +111,7 @@ export const unpinEvent = createAsyncThunk(
   'sport/unpinEvent',
   async (eventId, { dispatch }) => {
     const res = await http.post('sport/unpin-event', { eventId })
-    dispatch(loadPinnedEvents())
+    dispatch(loadPinnedEvents({ force: true }))
     return res.data?.data
   }
 )
@@ -182,6 +197,7 @@ const sportSlice = createSlice({
     })
     b.addCase(loadPinnedEvents.fulfilled, (s, { payload }) => {
       s.pinnedStatus = 'idle'
+      s.pinnedLoadedAt = Date.now()
       s.pinned = payload
     })
     b.addCase(loadPinnedEvents.rejected, (s) => {
