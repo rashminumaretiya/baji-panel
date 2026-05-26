@@ -7,9 +7,11 @@ import { attachHeaderInterceptor } from '../interceptor/header-interceptor.js'
 import { attachErrorInterceptor } from '../interceptor/error-interceptor.js'
 import { attachSuccessInterceptor } from '../interceptor/success-interceptor.js'
 
+// 10s ceiling so a stalled backend can't dominate LCP / pile up polling requests.
+// Per-call overrides (long uploads, etc.) can pass `timeout` in the config.
 export const http = axios.create({
   baseURL: environment.apiUrl,
-  timeout: 30_000,
+  timeout: 10_000,
 })
 
 export function bindHttpInterceptors({

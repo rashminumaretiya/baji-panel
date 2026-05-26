@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useIsMobile } from '../hooks/useMediaQuery.js'
 import useHomePageData from '../hooks/useHomePageData.js'
 import GameList from '../components/home/GameList.jsx'
@@ -10,12 +10,13 @@ import MobileSports from '../components/home/MobileSports.jsx'
 import SportTabBar from '../components/home/SportTabBar.jsx'
 import RacingBanner from '../components/home/RacingBanner.jsx'
 import Footer from '../components/Footer.jsx'
-import Loader from '../shared/components/Loader.jsx'
 import { GAME_LIST_FILTERS } from '../core/constant/constants.js'
 
 const LANDING_IMG_CLASS = 'h-[194px] w-full object-cover mt-px mb-4'
 
 const GAMES_AREA_MIN_HEIGHT = 'min-h-[80vh]'
+
+const FADE_MS = 200
 
 export default function Home() {
   const isMobile = useIsMobile()
@@ -31,6 +32,28 @@ export default function Home() {
     selectTab,
   } = useHomePageData()
 
+  const [isFading, setIsFading] = useState(false)
+  const fadeTimerRef = useRef(null)
+  useEffect(
+    () => () => {
+      if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current)
+    },
+    []
+  )
+
+  const handleTabSelect = useCallback(
+    (id) => {
+      if (String(id) === String(activeSportId)) return
+      setIsFading(true)
+      if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current)
+      fadeTimerRef.current = setTimeout(() => {
+        selectTab(id)
+        setIsFading(false)
+      }, FADE_MS)
+    },
+    [activeSportId, selectTab]
+  )
+
   const gameList = (
     <GameList
       games={games}
@@ -42,7 +65,6 @@ export default function Home() {
 
   return (
     <div className="relative">
-      <Loader show={isLoading} variant="wrapper" />
       {isMobile ? (
         <>
           <MobileSports />
@@ -65,12 +87,12 @@ export default function Home() {
           <SportTabBar
             tabs={tabs}
             activeSportId={activeSportId}
-            onSelect={selectTab}
+            onSelect={handleTabSelect}
           />
           <div
-            id="home-game-list-panel"
-            role="tabpanel"
-            className={`relative ${GAMES_AREA_MIN_HEIGHT}`}
+            className={`relative transition-opacity duration-150 ease-out ${
+              isFading ? 'opacity-0' : 'opacity-100'
+            } ${GAMES_AREA_MIN_HEIGHT}`}
           >
             {isRacing && sportBanner && (
               <RacingBanner src={sportBanner} sportName={activeSport?.name} />

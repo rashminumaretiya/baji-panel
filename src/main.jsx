@@ -19,7 +19,16 @@ import App from './App.jsx'
 
 applyCachedThemeBodyClass()
 bootstrapHttp()
-bootstrapSocket()
+// Socket handshake competes with the critical JS chain for network/CPU. Defer
+// it past first paint — odds_update is live data that's only useful once the
+// UI is up, and bindSocketHandlers is idempotent so subscribeEvents calls
+// later in the render lifecycle still init the socket lazily if needed.
+const deferSocket = () => bootstrapSocket()
+if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+  window.requestIdleCallback(deferSocket, { timeout: 2000 })
+} else {
+  setTimeout(deferSocket, 0)
+}
 setupMobileBreakpointListener(store)
 redirectPreviousTab()
 

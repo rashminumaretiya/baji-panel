@@ -121,11 +121,24 @@ export default function Header({
     isMcwCasinoTheme && 'bg-gradient-to-b from-[#2f2f2f] to-[#010101]'
   )
 
+  // Self-pacing poll: schedule the next fetch only after the previous one
+  // settles. Prevents requests stacking up when the backend is slow — with
+  // setInterval, a 15s tick with 30s responses doubled the in-flight load.
   useEffect(() => {
     if (!isAuth) return undefined
-    dispatch(fetchBalance())
-    const intervalId = setInterval(() => dispatch(fetchBalance()), 15000)
-    return () => clearInterval(intervalId)
+    let cancelled = false
+    let timeoutId = null
+    const tick = () => {
+      dispatch(fetchBalance()).finally(() => {
+        if (cancelled) return
+        timeoutId = setTimeout(tick, 15000)
+      })
+    }
+    tick()
+    return () => {
+      cancelled = true
+      if (timeoutId) clearTimeout(timeoutId)
+    }
   }, [isAuth, dispatch])
 
   const openBetsEventId = useMemo(() => {
@@ -135,17 +148,27 @@ export default function Header({
 
   // Open-bets polling: independent of openBetRefreshTick so a flurry of bet
   // placements doesn't keep resetting the 15s window. The refresh-tick effect
-  // below fires a one-shot fetch on each placement; the interval here ticks
-  // predictably regardless.
+  // below fires a one-shot fetch on each placement; this loop ticks predictably
+  // regardless. Same self-pacing pattern as the balance poll above.
   useEffect(() => {
     if (!isAuth) {
       dispatch(setOpenBets([]))
       return undefined
     }
     const params = openBetsEventId ? { eventId: String(openBetsEventId) } : {}
-    dispatch(fetchOpenBets(params))
-    const intervalId = setInterval(() => dispatch(fetchOpenBets(params)), 15000)
-    return () => clearInterval(intervalId)
+    let cancelled = false
+    let timeoutId = null
+    const tick = () => {
+      dispatch(fetchOpenBets(params)).finally(() => {
+        if (cancelled) return
+        timeoutId = setTimeout(tick, 15000)
+      })
+    }
+    tick()
+    return () => {
+      cancelled = true
+      if (timeoutId) clearTimeout(timeoutId)
+    }
   }, [isAuth, dispatch, openBetsEventId])
 
   // One-shot refresh whenever betSlipSlice bumps openBetRefreshTick (after a

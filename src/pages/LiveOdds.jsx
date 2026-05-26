@@ -1,12 +1,4 @@
-import {
-  Fragment,
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -43,166 +35,41 @@ import {
   setActiveBetSlip,
   setPreExposure,
 } from '../store/slices/betSlipSlice.js'
-import InlineBetSlip from '../components/GameDetails/InlineBetSlip.jsx'
-import FancyProgress from '../shared/components/FancyProgress.jsx'
-import BetExposureCell from '../components/GameDetails/BetExposureCell.jsx'
 import BookFancyModal from '../components/GameDetails/BookFancyModal.jsx'
 import Modal from '../shared/components/Modal.jsx'
 import { alertService, resolveApiMessage } from '../shared/services/alert.js'
+import {
+  CloseIcon,
+  FullscreenIcon,
+  PinIcon,
+  RefreshIcon,
+} from './live-odds/icons.jsx'
+import {
+  FANCY_TYPES,
+  MAIN_FANCY,
+  SPORTSBOOK_CATEGORIES,
+  isMarketStatusBlocked,
+  num,
+} from './live-odds/shared.js'
+import { MatchOddsSection } from './live-odds/MatchOddsSection.jsx'
+import { BookmakerSection } from './live-odds/BookmakerSection.jsx'
+import { FancySection, FancyTabHeader } from './live-odds/FancySection.jsx'
+import { SportbookSection } from './live-odds/SportbookSection.jsx'
+
+// Re-exported so existing consumers (RacingOdds.jsx) keep their import path.
+export { MatchOddsSection } from './live-odds/MatchOddsSection.jsx'
 
 const SPARK_TTL_MS = 750
 const PIP_SCROLL_THRESHOLD = 300
 const SCROLL_CONTAINER_SELECTOR = '.middle-content'
-const PRICE_LIMIT = 20
 
-const FANCY_TYPES = {
-  ALL: 'all',
-  SESSION: 'session',
-  FANCY1: 'fancy1',
-  ODD_EVEN: 'oddeven',
-}
-
-const FANCY_TYPE_TABS = [
-  { type: FANCY_TYPES.ALL, label: 'All' },
-  { type: FANCY_TYPES.SESSION, label: 'Session' },
-  { type: FANCY_TYPES.FANCY1, label: 'Fancy1' },
-  { type: FANCY_TYPES.ODD_EVEN, label: 'Odd/Even' },
-]
-
-const SPORTSBOOK_CATEGORIES = {
-  ALL: 'all',
-  INNINGS: 'innings',
-  OVER: 'over',
-  MATCH: 'match',
-  PLAYERS: 'players',
-}
-
-const SPORTSBOOK_TABS = [
-  { type: SPORTSBOOK_CATEGORIES.ALL, label: 'All' },
-  { type: SPORTSBOOK_CATEGORIES.INNINGS, label: 'Innings' },
-  { type: SPORTSBOOK_CATEGORIES.OVER, label: 'Over' },
-  { type: SPORTSBOOK_CATEGORIES.MATCH, label: 'Match' },
-  { type: SPORTSBOOK_CATEGORIES.PLAYERS, label: 'Players' },
-]
-
-const MAIN_FANCY = {
-  FANCY_BET: 'fancyBet',
-  SPORTS_BOOK: 'sportBook',
-}
-
-const MATCH_ODDS_TABLE =
-  'w-full border-separate [border-spacing:1px_0] max-md:bg-white'
-
-const TABLE_TH =
-  'text-(--dark) text-center align-bottom text-[11px] font-normal pb-[3px] max-md:px-[1.86667vw] max-md:pt-[1.86667vw] max-md:pb-[0.8vw] max-md:text-[3.46667vw] max-md:font-bold'
-
-const PRICE_CELL_BASE =
-  'text-center text-(--header-primary) border-t border-(--tbl-border-color) relative text-[12px] cursor-pointer w-[10.9%] h-[40px] max-md:text-[4vw] max-md:w-[70px] max-md:h-[11.51vw] max-md:px-[1.8666666667vw] py-1 max-md:py-[0.6vw] max-md:min-w-[18.66667vw] [&_p]:font-bold [&_p]:leading-none [&_p]:text-[12px] max-md:[&_p]:text-[3.46667vw] max-md:[&_p]:leading-normal [&_span]:leading-none [&_span]:text-[12px] max-md:[&_span]:text-[2.93333vw]'
-
-const BLUE_XS = 'bg-(--back-0) hover:bg-(--back-0-hover)'
-const BLUE_MD = 'bg-(--back-1) hover:bg-(--back-1-hover)'
-const BLUE_XXS = 'bg-(--back-2) hover:bg-(--back-2-hover)'
-
-const RED_XS = 'bg-(--lay-0) hover:bg-[rgba(var(--light-red),0.8)]'
-const RED_MD = 'bg-(--lay-1) hover:bg-(--lay-1-hover)'
-const RED_XXS = 'bg-(--lay-2) hover:bg-(--lay-2-hover)'
-
-const ACTIVE_SHADOW =
-  'shadow-[inset_0_1px_3px_rgba(var(--black-rgb),0.5)] hover:opacity-100'
-
-const BLUE_XS_ACTIVE = `!bg-(--lg-blue-bg) !text-white ${ACTIVE_SHADOW}`
-const BLUE_MD_ACTIVE = `!bg-(--back-0) !text-white ${ACTIVE_SHADOW}`
-const BLUE_XXS_ACTIVE = `!bg-(--back-1) !text-(--header-primary) ${ACTIVE_SHADOW}`
-
-const RED_XS_ACTIVE = `!bg-(--lg-red-bg) !text-white ${ACTIVE_SHADOW}`
-const RED_MD_ACTIVE = `!bg-(--lay-0) !text-white ${ACTIVE_SHADOW}`
-const RED_XXS_ACTIVE = `!bg-(--lay-1) !text-(--header-primary) ${ACTIVE_SHADOW}`
-
-const BG_LINE =
-  '!bg-[url(/img/bg-line.png)] opacity-90 [filter:brightness(0.7)] [background-blend-mode:color-burn] !cursor-default pointer-events-none'
-
-const BACK_SPARK = 'animate-[sparkBack_0.8s_ease-in-out]'
-const LAY_SPARK = 'animate-[sparkLay_0.8s_ease-in-out]'
-
+// Stable empty-map sentinel so the selector returning visibleExposureByMarket
+// doesn't allocate a fresh Map per render when the user is logged out.
 const EMPTY_EXPOSURE_MAP = new Map()
 
-const RUNNER_FIRST_CELL =
-  ' bg-white text-start px-[10px] py-[3px] text-(--header-primary) border-t border-(--tbl-border-color) max-md:bg-transparent max-md:px-[1.8666666667vw] max-md:py-[0.3333333333vw] max-md:h-[11.51vw] max-md:text-[4vw]'
-
-const GAME_STATUS_OVERLAY =
-  'absolute inset-0 max-w-[665px] !w-full bg-[rgba(36,58,72,0.4)] z-[9] flex items-center justify-center text-white/80 [text-shadow:0_1px_4px_rgba(0,0,0,0.5)] text-[13px] cursor-default hover:bg-[rgba(36,58,72,0.6)] max-md:text-[3.46667vw] max-md:font-bold'
-
-const FANCY_INFO_POPUP =
-  'absolute top-0 right-0 w-auto bg-white z-[99] px-[1.8666666667vw] pb-[1.8666666667vw] shadow-[0_6px_10px_rgba(var(--black-rgb),0.7)] rounded-[1.0666666667vw] flex [&_p]:text-(--sxl-text-color) [&_p]:text-[2.6666666667vw] [&_p]:leading-[3.2vw] [&_p]:pt-[0.8vw] [&_p]:pb-[1.0666666667vw] [&_p]:whitespace-nowrap [&_p]:mb-0 [&_span]:leading-[3.7333333333vw] [&_span]:text-(--dark) [&_span]:whitespace-nowrap [&_span]:text-[3vw]'
-
-const FANCY_INFO_CLOSE_ICON =
-  'pl-[2.5vw] pt-[1vw] inline-flex text-black [&_svg]:!h-[3.2vw] [&_svg]:!w-[3.2vw]'
-
-const fmt = (value, digits = 0) => {
-  if (value == null || value === '') return ''
-  const n = Number(value)
-  if (Number.isNaN(n)) return ''
-  return n.toLocaleString('en-US', {
-    minimumFractionDigits: digits,
-    maximumFractionDigits: digits,
-  })
-}
-
-const fmtPrice = (value) => {
-  if (value == null || value === '' || value === 0) return ''
-  const n = Number(value)
-  if (Number.isNaN(n)) return ''
-  return n.toLocaleString('en-US', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 3,
-  })
-}
-
-const fmtDate = (date) => {
-  if (!date) return ''
-  const d = new Date(date)
-  if (Number.isNaN(d.getTime())) return ''
-  return new Intl.DateTimeFormat('en-GB', {
-    weekday: 'short',
-    day: '2-digit',
-    month: 'short',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: false,
-  }).format(d)
-}
-
-
-const titleCase = (s) =>
-  String(s ?? '')
-    .toLowerCase()
-    .replace(/\b\w/g, (c) => c.toUpperCase())
-
-const num = (value) => {
-  const n = Number(value ?? 0)
-  return Number.isFinite(n) ? n : 0
-}
-
-const BLOCKED_STATUSES = new Set([
-  'SUSPENDED',
-  'BALL RUNNING',
-  'BALL_RUNNING',
-  'BALL_RUNNING_UPPER',
-  'CLOSED',
-  'SETTLED',
-  'INACTIVE',
-])
-
-const normalizeStatus = (status) =>
-  String(status ?? '')
-    .trim()
-    .toUpperCase()
-    .replace(/\s+/g, ' ')
-
-const isMarketStatusBlocked = (status) =>
-  BLOCKED_STATUSES.has(normalizeStatus(status))
-
-const isBookmakerStatusBlocked = isMarketStatusBlocked
+// ─── Match-odds spark diffing ───────────────────────────────────────────────
+// Flags cells whose price changed since the previous socket tick so the
+// BACK_SPARK / LAY_SPARK animations fire on those cells.
 
 const flagChanged = (current, previous) => {
   if (!Array.isArray(current)) return current
@@ -321,6 +188,41 @@ const groupSportbookByCategory = (items) => {
   return buckets
 }
 
+// Patches market-setting records when the admin pushes a settings change
+// over the socket. Lookup is per (section, marketId, settingName).
+function applyAdminPatch(current, evt) {
+  if (!current) return current
+  const sections = ['match_odds', 'bookmaker', 'fancy', 'sportBook']
+  const next = { ...current }
+  let changed = false
+  for (const section of sections) {
+    const list = current[section]
+    if (!Array.isArray(list)) continue
+    let sectionChanged = false
+    const updated = list.map((entry) => {
+      if (entry.marketId !== evt.marketId) return entry
+      sectionChanged = true
+      switch (evt.settingName) {
+        case 'isSuspended':
+          return { ...entry, isSuspended: evt.isSuspended }
+        case 'isAdvanceRestricted':
+          return { ...entry, isAdvanceRestricted: evt.isAdvanceRestricted }
+        case 'pbuLimit':
+          return { ...entry, pbuLimit: evt.pbuLimit }
+        case 'stakeLimit':
+          return { ...entry, stakeLimit: evt.stakeLimit }
+        default:
+          return entry
+      }
+    })
+    if (sectionChanged) {
+      next[section] = updated
+      changed = true
+    }
+  }
+  return changed ? next : current
+}
+
 export default function LiveOdds() {
   const { t } = useTranslation()
   const { eventId, sport: sportSlug } = useParams()
@@ -378,7 +280,6 @@ export default function LiveOdds() {
   const activeBookmaker = isOneClickBet ? null : activeBookmakerRaw
   const activeFancyBet = isOneClickBet ? null : activeFancyBetRaw
   const activeSportBook = isOneClickBet ? null : activeSportBookRaw
-
 
   const setFancyProgressFor = useCallback(
     (selectionId, config) =>
@@ -500,7 +401,6 @@ export default function LiveOdds() {
 
     const offFancyBm = listenSocket(SOCKET_EVENTS.FANCY_BM_ODDS, (odds) => {
       if (!odds) return
-
       const data = Array.isArray(odds) ? (odds[1] ?? {}) : odds
       if (Array.isArray(data?.bookmaker)) setBookmakerOdds(data.bookmaker)
       if (Array.isArray(data?.fancy)) setFancy(data.fancy)
@@ -591,10 +491,6 @@ export default function LiveOdds() {
 
   const visibleExposureByMarket =
     !isAuthenticated || !eventId ? EMPTY_EXPOSURE_MAP : postExposureByMarket
-
-  //
-
-  //
 
   const fancySelectionId = activeFancyBet?.selectionId
   const fancyMarketId = activeFancyBet?.marketId
@@ -723,9 +619,12 @@ export default function LiveOdds() {
   }, [fancy.length, premium.length, isAuthenticated])
 
   const orderedFancyMainTabs = useMemo(() => {
-    const active = fancyMainTabs.find((t) => t.type === selectedFancy)
+    const active = fancyMainTabs.find((tab) => tab.type === selectedFancy)
     if (!active) return fancyMainTabs
-    return [active, ...fancyMainTabs.filter((t) => t.type !== selectedFancy)]
+    return [
+      active,
+      ...fancyMainTabs.filter((tab) => tab.type !== selectedFancy),
+    ]
   }, [fancyMainTabs, selectedFancy])
 
   const [prevFancyMainTabs, setPrevFancyMainTabs] = useState(fancyMainTabs)
@@ -733,7 +632,7 @@ export default function LiveOdds() {
     setPrevFancyMainTabs(fancyMainTabs)
     if (
       fancyMainTabs.length &&
-      !fancyMainTabs.some((t) => t.type === selectedFancy)
+      !fancyMainTabs.some((tab) => tab.type === selectedFancy)
     ) {
       setSelectedFancy(fancyMainTabs[0].type)
     }
@@ -1005,6 +904,24 @@ export default function LiveOdds() {
     setActiveSportBook(slip)
   }
 
+  // Predicate every section needs ("is the place-bet API in-flight for this
+  // selection?"). Replaces four near-identical inline expressions at the
+  // section call sites.
+  const isPlacingFor = useCallback(
+    (selectionId) =>
+      isPlacingBet &&
+      String(placingSelectionId) === String(selectionId ?? ''),
+    [isPlacingBet, placingSelectionId]
+  )
+
+  // Returns the right-side bet slip iff it belongs to this match-odds market;
+  // otherwise null. Cleans up the inline ternary on the section's `active` prop.
+  const activeMatchOddsFor = (marketId) =>
+    activeRightSideBet?.marketName === 'MATCH_ODDS' &&
+    activeRightSideBet?.marketId === marketId
+      ? activeRightSideBet
+      : null
+
   if (error) {
     return (
       <div className="p-4">
@@ -1106,21 +1023,12 @@ export default function LiveOdds() {
               exposureData={
                 visibleExposureByMarket.get(String(matchOdds.marketId)) ?? null
               }
-              active={
-                activeRightSideBet?.marketName === 'MATCH_ODDS' &&
-                activeRightSideBet?.marketId === matchOdds.marketId
-                  ? activeRightSideBet
-                  : null
-              }
+              active={activeMatchOddsFor(matchOdds.marketId)}
               onPick={onMatchOddsClick}
               onCancelMatchOdds={cancelMatchOdds}
               onSlipChange={updateMatchOddsSlip}
               onPlaceBet={handlePlaceBet}
-              isPlacingActive={
-                isPlacingBet &&
-                String(placingSelectionId) ===
-                  String(activeRightSideBet?.selectionId ?? '')
-              }
+              isPlacingActive={isPlacingFor(activeRightSideBet?.selectionId)}
               betLimitOpen={betLimitOpen}
               onToggleBetLimit={toggleBetLimit}
               liveStreamSlot={
@@ -1147,11 +1055,7 @@ export default function LiveOdds() {
               onActiveChange={setActiveBookmaker}
               onPick={onBookmakerClick}
               onPlaceBet={handlePlaceBet}
-              isPlacingActive={
-                isPlacingBet &&
-                String(placingSelectionId) ===
-                  String(activeBookmaker?.selectionId ?? '')
-              }
+              isPlacingActive={isPlacingFor(activeBookmaker?.selectionId)}
               exposureByMarket={visibleExposureByMarket}
               fancyProgressMap={fancyProgressMap}
               onFancyProgressClose={clearFancyProgressFor}
@@ -1181,11 +1085,7 @@ export default function LiveOdds() {
                   onActiveChange={setActiveFancyBet}
                   onPick={onFancyClick}
                   onPlaceBet={handlePlaceBet}
-                  isPlacingActive={
-                    isPlacingBet &&
-                    String(placingSelectionId) ===
-                      String(activeFancyBet?.selectionId ?? '')
-                  }
+                  isPlacingActive={isPlacingFor(activeFancyBet?.selectionId)}
                   exposureData={visibleExposureByMarket.get('0') ?? null}
                   onBookClick={setBookFancyTarget}
                   fancyProgressMap={fancyProgressMap}
@@ -1202,11 +1102,7 @@ export default function LiveOdds() {
                   onActiveChange={setActiveSportBook}
                   onPick={onSportbookClick}
                   onPlaceBet={handlePlaceBet}
-                  isPlacingActive={
-                    isPlacingBet &&
-                    String(placingSelectionId) ===
-                      String(activeSportBook?.selectionId ?? '')
-                  }
+                  isPlacingActive={isPlacingFor(activeSportBook?.selectionId)}
                   exposureByMarket={visibleExposureByMarket}
                   fancyProgressMap={fancyProgressMap}
                   onFancyProgressClose={clearFancyProgressFor}
@@ -1572,6 +1468,9 @@ export default function LiveOdds() {
   )
 }
 
+// ── Small components used only by LiveOdds itself ──────────────────────────
+// PinRefresh is re-exported because RacingOdds.jsx imports it from this file.
+
 export const PinRefresh = memo(function PinRefresh({ onRefresh }) {
   const baseDiv =
     'text-white font-bold z-[1] min-w-[90px] flex justify-center items-center h-[25px] leading-[20px] relative max-md:px-3 max-md:py-[6px] max-md:h-[7.46667vw] max-md:leading-tight max-md:text-[3.2vw] max-md:min-w-[25.5vw] [&_i_svg]:h-[14px] [&_i_svg]:w-[14px] max-md:[&_i_svg]:h-[3.73333vw] max-md:[&_i_svg]:w-[3.73333vw] mobile:[&_span]:hidden'
@@ -1655,1506 +1554,3 @@ const LiveStream = memo(function LiveStream({
     </div>
   )
 })
-
-const MatchedLiveBar = memo(function MatchedLiveBar({
-  currency,
-  totalMatched,
-  showLiveButton,
-  isLiveStreamOn,
-  onToggleLive,
-}) {
-  const { t } = useTranslation()
-
-  const LIVE_BTN_BASE =
-    'relative h-[23px] leading-[19px] rounded-[3px] text-white px-[7px] my-[3px] mx-[5px] text-[13px] ' +
-    "before:content-[''] before:inline-block before:align-middle before:mr-[5px] before:h-[15px] before:w-[18px]"
-  const LIVE_ON =
-    'bg-gradient-to-b from-(--md-cloud) to-(--lg-cloud) ' +
-    'before:[background-image:url(/img/live-icons.png)] before:[background-position:-396px_-2453px]'
-  const LIVE_OFF =
-    'bg-gradient-to-b from-(--mds-orange) to-(--lg-orange) ' +
-    'before:[background-image:url(/img/close-live.png)] before:[background-position:center]'
-
-  return (
-    <div className="flex">
-      <div className="flex items-center text-[13px] [&_span]:font-bold">
-        <p className="m-0">{t('common.matched', 'Matched')}</p>
-        <span className="ml-1">{currency || 'PBU'}</span>
-        <span className="mr-2 ml-1">{fmt(totalMatched)}</span>
-      </div>
-      {showLiveButton && (
-        <button
-          type="button"
-          className={cx(LIVE_BTN_BASE, isLiveStreamOn ? LIVE_OFF : LIVE_ON)}
-          onClick={onToggleLive}
-        >
-          {t('common.live', 'Live')}
-        </button>
-      )}
-    </div>
-  )
-})
-
-export function MatchOddsSection({
-  matchOdds,
-  isMobile,
-  isAuthenticated,
-  isYellowTheme,
-  currency,
-  marketSetting,
-  isStreamAvailable,
-  isLiveStreamOn,
-  onToggleLive,
-  exposureData,
-  active,
-  onPick,
-  onCancelMatchOdds,
-  onSlipChange,
-  onPlaceBet,
-  isPlacingActive,
-  betLimitOpen,
-  onToggleBetLimit,
-  liveStreamSlot,
-}) {
-  const { t } = useTranslation()
-  if (!matchOdds) return null
-  const totalMatched = num(matchOdds.totalMatched)
-  const minMaxStr = `${fmt(marketSetting.min || 1)} / ${fmt(marketSetting.max || 100)}`
-
-  const matchOddsTabClass = isYellowTheme
-    ? 'inline-block relative font-bold mr-0 max-md:!bg-gradient-to-t max-md:!from-[#ffa10c] max-md:!to-(--md-primary-yellow) max-md:border max-md:!border-(--coffee) max-md:!text-(--dark) max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-(--sm-white) md:text-(--xxl-blue) md:px-[2px] md:py-[8px_2px_7px_10px] md:py-2 md:pl-[10px] md:pr-[2px] md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.png)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
-    : 'inline-block relative font-bold mr-0 max-md:text-white max-md:border max-md:border-[rgba(var(--md-dark-rgb),0.3)] max-md:bg-gradient-to-b max-md:from-(--xs-primary) max-md:to-(--xxs-primary) max-md:px-[3.4vw] max-md:rounded-[4.8vw] max-md:text-[3.46667vw] max-md:leading-[9.06667vw] md:bg-(--sm-white) md:text-(--xxl-blue) md:pl-[10px] md:pr-[2px] md:pb-[7px] md:pt-2 md:text-[13px] md:mr-5 md:after:content-[""] md:after:absolute md:after:[background-image:url(/img/main-s1aea395e8c.png)] md:after:z-[1] md:after:bottom-0 md:after:top-0 md:after:-right-5 md:after:h-[30px] md:after:[background-position:432px_1725px] md:after:w-5'
-
-  return (
-    <div className="md:mb-[30px]">
-      <div className="relative flex flex-wrap items-center justify-between">
-        <div className="w-full">
-          <div
-            className={cx(
-              'relative flex justify-between border-b border-(--sm-text-color) bg-white',
-              'max-md:border-b-0 max-md:bg-(--light-bg) max-md:p-[1.86667vw]'
-            )}
-          >
-            <div>
-              <span className={matchOddsTabClass}>
-                {t('odds.matchOdds', 'Match Odds')}
-              </span>
-              {!isMobile && (
-                <span
-                  className={cx(
-                    'ml-2 inline-block align-text-bottom text-[13px]',
-                    matchOdds.inplay ? 'text-(--dark-green)' : 'text-inherit'
-                  )}
-                >
-                  <i
-                    className={cx(
-                      "mr-[5px] inline-block h-[15px] w-[15px] bg-[url('/img/main-s1aea395e8c.png')] align-middle",
-                      matchOdds.inplay
-                        ? 'bg-position-[-399px_-2401px]'
-                        : 'bg-position-[-399px_-2869px]'
-                    )}
-                  />
-                  <span className="ml-1 inline-block align-middle">
-                    {matchOdds.inplay
-                      ? t('common.inPlay', 'In-Play')
-                      : fmtDate(matchOdds.marketStartTime)}
-                  </span>
-                </span>
-              )}
-            </div>
-            {!isMobile && (
-              <>
-                <div className="absolute top-0 left-1/2 mx-[5px] my-[7px] flex -translate-x-1/2 rounded-[3px] bg-(--xl-light-bg) px-[6px] text-[12px] leading-4 text-black">
-                  <p className="mb-0">
-                    {t('common.min', 'Min')}/ {t('common.max', 'Max')}
-                  </p>
-                  <p className="mb-0 ml-1">
-                    <small className="text-[13px] text-(--light-navy)">
-                      {minMaxStr}
-                    </small>
-                  </p>
-                </div>
-                <MatchedLiveBar
-                  currency={currency}
-                  totalMatched={totalMatched}
-                  showLiveButton={isAuthenticated && isStreamAvailable}
-                  isLiveStreamOn={isLiveStreamOn}
-                  onToggleLive={onToggleLive}
-                />
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {liveStreamSlot}
-
-      <div className="overflow-auto">
-        <table className={MATCH_ODDS_TABLE}>
-          <thead>
-            <tr>
-              {isMobile ? (
-                <>
-                  <th className={cx(TABLE_TH, 'text-start whitespace-nowrap')}>
-                    <div className="flex items-center">
-                      <div className="relative bg-(--light-bg) max-md:m-[-1.86vw_3.7vw_-2vw_-1.9vw] max-md:p-[2.13333vw_1.86667vw_3.2vw_1.86667vw] max-md:before:absolute max-md:before:top-0 max-md:before:left-[10.4vw] max-md:before:border-b-[14.33333vw] max-md:before:border-l-[1.86667vw] max-md:before:border-b-transparent max-md:before:border-l-(--light-bg) max-md:before:content-[''] [&_svg]:max-md:h-[6.66667vw] [&_svg]:max-md:w-[6.66667vw]">
-                        <InfoIcon onClick={onToggleBetLimit} />
-                        {betLimitOpen && (
-                          <div
-                            className={cx(
-                              FANCY_INFO_POPUP,
-                              'left-0 w-max [&_svg]:h-[14px]! [&_svg]:w-[14px]!'
-                            )}
-                          >
-                            <div>
-                              <p>{t('common.max', 'Max')}</p>
-                              <span>{fmt(marketSetting.max || 100)}</span>
-                            </div>
-                            <i
-                              className={FANCY_INFO_CLOSE_ICON}
-                              onClick={onToggleBetLimit}
-                              role="button"
-                            >
-                              <CloseIcon />
-                            </i>
-                          </div>
-                        )}
-                      </div>
-                      <i className="bg-[url('/img/svg/barChart.svg')] bg-contain bg-no-repeat max-md:h-[6.66667vw] max-md:w-[6.5vw]" />
-                      <div className="max-md:pl-[1.86667vw] [&_p]:mt-1 [&_p]:leading-[7px] [&_p]:font-normal [&_p]:max-md:text-[2.93333vw] [&_span]:font-bold [&_span]:max-md:text-[2.93333vw]">
-                        <p className="mb-0">{t('common.matched', 'Matched')}</p>
-                        <span>{currency || 'PBU'}</span>{' '}
-                        <span>{fmt(totalMatched)}</span>
-                      </div>
-                    </div>
-                  </th>
-                  <th className={cx(TABLE_TH, 'w-[18.66667vw]!')}>
-                    {t('common.back', 'Back')}
-                  </th>
-                  <th className={cx(TABLE_TH, 'w-[18.66667vw]!')}>
-                    {t('common.lay', 'Lay')}
-                  </th>
-                </>
-              ) : (
-                <>
-                  <th
-                    className={cx(
-                      TABLE_TH,
-                      'pt-[20px] pl-1 text-start whitespace-nowrap text-(--sm-text-color)'
-                    )}
-                  >
-                    {matchOdds.numberOfRunners ??
-                      matchOdds.runners?.length ??
-                      0}{' '}
-                    {t('common.selection', 'Selection')}
-                  </th>
-                  <th colSpan={3} className={cx(TABLE_TH, 'text-start')}>
-                    101%
-                  </th>
-                  <th colSpan={3} className={cx(TABLE_TH, 'text-end')}>
-                    99.6%
-                  </th>
-                </>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {(matchOdds.runners ?? []).map((runner, rowIdx) => {
-              const back = runner.ex?.availableToBack ?? []
-              const lay = runner.ex?.availableToLay ?? []
-              const runnerExt = {
-                ...runner,
-                _marketId: matchOdds.marketId,
-                _marketName: matchOdds.marketName || 'Match Odds',
-                _eventTitle:
-                  matchOdds.eventName ||
-                  matchOdds.eventTitle ||
-                  matchOdds.event?.name ||
-                  '',
-              }
-              const isSuspended =
-                marketSetting.isSuspended ||
-                isMarketStatusBlocked(matchOdds.status) ||
-                isMarketStatusBlocked(runner.status)
-
-              const bgLine = (price) =>
-                isSuspended ||
-                !price ||
-                (marketSetting.pbuLimit &&
-                  totalMatched < marketSetting.pbuLimit) ||
-                price > PRICE_LIMIT
-
-              const backCells = isMobile
-                ? [back[0]]
-                : [back[2], back[1], back[0]]
-              const layCells = isMobile ? [lay[0]] : [lay[0], lay[1], lay[2]]
-              const backClasses = isMobile
-                ? [BLUE_XS]
-                : [BLUE_XXS, BLUE_MD, BLUE_XS]
-              const layClasses = isMobile ? [RED_XS] : [RED_XS, RED_MD, RED_XXS]
-              const backActiveClasses = isMobile
-                ? [BLUE_XS_ACTIVE]
-                : [BLUE_XXS_ACTIVE, BLUE_MD_ACTIVE, BLUE_XS_ACTIVE]
-              const layActiveClasses = isMobile
-                ? [RED_XS_ACTIVE]
-                : [RED_XS_ACTIVE, RED_MD_ACTIVE, RED_XXS_ACTIVE]
-
-              const isFirstRow = rowIdx === 0
-
-              return (
-                <Fragment key={runner.selectionId}>
-                  <tr className="hover:[&>td:first-child:not(.price)]:bg-(--mds-light-bg)">
-                    <td
-                      className={cx(
-                        RUNNER_FIRST_CELL,
-                        'h-[40px] max-md:h-[11.51vw]'
-                      )}
-                    >
-                      <div className="flex flex-col">
-                        <p className="mb-1 [display:-webkit-box] min-w-[150px] overflow-hidden font-bold text-ellipsis [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">
-                          <i className="mr-[5px] inline-block h-[15px] w-[15px] bg-[url('/img/main-s1aea395e8c.png')] bg-position-[-398px_-1968px] bg-no-repeat align-bottom" />
-                          {runner.runnerName || runner.runner}
-                        </p>
-                        <div className="flex items-center">
-                          <BetExposureCell
-                            selectionId={runner.selectionId}
-                            marketId={matchOdds.marketId}
-                            exposureData={exposureData}
-                            marketName="MATCH_ODDS"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                    {/* BACK columns — Angular: @for back of matchOdd.back; classes blue-xxs/blue-md/blue-xs */}
-                    {backCells.map((cell, idx) => {
-                      const price = cell?.price
-                      const tone = backClasses[idx]
-                      const isBestBack =
-                        (isMobile && idx === 0) || (!isMobile && idx === 2)
-
-                      const isActive =
-                        active?.selectionId === runner.selectionId &&
-                        active?.betType === 'BACK' &&
-                        Number(active?.odd) === Number(price)
-
-                      const showBackAllHeader =
-                        isFirstRow && isBestBack && !isMobile
-                      return (
-                        <td
-                          key={`b-${idx}`}
-                          className={cx(
-                            PRICE_CELL_BASE,
-                            tone,
-                            cell?.isChanged && BACK_SPARK,
-                            bgLine(price) && BG_LINE,
-                            isActive && backActiveClasses[idx],
-                            showBackAllHeader &&
-                              "relative before:pointer-events-none before:absolute before:bottom-full before:left-1/2 before:h-[22px] before:w-full before:-translate-x-1/2 before:border-b before:border-white before:bg-[url('/img/main-s1aea395e8c.png')] before:bg-position-[-274px_-317px] before:bg-no-repeat before:leading-[23px] before:font-semibold before:text-(--xs-black) before:content-['Back_All']"
-                          )}
-                          onClick={() =>
-                            !bgLine(price) && onPick(runnerExt, cell, 'BACK')
-                          }
-                        >
-                          <p className="m-0">{fmtPrice(price)}</p>
-                          <span>{fmtPrice(cell?.size)}</span>
-                        </td>
-                      )
-                    })}
-                    {/* LAY columns — Angular: @for lay of matchOdd.lay; classes red-xs/red-md/red-xxs */}
-                    {layCells.map((cell, idx) => {
-                      const price = cell?.price
-                      const tone = layClasses[idx]
-                      const isBestLay = idx === 0
-                      const isActive =
-                        active?.selectionId === runner.selectionId &&
-                        active?.betType === 'LAY' &&
-                        Number(active?.odd) === Number(price)
-                      const showLayAllHeader =
-                        isFirstRow && isBestLay && !isMobile
-
-                      const isLastLay = idx === layCells.length - 1
-                      return (
-                        <td
-                          key={`l-${idx}`}
-                          className={cx(
-                            PRICE_CELL_BASE,
-                            tone,
-                            isLastLay && 'border-l border-white',
-                            cell?.isChanged && LAY_SPARK,
-                            bgLine(price) && BG_LINE,
-                            isActive && layActiveClasses[idx],
-                            showLayAllHeader &&
-                              "relative before:pointer-events-none before:absolute before:bottom-full before:left-1/2 before:h-[22px] before:w-full before:-translate-x-1/2 before:border-b before:border-white before:bg-[url('/img/main-s1aea395e8c.png')] before:bg-position-[100%_-399px] before:bg-no-repeat before:leading-[23px] before:font-semibold before:text-(--xs-black) before:content-['Lay_All']"
-                          )}
-                          onClick={() =>
-                            !bgLine(price) && onPick(runnerExt, cell, 'LAY')
-                          }
-                        >
-                          <p className="m-0">{fmtPrice(price)}</p>
-                          <span>{fmtPrice(cell?.size)}</span>
-                        </td>
-                      )
-                    })}
-                  </tr>
-                  {/* md: inline bet slip below the active runner — Angular parity.
-                      Desktop: bet slip lives in the right-side <BetSlip /> panel via Redux. */}
-                  {isMobile && active?.selectionId === runner.selectionId && (
-                    <tr>
-                      <td colSpan={3} className="p-0">
-                        <InlineBetSlip
-                          betSlipDetails={{
-                            ...active,
-
-                            type: active.betType,
-                            runnerId: active.selectionId,
-                            runnerName: active.selectionName,
-                            odds: active.odd,
-                            min: active.min ?? marketSetting.min ?? 1,
-                            max: active.max ?? marketSetting.max ?? 100,
-                            stake: active.stake ?? 0,
-                          }}
-                          onChange={(updated) => {
-                            onSlipChange?.({
-                              ...active,
-                              odd: Number(updated.odds ?? active.odd) || 0,
-                              size: Number(updated.size ?? active.size) || 0,
-                              stake: Number(updated.stake ?? active.stake) || 0,
-                            })
-                          }}
-                          onCancel={onCancelMatchOdds}
-                          onPlaceBet={onPlaceBet}
-                          isPlacing={isPlacingActive}
-                        />
-                      </td>
-                    </tr>
-                  )}
-                </Fragment>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
-}
-
-function BookmakerSection({
-  runners,
-  setting,
-  isMobile,
-  infoOpen,
-  onToggleInfo,
-  active,
-  onActiveChange,
-  onPick,
-  onPlaceBet,
-  isPlacingActive,
-  exposureByMarket,
-  fancyProgressMap,
-  onFancyProgressClose,
-}) {
-  const { t } = useTranslation()
-
-  const normalized = useMemo(
-    () =>
-      runners.map((bm) => ({
-        selectionId: bm.sid ?? bm.selectionId,
-        runnerName: bm.nat ?? bm.runnerName,
-        status: bm.s ?? bm.status ?? 'ACTIVE',
-
-        back: [
-          { price: num(bm.b3), size: num(bm.bs3) },
-          { price: num(bm.b2), size: num(bm.bs2) },
-          { price: num(bm.b1), size: num(bm.bs1) },
-        ],
-
-        lay: [
-          { price: num(bm.l1), size: num(bm.ls1) },
-          { price: num(bm.l2), size: num(bm.ls2) },
-          { price: num(bm.l3), size: num(bm.ls3) },
-        ],
-        min: bm.min,
-        max: bm.max,
-        mid: bm.mid,
-      })),
-    [runners]
-  )
-
-  const backCellCls = (i, isActiveAny) =>
-    cx(
-      PRICE_CELL_BASE,
-
-      'h-[42px] !w-[16.66667%] !border-l-0 text-center bg-transparent z-[9] !border-t-0 max-md:!min-w-[18.66667vw] max-md:!h-[11.51vw]',
-      // i === 2 && BLUE_XS,
-      // i === 1 && BLUE_MD,
-      // i === 0 && BLUE_XXS,
-      isActiveAny && active?.betType === 'BACK' && i === 2 && BLUE_XS_ACTIVE
-    )
-
-  const layCellCls = (i, isActiveAny) =>
-    cx(
-      PRICE_CELL_BASE,
-      'h-[42px] !w-[16.66667%] !border-l-0 text-center bg-transparent z-[9] !border-t-0 max-md:!min-w-[18.66667vw] max-md:!h-[11.51vw]',
-      // i === 0 && RED_XS,
-      // i === 1 && RED_MD,
-      // i === 2 && RED_XXS,
-      isActiveAny && active?.betType === 'LAY' && i === 0 && RED_XS_ACTIVE
-    )
-
-  return (
-    <div>
-      <MatchHeader>
-        <div className="flex items-center justify-center [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center [&_.icon-wrapper]:max-md:pl-[1.86667vw] md:[&_.icon-wrapper_i]:mr-[6px] md:[&_.icon-wrapper_i]:h-[28px] md:[&_.icon-wrapper_i]:w-[29px] md:[&_.icon-wrapper_i]:bg-[url('/img/main-s1aea395e8c.png')] md:[&_.icon-wrapper_i]:bg-position-[-385px_-833px] md:[&_.icon-wrapper_i]:bg-no-repeat max-md:[&_.icon-wrapper_svg]:block max-md:[&_.icon-wrapper_svg]:h-[6.66667vw] max-md:[&_.icon-wrapper_svg]:w-[6.66667vw] md:[&_.icon-wrapper_svg]:hidden">
-          <span className="icon-wrapper">
-            <i>
-              <PinSvg />
-            </i>
-          </span>
-          <span className="inline-block text-[14px] font-bold text-white max-md:ml-[1.86667vw] max-md:text-[3.46667vw] max-md:leading-[8.53333vw]">
-            {t('odds.bookmakerMarket', 'Bookmaker Market')}
-            <small className="font-normal opacity-70">
-              | {t('odds.zeroCommission', 'Zero Commission')}
-            </small>
-          </span>
-        </div>
-
-        {!isMobile ? (
-          <div className="mr-[10px] flex items-center justify-center [&_span]:text-[11px]">
-            <span className="rounded-sm bg-(--xl-light-bg) px-[16px] py-px text-[11px]">
-              {t('common.min', 'Min')}
-            </span>
-            <span className="ml-1 inline-block text-white">
-              {fmt(setting.min || 1)}
-            </span>
-            <span className="ml-2 inline-block rounded-sm bg-(--xl-light-bg) px-[16px] py-px text-[11px]">
-              {t('common.max', 'Max')}
-            </span>
-            <span className="ml-1 inline-block text-white">
-              {fmt(setting.max || 10000)}
-            </span>
-          </div>
-        ) : (
-          <span className="relative mr-[1.86667vw] inline-block rounded-tr-[12px] bg-linear-to-br from-(--xts-lightest-navy) to-(--mds-lightest-navy) text-white md:px-2 [&_svg]:max-md:h-[4vw] [&_svg]:max-md:w-[4vw]">
-            <i
-              onClick={onToggleInfo}
-              role="button"
-              aria-label={t('common.info', 'Info')}
-            >
-              <WarningSvg />
-            </i>
-            {infoOpen && (
-              <div className={FANCY_INFO_POPUP}>
-                <div className="flex flex-1 flex-col">
-                  <p>
-                    {t('common.min', 'Min')} / {t('common.max', 'Max')}
-                  </p>
-                  <span>
-                    {fmt(setting.min || 1)} / {fmt(setting.max || 1000)}
-                  </span>
-                </div>
-                <i
-                  className={FANCY_INFO_CLOSE_ICON}
-                  onClick={onToggleInfo}
-                  role="button"
-                  aria-label={t('common.close', 'Close')}
-                >
-                  <CloseIcon />
-                </i>
-              </div>
-            )}
-          </span>
-        )}
-      </MatchHeader>
-
-      <div className="mb-4">
-        <table className="w-full border-collapse bg-(--light-xs-yellow) max-md:bg-(--light-xts-yellow) [&_td]:border-t [&_td]:border-(--tbl-border-color)">
-          <thead className="bg-(--light-xs-yellow) max-md:bg-(--light-xts-yellow)">
-            <tr>
-              <th className="h-[22px] p-[5px] max-md:h-[8vw]" />
-              <th
-                colSpan={isMobile ? 1 : 2}
-                className="h-[22px] w-[64px] p-[5px] max-md:h-[8vw]"
-              />
-              {!isMobile && (
-                <>
-                  <th className="h-[22px] p-[5px] max-md:h-[8vw]" />
-                  <th className="h-[22px] w-[64px] p-[5px] max-md:h-[8vw]" />
-                </>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {normalized.map((bookmaker, rowIdx) => {
-              const isStatusBlocked = isBookmakerStatusBlocked(bookmaker.status)
-              const isSuspended = setting.isSuspended || isStatusBlocked
-              const isInlineBookmaker =
-                active?.selectionId === bookmaker.selectionId && !isSuspended
-              const statusLabel = titleCase(
-                setting.isSuspended ? 'Suspended' : bookmaker.status || ''
-              )
-              const isFirstRow = rowIdx === 0
-
-              return (
-                <Fragment key={bookmaker.selectionId}>
-                  <tr className="bg-(--light-xs-yellow) max-md:bg-(--light-xts-yellow)  hover:bg-light-xs-yellow hover:[&_>td]:bg-white/40">
-                    <td className="min-w-[170px] bg-(--light-xs-yellow) px-[10px] pt-[4px] align-top! max-md:bg-(--light-xts-yellow) max-md:px-[1.8666666667vw] max-md:py-0 max-md:align-middle! max-md:text-[4vw]">
-                      <div className="flex flex-col">
-                        <span className="font-bold">
-                          {bookmaker.runnerName}
-                        </span>
-                        <div className="flex items-center">
-                          <BetExposureCell
-                            selectionId={bookmaker.selectionId}
-                            marketId={bookmaker.mid}
-                            exposureData={
-                              exposureByMarket?.get(String(bookmaker.mid)) ??
-                              null
-                            }
-                            marketName="BOOKMAKER"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                    <td
-                      colSpan={isMobile ? 1 : 5}
-                      className="w-full p-0 max-md:w-[140px]"
-                    >
-                      <table
-                        align="right"
-                        className="relative border-collapse before:absolute before:top-0 before:right-0 before:bottom-0 before:left-0 before:z-1 before:w-1/2 before:bg-[linear-gradient(90deg,rgba(130,183,221,0.15)_0%,rgba(130,183,221,0.8)_65%)] before:content-[''] after:absolute after:top-0 after:right-0 after:bottom-0 after:z-1 after:w-1/2 after:bg-[linear-gradient(270deg,rgba(231,170,184,0.15)_5%,rgba(231,170,184,0.8)_60%)] after:content-[''] md:w-full md:max-w-[76%]"
-                      >
-                        <tbody className="relative">
-                          {isSuspended && (
-                            <div className="absolute inset-0 z-50 flex h-full w-full items-center justify-center bg-[rgba(36,58,72,0.4)] font-bold text-white/80 text-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
-                              Suspended
-                            </div>
-                          )}
-                          <tr className="bg-(--light-xs-yellow)">
-                            {bookmaker.back.map((backCell, i) => {
-                              if (isMobile && i !== 2) return null
-                              const isBestBack = i === 2
-                              const showBackHeader = isFirstRow && isBestBack
-                              return (
-                                <td
-                                  key={`back-${i}`}
-                                  className={cx(
-                                    backCellCls(i, isInlineBookmaker),
-                                    showBackHeader &&
-                                      "relative before:pointer-events-none before:absolute before:right-0 before:bottom-full before:left-0 before:px-[6px] before:py-[5px] before:text-center before:text-[12px] before:font-bold before:text-(--xs-black) before:content-['Back'] max-md:bg-linear-to-r max-md:from-[rgba(151,199,234,0.7)] max-md:to-(--xs-lightest-navy) max-md:before:text-[3.46667vw]",
-
-                                    backCell?.price &&
-                                      "after:absolute after:inset-[2px] after:z-[-1] after:rounded-[4px] after:border after:border-white after:bg-(--xs-blue) after:content-[''] first-of-type:after:hidden nth-of-type-2:after:hidden max-md:after:inset-[1vw]",
-                                    isInlineBookmaker &&
-                                      active?.betType === 'BACK' &&
-                                      isBestBack &&
-                                      'shadow-none! after:bg-(--lg-blue-bg)! after:shadow-[inset_0_1px_3px_rgba(var(--black-rgb),0.5)]'
-                                  )}
-                                  onClick={() =>
-                                    backCell?.price &&
-                                    !isSuspended &&
-                                    onPick(bookmaker, bookmaker.back[2], 'BACK')
-                                  }
-                                >
-                                  <p className="m-0">{backCell.price || ''}</p>
-                                </td>
-                              )
-                            })}
-                            {/* LAY — iterates bookmaker.lay; mobile shows only $index === 0 */}
-                            {bookmaker.lay.map((layCell, i) => {
-                              if (isMobile && i !== 0) return null
-                              const isBestLay = i === 0
-                              const showLayHeader = isFirstRow && isBestLay
-                              return (
-                                <td
-                                  key={`lay-${i}`}
-                                  className={cx(
-                                    layCellCls(i, isInlineBookmaker),
-                                    showLayHeader &&
-                                      "relative bg-transparent! before:pointer-events-none before:absolute before:right-0 before:bottom-full before:left-0 before:px-[6px] before:py-[5px] before:text-center before:text-[12px] before:font-bold before:text-(--xs-black) before:content-['Lay'] max-md:bg-linear-to-l max-md:from-(--xts-red) max-md:to-[rgba(247,205,214,0.75)] max-md:before:text-[3.46667vw]",
-                                    layCell?.price &&
-                                      "nth-of-last-type-2:after:hidden after:absolute after:inset-[2px] after:z-[-1] after:rounded-[4px] after:border after:border-white after:bg-(--xs-red) after:content-[''] last-of-type:after:hidden max-md:after:inset-[5px]",
-                                    isInlineBookmaker &&
-                                      active?.betType === 'LAY' &&
-                                      isBestLay &&
-                                      'shadow-none! after:bg-(--lg-red-bg)! after:shadow-[inset_0_1px_3px_rgba(var(--black-rgb),0.5)]'
-                                  )}
-                                  onClick={() =>
-                                    layCell?.price &&
-                                    !isSuspended &&
-                                    onPick(bookmaker, bookmaker.lay[0], 'LAY')
-                                  }
-                                >
-                                  <p className="m-0">{layCell.price || ''}</p>
-                                </td>
-                              )
-                            })}
-                          </tr>
-                          {isSuspended && (
-                            <tr>
-                              <td colSpan={6}>
-                                <div className={GAME_STATUS_OVERLAY}>
-                                  {isFirstRow && (statusLabel || 'Suspended')}
-                                </div>
-                              </td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                    </td>
-                  </tr>
-                  {/* Inline bet slip + strip loader below the active runner —
-                      same pattern as fancy / sportsbook. */}
-                  {isInlineBookmaker && (
-                    <tr>
-                      <td colSpan={7} className="p-0">
-                        <InlineBetSlip
-                          betSlipDetails={active}
-                          onChange={onActiveChange}
-                          onCancel={() => onActiveChange(null)}
-                          onPlaceBet={onPlaceBet}
-                          isPlacing={isPlacingActive}
-                        />
-                      </td>
-                    </tr>
-                  )}
-                  {fancyProgressMap?.[bookmaker.selectionId] && (
-                    <tr>
-                      <td colSpan={7} className="p-0">
-                        <FancyProgress
-                          config={fancyProgressMap[bookmaker.selectionId]}
-                          onClose={() =>
-                            onFancyProgressClose?.(bookmaker.selectionId)
-                          }
-                        />
-                      </td>
-                    </tr>
-                  )}
-                </Fragment>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
-}
-
-function MatchHeader({ children }) {
-  return (
-    <div className="flex items-center justify-between bg-(--light-navy) max-md:bg-(--text-color)">
-      {children}
-    </div>
-  )
-}
-
-const FancyTabHeader = memo(function FancyTabHeader({
-  tabs,
-  selectedFancy,
-  onSelect,
-  isMobile,
-  onInfoClick,
-}) {
-  const { t } = useTranslation()
-  const isSportsBookSelected = selectedFancy === MAIN_FANCY.SPORTS_BOOK
-
-  return (
-    <div
-      className={cx(
-        'flex items-center border-b-2 border-(--sky-blue-light) max-md:border-b-[1.06667vw] max-md:border-b-(--smd-text-color)',
-        isSportsBookSelected && 'border-b-(--orange)!'
-      )}
-    >
-      {tabs.map((tab, i) => {
-        const isActive = tab.type === selectedFancy
-        const isFirst = i === 0
-        const isPremium =
-          isSportsBookSelected && tab.type === MAIN_FANCY.SPORTS_BOOK
-
-        const chipBase =
-          'inline-flex items-center cursor-pointer relative ml-4 max-md:ml-[4.786vw] first:ml-0'
-        const chipActive = isActive ? 'ml-0' : ''
-
-        let innerBg =
-          'flex items-center px-[10px] py-[7px] h-[30px] bg-(--light-navy) text-white relative font-bold max-md:px-[1.66667vw] max-md:py-[1.3vw] max-md:h-[7.55vw]'
-
-        if (!isActive) {
-          innerBg +=
-            " before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-[-6px] before:w-[10px] before:rounded-tl-[4px] before:[transform:skew(-14deg,0deg)] before:bg-(--light-navy) before:z-[1] max-md:before:left-[-1.582vw] max-md:before:w-[3.304vw] max-md:before:rounded-tl-[0.522vw] max-md:before:h-[7.7vw]" +
-            " after:content-[''] after:absolute after:top-0 after:bottom-0 after:right-[-6px] after:w-[10px] after:rounded-tr-[4px] after:[transform:skew(14deg,0deg)] after:bg-(--light-navy) after:z-[1] max-md:after:right-[-1.782vw] max-md:after:w-[3.304vw] max-md:after:rounded-tr-[0.522vw] max-md:after:h-[7.7vw]"
-        } else {
-          innerBg = innerBg.replace(
-            'bg-(--light-navy)',
-            isPremium
-              ? '!bg-(--orange)'
-              : 'bg-gradient-to-b from-(--md-lightest-navy) to-(--smd-text-color)'
-          )
-        }
-
-        return (
-          <div
-            key={tab.type}
-            className={cx(chipBase, chipActive)}
-            onClick={() => onSelect(tab.type)}
-            role="button"
-          >
-            {tab.type === MAIN_FANCY.SPORTS_BOOK && !isActive && (
-              <p className="absolute top-[-5px] right-[-15px] z-99 mb-0 h-[14px] overflow-visible filter-[drop-shadow(1px_1px_2px_rgba(0,0,0,0.6))] before:absolute before:bottom-[-8px] before:left-[15px] before:h-0 before:w-0 before:border-t-8 before:border-r-[7px] before:border-b-0 before:border-l-0 before:border-solid before:border-t-(--xsm-red) before:border-r-transparent before:content-[''] max-md:top-[-3.5667vw] max-md:right-[-5vw] max-md:before:bottom-[-2.3vw] max-md:before:left-[3.5vw] max-md:before:border-t-[1.8vw] max-md:before:border-r-[1.8vw]">
-                <span className="rounded-[15px] bg-(--xsm-red) px-2 py-[3px] text-[10px] text-white max-md:rounded-[0.8vw] max-md:px-[1.7vw] max-md:py-[0.2vw]">
-                  New
-                </span>
-              </p>
-            )}
-            <div className={cx(innerBg)}>
-              {isMobile && isActive && tab.type === MAIN_FANCY.FANCY_BET && (
-                <i className="relative z-2 mr-[4vw] before:absolute before:top-[0.2vw] before:right-0 before:bottom-[0.3vw] before:left-[-4vw] before:z-[-1] before:w-[10.5vw] before:transform-[skewX(15deg)] before:bg-(--xsm-blue) before:content-[''] [&_svg]:h-[8vw] [&_svg]:w-[5vw]">
-                  <PinSvg />
-                </i>
-              )}
-              {isFirst && (
-                <i className="rounded-[3px] bg-linear-to-t from-(--xs-green-primary) via-(--xs-green-primary) to-(--xs-shadow-primary) max-md:h-[4vw] max-md:w-[4vw] max-md:text-center [&_svg]:max-md:h-[3.8vw] [&_svg]:max-md:w-[3.8vw] [&_svg]:max-md:leading-[3.8vw]">
-                  <TimeSvg />
-                </i>
-              )}
-              <span
-                className={cx(
-                  'inline-block align-middle text-[12px] text-(--xts-gray) max-md:text-[3.73333vw]',
-                  isActive && 'ml-2 text-white!'
-                )}
-              >
-                {tab.title}
-              </span>
-            </div>
-            {isActive && (
-              <i
-                role="button"
-                aria-label="Fancy bet rules"
-                tabIndex={0}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onInfoClick?.()
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    onInfoClick?.()
-                  }
-                }}
-                className={cx(
-                  "relative z-2 inline-flex h-[16px] w-[16px] cursor-pointer px-1 text-center text-white before:absolute before:top-[-7px] before:bottom-[-7px] before:left-[-5px] before:z-[-1] before:w-[28px] before:transform-[skew(14deg,0deg)] before:rounded-tr-[4px] before:content-[''] after:absolute after:top-0 after:left-0 after:z-1 after:h-[16px] after:w-[16px] after:bg-[url('/img/svg/info.svg')] after:bg-contain after:bg-center after:bg-no-repeat after:content-[''] max-md:h-[4.45vw] max-md:w-[4vw] max-md:before:top-[-1.6vw] max-md:before:bottom-0 max-md:before:left-[-1vw] max-md:before:h-[7.7vw] max-md:before:w-[7vw] max-md:after:h-[4vw] max-md:after:w-[5vw] max-md:after:bg-[url('/img/svg/questionMarkRounded.svg')]",
-                  isPremium
-                    ? 'before:bg-[linear-gradient(180deg,var(--3sm-orange)_0%,var(--orange)_100%)]'
-                    : 'before:bg-[linear-gradient(0deg,var(--xl-lightest-navy)_0%,var(--xts-lightest-navy)_100%)]'
-                )}
-              />
-            )}
-          </div>
-        )
-      })}
-      {isSportsBookSelected && (
-        <p className="mr-[5px] mb-0 ml-auto inline-flex items-center rounded-[3px] bg-(--xl-light-bg) px-2 py-px text-[11px] leading-4 text-black max-md:mt-[-0.9vw] max-md:mr-[1.86667vw] max-md:h-[6.4vw] max-md:rounded-[1.06667vw] max-md:px-[1.6vw] max-md:text-[3.46667vw] max-md:leading-[6.4vw] [&_i]:mr-1 [&_i]:inline-flex max-md:[&_i]:mr-[1vw] max-md:[&_i]:text-(--light-navy) [&_svg]:h-[11px] [&_svg]:w-[11px] max-md:[&_svg]:h-[3.4666666667vw] max-md:[&_svg]:w-[3.4666666667vw] [&_svg_path]:fill-black">
-          <i>
-            <WarningSvg />
-          </i>
-          <span>{t('common.min', 'Min')}</span>
-        </p>
-      )}
-    </div>
-  )
-})
-
-const PriorityTabs = memo(function PriorityTabs({
-  tabs,
-  selectedType,
-  onSelectType,
-  variant = 'fancy',
-}) {
-  const isSportBook = variant === 'sport-book'
-
-  const containerCls = cx(
-    'overflow-x-auto whitespace-nowrap cursor-pointer [&::-webkit-scrollbar]:hidden'
-  )
-
-  const wrapperCls = cx(
-    'flex justify-center items-center shadow-[inset_0_1px_0_0_rgba(var(--black-rgb),0.2)] bg-gradient-to-b from-(--md-lightest-navy) from-[15%] to-(--lg-lightest-navy) max-md:!shadow-none max-md:bg-none max-md:bg-(--smd-text-color) max-md:justify-start max-md:py-[0.5vw] max-md:pl-[1.6vw]',
-    isSportBook &&
-      'md:!bg-gradient-to-b !from-(--xs-orange) !from-[15%] !to-(--md-orange) pb-[3px] max-md:!bg-(--orange)'
-  )
-
-  const ulCls =
-    'flex pl-0 mb-0 w-auto bg-white/50 rounded-[5px] my-[1px_3px_0] justify-center items-center max-md:bg-transparent'
-
-  return (
-    <div className={containerCls}>
-      <div className={wrapperCls}>
-        <ul className={ulCls}>
-          {tabs.map((tab) => {
-            const isActive = selectedType === tab.type
-            const liBase =
-              'min-w-[70px] h-[18px] leading-[18px] font-bold md:rounded-[4px] px-[5px] text-center max-md:h-[5.9333333333vw] max-md:min-w-0 max-md:px-[2.6666666667vw] max-md:leading-[6vw] max-md:h-[5.9333333333vw] max-md:border-r max-md:border-r-white/40 hover:[&_a]:underline'
-            const liActive = isActive
-              ? cx(
-                  'bg-white text-[var(--lg-lightest-navy)] hover:[&_a]:!no-underline max-md:rounded-[1.0666666667vw]',
-                  isSportBook && 'max-md:!bg-(--orange) max-md:!rounded-none'
-                )
-              : 'max-md:text-white text-[var(--lg-lightest-navy)]'
-            const aCls = cx(
-              'no-underline',
-              isSportBook &&
-                'text-[rgba(var(--orange-rgba),0.85)] max-md:!text-white'
-            )
-
-            return (
-              <li
-                key={tab.type}
-                className={cx(liBase, liActive)}
-                onClick={() => onSelectType(tab.type)}
-              >
-                <a className={aCls}>{tab.label}</a>
-              </li>
-            )
-          })}
-        </ul>
-      </div>
-    </div>
-  )
-})
-
-function FancySection({
-  items,
-  buckets,
-  selectedType,
-  onSelectType,
-  isMobile,
-  fancyInfoIndex,
-  setFancyInfoIndex,
-  active,
-  onActiveChange,
-  onPick,
-  onPlaceBet,
-  isPlacingActive,
-  exposureData,
-  onBookClick,
-  fancyProgressMap,
-  onFancyProgressClose,
-}) {
-  const { t } = useTranslation()
-  if (!items.length) {
-    return (
-      <div className="bg-white p-3 text-center text-[12px] text-(--sm-text-color)">
-        {t('common.noFancyMarkets', 'No fancy markets')}
-      </div>
-    )
-  }
-
-  const availableTabs = FANCY_TYPE_TABS.filter(
-    (t) =>
-      t.type === FANCY_TYPES.ALL ||
-      (buckets[t.type] && buckets[t.type].length > 0)
-  )
-
-  return (
-    <>
-      <PriorityTabs
-        tabs={availableTabs}
-        selectedType={selectedType}
-        onSelectType={onSelectType}
-        variant="fancy"
-      />
-
-      {!isMobile && (
-        <MatchHeader>
-          <div className="flex items-center justify-center pr-3 [&_.icon-wrapper]:flex [&_.icon-wrapper]:items-center [&_.icon-wrapper]:justify-center md:[&_.icon-wrapper_i]:mr-[6px] md:[&_.icon-wrapper_i]:h-[28px] md:[&_.icon-wrapper_i]:w-[29px] md:[&_.icon-wrapper_i]:bg-[url('/img/main-s1aea395e8c.png')] md:[&_.icon-wrapper_i]:bg-position-[-385px_-833px] md:[&_.icon-wrapper_i]:bg-no-repeat md:[&_.icon-wrapper_svg]:hidden">
-            <span className="icon-wrapper">
-              <i>
-                <PinSvg />
-              </i>
-            </span>
-            <span className="ml-2 inline-block text-[14px] font-bold text-white">
-              Fancy Bet
-            </span>
-          </div>
-        </MatchHeader>
-      )}
-
-      <div className="overflow-auto">
-        <table className="w-full border-collapse max-md:bg-white">
-          <thead>
-            <tr>
-              <th className="bg-white px-[10px] py-1 text-[12px] font-bold max-md:h-[4.954vw] max-md:p-[1.33333vw_1.86667vw] max-md:text-[3.46667vw]" />
-              <th className="bg-white px-[10px] py-1 text-[12px] font-bold max-md:h-[4.954vw] max-md:w-[18.66667vw] max-md:p-[1.33333vw_1.86667vw] max-md:text-[3.46667vw]">
-                No
-              </th>
-              <th className="bg-white px-[10px] py-1 text-[12px] font-bold max-md:h-[4.954vw] max-md:w-[18.66667vw] max-md:p-[1.33333vw_1.86667vw] max-md:text-[3.46667vw]">
-                Yes
-              </th>
-              {!isMobile && (
-                <>
-                  <th className="bg-white px-[10px] py-1 text-[12px] font-bold" />
-                  <th className="bg-white px-[10px] py-1 text-[12px] font-bold max-[1199px]:hidden" />
-                </>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item, i) => {
-              const isSuspended = isMarketStatusBlocked(item.GameStatus)
-              const isInline =
-                active &&
-                active.selectionId === item.SelectionId &&
-                !isSuspended
-              const statusLabel = titleCase(item.GameStatus || '')
-
-              return (
-                <Fragment key={`${item.SelectionId}-${i}`}>
-                  {isMobile && (
-                    <tr className="bg-(--xsl-blue-bg) max-md:even:[&_td]:border-t-0">
-                      <td
-                        colSpan={3}
-                        className="h-[38px] border-b-0 p-[7px_0_7px_8px] max-md:h-[8.954vw] max-md:p-[1.33333vw_1.86667vw]! [&_svg]:h-[15px] [&_svg]:w-[15px] [&_svg]:text-(--sm-light-bg) max-md:[&_svg]:h-[4vw] max-md:[&_svg]:w-[4vw]"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="block w-full max-w-[90%] overflow-hidden font-bold text-ellipsis whitespace-nowrap max-md:text-[3.4666666667vw]!">
-                            {item.RunnerName}
-                          </span>
-                          <span className="relative mr-[1.86667vw] text-white [&_svg]:max-md:h-[4vw] [&_svg]:max-md:w-[4vw]">
-                            <i
-                              onClick={() =>
-                                setFancyInfoIndex(fancyInfoIndex === i ? -1 : i)
-                              }
-                              role="button"
-                              aria-label={t('common.info', 'Info')}
-                            >
-                              <WarningSvg />
-                            </i>
-                            {fancyInfoIndex === i && (
-                              <div className={FANCY_INFO_POPUP}>
-                                <div className="flex flex-1 flex-col">
-                                  <p>
-                                    {t('common.min', 'Min')} /{' '}
-                                    {t('common.max', 'Max')}
-                                  </p>
-                                  <span>
-                                    {fmt(item.min || 1)} /{' '}
-                                    {fmt(item.max || 1000)}
-                                  </span>
-                                </div>
-                                <i
-                                  className={FANCY_INFO_CLOSE_ICON}
-                                  onClick={() => setFancyInfoIndex(-1)}
-                                  role="button"
-                                  aria-label={t('common.close', 'Close')}
-                                >
-                                  <CloseIcon />
-                                </i>
-                              </div>
-                            )}
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                  <tr className="hover:bg-(--hover-bg) [&_>td]:bg-white hover:[&_td:last-child]:border-l-(--hover-bg) hover:[&>td]:bg-(--hover-bg)">
-                    <td className="relative h-[42px] min-w-[100px] border-t border-t-(--tbl-border-color) px-[10px] py-[5px] max-md:h-[11.51vw] max-md:min-w-[70px]">
-                      {!isMobile && (
-                        <div>
-                          <span className="block w-full max-w-[90%] min-w-[50px] overflow-hidden font-bold text-ellipsis whitespace-nowrap">
-                            {item.RunnerName}
-                          </span>
-                        </div>
-                      )}
-                      <div className="flex items-center justify-between gap-2">
-                        <BetExposureCell
-                          selectionId={item.SelectionId}
-                          marketId={item.default_marketId}
-                          exposureData={exposureData}
-                          marketName="FANCY"
-                        />
-                        {Array.isArray(exposureData) &&
-                          exposureData.some(
-                            (e) => String(e?.id) === String(item.SelectionId)
-                          ) && (
-                            <button
-                              type="button"
-                              className="cursor-pointer rounded-[4px] border border-[#cf9a47] bg-[#ffcc51] px-1.5 py-[3px] text-[13px] leading-[1.3] text-(--dark) hover:opacity-90 max-md:rounded-[1.33vw] max-md:p-[1.6vw] max-md:text-[3.2vw]"
-                              onClick={() =>
-                                onBookClick?.({
-                                  selectionId: item.SelectionId,
-                                  runnerName: item.RunnerName,
-                                })
-                              }
-                            >
-                              Book
-                            </button>
-                          )}
-                      </div>
-                    </td>
-                    <td
-                      colSpan={2}
-                      className="relative h-[42px] w-[10.9%] min-w-[100px] border-t border-t-(--tbl-border-color) p-0 max-md:h-[11.51vw]"
-                    >
-                      {isSuspended && (
-                        <div className="absolute inset-0 z-9 flex cursor-default items-center justify-center bg-[rgba(36,58,72,0.4)] text-[13px] font-bold text-white/80 [text-shadow:0_1px_4px_rgba(0,0,0,0.5)] max-md:text-[3.46667vw]">
-                          {statusLabel}
-                        </div>
-                      )}
-                      <table className="w-full border-collapse">
-                        <tbody>
-                          <tr>
-                            <td
-                              className={cx(
-                                PRICE_CELL_BASE,
-                                RED_XS,
-                                'h-[42px] min-w-[100px] px-[5px]! max-md:h-[11.51vw]!',
-                                isInline &&
-                                  active?.betType === 'NO' &&
-                                  RED_XS_ACTIVE
-                              )}
-                              onClick={() => onPick(item, 'NO')}
-                            >
-                              <p className="m-0">{item.LayPrice1 || ''}</p>
-                              <small className="text-[12px] leading-none max-md:text-[2.93333vw]">
-                                {!isSuspended && item.LaySize1
-                                  ? item.LaySize1
-                                  : ''}
-                              </small>
-                            </td>
-                            <td
-                              className={cx(
-                                PRICE_CELL_BASE,
-                                BLUE_XS,
-                                'h-[42px] min-w-[100px] px-[5px]! max-md:h-[11.51vw]!',
-                                isInline &&
-                                  active?.betType === 'YES' &&
-                                  BLUE_XS_ACTIVE
-                              )}
-                              onClick={() => onPick(item, 'YES')}
-                            >
-                              <p className="m-0">{item.BackPrice1 || ''}</p>
-                              <small className="text-[12px] leading-none max-md:text-[2.93333vw]">
-                                {!isSuspended && item.BackSize1
-                                  ? item.BackSize1
-                                  : ''}
-                              </small>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </td>
-                    {!isMobile && (
-                      <>
-                        <td className="relative h-[42px] w-[10.9%] border-t border-white border-t-(--tbl-border-color) px-[10px] py-[5px] max-md:h-[11.51vw]">
-                          <p className="mb-0 min-h-[32px] text-left text-[11px] text-(--sm-text-color)">
-                            Min/Max
-                            <span className="block text-[12px]! whitespace-nowrap text-(--dark)">
-                              {fmt(item.min || 1)} / {fmt(item.max || 1000)}
-                            </span>
-                          </p>
-                        </td>
-                        <td className="w-[10.9%] border-t border-t-(--tbl-border-color)" />
-                      </>
-                    )}
-                  </tr>
-                  {isInline && (
-                    <tr>
-                      <td colSpan={isMobile ? 3 : 5} className="p-0">
-                        <InlineBetSlip
-                          betSlipDetails={active}
-                          onChange={onActiveChange}
-                          onCancel={() => onActiveChange(null)}
-                          onPlaceBet={onPlaceBet}
-                          isPlacing={isPlacingActive}
-                        />
-                      </td>
-                    </tr>
-                  )}
-                  {fancyProgressMap?.[item.SelectionId] && (
-                    <tr>
-                      <td colSpan={isMobile ? 3 : 5} className="p-0">
-                        <FancyProgress
-                          config={fancyProgressMap[item.SelectionId]}
-                          onClose={() =>
-                            onFancyProgressClose?.(item.SelectionId)
-                          }
-                        />
-                      </td>
-                    </tr>
-                  )}
-                </Fragment>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
-    </>
-  )
-}
-
-function SportbookSection({
-  markets,
-  selectedCategory,
-  onSelectCategory,
-  active,
-  onActiveChange,
-  onPick,
-  onPlaceBet,
-  isPlacingActive,
-  exposureByMarket,
-  fancyProgressMap,
-  onFancyProgressClose,
-}) {
-  const [collapsed, setCollapsed] = useState({})
-  const toggle = (id) => setCollapsed((prev) => ({ ...prev, [id]: !prev[id] }))
-
-  return (
-    <>
-      <PriorityTabs
-        tabs={SPORTSBOOK_TABS}
-        selectedType={selectedCategory}
-        onSelectType={onSelectCategory}
-        variant="sport-book"
-      />
-
-      {!markets.length ? (
-        <div className="bg-white p-3 text-center text-[12px] text-(--sm-text-color)">
-          No sportsbook markets
-        </div>
-      ) : (
-        <div>
-          {markets.map((market, i) => {
-            if (!market.runners?.length) return null
-            const id = market.marketId || `mkt-${i}`
-            const isCollapsed =
-              collapsed[id] === undefined ? i > 5 : collapsed[id]
-            return (
-              <div key={id} className="mb-0 md:mb-1">
-                <h2 className="bg-[linear-gradient(180deg,var(--xts-blue)_0%,var(--xts-blue)_100%)] text-white shadow-[0_2px_0_rgba(var(--white-rgb),0.1)]">
-                  <button
-                    type="button"
-                    className={`flex w-full items-center bg-right bg-no-repeat pl-0 text-left max-md:border-b max-md:border-b-(--sm-text-color) max-md:bg-(--text-color) max-md:px-0 max-md:pl-[1.8666666667vw] max-md:leading-[8.6vw] max-md:text-white ${isCollapsed ? 'md:bg-[url("/img/grediant-slip-plus.png")]' : 'md:bg-[url("/img/grediant-slip-minus.png")]'}`}
-                    onClick={() => toggle(id)}
-                  >
-                    <i className="inline-flex h-[25px] w-[25px] items-center justify-center bg-linear-to-b from-(--xl-blue) to-(--xs-black) text-center leading-[22px] text-(--sm-white) hover:bg-linear-to-b hover:from-(--xs-black) hover:to-(--xl-blue) hover:text-(--xs-shadow-primary) max-md:mr-[1.4vw] max-md:h-[6.6666666667vw] max-md:w-[6.6666666667vw] max-md:rounded-full max-md:bg-(--xs-dark) max-md:leading-normal md:mr-1 [&_svg]:h-[16px] [&_svg]:w-[18px] max-md:[&_svg]:h-[4.6666666667vw] max-md:[&_svg]:w-[4.6666666667vw]">
-                      <PinSvg className="hidden md:block" />
-                      <PinSvg2 className="block md:hidden" />
-                    </i>
-                    <span className="text-[14px] font-bold max-md:flex-1 max-md:text-[3.4666666667vw] max-md:leading-normal">
-                      {market.market}
-                    </span>
-                  </button>
-                </h2>
-                {!isCollapsed && (
-                  <div className="relative flex w-full flex-col flex-wrap">
-                    {market.runners.map((runner) => {
-                      const isSuspended =
-                        market.status === '1' && runner.status !== '1'
-                      const isActive =
-                        active?.selectionId === runner.selectionId &&
-                        runner.status === '1'
-                      return (
-                        <Fragment key={runner.selectionId}>
-                          <div
-                            className={cx(
-                              'relative flex min-h-[40px] w-full items-center border-b border-(--sm-text-color) bg-white hover:bg-(--hover-bg) max-md:min-h-0',
-                              isSuspended && 'z-9'
-                            )}
-                            onClick={() =>
-                              !isSuspended && onPick(market, runner)
-                            }
-                            role="button"
-                          >
-                            <p className="m-0 w-[60%] flex-[0_0_60%] py-1 pr-[5px] pl-[10px] max-md:w-auto max-md:flex-1 max-md:px-[1.8666666667vw] max-md:py-[1.3333333333vw] max-md:leading-[7vw] max-md:font-bold">
-                              <span className="font-bold">
-                                {titleCase(runner.runnerName)}
-                              </span>
-                              {exposureByMarket?.get(
-                                String(market.marketId)
-                              ) && (
-                                <span className="inline-flex w-full items-center">
-                                  <BetExposureCell
-                                    selectionId={runner.selectionId}
-                                    marketId={market.marketId}
-                                    exposureData={
-                                      exposureByMarket?.get(
-                                        String(market.marketId)
-                                      ) ?? null
-                                    } //marketExposure
-                                    marketName="SPORTS_BOOK"
-                                  />
-                                </span>
-                              )}
-                            </p>
-                            <div className="flex flex-[0_0_40%] items-center max-md:flex-[0_0_37.3333333333vw]">
-                              <span
-                                className={cx(
-                                  'relative block min-h-[39px] w-full cursor-pointer border border-transparent bg-(--xs-green) text-center leading-[34px] max-md:min-h-[11vw] max-md:leading-[10vw] [&_b]:max-md:text-[2.9333333333vw] [&_b]:max-md:font-normal',
-                                  isActive &&
-                                    'bg-(--lg-green-bg)! text-white shadow-[inset_0_1px_3px_rgba(var(--black-rgb),0.5)]'
-                                )}
-                              >
-                                {isSuspended && (
-                                  <div className="absolute -inset-px flex cursor-default items-center justify-center bg-[rgba(var(--black-rgb),0.435)] text-white [backdrop-filter:blur(2px)]">
-                                    Suspended
-                                  </div>
-                                )}
-                                <b>{runner.back?.[0]?.price || ''}</b>
-                              </span>
-                              <span className="w-full max-md:hidden md:inline-block" />
-                            </div>
-                          </div>
-                          {isActive && (
-                            <div className="w-full">
-                              <InlineBetSlip
-                                betSlipDetails={active}
-                                onChange={onActiveChange}
-                                onCancel={() => onActiveChange(null)}
-                                onPlaceBet={(slip) =>
-                                  onPlaceBet?.(slip, () => onActiveChange(null))
-                                }
-                                isPlacing={isPlacingActive}
-                              />
-                            </div>
-                          )}
-                          {fancyProgressMap?.[runner.selectionId] && (
-                            <div className="w-full">
-                              <FancyProgress
-                                config={fancyProgressMap[runner.selectionId]}
-                                onClose={() =>
-                                  onFancyProgressClose?.(runner.selectionId)
-                                }
-                              />
-                            </div>
-                          )}
-                        </Fragment>
-                      )
-                    })}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      )}
-    </>
-  )
-}
-
-function PinIcon() {
-  return (
-    <i>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="8"
-        height="12"
-        viewBox="0 0 8 12"
-        aria-hidden="true"
-      >
-        <path
-          d="M6.714 5.25c.857.321 1.286.812 1.286 1.473 0 .232-.036.384-.107.455-.071.071-.214.107-.429.107h-2.893l-.429 4.714h-.286l-.429-4.714h-2.893c-.214 0-.357-.04-.429-.121-.071-.08-.107-.228-.107-.442 0-.661.429-1.152 1.286-1.473l.143-.054c.262-.107.429-.277.5-.509l.643-3.161v-.134c0-.143-.119-.259-.357-.348l-.036-.027h-.036c-.286-.089-.429-.241-.429-.455 0-.25.048-.406.143-.469.095-.063.262-.094.5-.094h3.286c.238 0 .405.031.5.094.095.063.143.219.143.469 0 .214-.143.366-.429.455h-.036l-.036.027c-.238.089-.357.205-.357.348v.134l.643 3.161c.071.232.238.402.5.509l.143.054z"
-          fill="currentColor"
-        />
-      </svg>
-    </i>
-  )
-}
-
-function RefreshIcon() {
-  return (
-    <i>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        width="14"
-        height="14"
-        aria-hidden="true"
-      >
-        <path
-          d="M10 4.029c1.635 0 3.144.36 4.527 1.079 1.365.703 2.443 1.655 3.233 2.854.827 1.247 1.24 2.59 1.24 4.028 0 1.44-.413 2.782-1.24 4.03-.79 1.214-1.868 2.173-3.233 2.877A9.596 9.596 0 0 1 10 20a9.596 9.596 0 0 1-4.527-1.103c-1.365-.704-2.443-1.663-3.233-2.878C1.413 14.772 1 13.43 1 11.99h2.263c0 1.088.301 2.09.903 3.01.602.92 1.42 1.647 2.452 2.182 1.033.536 2.16.804 3.382.804s2.349-.268 3.382-.804c1.033-.535 1.85-1.263 2.452-2.182.602-.92.903-1.922.903-3.01 0-1.087-.301-2.09-.903-3.01-.602-.918-1.42-1.646-2.452-2.181-1.033-.536-2.16-.804-3.382-.804v4.029L4.368 5.012 10 0v4.029z"
-          fill="currentColor"
-        />
-      </svg>
-    </i>
-  )
-}
-
-function CloseIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="12"
-      height="12"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <path
-        fill="currentColor"
-        d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-      />
-    </svg>
-  )
-}
-
-function FullscreenIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <path
-        fill="currentColor"
-        d="M7 14H5v5h5v-2H7zm-2-4h2V7h3V5H5zm12 7h-3v2h5v-5h-2zM14 5v2h3v3h2V5z"
-      />
-    </svg>
-  )
-}
-
-function InfoIcon({ onClick }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      height="25"
-      viewBox="0 0 25 25"
-      width="25"
-      onClick={onClick}
-    >
-      <g fill="none" fillRule="evenodd" transform="">
-        <circle
-          cx="12.5"
-          cy="12.5"
-          fill="#7e97a7"
-          fillRule="evenodd"
-          r="12.5"
-        ></circle>
-        <circle cx="12.5" cy="12.5" r="12" stroke="#7e97a7"></circle>
-        <path
-          d="m8 14h6v2h-6v3l-4-4 4-4zm9 0v-3h-6v-2h6v-3l4 4z"
-          fill="#e0e6e6"
-          fillRule="nonzero"
-          transform="matrix(0 1 -1 0 25 0)"
-        ></path>
-      </g>
-    </svg>
-  )
-}
-
-function WarningSvg() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="15"
-      height="15"
-      viewBox="0 0 15 15"
-    >
-      <path
-        fill="currentColor"
-        fillRule="evenodd"
-        d="M6.76 5.246V3.732h1.48v1.514H6.76zm.74 8.276a5.86 5.86 0 0 0 3.029-.83 5.839 5.839 0 0 0 2.163-2.163 5.86 5.86 0 0 0 .83-3.029 5.86 5.86 0 0 0-.83-3.029 5.839 5.839 0 0 0-2.163-2.163 5.86 5.86 0 0 0-3.029-.83 5.86 5.86 0 0 0-3.029.83A5.839 5.839 0 0 0 2.308 4.47a5.86 5.86 0 0 0-.83 3.029 5.86 5.86 0 0 0 .83 3.029 5.839 5.839 0 0 0 2.163 2.163 5.86 5.86 0 0 0 3.029.83zM7.5 0c1.37 0 2.638.343 3.804 1.028a7.108 7.108 0 0 1 2.668 2.668A7.376 7.376 0 0 1 15 7.5c0 1.37-.343 2.638-1.028 3.804a7.108 7.108 0 0 1-2.668 2.668A7.376 7.376 0 0 1 7.5 15a7.376 7.376 0 0 1-3.804-1.028 7.243 7.243 0 0 1-2.668-2.686A7.343 7.343 0 0 1 0 7.5c0-1.358.343-2.62 1.028-3.786a7.381 7.381 0 0 1 2.686-2.686A7.343 7.343 0 0 1 7.5 0zm-.74 11.268V6.761h1.48v4.507H6.76z"
-      ></path>
-    </svg>
-  )
-}
-
-function PinSvg({ ...props }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="25"
-      height="25"
-      viewBox="0 0 25 25"
-      {...props}
-    >
-      <path
-        fill="rgb(126,151,167)"
-        d="M12.5 25C5.596 25 0 19.404 0 12.5S5.596 0 12.5 0 25 5.596 25 12.5 19.404 25 12.5 25zm0-1C18.85 24 24 18.85 24 12.5S18.85 1 12.5 1 1 6.15 1 12.5 6.15 24 12.5 24zm5.09-12.078c1.606.516 2.41 1.13 2.41 2.19 0 .373-.067.616-.2.73-.135.115-.403.173-.804.173H13.57l-.81 7.988h-.536l-.795-7.988H6.003c-.4 0-.67-.065-.803-.194-.133-.128-.2-.364-.2-.708 0-1.06.804-1.674 2.41-2.19.09 0 .18-.03.27-.086.49-.172.802-.444.936-.816L9.82 5.95v-.216c0-.23-.222-.415-.668-.558l-.067-.043h-.067c-.536-.143-.804-.387-.804-.73 0-.402.09-.652.268-.753.18-.1.49-.15.938-.15h6.16c.447 0 .76.05.938.15.178.1.268.35.268.752 0 .344-.268.588-.804.73h-.067l-.067.044c-.446.143-.67.33-.67.558v.215l1.206 5.07c.134.372.446.644.937.816.09.057.18.086.27.086z"
-      ></path>
-    </svg>
-  )
-}
-function PinSvg2({ ...props }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="8"
-      height="12"
-      viewBox="0 0 8 12"
-      {...props}
-    >
-      <path
-        d="M6.714 5.25c.857.321 1.286.812 1.286 1.473 0 .232-.036.384-.107.455-.071.071-.214.107-.429.107h-2.893l-.429 4.714h-.286l-.429-4.714h-2.893c-.214 0-.357-.04-.429-.121-.071-.08-.107-.228-.107-.442 0-.661.429-1.152 1.286-1.473l.143-.054c.262-.107.429-.277.5-.509l.643-3.161v-.134c0-.143-.119-.259-.357-.348l-.036-.027h-.036c-.286-.089-.429-.241-.429-.455 0-.25.048-.406.143-.469.095-.063.262-.094.5-.094h3.286c.238 0 .405.031.5.094.095.063.143.219.143.469 0 .214-.143.366-.429.455h-.036l-.036.027c-.238.089-.357.205-.357.348v.134l.643 3.161c.071.232.238.402.5.509l.143.054z"
-        fill="currentColor"
-      ></path>
-    </svg>
-  )
-}
-
-function TimeSvg() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <mask
-        id="mask0_195_15463"
-        style={{ maskType: 'alpha' }}
-        maskUnits="userSpaceOnUse"
-        x="1"
-        y="1"
-        width="14"
-        height="14"
-      >
-        <rect
-          x="1.33789"
-          y="1.33301"
-          width="13.3333"
-          height="13.3333"
-          fill="#D9D9D9"
-        ></rect>
-      </mask>
-      <g mask="url(#mask0_195_15463)">
-        <path
-          d="M8.00456 13.5553C7.31011 13.5553 6.65965 13.4234 6.05317 13.1595C5.44669 12.8956 4.91891 12.5391 4.46984 12.0901C4.02076 11.641 3.66428 11.1132 3.40039 10.5067C3.1365 9.90025 3.00456 9.24978 3.00456 8.55534C3.00456 7.86089 3.1365 7.21043 3.40039 6.60395C3.66428 5.99747 4.02076 5.46969 4.46984 5.02062C4.91891 4.57154 5.44669 4.21506 6.05317 3.95117C6.65965 3.68728 7.31011 3.55534 8.00456 3.55534C8.699 3.55534 9.34947 3.68728 9.95595 3.95117C10.5624 4.21506 11.0902 4.57154 11.5393 5.02062C11.9884 5.46969 12.3448 5.99747 12.6087 6.60395C12.8726 7.21043 13.0046 7.86089 13.0046 8.55534C13.0046 9.24978 12.8726 9.90025 12.6087 10.5067C12.3448 11.1132 11.9884 11.641 11.5393 12.0901C11.0902 12.5391 10.5624 12.8956 9.95595 13.1595C9.34947 13.4234 8.699 13.5553 8.00456 13.5553ZM9.56011 10.8887L10.3379 10.1109L8.56011 8.33312V5.77756H7.449V8.77756L9.56011 10.8887ZM4.449 2.63867L5.22678 3.41645L2.86567 5.77756L2.08789 4.99978L4.449 2.63867ZM11.5601 2.63867L13.9212 4.99978L13.1434 5.77756L10.7823 3.41645L11.5601 2.63867ZM8.00456 12.4442C9.08789 12.4442 10.0069 12.0669 10.7615 11.3123C11.5161 10.5577 11.8934 9.63867 11.8934 8.55534C11.8934 7.47201 11.5161 6.55302 10.7615 5.79839C10.0069 5.04376 9.08789 4.66645 8.00456 4.66645C6.92122 4.66645 6.00224 5.04376 5.24761 5.79839C4.49298 6.55302 4.11567 7.47201 4.11567 8.55534C4.11567 9.63867 4.49298 10.5577 5.24761 11.3123C6.00224 12.0669 6.92122 12.4442 8.00456 12.4442Z"
-          fill="white"
-        ></path>
-      </g>
-    </svg>
-  )
-}
-
-function applyAdminPatch(current, evt) {
-  if (!current) return current
-  const sections = ['match_odds', 'bookmaker', 'fancy', 'sportBook']
-  const next = { ...current }
-  let changed = false
-  for (const section of sections) {
-    const list = current[section]
-    if (!Array.isArray(list)) continue
-    let sectionChanged = false
-    const updated = list.map((entry) => {
-      if (entry.marketId !== evt.marketId) return entry
-      sectionChanged = true
-      switch (evt.settingName) {
-        case 'isSuspended':
-          return { ...entry, isSuspended: evt.isSuspended }
-        case 'isAdvanceRestricted':
-          return { ...entry, isAdvanceRestricted: evt.isAdvanceRestricted }
-        case 'pbuLimit':
-          return { ...entry, pbuLimit: evt.pbuLimit }
-        case 'stakeLimit':
-          return { ...entry, stakeLimit: evt.stakeLimit }
-        default:
-          return entry
-      }
-    })
-    if (sectionChanged) {
-      next[section] = updated
-      changed = true
-    }
-  }
-  return changed ? next : current
-}

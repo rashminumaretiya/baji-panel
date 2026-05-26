@@ -7,7 +7,7 @@ const TAB_LIST_CLASS =
 const TAB_ITEM_CLASS = 'flex-none ml-0'
 
 const TAB_LINK_BASE =
-  'block border rounded-t-[4px] rounded-b-none w-[130px] text-[12px] leading-[21px] font-normal p-0 -mb-px'
+  'block border rounded-t-[4px] rounded-b-none w-[130px] text-[12px] leading-[21px] cursor-pointer hover:underline font-normal p-0 -mb-px'
 
 const TAB_LINK_INACTIVE =
   'bg-(--xts-light-bg) border-(--xxl-blue) text-white shadow-[inset_0_7px_2px_-7px_var(--xts-gray)]'
