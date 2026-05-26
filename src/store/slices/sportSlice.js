@@ -20,6 +20,7 @@ const initialState = {
   inplayMap: {},
   inplayStatus: 'idle',
   inplayLoadedAt: 0,
+  inplayLastParamsKey: '',
 }
 
 export const fetchSidebarSports = createAsyncThunk(
@@ -82,10 +83,12 @@ export const loadInplayMap = createAsyncThunk(
     }
   },
   {
-    condition: (_, { getState }) => {
+    condition: (params, { getState }) => {
       const s = getState().sport
       if (s.inplayStatus === 'loading') return false
+      const paramsKey = JSON.stringify(params ?? {})
       if (
+        s.inplayLastParamsKey === paramsKey &&
         s.inplayLoadedAt &&
         Date.now() - s.inplayLoadedAt < INPLAY_MAP_TTL_MS
       ) {
@@ -202,10 +205,11 @@ const sportSlice = createSlice({
     b.addCase(loadInplayMap.pending, (s) => {
       s.inplayStatus = 'loading'
     })
-    b.addCase(loadInplayMap.fulfilled, (s, { payload }) => {
+    b.addCase(loadInplayMap.fulfilled, (s, { meta, payload }) => {
       s.inplayStatus = 'idle'
       s.inplayMap = payload && typeof payload === 'object' ? payload : {}
       s.inplayLoadedAt = Date.now()
+      s.inplayLastParamsKey = JSON.stringify(meta?.arg ?? {})
     })
     b.addCase(loadInplayMap.rejected, (s) => {
       s.inplayStatus = 'error'
