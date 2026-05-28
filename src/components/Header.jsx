@@ -220,9 +220,9 @@ export default function Header({
         {useDesktopHeader ? (
           <div className="inline-flex items-center sm:flex-1">
             <div className="me-0 flex h-[50px] w-[100px] items-center sm:me-2 xl:me-3">
-              {logo && (
+              {logo?.url && (
                 <img
-                  src={logo}
+                  src={logo?.url}
                   alt={t('common.homeLogoAlt', 'Site logo — go to home')}
                   width="100"
                   height="50"
@@ -361,7 +361,7 @@ export default function Header({
             <button
               type="button"
               className={cx(
-                'flex h-[26px] w-[28px] items-center justify-center rounded-[3px] border border-black/30 bg-black/30 px-1.5 shadow-[inset_0_1px_0_0_rgba(var(--white-rgb),0.5)] hover:underline max-md:h-[9.47vw] max-md:w-auto max-md:border max-md:border-black/40 max-md:bg-black/10 max-md:px-[1.87vw] max-md:py-[1.7vw] max-md:shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.5)] [&_svg]:h-[14px] [&_svg]:w-[14px] max-md:[&_svg]:h-[5.07vw] max-md:[&_svg]:w-[5.07vw]',
+                'flex cursor-pointer h-[26px] w-[28px] items-center justify-center rounded-[3px] border border-black/30 bg-black/30 px-1.5 shadow-[inset_0_1px_0_0_rgba(var(--white-rgb),0.5)] hover:underline max-md:h-[9.47vw] max-md:w-auto max-md:border max-md:border-black/40 max-md:bg-black/10 max-md:px-[1.87vw] max-md:py-[1.7vw] max-md:shadow-[inset_0_0.27vw_0_0_rgba(var(--white-rgb),0.5)] [&_svg]:h-[14px] [&_svg]:w-[14px] max-md:[&_svg]:h-[5.07vw] max-md:[&_svg]:w-[5.07vw]',
                 isYellowTheme && '!bg-transparent [&_svg]:brightness-0'
               )}
               onClick={balanceRefresh}
