@@ -35,8 +35,6 @@ export default function AnnouncementsModal({ isOpen, onClose }) {
       onClose={onClose}
       title="Announcements"
       size="md"
-      closeOnBackdrop
-      closeOnEscape
     >
       {loading ? (
         <p className="m-0 text-center text-[13px] text-[#3b5160]">Loading...</p>

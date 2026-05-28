@@ -1127,8 +1127,6 @@ export default function LiveOdds() {
         title={t('rules.fancyBets', 'Rules of Fancy Bets')}
         size="md"
         centered
-        closeOnBackdrop
-        closeOnEscape
         centerTitle
         hideClose
       >

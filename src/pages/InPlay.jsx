@@ -49,7 +49,7 @@ const TAB_LIST_CLASS =
 const TAB_ITEM_CLASS = 'flex-1 -ml-px first:ml-0'
 
 const TAB_LINK_BASE =
-  'block w-full p-0 font-bold text-[13px] leading-[27px] border hover:underline ' +
+  'block w-full p-0 font-bold text-[13px] leading-[27px] border hover:underline cursor-pointer ' +
   'max-md:text-[3.73vw] max-md:leading-[8.8vw] max-md:bg-transparent'
 
 const TAB_LINK_INACTIVE =

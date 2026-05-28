@@ -29,8 +29,6 @@ export default function LoginModel({ isOpen, onClose }) {
       isOpen={!!isOpen}
       size="xs"
       centered
-      closeOnBackdrop={false}
-      closeOnEscape={false}
       hideClose
       innerClass="shadow-[0_4px_5px_rgba(var(--black-rgb),0.5)]!"
     >

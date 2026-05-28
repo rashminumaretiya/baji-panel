@@ -275,7 +275,6 @@ export default function CurrentBets() {
         onClose={closeComplaint}
         title={t('myBets.sendComplaint', 'Send Complaint')}
         size="md"
-        closeOnEscape
       >
         <div className="form-group">
           <label

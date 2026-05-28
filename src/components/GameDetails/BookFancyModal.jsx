@@ -70,8 +70,6 @@ export default function BookFancyModal({
       onClose={onClose}
       title={title}
       size="md"
-      closeOnEscape
-      closeOnBackdrop
     >
       {isLoading ? (
         <div className="flex items-center justify-center py-6">
