@@ -1149,7 +1149,32 @@
     "goToAllSports": "Go to all sports"
   },
   "app": {
-    "titleSuffix": "{{siteName}} Exchange"
+    "titleSuffix": "{{siteName}} Exchange",
+    "titles": {
+      "home": "ہوم",
+      "cricket": "کرکٹ",
+      "soccer": "فٹبال",
+      "tennis": "ٹینس",
+      "horseRacing": "گھڑ دوڑ",
+      "greyhoundRacing": "گرے ہاؤنڈ ریسنگ",
+      "multiMarkets": "ملٹی مارکیٹس",
+      "inPlay": "ان پلے",
+      "result": "نتیجہ",
+      "liveOdds": "لائیو آڈز",
+      "racingOdds": "ریسنگ آڈز",
+      "account": "اکاؤنٹ",
+      "platform": "پلیٹ فارم",
+      "profile": "پروفائل",
+      "balanceOverview": "بیلنس جائزہ",
+      "accountStatement": "اکاؤنٹ سٹیٹمنٹ",
+      "myBets": "میری بیٹس",
+      "betsComplaints": "بیٹس شکایات",
+      "activityLog": "ایکٹیویٹی لاگ",
+      "deposit": "جمع",
+      "depositHistory": "جمع کی تاریخ",
+      "withdraw": "رقم نکالنا",
+      "withdrawHistory": "رقم نکالنے کی تاریخ"
+    }
   },
   "myAccount": {
     "backToAccount": "Back to account"

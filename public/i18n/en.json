@@ -1155,7 +1155,32 @@
     "goToAllSports": "Go to all sports"
   },
   "app": {
-    "titleSuffix": "{{siteName}} Exchange"
+    "titleSuffix": "{{siteName}} Exchange",
+    "titles": {
+      "home": "Home",
+      "cricket": "Cricket",
+      "soccer": "Soccer",
+      "tennis": "Tennis",
+      "horseRacing": "Horse Racing",
+      "greyhoundRacing": "Greyhound Racing",
+      "multiMarkets": "Multi Markets",
+      "inPlay": "In-Play",
+      "result": "Result",
+      "liveOdds": "Live Odds",
+      "racingOdds": "Racing Odds",
+      "account": "Account",
+      "platform": "Platform",
+      "profile": "Profile",
+      "balanceOverview": "Balance Overview",
+      "accountStatement": "Account Statement",
+      "myBets": "My Bets",
+      "betsComplaints": "Bets Complaints",
+      "activityLog": "Activity Log",
+      "deposit": "Deposit",
+      "depositHistory": "Deposit History",
+      "withdraw": "Withdraw",
+      "withdrawHistory": "Withdraw History"
+    }
   },
   "myAccount": {
     "backToAccount": "Back to account"

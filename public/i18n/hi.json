@@ -1149,7 +1149,32 @@
     "goToAllSports": "Go to all sports"
   },
   "app": {
-    "titleSuffix": "{{siteName}} Exchange"
+    "titleSuffix": "{{siteName}} Exchange",
+    "titles": {
+      "home": "होम",
+      "cricket": "क्रिकेट",
+      "soccer": "फुटबॉल",
+      "tennis": "टेनिस",
+      "horseRacing": "घुड़दौड़",
+      "greyhoundRacing": "ग्रेहाउंड रेसिंग",
+      "multiMarkets": "मल्टी मार्केट्स",
+      "inPlay": "इन-प्ले",
+      "result": "परिणाम",
+      "liveOdds": "लाइव ऑड्स",
+      "racingOdds": "रेसिंग ऑड्स",
+      "account": "खाता",
+      "platform": "प्लेटफार्म",
+      "profile": "प्रोफ़ाइल",
+      "balanceOverview": "बैलेंस ओवरव्यू",
+      "accountStatement": "अकाउंट स्टेटमेंट",
+      "myBets": "मेरी बेट्स",
+      "betsComplaints": "बेट्स शिकायतें",
+      "activityLog": "एक्टिविटी लॉग",
+      "deposit": "जमा",
+      "depositHistory": "जमा इतिहास",
+      "withdraw": "निकासी",
+      "withdrawHistory": "निकासी इतिहास"
+    }
   },
   "myAccount": {
     "backToAccount": "Back to account"
