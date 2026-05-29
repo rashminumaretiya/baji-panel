@@ -4,7 +4,11 @@ import { BrowserRouter } from 'react-router-dom'
 import { store } from './store/store.js'
 import './index.css'
 import i18n from './i18n/index.js'
-import { autoLoginFromUrlToken } from './store/slices/authSlice.js'
+import {
+  autoLoginFromUrlToken,
+  fetchUser,
+  selectToken,
+} from './store/slices/authSlice.js'
 import {
   setFullScreenLoader,
   setupMobileBreakpointListener,
@@ -66,14 +70,23 @@ store.subscribe(() => {
   }
 })
 
-if (
-  typeof window !== 'undefined' &&
-  new URLSearchParams(window.location.search).get('token')
-) {
-  store.dispatch(setFullScreenLoader(true))
-  store
-    .dispatch(autoLoginFromUrlToken())
-    .finally(() => store.dispatch(setFullScreenLoader(false)))
+if (typeof window !== 'undefined') {
+  const urlToken = new URLSearchParams(window.location.search).get('token')
+  if (urlToken) {
+    // SSO hand-off from baji-react: token in the URL, fetch user with it and
+    // persist the token afterwards.
+    store.dispatch(setFullScreenLoader(true))
+    store
+      .dispatch(autoLoginFromUrlToken())
+      .finally(() => store.dispatch(setFullScreenLoader(false)))
+  } else if (selectToken(store.getState())) {
+    // Refresh path: token survived in localStorage; user data is not persisted
+    // so refetch it before the UI renders authenticated state.
+    store.dispatch(setFullScreenLoader(true))
+    store
+      .dispatch(fetchUser())
+      .finally(() => store.dispatch(setFullScreenLoader(false)))
+  }
 }
 
 createRoot(document.getElementById('root')).render(

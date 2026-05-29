@@ -4,13 +4,20 @@ import { fetchDomainConfiguration, setCaptcha } from './commonSlice.js'
 import { localStorageService } from '../../shared/services/local-storage.js'
 import { LOCALSTORAGE } from '../../shared/types/common.js'
 
-const persistedUser = (() => {
+function readPersistedToken() {
   try {
-    return localStorageService.getItem(LOCALSTORAGE.USER)
+    return localStorageService.getItem(LOCALSTORAGE.TOKEN) || null
   } catch {
     return null
   }
-})()
+}
+
+function writePersistedToken(token) {
+  if (token) localStorageService.setItem(LOCALSTORAGE.TOKEN, token)
+  else localStorageService.removeItem(LOCALSTORAGE.TOKEN)
+}
+
+const persistedToken = readPersistedToken()
 
 const persistedOneClickBet = (() => {
   try {
@@ -21,13 +28,14 @@ const persistedOneClickBet = (() => {
 })()
 
 const initialState = {
-  user: persistedUser,
+  token: persistedToken,
+  user: null,
   wallet: null,
   isOneClickBet: persistedOneClickBet,
   isRefreshBalance: {},
   isLoginWindow: false,
   stakesData: [],
-  selectedLanguage: persistedUser?.language || 'en',
+  selectedLanguage: 'en',
 }
 
 export const getValidationCode = createAsyncThunk(
@@ -44,6 +52,25 @@ export const getValidationCode = createAsyncThunk(
   }
 )
 
+// Refresh-path hydration: token comes from localStorage, user data is fetched
+// fresh from the API on every page load. Returns the user payload (without
+// token — the token lives in state.auth.token).
+export const fetchUser = createAsyncThunk(
+  'auth/fetchUser',
+  async (_, { getState, rejectWithValue }) => {
+    const token = getState().auth.token
+    if (!token) return null
+    try {
+      const res = await http.get('user', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      return res.data?.data ?? null
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message)
+    }
+  }
+)
+
 export const autoLoginFromUrlToken = createAsyncThunk(
   'auth/autoLoginFromUrlToken',
   async (_, { getState, dispatch, rejectWithValue }) => {
@@ -52,22 +79,20 @@ export const autoLoginFromUrlToken = createAsyncThunk(
     const token = params.get('token')
     if (!token) return null
 
-    const currentToken = getState().auth.user?.token
+    const currentToken = getState().auth.token
     if (currentToken === token) {
       stripTokenFromUrl()
       return null
     }
 
-    dispatch(setUser(null))
+    dispatch(clearAuth())
 
     try {
       const res = await http.get('user', {
         headers: { Authorization: `Bearer ${token}` },
       })
-      const user = { ...(res.data?.data ?? {}), token }
-      localStorageService.setItem(LOCALSTORAGE.USER, user)
       stripTokenFromUrl()
-      return user
+      return { token, user: res.data?.data ?? null }
     } catch (err) {
       stripTokenFromUrl()
       return rejectWithValue(err.response?.data || err.message)
@@ -91,11 +116,8 @@ export const login = createAsyncThunk(
   async (payload, { dispatch, rejectWithValue }) => {
     try {
       const res = await http.post('auth/sign-in', payload)
-      const user = res.data?.data
-      if (user) {
-        localStorageService.setItem(LOCALSTORAGE.USER, user)
-        return user
-      }
+      const data = res.data?.data
+      if (data) return data
       return rejectWithValue(res.data)
     } catch (err) {
       dispatch(getValidationCode())
@@ -112,7 +134,7 @@ export const logout = createAsyncThunk(
     } catch {
       /* ignore */
     }
-    dispatch(setUser(null))
+    dispatch(clearAuth())
     return null
   }
 )
@@ -132,7 +154,7 @@ export const fetchBalance = createAsyncThunk(
 export const loadStakes = createAsyncThunk(
   'auth/loadStakes',
   async (_, { getState, rejectWithValue }) => {
-    if (!getState().auth.user) return []
+    if (!getState().auth.token) return []
     try {
       const res = await http.get('user/stake')
       return Array.isArray(res.data?.data) ? res.data.data : []
@@ -145,7 +167,7 @@ export const loadStakes = createAsyncThunk(
 export const updateStakes = createAsyncThunk(
   'auth/updateStakes',
   async (stake, { getState, rejectWithValue }) => {
-    if (!getState().auth.user) return null
+    if (!getState().auth.token) return null
     try {
       const res = await http.put('user/stake', { stake })
       return {
@@ -164,13 +186,18 @@ const authSlice = createSlice({
   reducers: {
     setUser(state, { payload }) {
       state.user = payload || null
-      if (payload) {
-        localStorageService.setItem(LOCALSTORAGE.USER, payload)
-        if (payload.language) state.selectedLanguage = payload.language
-      } else {
-        localStorage.clear()
-        state.isOneClickBet = false
-      }
+      if (payload?.language) state.selectedLanguage = payload.language
+    },
+    setToken(state, { payload }) {
+      state.token = payload || null
+      writePersistedToken(payload || null)
+    },
+    clearAuth(state) {
+      state.token = null
+      state.user = null
+      state.wallet = null
+      state.isOneClickBet = false
+      localStorage.clear()
     },
     setIsOneClickBet(state, { payload }) {
       state.isOneClickBet = !!payload
@@ -183,23 +210,30 @@ const authSlice = createSlice({
   },
   extraReducers: (b) => {
     b.addCase(login.fulfilled, (state, { payload }) => {
-      state.user = payload || null
-      if (payload?.language) state.selectedLanguage = payload.language
+      if (!payload) return
+      const { token, ...user } = payload
+      if (token) {
+        state.token = token
+        writePersistedToken(token)
+      }
+      state.user = user || null
+      if (user?.language) state.selectedLanguage = user.language
+    })
+    b.addCase(fetchUser.fulfilled, (state, { payload }) => {
+      if (!payload) return
+      state.user = payload
+      if (payload.language) state.selectedLanguage = payload.language
     })
     b.addCase(autoLoginFromUrlToken.fulfilled, (state, { payload }) => {
-      if (payload) {
-        state.user = payload
-        if (payload.language) state.selectedLanguage = payload.language
-      }
+      if (!payload) return
+      state.token = payload.token
+      writePersistedToken(payload.token)
+      state.user = payload.user || null
+      if (payload.user?.language) state.selectedLanguage = payload.user.language
     })
     b.addCase(fetchBalance.fulfilled, (state, { payload }) => {
       if (!payload) return
-      const wallet = payload.wallet ?? payload
-      state.wallet = wallet
-      if (state.user) {
-        state.user = { ...state.user, wallet }
-        localStorageService.setItem(LOCALSTORAGE.USER, state.user)
-      }
+      state.wallet = payload.wallet ?? payload
     })
     b.addCase(loadStakes.fulfilled, (state, { payload }) => {
       state.stakesData = Array.isArray(payload) ? payload : []
@@ -216,15 +250,17 @@ const authSlice = createSlice({
 
 export const {
   setUser,
+  setToken,
+  clearAuth,
   setIsOneClickBet,
   setLoginWindow,
 } = authSlice.actions
 
 export default authSlice.reducer
 
+export const selectToken = (s) => s.auth.token
 export const selectUser = (s) => s.auth.user
-export const selectIsAuthenticated = (s) => !!s.auth.user
-export const selectToken = (s) => s.auth.user?.token
+export const selectIsAuthenticated = (s) => !!s.auth.token
 export const selectCurrency = (s) => s.auth.user?.currency
 export const selectWallet = (s) => s.auth.wallet
 

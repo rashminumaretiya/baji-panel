@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
 import Modal from '../../shared/components/Modal.jsx'
@@ -21,6 +22,7 @@ export default function VerifyPrimaryNumberModal({
   onClose,
   onSuccess,
 }) {
+  const { t } = useTranslation()
   const token = useSelector(selectToken)
   const [otp, setOtp] = useState('')
   const [touched, setTouched] = useState(false)
@@ -108,35 +110,42 @@ export default function VerifyPrimaryNumberModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Verify Primary Number"
+      title={t('modal.title.verifyPrimaryNo', 'Verify Primary Number')}
       size="md"
     >
       <form onSubmit={handleVerify}>
         <div className="mb-2">
-          <label className={labelClass} htmlFor="verifyPrimaryOtp">Enter Otp :</label>
+          <label className={labelClass} htmlFor="verifyPrimaryOtp">
+            {t('common.placeholder.otp', 'Enter Otp')} :
+          </label>
           <input
             id="verifyPrimaryOtp"
             type="text"
             className={inputBaseClass}
-            placeholder="Enter Otp"
+            placeholder={t('common.placeholder.otp', 'Enter Otp')}
             maxLength={6}
             value={otp}
             onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
             onBlur={() => setTouched(true)}
           />
           {showRequiredError && (
-            <span className={otpErrorClass}>Otp is required</span>
+            <span className={otpErrorClass}>
+              {t('common.otpRequired', 'Otp is required')}
+            </span>
           )}
         </div>
         <div className="mb-2 text-right">
           {timer > 0 ? (
-            <a className={resendLinkClass}>Resend otp in {timer} Seconds</a>
+            <a className={resendLinkClass}>
+              {t('common.resendOtpIn', 'Resend otp in')} {timer}{' '}
+              {t('common.seconds', 'Seconds')}
+            </a>
           ) : (
             <a
               className={`${resendLinkClass} cursor-pointer`}
               onClick={handleResend}
             >
-              Resend Now
+              {t('common.resendNow', 'Resend Now')}
             </a>
           )}
         </div>
@@ -146,7 +155,7 @@ export default function VerifyPrimaryNumberModal({
             className={addNumberBtnClass}
             disabled={submitting}
           >
-            Verify
+            {t('common.verify', 'Verify')}
           </button>
         </div>
       </form>

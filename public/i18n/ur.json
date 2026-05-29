@@ -151,7 +151,12 @@
     "royal": "رائل",
     "saba": "سابا",
     "action": "ایکشن",
-    "paymentType": "ادائیگی کی قسم"
+    "paymentType": "ادائیگی کی قسم",
+    "countryCode": "ملکی کوڈ",
+    "openSearch": "تلاش کھولیں",
+    "closeSearch": "تلاش بند کریں",
+    "clearSearch": "تلاش صاف کریں",
+    "otpRequired": "OTP درکار ہے"
   },
   "news": {
     "welcomeOurExchange": "ہمارے تبادلے میں خوش آمدید"
@@ -356,6 +361,7 @@
     "postcode": "پوسٹ کوڈ",
     "timezone": "ٹائم زون",
     "primaryNumber": "بنیادی نمبر",
+    "backupNumber": "بیک اپ نمبر",
     "oddsFormat": "اوڈس فارمیٹ",
     "commCharged": "کمیشن چارج کیا گیا۔",
     "goToAffiliateDashboard": "ملحق ڈیش بورڈ پر جائیں۔",

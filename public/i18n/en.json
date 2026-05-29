@@ -156,7 +156,12 @@
     "royal": "Royal",
     "saba": "SABA",
     "action": "Action",
-    "paymentType": "Payment Type"
+    "paymentType": "Payment Type",
+    "countryCode": "Country code",
+    "openSearch": "Open search",
+    "closeSearch": "Close search",
+    "clearSearch": "Clear search",
+    "otpRequired": "Otp is required"
   },
   "news": {
     "welcomeOurExchange": "Welcome to our exchange"
@@ -362,6 +367,7 @@
     "postcode": "Post Code",
     "timezone": "Time Zone",
     "primaryNumber": "Primary Number",
+    "backupNumber": "Backup Number",
     "oddsFormat": "Odds Format",
     "commCharged": "Commision Charged",
     "goToAffiliateDashboard": "Go to Affiliate Dashboard",

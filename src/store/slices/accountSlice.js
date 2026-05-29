@@ -157,7 +157,7 @@ export const fetchDepositHistory = createAsyncThunk(
 export const fetchWithdrawDetails = createAsyncThunk(
   'account/fetchWithdrawDetails',
   async (_, { getState, rejectWithValue }) => {
-    const token = getState().auth?.user?.token
+    const token = getState().auth?.token
     if (!token) return rejectWithValue({ message: 'Not authenticated' })
     try {
       const res = await http.get('sw-request/details', {
@@ -177,7 +177,7 @@ export const fetchWithdrawDetails = createAsyncThunk(
 export const createWithdrawRequest = createAsyncThunk(
   'account/createWithdrawRequest',
   async (payload, { getState, rejectWithValue }) => {
-    const token = getState().auth?.user?.token
+    const token = getState().auth?.token
     if (!token) return rejectWithValue({ message: 'Not authenticated' })
     try {
       const res = await http.post('sw-request', payload, {
@@ -243,7 +243,7 @@ function mapWithdrawHistoryRows(rows) {
 export const fetchWithdrawalHistory = createAsyncThunk(
   'account/fetchWithdrawalHistory',
   async (params, { getState, rejectWithValue }) => {
-    const token = getState().auth?.user?.token
+    const token = getState().auth?.token
     if (!token) return rejectWithValue({ message: 'Not authenticated' })
     try {
       const res = await http.get('sw-request', {

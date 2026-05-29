@@ -139,7 +139,7 @@ export default function MobileSearchEvent() {
         role="button"
         tabIndex={0}
         onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && toggle()}
-        aria-label="Open search"
+        aria-label={t('common.openSearch', 'Open search')}
       >
         <SearchIcon />
       </span>
@@ -162,7 +162,7 @@ export default function MobileSearchEvent() {
             role="button"
             tabIndex={0}
             onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && close()}
-            aria-label="Close search"
+            aria-label={t('common.closeSearch', 'Close search')}
           >
             {LeftArrowSvg}
           </i>
@@ -175,7 +175,7 @@ export default function MobileSearchEvent() {
               role="combobox"
               aria-autocomplete="list"
               aria-expanded={showPanel}
-              aria-label="Search events"
+              aria-label={t('header.searchEvents', 'Search Events')}
               autoCorrect="off"
               autoCapitalize="off"
               autoComplete="off"
@@ -190,7 +190,7 @@ export default function MobileSearchEvent() {
                 className="flex items-center justify-center cursor-pointer flex-none w-[6.07vw] font-thin"
                 role="button"
                 tabIndex={0}
-                aria-label="Clear search"
+                aria-label={t('common.clearSearch', 'Clear search')}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => setQuery('')}
                 onKeyDown={(e) => {

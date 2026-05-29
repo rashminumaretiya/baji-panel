@@ -1,5 +1,5 @@
 export const LOCALSTORAGE = Object.freeze({
-  USER: 'user',
+  TOKEN: 'token',
   ONE_CLICK_BET: 'oneClickBet',
   ONE_CLICK_ATTENTION: 'oneClickAttention',
   DEVICE_ID: 'deviceId',

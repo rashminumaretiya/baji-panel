@@ -151,7 +151,12 @@
     "royal": "रॉयल",
     "saba": "साबा",
     "action": "एक्शन",
-    "paymentType": "भुगतान प्रकार"
+    "paymentType": "भुगतान प्रकार",
+    "countryCode": "देश कोड",
+    "openSearch": "खोज खोलें",
+    "closeSearch": "खोज बंद करें",
+    "clearSearch": "खोज साफ़ करें",
+    "otpRequired": "ओटीपी आवश्यक है"
   },
   "news": {
     "welcomeOurExchange": "हमारे एक्सचेंज में आपका स्वागत है"
@@ -356,6 +361,7 @@
     "postcode": "पिन कोड",
     "timezone": "समय क्षेत्र",
     "primaryNumber": "प्राथमिक नंबर",
+    "backupNumber": "बैकअप नंबर",
     "oddsFormat": "ऑड्स प्रारूप",
     "commCharged": "लागू कमीशन",
     "goToAffiliateDashboard": "सहयोगी डैशबोर्ड पर जाएँ",

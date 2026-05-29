@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
 import Modal from '../../shared/components/Modal.jsx'
@@ -23,6 +24,7 @@ const addNumberBtnClass =
   'text-[11px] px-[8px] py-[5px] cursor-pointer inline-block font-semibold text-white border border-(--lg-primary) rounded bg-gradient-to-b from-(--xs-primary) to-(--xxs-primary) hover:from-(--xxs-primary) hover:to-(--xs-primary) hover:brightness-95 focus:from-(--xxs-primary) focus:to-(--xs-primary) focus:brightness-95 disabled:opacity-65 disabled:cursor-not-allowed'
 
 export default function AddBackupNumberModal({ isOpen, onClose, onSuccess }) {
+  const { t } = useTranslation()
   const token = useSelector(selectToken)
   const [countryCode, setCountryCode] = useState('+880')
   const [phoneNumber, setPhoneNumber] = useState('')
@@ -57,18 +59,20 @@ export default function AddBackupNumberModal({ isOpen, onClose, onSuccess }) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Add Backup Number"
+      title={t('modal.title.addBackupNo', 'Add Backup Number')}
       size="md"
     >
       <form onSubmit={handleAdd}>
         <div className="mb-3">
-          <label className={labelClass} htmlFor="backupPhoneNumber">Backup Number :</label>
+          <label className={labelClass} htmlFor="backupPhoneNumber">
+            {t('profile.backupNumber', 'Backup Number')} :
+          </label>
           <div className="relative flex items-stretch">
             <select
               className={countryCodeSelectClass}
               value={countryCode}
               onChange={(e) => setCountryCode(e.target.value)}
-              aria-label="Country code"
+              aria-label={t('common.countryCode', 'Country code')}
             >
               {COUNTRY_CODES.map((c) => (
                 <option key={c.code} value={c.code}>
@@ -80,7 +84,10 @@ export default function AddBackupNumberModal({ isOpen, onClose, onSuccess }) {
               id="backupPhoneNumber"
               type="tel"
               className={phoneInputClass}
-              placeholder="Enter Contact number"
+              placeholder={t(
+                'common.placeholder.phoneNumber',
+                'Enter Phone Number'
+              )}
               value={phoneNumber}
               onChange={(e) =>
                 setPhoneNumber(e.target.value.replace(/\D/g, ''))
@@ -94,7 +101,7 @@ export default function AddBackupNumberModal({ isOpen, onClose, onSuccess }) {
             className={addNumberBtnClass}
             disabled={submitting}
           >
-            Add Number
+            {t('common.button.addNumber', 'Add Number')}
           </button>
         </div>
       </form>

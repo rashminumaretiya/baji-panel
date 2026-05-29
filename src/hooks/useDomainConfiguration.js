@@ -128,7 +128,7 @@ export function useDomainConfiguration() {
     const pageKey = getRouteTitleKey(location.pathname)
     if (pageKey) {
       const pageName = t(`app.titles.${pageKey}`, { defaultValue: '' })
-      applyTitle(pageName ? `${pageName} | ${siteSuffix}` : siteSuffix)
+      applyTitle(pageName ? `${siteSuffix} | ${pageName}` : siteSuffix)
     } else {
       applyTitle(siteSuffix)
     }

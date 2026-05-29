@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
 import Modal from '../../shared/components/Modal.jsx'
@@ -32,6 +33,7 @@ const addNumberBtnClass =
 const resendLinkClass = 'text-[#1e6fff] underline text-[13px]'
 
 export default function AddWhatsAppModal({ isOpen, onClose, onSuccess }) {
+  const { t } = useTranslation()
   const token = useSelector(selectToken)
   const [step, setStep] = useState('add')
   const [countryCode, setCountryCode] = useState('+880')
@@ -124,19 +126,21 @@ export default function AddWhatsAppModal({ isOpen, onClose, onSuccess }) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Add WhatsApp Number"
+      title={t('modal.title.addWhatsappNo', 'Add Whatsapp Number')}
       size="md"
     >
       {step === 'add' ? (
         <form onSubmit={handleAdd}>
           <div className="mb-3">
-            <label className={labelClass} htmlFor="waPhoneNumber">Phone Number :</label>
+            <label className={labelClass} htmlFor="waPhoneNumber">
+              {t('common.phoneNumber', 'Phone Number')} :
+            </label>
             <div className="relative flex items-stretch">
               <select
                 className={countryCodeSelectClass}
                 value={countryCode}
                 onChange={(e) => setCountryCode(e.target.value)}
-                aria-label="Country code"
+                aria-label={t('common.countryCode', 'Country code')}
               >
                 {COUNTRY_CODES.map((c) => (
                   <option key={c.code} value={c.code}>
@@ -148,7 +152,10 @@ export default function AddWhatsAppModal({ isOpen, onClose, onSuccess }) {
                 id="waPhoneNumber"
                 type="tel"
                 className={phoneInputClass}
-                placeholder="Enter Contact number"
+                placeholder={t(
+                  'common.placeholder.phoneNumber',
+                  'Enter Phone Number'
+                )}
                 value={phoneNumber}
                 onChange={(e) =>
                   setPhoneNumber(e.target.value.replace(/\D/g, ''))
@@ -162,19 +169,21 @@ export default function AddWhatsAppModal({ isOpen, onClose, onSuccess }) {
               className={addNumberBtnClass}
               disabled={submitting}
             >
-              Add Number
+              {t('common.button.addNumber', 'Add Number')}
             </button>
           </div>
         </form>
       ) : (
         <form onSubmit={handleVerify}>
           <div className="mb-3">
-            <label className={labelClass} htmlFor="waOtp">Enter Otp :</label>
+            <label className={labelClass} htmlFor="waOtp">
+              {t('common.placeholder.otp', 'Enter Otp')} :
+            </label>
             <input
               id="waOtp"
               type="text"
               className={inputBaseClass}
-              placeholder="Enter Otp"
+              placeholder={t('common.placeholder.otp', 'Enter Otp')}
               maxLength={6}
               value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
@@ -182,13 +191,16 @@ export default function AddWhatsAppModal({ isOpen, onClose, onSuccess }) {
           </div>
           <div className="mb-2 text-right">
             {timer > 0 ? (
-              <a className={resendLinkClass}>Resend otp in {timer} Seconds</a>
+              <a className={resendLinkClass}>
+                {t('common.resendOtpIn', 'Resend otp in')} {timer}{' '}
+                {t('common.seconds', 'Seconds')}
+              </a>
             ) : (
               <a
                 className={`${resendLinkClass} cursor-pointer`}
                 onClick={handleResend}
               >
-                Resend Now
+                {t('common.resendNow', 'Resend Now')}
               </a>
             )}
           </div>
@@ -198,7 +210,7 @@ export default function AddWhatsAppModal({ isOpen, onClose, onSuccess }) {
               className={addNumberBtnClass}
               disabled={submitting}
             >
-              Verify
+              {t('common.verify', 'Verify')}
             </button>
           </div>
         </form>

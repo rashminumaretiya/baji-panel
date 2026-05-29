@@ -106,7 +106,7 @@ export const FancyTabHeader = memo(function FancyTabHeader({
             {isActive && (
               <i
                 role="button"
-                aria-label="Fancy bet rules"
+                aria-label={t('fancyBetRules.title', 'Fancy Bet Rules')}
                 tabIndex={0}
                 onClick={(e) => {
                   e.stopPropagation()

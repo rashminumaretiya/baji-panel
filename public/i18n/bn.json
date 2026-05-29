@@ -151,7 +151,12 @@
     "royal": "রয়াল",
     "saba": "সাবা",
     "action": "অ্যাকশন",
-    "paymentType": "পেমেন্ট প্রকার"
+    "paymentType": "পেমেন্ট প্রকার",
+    "countryCode": "দেশের কোড",
+    "openSearch": "অনুসন্ধান খুলুন",
+    "closeSearch": "অনুসন্ধান বন্ধ করুন",
+    "clearSearch": "অনুসন্ধান মুছুন",
+    "otpRequired": "ওটিপি প্রয়োজন"
   },
   "news": {
     "welcomeOurExchange": "আমাদের এক্সচেঞ্জে স্বাগতম"
@@ -356,6 +361,7 @@
     "postcode": "পিন কোড",
     "timezone": "সময় অঞ্চল",
     "primaryNumber": "প্রাথমিক নম্বর",
+    "backupNumber": "ব্যাকআপ নম্বর",
     "oddsFormat": "অডস ফরম্যাট",
     "commCharged": "প্রযোজ্য কমিশন",
     "goToAffiliateDashboard": "অ্যাফিলিয়েট ড্যাশবোর্ডে যান",

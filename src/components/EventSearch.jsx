@@ -127,7 +127,7 @@ export default function EventSearch() {
           <span
             role="button"
             tabIndex={0}
-            aria-label="Clear search"
+            aria-label={t('common.clearSearch', 'Clear search')}
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => setQuery('')}
             onKeyDown={(e) => {

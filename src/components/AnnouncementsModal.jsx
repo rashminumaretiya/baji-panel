@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { http } from '../core/http/client.js'
 import Modal from '../shared/components/Modal.jsx'
 
 export default function AnnouncementsModal({ isOpen, onClose }) {
+  const { t } = useTranslation()
   const [announcements, setAnnouncements] = useState([])
   const [loading, setLoading] = useState(false)
 
@@ -33,14 +35,16 @@ export default function AnnouncementsModal({ isOpen, onClose }) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Announcements"
+      title={t('common.announcements', 'Announcements')}
       size="md"
     >
       {loading ? (
-        <p className="m-0 text-center text-[13px] text-[#3b5160]">Loading...</p>
+        <p className="m-0 text-center text-[13px] text-[#3b5160]">
+          {t('common.loading', 'Loading...')}
+        </p>
       ) : announcements.length === 0 ? (
         <p className="m-0 text-center text-[13px] text-[#3b5160]">
-          No Annoucements Found.
+          {t('common.noAnnouncements', 'No Annoucements Found.')}
         </p>
       ) : (
         <ul className="m-0 list-none p-0">
