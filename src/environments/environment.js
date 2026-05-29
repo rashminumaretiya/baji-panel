@@ -1,16 +1,19 @@
-// Ported from sbex-user-fe/src/environments/environment.production.ts
+function normalizeUrl(url) {
+  if (!url) return ''
+  return url.endsWith('/') ? url : `${url}/`
+}
+
 export const environment = {
-  production: true,
-  apiUrl: 'https://api.mcv88.live/api/',
-  cryptoSecret: 'Sb9l7T2c/T?A(1+L',
-  cryptoSecretforPayload: '247248adabd162866b815153cb986729b1c55c3e',
-  socketUrl: 'https://socket.mcv88.live/',
-  // 'development' makes Header render even before login (matches Angular dev config).
-  server: 'development',
-  cloudySignUrl: 'https://bot.cloudysign.com/api/client/v1/',
-  casinoUrl: 'https://casino.mcv88.live/api/',
-  awcCasinoUrl: 'https://api-cas-staging.gioexch.com/api/',
-  gscCasinoUrl: 'https://gscplussino.mytenapi.com/api/',
-  qtechCasinoUrl: 'https://api-cas-stagingqtech.gioexch.com/api/',
-  casinor2Url: 'https://cdbapi.node1manager.com/',
+  production: import.meta.env.PROD,
+  apiUrl: normalizeUrl(import.meta.env.VITE_API_URL || ''),
+  socketUrl: import.meta.env.VITE_SOCKET_URL || '',
+  cloudySignUrl: normalizeUrl(import.meta.env.VITE_CLOUDYSIGN_API_URL || ''),
+  casinoUrl: normalizeUrl(import.meta.env.VITE_CASINO_API_URL || ''),
+  awcCasinoUrl: normalizeUrl(import.meta.env.VITE_AWC_CASINO_API_URL || ''),
+  gscCasinoUrl: normalizeUrl(import.meta.env.VITE_GSC_CASINO_API_URL || ''),
+  qtechCasinoUrl: normalizeUrl(import.meta.env.VITE_QTECH_CASINO_API_URL || ''),
+  casinor2Url: normalizeUrl(import.meta.env.VITE_CASINO_R2_URL || ''),
+  cryptoSecret: import.meta.env.VITE_CRYPTO_SECRET || '',
+  cryptoSecretforPayload: import.meta.env.VITE_CRYPTO_PAYLOAD_SECRET || '',
+  server: import.meta.env.VITE_SERVER || 'production',
 }

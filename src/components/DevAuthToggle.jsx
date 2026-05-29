@@ -1,9 +1,5 @@
-// Dev-only auth toggle. Returns null in production so the widget never ships.
-// Uses the real Angular-style flow: getValidationCode → login (POST /auth/sign-in)
-// when logging in, and logout (POST /auth/logout) on the way out.
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { environment } from '../environments/environment.js'
 import {
   getValidationCode,
   login,
@@ -13,7 +9,6 @@ import {
 } from '../store/slices/authSlice.js'
 import { selectCaptcha } from '../store/slices/commonSlice.js'
 
-// Reusable Tailwind class strings (kept here so each variant stays readable).
 const panelClass =
   'fixed bottom-20 right-2 z-[9999] bg-[rgba(15,23,42,0.92)] text-white px-2.5 py-2 rounded-md text-[12px] font-[system-ui,sans-serif] shadow-[0_4px_14px_rgba(0,0,0,0.25)] flex flex-col gap-1.5 min-w-[200px]'
 const rowClass = 'flex items-center gap-1.5'
@@ -27,7 +22,7 @@ const btnGrey =
   'bg-[#475569] border-0 text-white py-1 px-2.5 rounded-[4px] font-semibold cursor-pointer text-[12px]'
 
 export default function DevAuthToggle() {
-  if (environment.server !== 'development') return null
+  if (import.meta.env.PROD) return null
   return <DevAuthPanel />
 }
 
@@ -41,7 +36,7 @@ function DevAuthPanel() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
-  // Mirror Angular's effect: when not authenticated, ensure a captcha is loaded.
+  
   useEffect(() => {
     if (!isAuthenticated && !captcha) dispatch(getValidationCode())
   }, [isAuthenticated, captcha, dispatch])
