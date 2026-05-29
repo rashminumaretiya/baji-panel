@@ -200,10 +200,6 @@ function SportsSidebar() {
         fallback: sportName || 'Sport',
         classList: 'title active',
         click: () => getEventsBySport(bucketIndex),
-      },
-      {
-        label: 'Common',
-        classList: 'sub-title',
         competitions: bucket.competitions ?? [],
       },
     ])
@@ -212,7 +208,11 @@ function SportsSidebar() {
   function getEventsByCompetition(c) {
     setSportsCompetition((prev) => {
       const next = [...prev]
-      if (next[1]) next[1] = { ...next[1], classList: 'title' }
+      if (next[1]) {
+        const updated = { ...next[1], classList: 'title' }
+        delete updated.competitions
+        next[1] = updated
+      }
       next[2] = {
         label: c?.name || c?.competition?.name || '',
         classList: 'active',
@@ -252,10 +252,6 @@ function SportsSidebar() {
     navigate(`/odds/${event.id}/${sportSlug}`)
   }
 
-  // Sync sidebar state to the current URL so the sidebar behaves the same way
-  // whether the user clicks inside it, picks a sport tab from the header, or
-  // opens a match from a sport page. Mirrors `getEventsBySport` /
-  // `getMatchOdds` shapes so the existing render code keeps working.
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (!buckets.length) return
