@@ -4,14 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { http } from '../../core/http/client.js'
 import { selectToken } from '../../store/slices/authSlice.js'
 import Modal from '../../shared/components/Modal.jsx'
-
-const COUNTRY_CODES = [
-  { code: '+880', label: '+880' },
-  { code: '+91', label: '+91' },
-  { code: '+1', label: '+1' },
-  { code: '+44', label: '+44' },
-  { code: '+971', label: '+971' },
-]
+import {
+  COUNTRY_CODES,
+  getDefaultCountryCode,
+} from '../../config/countryCodes.js'
 
 // Shared with AddWhatsAppModal / VerifyPrimaryNumberModal — kept inline so
 // each modal file stays standalone (no shared CSS file to leak across pages).
@@ -26,13 +22,13 @@ const addNumberBtnClass =
 export default function AddBackupNumberModal({ isOpen, onClose, onSuccess }) {
   const { t } = useTranslation()
   const token = useSelector(selectToken)
-  const [countryCode, setCountryCode] = useState('+880')
+  const [countryCode, setCountryCode] = useState(getDefaultCountryCode)
   const [phoneNumber, setPhoneNumber] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     if (!isOpen) {
-      setCountryCode('+880')
+      setCountryCode(getDefaultCountryCode())
       setPhoneNumber('')
       setSubmitting(false)
     }
@@ -76,7 +72,7 @@ export default function AddBackupNumberModal({ isOpen, onClose, onSuccess }) {
             >
               {COUNTRY_CODES.map((c) => (
                 <option key={c.code} value={c.code}>
-                  {c.label}
+                  {c.code}
                 </option>
               ))}
             </select>
