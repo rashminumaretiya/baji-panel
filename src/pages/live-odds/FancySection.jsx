@@ -34,6 +34,7 @@ export const FancyTabHeader = memo(function FancyTabHeader({
   onSelect,
   isMobile,
   onInfoClick,
+  sportBookMin = 1,
 }) {
   const { t } = useTranslation()
   const isSportsBookSelected = selectedFancy === MAIN_FANCY.SPORTS_BOOK
@@ -131,12 +132,17 @@ export const FancyTabHeader = memo(function FancyTabHeader({
         )
       })}
       {isSportsBookSelected && (
+        <>
         <p className="mr-[5px] mb-0 ml-auto inline-flex items-center rounded-[3px] bg-(--xl-light-bg) px-2 py-px text-[11px] leading-4 text-black max-md:mt-[-0.9vw] max-md:mr-[1.86667vw] max-md:h-[6.4vw] max-md:rounded-[1.06667vw] max-md:px-[1.6vw] max-md:text-[3.46667vw] max-md:leading-[6.4vw] [&_i]:mr-1 [&_i]:inline-flex max-md:[&_i]:mr-[1vw] max-md:[&_i]:text-(--light-navy) [&_svg]:h-[11px] [&_svg]:w-[11px] max-md:[&_svg]:h-[3.4666666667vw] max-md:[&_svg]:w-[3.4666666667vw] [&_svg_path]:fill-black">
           <i>
             <WarningSvg />
           </i>
-          <span>{t('common.min', 'Min')}</span>
+          <span>
+            {t('common.min', 'Min')} 
+          </span>
         </p>
+          <span>{sportBookMin ?? 1}</span>
+        </>
       )}
     </div>
   )

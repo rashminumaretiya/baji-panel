@@ -649,6 +649,15 @@ export default function LiveOdds() {
     }
   }, [marketSettings, bookmakerOdds])
 
+    const sportBookSetting = useMemo(() => {
+    const sb = marketSettings?.sportBook
+    const s = Array.isArray(sb) ? sb[0] : sb
+    return {
+      min: s?.stakeLimit?.min ?? 1,
+      max: s?.stakeLimit?.max ?? 100,
+    }
+  }, [marketSettings])
+
   const matchOddsSettingFor = useCallback(
     (marketId) => {
       const list = marketSettings?.match_odds ?? []
@@ -1070,6 +1079,7 @@ export default function LiveOdds() {
                 onSelect={setSelectedFancy}
                 isMobile={isMobile}
                 onInfoClick={() => setIsFancyRulesOpen(true)}
+                sportBookMin={sportBookSetting?.min}
               />
 
               {selectedFancy === MAIN_FANCY.FANCY_BET && (

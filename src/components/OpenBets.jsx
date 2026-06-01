@@ -67,7 +67,7 @@ function NoOpenBets({ isYellowTheme }) {
   )
 }
 
-function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
+function BackBetsTable({ openBetsValue, betInfo, timeOrder, isMobile }) {
   const { t } = useTranslation()
   const isFancy = openBetsValue?.event?.type === 'Fancy'
   const marketName = openBetsValue?.marketName?.toLowerCase() ?? ''
@@ -126,10 +126,14 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
         {backBets.map((openBet, index) => (
           <Fragment key={`back-group-${index}`}>
             {betInfo && (
-              <tr className="bg-[#beddf466]">
-                <td colSpan={5} className={`${TD_BASE} w-[8%] pr-0 text-left`}>
-                  <span>{t('common.ref', 'Ref')}: </span>
-                  <span>{formatDateTime(openBet.betPlacedAt)}</span>
+              <tr className={isMobile ? 'bg-[#beddf466]' : 'bg-(--md-blue-bg)'}>
+                <td colSpan={5} className={`${TD_BASE} w-[8%] pr-0 text-left md:border-b-0!`}>
+                  <span>
+                    {t('common.ref', 'Ref')}: {openBet._id}
+                  </span>
+                  <span className="ml-2">
+                    {formatDateTime(openBet.betPlacedAt)}
+                  </span>
                 </td>
               </tr>
             )}
@@ -184,7 +188,7 @@ function BackBetsTable({ openBetsValue, betInfo, timeOrder }) {
   )
 }
 
-function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
+function LayBetsTable({ openBetsValue, betInfo, timeOrder, isMobile }) {
   const { t } = useTranslation()
   const isFancy = openBetsValue?.event?.type === 'Fancy'
   const marketName = openBetsValue?.marketName?.toLowerCase() ?? ''
@@ -243,10 +247,14 @@ function LayBetsTable({ openBetsValue, betInfo, timeOrder }) {
         {layBets.map((openBet, index) => (
           <Fragment key={`lay-group-${index}`}>
             {betInfo && (
-              <tr className="bg-[#faeff2]">
-                <td colSpan={5} className={`${TD_BASE} w-[8%] pr-0 text-left`}>
-                  <span>{t('common.ref', 'Ref')}: </span>
-                  <span>{formatDateTime(openBet.betPlacedAt)}</span>
+              <tr className={isMobile ? 'bg-[#faeff2]' : 'bg-(--md-red-bg)'}>
+                <td colSpan={5} className={`${TD_BASE} w-[8%] pr-0 text-left md:border-b-0!`}>
+                  <span>
+                    {t('common.ref', 'Ref')}: {openBet._id}
+                  </span>
+                  <span className="ml-2">
+                    {formatDateTime(openBet.betPlacedAt)}
+                  </span>
                 </td>
               </tr>
             )}
@@ -308,7 +316,6 @@ function OpenBetsListBackLay({
   isOpen,
   isMobile,
   onBetInfoChange,
-  onTimeOrderChange,
 }) {
   const { t } = useTranslation()
   if (!openBetsValue) return null
@@ -327,53 +334,40 @@ function OpenBetsListBackLay({
           openBetsValue={openBetsValue}
           betInfo={betInfo}
           timeOrder={timeOrder}
+          isMobile={isMobile}
         />
         <LayBetsTable
           openBetsValue={openBetsValue}
           betInfo={betInfo}
           timeOrder={timeOrder}
+          isMobile={isMobile}
         />
       </div>
-      {isMobile && (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-          }}
-        >
-          <div className="ml-2 flex">
-            <div className="flex items-center">
-              <input
-                className="h-5 w-5 cursor-pointer appearance-none rounded-full border border-[#2789ce] shadow-[inset_0_3px_#00000040] checked:bg-[#2789ce] checked:shadow-none"
-                type="checkbox"
-                id="radioDefault1"
-                checked={betInfo}
-                onChange={(e) => onBetInfoChange(e.target.checked)}
-              />
-              <label
-                className="ml-[5px] cursor-pointer"
-                htmlFor="radioDefault1"
-              >
-                {t('common.betInfo', 'Bet info')}
-              </label>
-            </div>
-            <div className="ml-2 flex items-center">
-              <input
-                className="h-5 w-5 cursor-pointer appearance-none rounded-full border border-[#2789ce] shadow-[inset_0_3px_#00000040] checked:bg-[#2789ce] checked:shadow-none"
-                type="checkbox"
-                id="radioDefault2"
-                checked={timeOrder}
-                onChange={(e) => onTimeOrderChange(e.target.checked)}
-              />
-              <label
-                className="ml-[5px] cursor-pointer"
-                htmlFor="radioDefault2"
-              >
-                {t('common.timeOrder', 'Time Order')}
-              </label>
-            </div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+        }}
+      >
+        <div className="ml-2 mt-2 flex">
+          <div className="flex items-center">
+            <input
+              className={cx(
+                'cursor-pointer',
+                isMobile
+                  ? 'h-5 w-5 appearance-none rounded-full border border-[#2789ce] shadow-[inset_0_3px_#00000040] checked:bg-[#2789ce] checked:shadow-none'
+                  : 'h-4 w-4 rounded-[2px] accent-[#2789ce]'
+              )}
+              type="checkbox"
+              id="radioDefault1"
+              checked={betInfo}
+              onChange={(e) => onBetInfoChange(e.target.checked)}
+            />
+            <label className="ml-[5px] cursor-pointer" htmlFor="radioDefault1">
+              {t('common.betInfo', 'Bet info')}
+            </label>
           </div>
-        </form>
-      )}
+        </div>
+      </form>
     </>
   )
 }
@@ -381,7 +375,6 @@ function OpenBetsListBackLay({
 const OpenBetsDesktop = memo(function OpenBetsDesktop({
   openBetsList,
   isOpen,
-  isMobile,
   isYellowTheme,
   onRefresh,
 }) {
@@ -389,7 +382,7 @@ const OpenBetsDesktop = memo(function OpenBetsDesktop({
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [betInfo, setBetInfo] = useState(false)
-  const [timeOrder, setTimeOrder] = useState(false)
+  const timeOrder = false
 
   const openBetsValue = openBetsList[selectedIndex] ?? null
   const hasList = openBetsList.length > 0
@@ -453,9 +446,8 @@ const OpenBetsDesktop = memo(function OpenBetsDesktop({
                       betInfo={betInfo}
                       timeOrder={timeOrder}
                       isOpen={isOpen}
-                      isMobile={isMobile}
+                      isMobile={false}
                       onBetInfoChange={setBetInfo}
-                      onTimeOrderChange={setTimeOrder}
                     />
                   </div>
                 ) : (
@@ -470,11 +462,11 @@ const OpenBetsDesktop = memo(function OpenBetsDesktop({
   )
 })
 
-const OpenBetsMobile = memo(function OpenBetsMobile({ openBetsList, isOpen, isMobile }) {
+const OpenBetsMobile = memo(function OpenBetsMobile({ openBetsList, isOpen }) {
   const [detailsOpenBets, setDetailsOpenBets] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [betInfo, setBetInfo] = useState(false)
-  const [timeOrder, setTimeOrder] = useState(false)
+  const timeOrder = false
   const isYellowTheme = useSelector(selectIsYellowTheme)
 
   const openBetsValue = openBetsList[selectedIndex] ?? null
@@ -500,9 +492,8 @@ const OpenBetsMobile = memo(function OpenBetsMobile({ openBetsList, isOpen, isMo
           betInfo={betInfo}
           timeOrder={timeOrder}
           isOpen={isOpen}
-          isMobile={isMobile}
+          isMobile={true}
           onBetInfoChange={setBetInfo}
-          onTimeOrderChange={setTimeOrder}
         />
       </div>
     )
@@ -554,11 +545,7 @@ function OpenBets() {
 
   if (isMobile) {
     return (
-      <OpenBetsMobile
-        openBetsList={openBetsList}
-        isOpen={!!isOpen}
-        isMobile={isMobile}
-      />
+      <OpenBetsMobile openBetsList={openBetsList} isOpen={!!isOpen} />
     )
   }
 
@@ -566,7 +553,6 @@ function OpenBets() {
     <OpenBetsDesktop
       openBetsList={openBetsList}
       isOpen={!!isOpen}
-      isMobile={isMobile}
       isYellowTheme={isYellowTheme}
       onRefresh={handleRefresh}
     />
