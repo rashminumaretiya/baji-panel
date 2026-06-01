@@ -158,25 +158,12 @@ export default function CurrentBets() {
       {
         key: 'market',
         label: t('myBets.market', 'Market'),
-        render: (_v, row) =>
-          row?.marketName ??
-          (typeof row?.market === 'object'
-            ? (row.market?.name ?? '--')
-            : (row?.market ?? '--')),
+        render: (_v, row) => row?.event?.type ?? '--',
       },
       {
         key: 'selection',
         label: t('markets.selection', 'Selection'),
-        render: (_v, row) =>
-          row?.selectionName ??
-          (typeof row?.selection === 'object'
-            ? Array.isArray(row.selection)
-              ? row.selection
-                  .map((s) => s?.name)
-                  .filter(Boolean)
-                  .join(' | ')
-              : (row.selection?.name ?? '--')
-            : (row?.selection ?? '--')),
+        render: (_v, row) =>  (marketCategory  === 'SPORTS_BOOK' ? row?.market?.name ?? row?.event?.type : row?.selection?.name) ?? '--',
       },
       {
         key: 'type',

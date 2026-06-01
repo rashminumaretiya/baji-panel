@@ -88,12 +88,12 @@ export default function BetHistory() {
       {
         key: 'market',
         label: t('myBets.market', 'Market'),
-        render: (_v, row) => row?.marketName ?? '--',
+        render: (_v, row) => row?.event?.type ?? '--',
       },
       {
         key: 'selection',
         label: t('markets.selection', 'Selection'),
-        render: (_v, row) => row?.selectionName ?? '--',
+        render: (_v, row) =>  (marketCategory  === 'SPORTS_BOOK' ? row?.market?.name ?? row?.event?.type : row?.selection?.name) ?? '--',
       },
       {
         key: 'type',
